@@ -1,0 +1,14 @@
+# Entorno de Python para Analysis/ y Frontend/observatorio/
+# Solo scikit-learn está fijado: es la versión con la que se reprodujo el
+# notebook B, sección 11 (6 oct 2026). Las demás no se registraron; si una
+# cifra no coincide, anotar aquí la versión con la que sí coincidió.
+pandas
+numpy
+scipy
+matplotlib
+scikit-learn==1.7.2
+openpyxl          # lee el xlsx de pobreza municipal de CONEVAL (notebook A, sección 09)
+Pillow            # Frontend/observatorio/ilustraciones/build_ilustraciones.py
+dbfread           # Analysis/etoe/etoe_cuidados.py (microdatos ETOE en DBF)
+jupyter
+nbconvert
