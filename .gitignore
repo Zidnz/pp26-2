@@ -1,0 +1,63 @@
+# .gitignore — Observatorio de Datos para la Economía del Cuidado (pp26-2)
+# Creado el 2026-09-22. Regla del proyecto: datos grandes o restringidos no se suben;
+# se versiona el procedimiento para reconstruirlos (ver ESTADO_SINCRONIZACION.md y Data/README_notebook01.md).
+# Nota: Git solo acepta comentarios en líneas propias, no al final de un patrón.
+
+# --- Datos crudos grandes (GitHub rechaza archivos > 100 MB) ---
+# DENUE 05_2026 CDMX (260 MB)
+Data/raw/
+# denue_09_csv.zip y denue_09_0525_csv.zip (45 MB c/u)
+*.zip
+# Microdatos ENASIC 2022 (38 MB) y ETOE 2020
+Analysis/datos/enasic/
+Analysis/etoe/datos/
+*.dbf
+
+# --- Credenciales y entorno: nunca se suben ---
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+credentials*.json
+
+# --- Python / Jupyter ---
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.venv/
+venv/
+
+# --- Node ---
+node_modules/
+
+# --- Editores y sistema ---
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini
+# Archivos de bloqueo de Office
+~$*
+
+# --- Agregado el 2026-10-08 al sincronizar el repositorio ---
+# Carpeta local de borradores y respaldos; nada de aquí se publica
+_to_delete/
+*.tgz
+*.tar.gz
+
+# Word y PDF viven fuera del repositorio (regla del proyecto: Word cita los
+# resultados, no los origina). Se versionan los generadores de Documentos/.
+*.docx
+Documentos/**/*.pdf
+
+# Restos de una práctica de C++ de 2015 que quedaron en Documentos/
+*.exe
+*.o
+Documentos/*.dev
+Documentos/*.layout
+Documentos/Makefile.win
+Documentos/main.cpp
+
+# Demo del 11 sept (MILPÍN): no pertenece a este proyecto y trae una clave fija
+scripts/app.py
+scripts/danita.html
