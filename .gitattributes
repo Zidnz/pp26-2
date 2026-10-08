@@ -1,0 +1,25 @@
+# Finales de línea uniformes (LF) en el repositorio, sin importar el sistema
+# operativo de quien hace commit. Evita diffs falsos entre Windows y Linux.
+* text=auto eol=lf
+
+*.ipynb text eol=lf
+*.csv   text eol=lf
+*.md    text eol=lf
+*.py    text eol=lf
+*.js    text eol=lf
+*.html  text eol=lf
+*.css   text eol=lf
+*.json  text eol=lf
+
+*.png  binary
+*.jpg  binary
+*.webp binary
+*.pdf  binary
+*.xlsx binary
+
+# Las bibliotecas de terceros no cuentan para las estadísticas de lenguaje
+Frontend/vendor/** linguist-vendored
+Frontend/observatorio/vendor/** linguist-vendored
+# Generados por build_datos.py y build_ilustraciones.py
+Frontend/observatorio/js/datos/** linguist-generated
+Frontend/observatorio/js/graficas/ilustraciones.js linguist-generated
