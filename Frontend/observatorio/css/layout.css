@@ -1,0 +1,77 @@
+/* Observatorio del Cuidado · css/layout.css
+   Esqueleto de la página: barra lateral con las pestañas, vistas, cuadrícula y pie.
+   Orden de carga en index.html: base → layout → componentes → graficas → vistas. */
+/* ---------- barra lateral y pestañas ---------- */
+/* --stick: altura libre arriba para las barras pegajosas (.fbar). En escritorio la barra lateral no ocupa altura. */
+:root{--side:248px;--stick:14px}
+.shell{display:grid;grid-template-columns:var(--side) minmax(0,1fr);min-height:100vh}
+.side{position:sticky;top:0;height:100vh;overflow-y:auto;scrollbar-width:thin;background:var(--shell-2);color:var(--on-shell);display:flex;flex-direction:column;gap:22px;padding:22px 14px 18px;z-index:20}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:inherit;padding:2px 6px}
+.brand .mark{width:40px;height:36px;flex:none}
+.brand b{font:720 16px/1.15 var(--sans);font-stretch:92%;display:block}
+.brand span span{display:block;margin-top:3px;font:500 10.5px/1.35 var(--mono);color:var(--on-shell-faint)}
+.tabs{display:flex;flex-direction:column;gap:3px;position:relative}
+.tabs button{display:flex;align-items:center;gap:12px;border:none;background:none;color:var(--on-shell-soft);font:600 14px/1.2 var(--sans);padding:10px 12px;border-radius:10px;text-align:left;white-space:nowrap;transition:background .15s,color .15s}
+.tabs svg{width:19px;height:19px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.tabs button:hover{color:#fff;background:rgba(255,255,255,.06)}
+.tabs button[aria-selected="true"]{color:#fff;background:var(--accent);box-shadow:0 6px 16px rgba(18,20,32,.3)}
+.tabs button[aria-selected="true"] svg{color:var(--mint)}
+.side-foot{margin-top:auto;display:grid;gap:14px}
+.side-quote{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:16px 14px 14px;display:grid;justify-items:center;gap:8px;text-align:center}
+.side-quote svg{width:46px;height:46px}
+.side-quote p{font:650 14px/1.3 var(--sans);color:var(--on-shell)}
+.side .meta{padding:0 6px;font:500 10.5px/1.5 var(--mono);color:var(--on-shell-faint)}
+.side .meta b{color:#eccb8a;font-weight:600}
+.content{min-width:0;display:flex;flex-direction:column}
+.content main{flex:1;width:100%}
+/* Pantallas anchas (o el navegador con zoom menor a 100%): en lugar de dejar márgenes vacíos, el contenido escala
+   completo —texto, tarjetas, gráficas y escenas 3D— hasta ocupar cerca del 90% del ancho libre. La barra lateral
+   escala menos (--zs) para no robar espacio. Navegadores sin la propiedad zoom solo ven márgenes más anchos. */
+:root{--zc:1;--zs:1}
+@media (min-width:1760px){:root{--zc:1.1;--zs:1.06}}
+@media (min-width:1920px){:root{--zc:1.2;--zs:1.12}}
+@media (min-width:2080px){:root{--zc:1.3;--zs:1.18}}
+@media (min-width:2240px){:root{--zc:1.42;--zs:1.25}}
+@media (min-width:2400px){:root{--zc:1.55;--zs:1.3}}
+@media (min-width:2560px){:root{--zc:1.65;--zs:1.35}}
+@media (min-width:2880px){:root{--zc:1.85;--zs:1.45}}
+@media (min-width:961px){
+  .shell{grid-template-columns:calc(var(--side) * var(--zs)) minmax(0,1fr)}
+  .side{zoom:var(--zs);height:calc(100vh / var(--zs))}
+  .content{zoom:var(--zc)}
+}
+/* Pantallas angostas: la barra lateral se vuelve barra superior con las pestañas en una fila deslizable */
+@media (max-width:960px){
+  :root{--stick:104px}
+  .shell{display:block}
+  .side{height:auto;overflow:visible;gap:8px;padding:12px clamp(16px,3.5vw,36px) 0;box-shadow:0 1px 0 rgba(255,255,255,.06)}
+  .brand .mark{width:32px;height:29px}
+  .tabs{flex-direction:row;overflow-x:auto;scrollbar-width:none;margin-inline:-4px}
+  .tabs::-webkit-scrollbar{display:none}
+  .tabs button{gap:8px;padding:9px 11px 11px;border-radius:9px 9px 0 0;font-size:13px}
+  .tabs svg{width:16px;height:16px}
+  .tabs button[aria-selected="true"]{box-shadow:none}
+  .side-foot{display:none}
+}
+
+/* ---------- vistas ---------- */
+.view{display:none;padding-block:28px 56px}
+.view.on{display:block}
+.vhead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px 32px;flex-wrap:wrap;margin-bottom:20px}
+.vhead h2{font:740 clamp(23px,2.6vw,31px)/1.12 var(--sans);font-stretch:90%;letter-spacing:-.015em;max-width:30ch}
+.vhead p{color:var(--ink-soft);max-width:56ch;font-size:14.5px}
+.kicker{font:700 10.5px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+
+.grid{display:grid;gap:18px}
+.c2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.c3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.c4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.c21{grid-template-columns:minmax(0,1.55fr) minmax(0,1fr)}
+.c12{grid-template-columns:minmax(0,1fr) minmax(0,1.55fr)}
+@media (max-width:980px){.c3,.c4{grid-template-columns:repeat(2,minmax(0,1fr))}.c21,.c12{grid-template-columns:1fr}}
+@media (max-width:640px){.c2,.c3,.c4{grid-template-columns:1fr}}
+
+.vhead details.src{margin-top:0;min-width:200px}
+
+footer{background:var(--shell-2);color:var(--on-shell-faint);font:400 11.5px/1.6 var(--mono);padding-block:22px}
+footer .wrap{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}

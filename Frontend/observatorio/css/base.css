@@ -1,0 +1,27 @@
+/* Observatorio del Cuidado · css/base.css
+   Tokens (paleta, tipografías, ancho máximo), reinicio y utilidades.
+   Orden de carga en index.html: base → layout → componentes → graficas → vistas. */
+/* Paleta tomada de Frontend/css/app.css (prototipo del equipo). */
+:root{
+  color-scheme:light;
+  --shell:#3f4760; --shell-2:#2d3347; --shell-3:#252a3b;
+  --paper:#f4f2f9; --paper-2:#faf9fd; --card:#ffffff;
+  --ink:#2b3045; --ink-soft:rgba(43,48,69,.74); --ink-faint:rgba(43,48,69,.56);
+  --hair:rgba(63,71,96,.15); --hair-2:rgba(63,71,96,.08);
+  --accent:#77689d; --accent-soft:rgba(119,104,157,.12);
+  --lav:#aa95d1; --mint:#7dd1c1; --teal:#23806f;
+  --alert:#c0435a; --alert-soft:rgba(192,67,90,.11);
+  --amber:#a9711a; --amber-soft:rgba(169,113,26,.12);
+  --on-shell:#f4f2f9; --on-shell-soft:rgba(244,242,249,.74); --on-shell-faint:rgba(244,242,249,.5);
+  --sans:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --max:1240px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+p{margin:0} h1,h2,h3,h4{margin:0;text-wrap:balance}
+button{font-family:inherit;cursor:pointer;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.mono{font-family:var(--mono)} .num{font-variant-numeric:tabular-nums}
+.wrap{max-width:var(--max);margin:0 auto;padding-inline:clamp(16px,3.5vw,36px)}
+.muted{color:var(--ink-faint)}
