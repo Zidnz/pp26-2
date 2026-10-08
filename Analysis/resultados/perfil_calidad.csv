@@ -1,0 +1,41 @@
+archivo,columna,filas,dtype,nulos,unicos,duplicados_fila,min,max
+Capacidad disponible en residencias permanentes de sector privado para adultos y adultas mayores.csv,Alcaldia,12,object,0,12,0,,
+Capacidad disponible en residencias permanentes de sector privado para adultos y adultas mayores.csv,Capacidad_total,12,int64,0,12,0,14,439
+Capacidad disponible en residencias permanentes de sector privado para adultos y adultas mayores.csv,Nomenclartura alcaldia,12,object,0,12,0,,
+Centros de día para adultos y adultas mayores del sector público.csv,Tipo,33,object,0,5,0,,
+Centros de día para adultos y adultas mayores del sector público.csv,Municipio,33,object,0,16,0,,
+Centros de día para adultos y adultas mayores del sector público.csv,Numero_instituciones,33,int64,0,10,0,1,17
+Horas laborales y de cuidado..csv,Edad,33,object,0,9,0,,
+Horas laborales y de cuidado..csv,Sexo,33,object,0,2,0,,
+Horas laborales y de cuidado..csv,Horas,33,float64,0,32,0,9.7,52.8
+Horas laborales y de cuidado..csv,Tipo de trabajo,33,object,0,2,0,,
+Personas con Seguridad Social.csv,Edad,112,object,0,14,0,,
+Personas con Seguridad Social.csv,sexo,112,object,0,2,0,,
+Personas con Seguridad Social.csv,valor,112,float64,0,77,0,0.0,11.0512129380054
+Personas con Seguridad Social.csv,tipo de seguro,112,object,0,4,0,,
+Población con discapacidad que necesita ayuda para las actividades de la vida diaria.csv,tipo,204,object,0,2,0,,
+Población con discapacidad que necesita ayuda para las actividades de la vida diaria.csv,total,204,int64,0,202,0,884,731480
+Población con discapacidad que necesita ayuda para las actividades de la vida diaria.csv,alcaldia,204,object,0,17,0,,
+Población con discapacidad que necesita ayuda para las actividades de la vida diaria.csv,poblacion,204,object,0,6,0,,
+Población de adultos y adultas mayores por tipo de discapacidad.csv,edad,56,object,0,4,0,,
+Población de adultos y adultas mayores por tipo de discapacidad.csv,sexo,56,object,0,2,0,,
+Población de adultos y adultas mayores por tipo de discapacidad.csv,total,56,int64,0,54,0,39,2814
+Población de adultos y adultas mayores por tipo de discapacidad.csv,tipo_discapacidad,56,object,0,7,0,,
+Población de más de 60 años.csv,NOM_MUN,102,object,0,17,0,,
+Población de más de 60 años.csv,GRUPO_EDAD,102,object,0,6,0,,
+Población de más de 60 años.csv,PORCENTAJE,102,float64,0,102,0,0.0107601088562536,5.09755542487555
+Promedio del gasto en cuidados privados.csv,total,6,int64,0,5,0,1,3319
+Promedio del gasto en cuidados privados.csv,frecuencia,6,object,0,3,0,,
+Promedio del gasto en cuidados privados.csv,tipo_gasto,6,object,0,4,0,,
+Promedio del gasto en cuidados privados.csv,gasto_promedio,6,float64,0,6,0,40.0,1908.83725135624
+Razón por la que no se usan las guarderías.csv,sexo,34,object,0,2,0,,
+Razón por la que no se usan las guarderías.csv,porcentaje,34,float64,0,33,0,0.256364922206506,15.1387906647808
+Razón por la que no se usan las guarderías.csv,institucion,34,object,0,6,0,,
+Razón por la que no se usan las guarderías.csv,por_que_no_usa_servicios,34,object,0,8,0,,
+Tiempo promedio en ayudas no pagadas a otros hogares.csv,sexo,35,object,0,2,0,,
+Tiempo promedio en ayudas no pagadas a otros hogares.csv,grupo_edad,35,object,0,18,0,,
+Tiempo promedio en ayudas no pagadas a otros hogares.csv,total_horas,35,int64,0,30,0,0,5911
+Tiempo promedio en cuidado no remunerado a niños y niñas de 0 a 14 años por personas ocupadas en el mercado de trabajo.csv,sexo,131,object,0,2,0,,
+Tiempo promedio en cuidado no remunerado a niños y niñas de 0 a 14 años por personas ocupadas en el mercado de trabajo.csv,Question,131,object,0,5,0,,
+Tiempo promedio en cuidado no remunerado a niños y niñas de 0 a 14 años por personas ocupadas en el mercado de trabajo.csv,Percentage,131,float64,0,120,0,0.0108166576527853,14.8815165876777
+Tiempo promedio en cuidado no remunerado a niños y niñas de 0 a 14 años por personas ocupadas en el mercado de trabajo.csv,grupo_edad,131,object,0,15,0,,

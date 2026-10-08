@@ -1,0 +1,15 @@
+codigo_act,grupo,poblacion_atendida,nota
+623311,nucleo,Personas mayores (residencial),Asilos y otras residencias del sector privado
+623312,nucleo,Personas mayores (residencial),Asilos y otras residencias del sector público
+624121,nucleo,Personas mayores y con discapacidad (diurno),Centros de día del sector privado
+624122,nucleo,Personas mayores y con discapacidad (diurno),Centros de día del sector público
+623111,ampliado,Personas en convalecencia o con dependencia (residencial con enfermería),No exclusivo de personas mayores
+623112,ampliado,Personas en convalecencia o con dependencia (residencial con enfermería),No exclusivo de personas mayores
+623211,ampliado,Personas con discapacidad intelectual (residencial),Nombre SCIAN 2018: 'retardo mental'
+623212,ampliado,Personas con discapacidad intelectual (residencial),Nombre SCIAN 2018: 'retardo mental'
+621341,ampliado,Rehabilitación ambulatoria (terapia física/ocupacional/lenguaje/audiología),Consultorios; atienden a toda la población y no solo a dependientes
+621342,ampliado,Rehabilitación ambulatoria (terapia física/ocupacional/lenguaje/audiología),Consultorios; atienden a toda la población y no solo a dependientes
+624311,excluido_por_ahora,Capacitación laboral,Mezcla personas desempleadas y con discapacidad; no es cuidado
+624312,excluido_por_ahora,Capacitación laboral,Mezcla personas desempleadas y con discapacidad; no es cuidado
+624411,fuera_poblacion_objetivo,Primera infancia,Guarderías privadas; fuera de la delimitación 60+/discapacidad
+624412,fuera_poblacion_objetivo,Primera infancia,Guarderías públicas; fuera de la delimitación 60+/discapacidad

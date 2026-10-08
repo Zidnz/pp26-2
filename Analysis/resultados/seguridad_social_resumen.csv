@@ -1,0 +1,9 @@
+tipo de seguro,sexo,media,maximo,n
+IMSS,Hombres,3.29,5.23,14
+IMSS,Mujeres,3.85,8.49,14
+ISSSTE,Hombres,2.92,7.01,14
+ISSSTE,Mujeres,4.23,11.05,14
+Seguro Popular,Hombres,3.1,5.82,14
+Seguro Popular,Mujeres,4.04,6.01,14
+Seguro Privado,Hombres,3.28,10.34,14
+Seguro Privado,Mujeres,3.86,6.9,14
