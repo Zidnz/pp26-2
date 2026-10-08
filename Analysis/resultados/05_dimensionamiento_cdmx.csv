@@ -1,0 +1,4 @@
+﻿nivel,valor,metodo,evidencia,sesgo
+Hogares CDMX con persona con discapacidad o 60+ (cota inferior),1099461,tasa nacional ENASIC x viviendas CDMX Censo 2020,probable,SUBESTIMA: la CDMX está más envejecida que el promedio nacional
+Hogares CDMX que hoy contratan enfermería o cuidadora,11300,lo anterior x tasa de contratación nacional,probable,"doble inferencia; la CDMX tiene más ingreso que el promedio, podría SUBESTIMAR"
+Hogares CDMX con necesidad que hoy contratan trabajo doméstico,86193,lo anterior x tasa nacional de trabajo doméstico,probable,es el mercado de servicio doméstico ya existente en esos hogares

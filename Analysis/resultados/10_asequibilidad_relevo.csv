@@ -1,0 +1,11 @@
+﻿salario,salario_hora_2026,paquete,horas_semana,costo_mensual_2026,costo_mensual_2022,costo_pct_ingreso_mediano,pct_hogares_costo_<=_10pct_ingreso,pct_hogares_costo_<=_20pct_ingreso,pct_hogares_costo_<=_30pct_ingreso,n_muestra_hogares,alcance
+Piso legal 2026 (SM prof. personas trabajadoras del hogar),42.81,Relevo 3 h/sem,3,556,482,7.1,66.2,87.2,95.3,2071,nacional; proporción ponderada (FAC_HOG) sin varianza de diseño
+Piso legal 2026 (SM prof. personas trabajadoras del hogar),42.81,Relevo 6 h/sem,6,1112,963,14.2,35.5,66.2,79.7,2071,nacional; proporción ponderada (FAC_HOG) sin varianza de diseño
+Piso legal 2026 (SM prof. personas trabajadoras del hogar),42.81,Relevo 9 h/sem,9,1668,1445,21.3,21.1,44.7,66.2,2071,nacional; proporción ponderada (FAC_HOG) sin varianza de diseño
+Piso legal 2026 (SM prof. personas trabajadoras del hogar),42.81,Relevo 12 h/sem,12,2224,1927,28.3,15.2,35.5,51.1,2071,nacional; proporción ponderada (FAC_HOG) sin varianza de diseño
+Piso legal 2026 (SM prof. personas trabajadoras del hogar),42.81,Jornada completa 40 h/sem (control: script 04),40,7414,6422,94.4,0.8,5.3,12.2,2071,nacional; proporción ponderada (FAC_HOG) sin varianza de diseño
+"Tabulador CACEH 2026 cat. 8 (referencia, no piso legal)",113.0,Relevo 3 h/sem,3,1468,1271,18.7,23.8,51.3,68.2,2071,nacional; proporción ponderada (FAC_HOG) sin varianza de diseño
+"Tabulador CACEH 2026 cat. 8 (referencia, no piso legal)",113.0,Relevo 6 h/sem,6,2936,2543,37.4,8.7,23.8,39.8,2071,nacional; proporción ponderada (FAC_HOG) sin varianza de diseño
+"Tabulador CACEH 2026 cat. 8 (referencia, no piso legal)",113.0,Relevo 9 h/sem,9,4404,3814,56.1,3.5,15.2,23.8,2071,nacional; proporción ponderada (FAC_HOG) sin varianza de diseño
+"Tabulador CACEH 2026 cat. 8 (referencia, no piso legal)",113.0,Relevo 12 h/sem,12,5871,5086,74.8,2.2,8.7,16.2,2071,nacional; proporción ponderada (FAC_HOG) sin varianza de diseño
+"Tabulador CACEH 2026 cat. 8 (referencia, no piso legal)",113.0,Jornada completa 40 h/sem (control: script 04),40,19572,16953,249.3,0.0,0.1,1.6,2071,nacional; proporción ponderada (FAC_HOG) sin varianza de diseño

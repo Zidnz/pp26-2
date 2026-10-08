@@ -1,0 +1,23 @@
+﻿indicador,dominio,valor,unidad,nota
+Hogares con alguien de 60+ o con discapacidad,CDMX,47.1,% de los hogares,"CV 2.6; IC90 45.0-49.1; n=2585; total 1,407,522"
+Hogares con alguien de 60+,CDMX,42.3,% de los hogares,"CV 2.8; IC90 40.3-44.2; n=2585; total 1,263,762"
+Hogares con alguien con discapacidad,CDMX,17.8,% de los hogares,"CV 5.3; IC90 16.2-19.3; n=2585; total 531,093"
+"Ingreso monetario mensual del hogar, p25, hogares con necesidad",CDMX,9620.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso monetario mensual del hogar, mediana, hogares con necesidad",CDMX,16229.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso monetario mensual del hogar, p75, hogares con necesidad",CDMX,26740.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso corriente total mensual del hogar, p25, hogares con necesidad",CDMX,10325.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso corriente total mensual del hogar, mediana, hogares con necesidad",CDMX,16763.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso corriente total mensual del hogar, p75, hogares con necesidad",CDMX,27540.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso monetario mensual mediano, hogares con necesidad, en pesos de nov-2022 (comparable con ENASIC)",CDMX,16517.0,$ nov-2022,"ENASIC nacional (script 04): 6,800"
+Hogares con alguien de 60+ o con discapacidad,Nacional,42.1,% de los hogares,"CV 0.7; IC90 41.6-42.6; n=90102; total 15,815,012"
+Hogares con alguien de 60+,Nacional,35.3,% de los hogares,"CV 0.8; IC90 34.9-35.8; n=90102; total 13,266,635"
+Hogares con alguien con discapacidad,Nacional,19.3,% de los hogares,"CV 1.1; IC90 19.0-19.7; n=90102; total 7,262,576"
+"Ingreso monetario mensual del hogar, p25, hogares con necesidad",Nacional,6572.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso monetario mensual del hogar, mediana, hogares con necesidad",Nacional,12186.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso monetario mensual del hogar, p75, hogares con necesidad",Nacional,21507.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso corriente total mensual del hogar, p25, hogares con necesidad",Nacional,7276.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso corriente total mensual del hogar, mediana, hogares con necesidad",Nacional,12914.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso corriente total mensual del hogar, p75, hogares con necesidad",Nacional,22439.0,$ ago-2022,"estimación puntual, sin IC"
+"Ingreso monetario mensual mediano, hogares con necesidad, en pesos de nov-2022 (comparable con ENASIC)",Nacional,12402.0,$ nov-2022,"ENASIC nacional (script 04): 6,800"
+Deflactor nov-2022 / ago-2022 (programa CONEVAL 2022),no aplica,1.017721703,razón,
+Estratos con una sola UPM,no aplica,0.0,estratos,no aportan a la varianza

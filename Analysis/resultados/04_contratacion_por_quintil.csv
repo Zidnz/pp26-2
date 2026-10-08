@@ -1,0 +1,11 @@
+﻿indicador,pct,se,cv,li90,ls90,n_muestra_dominio,n_muestra_si,total_expandido,precision,quintil,servicio,ingreso_min,ingreso_max
+Q1 | Contrata enfermería o cuidadora,0.96,0.51,52.78,0.13,1.79,443,4,24102.0,baja,1,enfermería o cuidadora,0.0,3200.0
+Q1 | Contrata trabajo doméstico entrada por salida,3.22,1.26,39.07,1.15,5.29,443,13,80774.0,baja,1,doméstico entrada por salida,0.0,3200.0
+Q2 | Contrata enfermería o cuidadora,0.36,0.26,70.83,-0.06,0.79,466,2,9746.0,baja,2,enfermería o cuidadora,3200.0,5000.0
+Q2 | Contrata trabajo doméstico entrada por salida,3.15,1.27,40.4,1.06,5.24,466,16,84583.0,baja,2,doméstico entrada por salida,3200.0,5000.0
+Q3 | Contrata enfermería o cuidadora,0.51,0.46,90.37,-0.25,1.26,406,2,11381.0,baja,3,enfermería o cuidadora,5000.0,8000.0
+Q3 | Contrata trabajo doméstico entrada por salida,3.91,1.01,25.91,2.24,5.57,406,20,87641.0,moderada,3,doméstico entrada por salida,5000.0,8000.0
+Q4 | Contrata enfermería o cuidadora,0.68,0.36,52.78,0.09,1.26,443,4,18691.0,baja,4,enfermería o cuidadora,8000.0,15000.0
+Q4 | Contrata trabajo doméstico entrada por salida,5.96,1.35,22.59,3.75,8.18,443,32,164552.0,moderada,4,doméstico entrada por salida,8000.0,15000.0
+Q5 | Contrata enfermería o cuidadora,2.61,1.21,46.1,0.63,4.6,313,7,57317.0,baja,5,enfermería o cuidadora,15000.0,inf
+Q5 | Contrata trabajo doméstico entrada por salida,24.33,3.76,15.46,18.14,30.52,313,72,533402.0,moderada,5,doméstico entrada por salida,15000.0,inf

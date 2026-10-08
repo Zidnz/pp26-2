@@ -1,0 +1,8 @@
+﻿nota,detalle
+Distribución de ingreso,"ENASIC 2022 nacional, hogares con discapacidad o 60+, ponderada con FAC_HOG (n = 2071)"
+Indexación,"Ingresos de 2022 llevados a pesos de 2026 con INPC (factor 1.1545). Supone que el ingreso de estos hogares creció como el INPC: SUPUESTO, no dato."
+Umbral de asequibilidad,"20%% del ingreso del hogar. Es una convención del equipo, no un estándar oficial."
+Carga patronal,"22% sobre el salario, aproximada, para IMSS e Infonavit de persona trabajadora del hogar (obligatorio desde enero de 2023). POR CONFIRMAR con la calculadora oficial del IMSS."
+Hogares CDMX,"1,099,461, cota inferior inferida en el script 05. NO es una medición para la CDMX."
+Costo anual CDMX,"subsidio x 12 x hogares x proporción cubierta. Orden de magnitud para discutir viabilidad, no presupuesto."
+Lo que NO dice,No dice que los hogares aceptarían el servicio si fuera asequible. El 35.9% declara que no contrataría a ningún precio (notebook 03).

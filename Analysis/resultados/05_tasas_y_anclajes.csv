@@ -1,0 +1,9 @@
+﻿concepto,valor,unidad,evidencia
+"Hogares del país (expandido, ENASIC)",38785744.0,hogares,confirmado (ENASIC)
+Tasa nacional de hogares con persona con discapacidad o 60+,39.9,%,confirmado (ENASIC)
+Tasa nacional de hogares con persona 60+,32.0,%,confirmado (ENASIC)
+"Contratan enfermería o cuidadora, entre hogares con necesidad",1.0,%,"confirmado (ENASIC, CV moderado)"
+"Contratan trabajo doméstico, entre hogares con necesidad",7.8,%,"confirmado (ENASIC, CV alto)"
+"Viviendas particulares habitadas, CDMX",2756319.0,viviendas,confirmado (Censo 2020)
+"Población total, CDMX",9209944.0,personas,confirmado (Censo 2020)
+"Población 60+, CDMX",1491534.0,personas,probable (CSV sin productor ni año documentados)

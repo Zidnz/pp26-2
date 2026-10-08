@@ -1,0 +1,19 @@
+﻿servicio,grupo,variable,n,p25,mediana,p75,mediana_ponderada,factor_inpc_2022_2026,p25_pesos_2026,mediana_pesos_2026,p75_pesos_2026,mediana_ponderada_pesos_2026
+Cuidadora,todos los hogares,pago_sem,29,450.0,800.0,1500.0,800.0,1.15,519.52,923.59,1731.73,923.59
+Cuidadora,todos los hogares,horas_sem,27,12.5,24.0,37.5,24.0,1.15,,,,
+Cuidadora,todos los hogares,pago_hora,26,25.42,38.0,76.67,60.0,1.15,29.34,43.87,88.51,69.27
+Doméstica entrada por salida,todos los hogares,pago_sem,387,300.0,500.0,800.0,500.0,1.15,346.35,577.24,923.59,577.24
+Doméstica entrada por salida,todos los hogares,horas_sem,388,4.0,7.0,15.0,6.0,1.15,,,,
+Doméstica entrada por salida,todos los hogares,pago_hora,366,50.0,66.67,93.23,70.0,1.15,57.72,76.97,107.63,80.81
+Enfermería,todos los hogares,pago_sem,16,375.0,700.0,3000.0,800.0,1.15,432.93,808.14,3463.46,923.59
+Enfermería,todos los hogares,horas_sem,17,3.0,6.0,24.0,20.0,1.15,,,,
+Enfermería,todos los hogares,pago_hora,14,86.88,120.83,262.5,150.0,1.15,100.3,139.5,303.05,173.17
+Cuidadora,hogares con necesidad,pago_sem,11,775.0,1000.0,4250.0,6500.0,1.15,894.73,1154.49,4906.57,7504.17
+Cuidadora,hogares con necesidad,horas_sem,11,22.5,30.0,35.0,30.0,1.15,,,,
+Cuidadora,hogares con necesidad,pago_hora,10,32.33,37.86,60.0,123.71,1.15,37.33,43.71,69.27,142.82
+Doméstica entrada por salida,hogares con necesidad,pago_sem,178,300.0,500.0,800.0,550.0,1.15,346.35,577.24,923.59,634.97
+Doméstica entrada por salida,hogares con necesidad,horas_sem,180,5.0,8.0,18.0,8.0,1.15,,,,
+Doméstica entrada por salida,hogares con necesidad,pago_hora,165,43.75,60.0,87.5,66.67,1.15,50.51,69.27,101.02,76.97
+Enfermería,hogares con necesidad,pago_sem,15,400.0,700.0,3000.0,800.0,1.15,461.8,808.14,3463.46,923.59
+Enfermería,hogares con necesidad,horas_sem,16,2.75,7.0,25.5,20.0,1.15,,,,
+Enfermería,hogares con necesidad,pago_hora,13,87.5,125.0,300.0,150.0,1.15,101.02,144.31,346.35,173.17
