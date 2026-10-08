@@ -1,0 +1,9 @@
+﻿chequeo,valor,nota
+AGEB urbanas en la CDMX,2410.0,"grs_ageb_2020.csv, clave_entidad = 9"
+Población en AGEB urbanas,9130248.0,99.1 % de la población total de la CDMX (Censo 2020)
+AGEB con indicadores suprimidos (*),10.0,población 58; se excluyen de los agregados
+"AGEB ""Alto"" o ""Muy alto"" con indicadores suprimidos",4.0,grado asignado a AGEB casi vacías: no interpretarlas como focos de rezago
+"AGEB ""Muy alto"" válidas (sin supresión)",3.0,población 269
+Población en AGEB válidas con rezago Medio o más,818050.0,9.0 % de la población en AGEB válidas
+"% sin derechohabiencia, CDMX: promedio de AGEB válidas ponderado por población",27.23,control: CONEVAL IRS por entidad 2020 = 27.17 % (irs_entidad_nacional_2020.csv)
+"Alcaldías con marginación CONAPO distinta de ""Muy bajo""",0.0,IM_2020 va de 57.3 a 62.4

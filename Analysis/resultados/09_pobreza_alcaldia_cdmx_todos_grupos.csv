@@ -1,0 +1,136 @@
+﻿grupo,clave_municipio,municipio,poblacion_grupo,pct_pobreza_2020,precision_pct_pobreza_2020
+adultmay,09009,Milpa Alta,11062,45.783604,✔
+adultmay,09013,Xochimilco,40165,32.937283,✔
+adultmay,09011,Tláhuac,28749,32.869811,✔
+adultmay,09007,Iztapalapa,178837,30.739191,✔
+adultmay,09008,La Magdalena Contreras,27751,30.370741,✔
+adultmay,09010,Álvaro Obregón,87576,27.348429,✔
+adultmay,09012,Tlalpan,70776,25.244566,✔
+adultmay,09005,Gustavo A. Madero,151056,23.140982,✔
+adultmay,09004,Cuajimalpa de Morelos,21798,19.694138,✔
+adultmay,09017,Venustiano Carranza,50845,19.33893,✔
+adultmay,09006,Iztacalco,47874,18.598496,✔
+adultmay,09002,Azcapotzalco,54425,16.318222,✔
+adultmay,09003,Coyoacán,89394,15.949532,✔
+adultmay,09015,Cuauhtémoc,59125,12.991608,✔
+adultmay,09016,Miguel Hidalgo,56364,9.648402,✔
+adultmay,09014,Benito Juárez,60073,5.602033,✔
+adultos,09009,Milpa Alta,69763,49.97474,✔
+adultos,09013,Xochimilco,199860,43.337038,✔
+adultos,09007,Iztapalapa,790907,39.877649,✔
+adultos,09008,La Magdalena Contreras,111312,38.345256,✔
+adultos,09011,Tláhuac,171285,37.83734,✔
+adultos,09012,Tlalpan,317219,34.902351,✔
+adultos,09010,Álvaro Obregón,337316,33.61834,✔
+adultos,09005,Gustavo A. Madero,522249,30.628039,✔
+adultos,09004,Cuajimalpa de Morelos,91643,28.387859,✔
+adultos,09017,Venustiano Carranza,195717,26.35515,✔
+adultos,09003,Coyoacán,267628,24.659597,✔
+adultos,09006,Iztacalco,178143,21.415609,✔
+adultos,09002,Azcapotzalco,194663,21.099137,✔
+adultos,09015,Cuauhtémoc,248199,16.913344,✔
+adultos,09016,Miguel Hidalgo,181961,11.162585,✔
+adultos,09014,Benito Juárez,199077,6.676527,✔
+hombres,09009,Milpa Alta,78578,53.462694,✔
+hombres,09013,Xochimilco,210367,48.851093,✔
+hombres,09007,Iztapalapa,846392,43.868754,✔
+hombres,09008,La Magdalena Contreras,115459,43.105762,✔
+hombres,09011,Tláhuac,182170,42.524518,✔
+hombres,09012,Tlalpan,331958,40.109348,✔
+hombres,09010,Álvaro Obregón,348494,37.932333,✔
+hombres,09005,Gustavo A. Madero,542796,34.473541,✔
+hombres,09004,Cuajimalpa de Morelos,94703,33.485487,✔
+hombres,09017,Venustiano Carranza,193976,30.070855,✔
+hombres,09003,Coyoacán,270290,27.383722,✔
+hombres,09006,Iztacalco,176559,25.03712,✔
+hombres,09002,Azcapotzalco,190845,24.190672,✔
+hombres,09015,Cuauhtémoc,233580,20.007611,✔
+hombres,09016,Miguel Hidalgo,169481,13.218939,✔
+hombres,09014,Benito Juárez,173544,8.003789,✔
+jovenes,09009,Milpa Alta,32843,53.621373,✔
+jovenes,09013,Xochimilco,84313,51.652781,✔
+jovenes,09008,La Magdalena Contreras,46262,46.893323,✔
+jovenes,09007,Iztapalapa,346664,46.769102,✔
+jovenes,09011,Tláhuac,75496,42.939172,✔
+jovenes,09012,Tlalpan,126983,42.465142,✔
+jovenes,09010,Álvaro Obregón,135676,40.830595,✔
+jovenes,09005,Gustavo A. Madero,202158,37.127536,✔
+jovenes,09004,Cuajimalpa de Morelos,36722,35.886303,✔
+jovenes,09017,Venustiano Carranza,74781,32.568643,✔
+jovenes,09003,Coyoacán,101179,31.960987,✔
+jovenes,09006,Iztacalco,67989,28.149479,✔
+jovenes,09002,Azcapotzalco,69724,27.363199,✔
+jovenes,09015,Cuauhtémoc,88036,22.963071,✔
+jovenes,09016,Miguel Hidalgo,57107,14.841769,✔
+jovenes,09014,Benito Juárez,59504,9.038115,✔
+mujeres,09009,Milpa Alta,82689,55.851541,✔
+mujeres,09013,Xochimilco,227016,47.580063,✔
+mujeres,09007,Iztapalapa,913990,43.904487,✔
+mujeres,09011,Tláhuac,195574,42.302385,✔
+mujeres,09008,La Magdalena Contreras,126231,41.95009,✔
+mujeres,09012,Tlalpan,358830,39.315293,✔
+mujeres,09010,Álvaro Obregón,377552,37.468856,✔
+mujeres,09005,Gustavo A. Madero,587469,33.130475,✔
+mujeres,09004,Cuajimalpa de Morelos,105169,31.572795,✔
+mujeres,09017,Venustiano Carranza,220938,29.918452,✔
+mujeres,09003,Coyoacán,298623,26.799569,✔
+mujeres,09006,Iztacalco,200417,25.34729,✔
+mujeres,09002,Azcapotzalco,214113,24.18198,✔
+mujeres,09015,Cuauhtémoc,258236,21.692988,✔
+mujeres,09016,Miguel Hidalgo,195074,13.685595,✔
+mujeres,09014,Benito Juárez,200208,7.77984,✔
+nna,09009,Milpa Alta,47599,64.399736,✔
+nna,09013,Xochimilco,113044,59.611967,✔
+nna,09007,Iztapalapa,443974,54.076244,✔
+nna,09008,La Magdalena Contreras,56366,53.079847,✔
+nna,09011,Tláhuac,102215,52.363167,✔
+nna,09012,Tlalpan,175810,52.16636,✔
+nna,09010,Álvaro Obregón,165477,48.893756,✔
+nna,09005,Gustavo A. Madero,254802,43.871534,✔
+nna,09004,Cuajimalpa de Morelos,49710,43.110548,✔
+nna,09017,Venustiano Carranza,93572,41.318129,✔
+nna,09003,Coyoacán,110711,37.442645,✔
+nna,09006,Iztacalco,82971,34.726554,✔
+nna,09015,Cuauhtémoc,96457,34.084975,✔
+nna,09002,Azcapotzalco,86146,33.560905,✔
+nna,09016,Miguel Hidalgo,69122,21.519958,✔
+nna,09014,Benito Juárez,55099,13.487136,✔
+pobindigena,09014,Benito Juárez,8122,-,❌
+pobindigena,09013,Xochimilco,31301,64.60286,✔
+pobindigena,09009,Milpa Alta,15455,63.153168,✔
+pobindigena,09010,Álvaro Obregón,21671,59.141292,✔
+pobindigena,09011,Tláhuac,18730,59.013872,✔
+pobindigena,09004,Cuajimalpa de Morelos,6142,58.76064,✔
+pobindigena,09008,La Magdalena Contreras,7145,58.151218,✔
+pobindigena,09005,Gustavo A. Madero,34542,58.067892,✔
+pobindigena,09007,Iztapalapa,75100,57.93124,✔
+pobindigena,09012,Tlalpan,31906,56.90628,✔
+pobindigena,09006,Iztacalco,14675,53.078779,✔
+pobindigena,09017,Venustiano Carranza,12193,52.485498,✔
+pobindigena,09015,Cuauhtémoc,27231,52.031174,✔
+pobindigena,09003,Coyoacán,13523,48.893215,✔
+pobindigena,09016,Miguel Hidalgo,8576,39.740503,✔
+pobindigena,09002,Azcapotzalco,7257,31.279962,✔
+rural,09008,La Magdalena Contreras,2013,68.448845,✔
+rural,09012,Tlalpan,10053,58.900002,✔
+rural,09013,Xochimilco,18623,56.774279,✔
+rural,09004,Cuajimalpa de Morelos,4275,54.965801,✔
+rural,09009,Milpa Alta,26726,52.84773,✔
+rural,09010,Álvaro Obregón,139,48.903599,⚠
+rural,09011,Tláhuac,6533,40.841798,⚠
+urbano,09009,Milpa Alta,134541,55.053036,✔
+urbano,09013,Xochimilco,418760,47.809698,✔
+urbano,09007,Iztapalapa,1760382,43.887307,✔
+urbano,09011,Tláhuac,371212,42.4371,✔
+urbano,09008,La Magdalena Contreras,239677,42.284236,✔
+urbano,09012,Tlalpan,680735,39.413298,✔
+urbano,09010,Álvaro Obregón,725906,37.689165,✔
+urbano,09005,Gustavo A. Madero,1130265,33.775466,✔
+urbano,09004,Cuajimalpa de Morelos,195598,31.987622,✔
+urbano,09017,Venustiano Carranza,414914,29.989702,✔
+urbano,09003,Coyoacán,568913,27.0771,✔
+urbano,09006,Iztacalco,376976,25.20202,✔
+urbano,09002,Azcapotzalco,404958,24.186077,✔
+urbano,09015,Cuauhtémoc,491816,20.892547,✔
+urbano,09016,Miguel Hidalgo,364554,13.468648,✔
+urbano,09014,Benito Juárez,373752,7.883826,✔

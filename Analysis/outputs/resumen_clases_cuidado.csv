@@ -1,0 +1,15 @@
+grupo,codigo_act,nombre_act,sector,establecimientos
+ampliado,621341,"Consultorios del sector privado de audiología y de terapia ocupacional, física y del lenguaje",privado,536
+ampliado,621342,"Consultorios del sector público de audiología y de terapia ocupacional, física y del lenguaje",público,23
+ampliado,623111,"Residencias del sector privado con cuidados de enfermeras para enfermos convalecientes, en rehabilitación, incurables y terminales",privado,12
+ampliado,623112,"Residencias del sector público con cuidados de enfermeras para enfermos convalecientes, en rehabilitación, incurables y terminales",público,4
+ampliado,623211,Residencias del sector privado para el cuidado de personas con problemas de retardo mental,privado,17
+ampliado,623212,Residencias del sector público para el cuidado de personas con problemas de retardo mental,público,1
+excluido_por_ahora,624311,"Servicios de capacitación para el trabajo prestados por el sector privado para personas desempleadas, subempleadas o discapacitadas",privado,10
+excluido_por_ahora,624312,"Servicios de capacitación para el trabajo prestados por el sector público para personas desempleadas, subempleadas o discapacitadas",público,13
+fuera_poblacion_objetivo,624411,Guarderías del sector privado,privado,340
+fuera_poblacion_objetivo,624412,Guarderías del sector público,público,263
+nucleo,623311,Asilos y otras residencias del sector privado para el cuidado de ancianos,privado,88
+nucleo,623312,Asilos y otras residencias del sector público para el cuidado de ancianos,público,21
+nucleo,624121,Centros del sector privado dedicados a la atención y cuidado diurno de ancianos y discapacitados,privado,22
+nucleo,624122,Centros del sector público dedicados a la atención y cuidado diurno de ancianos y discapacitados,público,104
