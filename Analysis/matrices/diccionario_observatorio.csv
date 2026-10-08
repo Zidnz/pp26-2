@@ -1,0 +1,52 @@
+﻿tipo,nombre,definicion,origen,unidad_o_grano,factor_de_expansion,archivo
+variable derivada (microdatos ENASIC 2022),HORAS,"Horas semanales de cuidado: suma de horas en el bloque de discapacidad y en el de 60+, con tope de 168. Cada bloque viene topado en ""98 o más"" por el cuestionario. Vacío si ambas faltan.",TPOB_CUI: P6_7 + P6_26,Persona cuidadora,FAC_CUI,"Analysis/12_….ipynb, 16_….ipynb (igual que 07 y 11)"
+variable derivada (microdatos ENASIC 2022),G_HORAS,"Intensidad del cuidado: <20 h, 20-39 h, >=40 h.",HORAS,Persona cuidadora,FAC_CUI,Analysis/12_….ipynb
+variable derivada (microdatos ENASIC 2022),DANO_SALUD,"Declara al menos un daño a la salud por cuidar: salud física deteriorada (.1), se siente cansada(o) (.3) o le disminuyó el tiempo de sueño (.6).",P6_11_1/3/6 o P6_30_1/3/6 = 1,Persona cuidadora,FAC_CUI,Analysis/12_….ipynb
+variable derivada (microdatos ENASIC 2022),DANO_TRABAJO,"Declara al menos un daño al trabajo por cuidar: imposibilitada(o) para trabajar fuera de casa (.1), dejó de trabajar (.2) o redujo su jornada o tiene problemas con sus horarios (.5).",P6_12_1/2/5 o P6_31_1/2/5 = 1,Persona cuidadora,FAC_CUI,Analysis/12_….ipynb
+variable derivada (microdatos ENASIC 2022),DANO_ALGUNO,DANO_SALUD o DANO_TRABAJO.,derivada,Persona cuidadora,FAC_CUI,Analysis/12_….ipynb
+variable derivada (microdatos ENASIC 2022),DOM (universo),Cuida a una persona con discapacidad o de 60 años y más.,FILTRO6_1 = 1 o FILTRO6_6 = 1,Persona cuidadora,FAC_CUI,Analysis/12_….ipynb
+variable derivada (microdatos ENASIC 2022),NOBUSCO,Universo y no buscó un servicio de cuidado.,P6_42 = 2,Persona cuidadora,FAC_CUI,Analysis/12_….ipynb
+variable derivada (microdatos ENASIC 2022),SINNEC,"NOBUSCO y marcó la razón que el INEGI rotula ""NO HA TENIDO NECESIDAD (NO HAY PERSONAS EN SU HOGAR QUE REQUIERAN CUIDADOS)"" (respuesta múltiple).",P6_45_09 = 1,Persona cuidadora,FAC_CUI,Analysis/12_….ipynb
+variable derivada (microdatos ENASIC 2022),GRUPO (grupo del problema),"Universo, 40 h o más, SINNEC y DANO_ALGUNO.",derivada,Persona cuidadora,FAC_CUI,"Analysis/16_enasic_perfil_grupo_horas.ipynb (valida 775,546 del notebook 07)"
+variable derivada (microdatos ENASIC 2022),ING / QUINTIL,"Ingreso mensual del hogar (monto; si falta, punto medio del rango) y quintil con cortes 3,200 / 5,000 / 8,000 / 15,000 calculados entre hogares con necesidad.","THOGAR: P3A_4, P3A_5",Hogar (se pega a la persona por LLAVEHOG),FAC_HOG para los cortes,Analysis/12_….ipynb (igual que el script 04)
+variable derivada (microdatos ENASIC 2022),G_SEXO,Sexo de la persona cuidadora.,TPOB_CUI: SEXO,Persona cuidadora,FAC_CUI,Analysis/12_….ipynb
+variable derivada (microdatos ENASIC 2022),G_EDAD,"Edad: 15-39, 40-59, 60+.",TPOB_CUI: EDAD,Persona cuidadora,FAC_CUI,Analysis/12_….ipynb
+variable derivada (microdatos ENASIC 2022),G_ING,"Ingreso del hogar agrupado: Q1-Q2, Q3, Q4-Q5 (en el script 16 se agrega ""Sin dato"").",QUINTIL,Persona cuidadora,FAC_CUI,"Analysis/12_….ipynb, 16_….ipynb"
+variable derivada (microdatos ENASIC 2022),G_TIPO,"A quién cuida: ""Cuida discapacidad"" si FILTRO6_1 = 1; si no, ""Solo 60+ sin discapacidad"".",FILTRO6_1,Persona cuidadora,FAC_CUI,Analysis/12_….ipynb
+variable derivada (microdatos ENASIC 2022),Varianza,"Linealización de Taylor con estratos y conglomerados; IC al 90% (z = 1.6449); precisión INEGI: alta CV<15, moderada 15-30, baja >=30.","EST_DIS, UPM_DIS",—,—,"Analysis/12_….ipynb, 16_….ipynb"
+bloque de datos_observatorio.json,actualizado,Fecha de la última regeneración de la página.,build_datos.py,,,build_datos.py
+bloque de datos_observatorio.json,generado_desde,Carpetas de las que lee build_datos.py.,build_datos.py,,,build_datos.py
+bloque de datos_observatorio.json,clave,"Cifras clave nacionales: búsqueda de servicios, grupo del problema, 40 h o más, norma familiar, satisfacción.",build_datos.py,,,resultados 03 y 07
+bloque de datos_observatorio.json,carga,"Necesidad declarada y daño por intensidad de horas, y diferencias con IC.",build_datos.py,,,resultados 07
+bloque de datos_observatorio.json,embudo,Etapas del embudo del problema con totales expandidos.,build_datos.py,,,resultados 03 y 07
+bloque de datos_observatorio.json,seg,"249 estimaciones por segmento (sexo, edad, ingreso, a quién cuida, intensidad) con IC y diferencia contra el resto.",build_datos.py,,,resultados/12_segmentacion_estimaciones.csv
+bloque de datos_observatorio.json,seg_fuente,Ruta del archivo de segmentación.,build_datos.py,,,script 12
+bloque de datos_observatorio.json,perfil,"Composición del grupo del problema frente al universo, con IC y diferencia contra el resto del universo.",build_datos.py,,,resultados/16_perfil_grupo_problema.csv
+bloque de datos_observatorio.json,horas_dist,Distribución de horas semanales de cuidado en el universo y mediana ponderada.,build_datos.py,,,resultados/16_distribucion_horas.csv
+bloque de datos_observatorio.json,razones,"Razones para no buscar servicios (P6.45), universo y todas las cuidadoras.",build_datos.py,,,resultados 03
+bloque de datos_observatorio.json,p711,Razón principal para rechazar residencias (P7.11).,build_datos.py,,,resultados 07
+bloque de datos_observatorio.json,quintil,Contratación de cuidado y de trabajo doméstico por quintil de ingreso.,build_datos.py,,,resultados/04_contratacion_por_quintil.csv
+bloque de datos_observatorio.json,caros_ingreso,"""Son caros"" por grupo de ingreso.",build_datos.py,,,resultados 07
+bloque de datos_observatorio.json,preferencia,Dónde preferiría el cuidado si lo contratara (P6.46).,build_datos.py,,,resultados 03
+bloque de datos_observatorio.json,oferta_declarada,"Población de 15 a 60 que trabajaría como cuidador(a) pagado(a) (P6.47-P6.48). Intención, no oferta.",build_datos.py,,,resultados 03
+bloque de datos_observatorio.json,contratacion,Hogares con necesidad que contratan cuidado o trabajo doméstico.,build_datos.py,,,resultados 03
+bloque de datos_observatorio.json,relevo,Asequibilidad de paquetes de relevo con ingreso ENASIC. Sin prestaciones; jornada diurna.,build_datos.py,,,resultados/10_asequibilidad_relevo.csv
+bloque de datos_observatorio.json,relevo_enigh,Asequibilidad con ingreso ENIGH 2022 (nacional y CDMX) y hogares con necesidad en la CDMX.,build_datos.py,,,resultados 14
+bloque de datos_observatorio.json,ingreso,Ingreso mediano de hogares con necesidad (ENASIC).,build_datos.py,,,resultados 04
+bloque de datos_observatorio.json,pago,"Pago por hora observado a cuidadoras, enfermería y trabajo doméstico (muestra chica, sin ponderar).",build_datos.py,,,resultados 04
+bloque de datos_observatorio.json,subsidio,Costo anual de subsidiar paquetes en la CDMX.,build_datos.py,,,resultados/06_subsidio_por_paquete.csv
+bloque de datos_observatorio.json,anclas,Presupuestos de referencia (solicitud del Sistema Público de Cuidados de la CDMX).,build_datos.py,,,resultados/06_anclas_presupuestales.csv
+bloque de datos_observatorio.json,subsidio_fuente,Ruta de los archivos del script 06.,build_datos.py,,,script 06
+bloque de datos_observatorio.json,modelo,"Regla de 40 h contra modelos: resultado global, por grupo, sensibilidad y coeficientes.",build_datos.py,,,resultados 11
+bloque de datos_observatorio.json,territorio,"Capas por alcaldía de la CDMX: asilos, centros de día, plazas, dependencia, pobreza 65+, rezago y derechohabiencia.",build_datos.py,,,"outputs, resultados 09 y 13"
+bloque de datos_observatorio.json,dimension_cdmx,Escala de la CDMX inferida de tasas nacionales (cotas).,build_datos.py,,,resultados/05_dimensionamiento_cdmx.csv
+bloque de datos_observatorio.json,dimension_fuente,Ruta del archivo del script 05.,build_datos.py,,,script 05
+bloque de datos_observatorio.json,tasa_necesidad_nal,Tasa nacional de hogares con persona con discapacidad o 60+.,build_datos.py,,,resultados/05_tasas_y_anclajes.csv
+bloque de datos_observatorio.json,brecha_sexo,Horas de cuidado por sexo y edad (archivo de origen sin documentar).,build_datos.py,,,resultados/08_brecha_cuidado_sexo.csv
+bloque de datos_observatorio.json,calidad_datos,Chequeos de calidad de los archivos territoriales.,build_datos.py,,,resultados/08_calidad_datos.csv
+bloque de datos_observatorio.json,fichas,"Fichas de los archivos territoriales (unidad, medida, año, productor).",build_datos.py,,,resultados/02_fichas_fuentes.csv
+bloque de datos_observatorio.json,inventario,Inventario de fuentes (columnas resumidas).,build_datos.py,,,matrices/inventario_fuentes_cuidado.csv
+bloque de datos_observatorio.json,pares,Pares oferta-necesidad y su decisión de compatibilidad.,build_datos.py,,,matrices/pares_oferta_necesidad.csv
+bloque de datos_observatorio.json,kpis,"Ficha de indicadores (definición, universo, precisión, evidencia, archivo).",build_datos.py,,,varios; ver la columna fuente de cada indicador
+bloque de datos_observatorio.json,diccionario,"Variables derivadas de este diccionario, para mostrarlas en Método.",build_datos.py,,,matrices/diccionario_observatorio.csv
+bloque de datos_observatorio.json,diccionario_fuente,Ruta de este diccionario.,build_datos.py,,,matrices/diccionario_observatorio.csv

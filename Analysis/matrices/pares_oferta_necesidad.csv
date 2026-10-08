@@ -1,0 +1,7 @@
+id_oferta,id_necesidad,poblacion_compatible,territorio_compatible,unidad_compatible,periodo_compatible,decision,motivo
+O1,N1 (80+),Parcial (80+ como aproximación a la dependencia),No (4 alcaldías sin dato),"Sí, tras convertir % a conteos",Desconocido,No construir todavía,El QL del notebook 02 queda como exploratorio (probable) y no como indicador publicado
+O1,N2,Parcial (sin filtro de edad),No (4 alcaldías sin dato),Sí,Desconocido,No construir todavía,Hace falta el filtro 60+ y el origen de O1
+O3,N1,Sí,No (9 alcaldías sin registro),"No (establecimientos, no plazas)",Desconocido,No construir,Sin plazas no es capacidad
+O4,N1,No (autónomos frente a necesidad de cuidado),Casi (faltan 2),No,Desconocido,Descartar como cuidado,Es otra dimensión: envejecimiento activo
+O6,N1 (80+),Parcial,Sí (0 = no registrado),No (establecimientos),No (2026 frente a probable 2020),"Solo descriptivo, etiquetado",El conteo no aproxima la capacidad (Spearman 0.27)
+O8,N2,Sí,Sin fuente,Sin fuente,Sin fuente,No construir,No existe medición territorial
