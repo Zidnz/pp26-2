@@ -1,0 +1,167 @@
+﻿indicador,pct,se,cv,li90,ls90,n_muestra_dominio,n_muestra_si,total_expandido,precision,bloque,segmento,razon,dano,variable,categoria
+"Buscó servicio (03 publicó 2.5%, precisión baja)",2.5,0.76,30.5,1.2,3.7,1043,24,154125.0,baja,0_validacion,,,,,
+No buscó: no tuvo necesidad (03: 49.4%),49.4,3.3,6.7,44.0,54.8,1019,556,2997224.0,alta,0_validacion,,,,,
+No buscó: el propio hogar cuida (03: 41.9%),41.9,3.93,9.4,35.5,48.4,1019,373,2544153.0,alta,0_validacion,,,,,
+Horas | <20 h | No ha tenido necesidad,53.9,3.94,7.3,47.4,60.4,368,209,1025084.0,alta,3_razones_por_horas,<20 h,No ha tenido necesidad,,,
+Horas | <20 h | El propio hogar cuida,38.4,3.84,10.0,32.0,44.7,368,127,729419.0,alta,3_razones_por_horas,<20 h,El propio hogar cuida,,,
+Horas | <20 h | Apoyan otros familiares,5.7,1.34,23.5,3.5,7.9,368,25,108248.0,moderada,3_razones_por_horas,<20 h,Apoyan otros familiares,,,
+Horas | <20 h | Son caros,2.9,1.04,36.3,1.2,4.6,368,12,54426.0,baja,3_razones_por_horas,<20 h,Son caros,,,
+Horas | <20 h | Desconoce que existen,0.7,0.36,50.4,0.1,1.3,368,4,13585.0,baja,3_razones_por_horas,<20 h,Desconoce que existen,,,
+Horas | <20 h | Desconfianza de alguien ajeno,0.6,0.28,46.9,0.1,1.0,368,5,11228.0,baja,3_razones_por_horas,<20 h,Desconfianza de alguien ajeno,,,
+Horas | <20 h | Lejanía,3.2,1.31,40.7,1.1,5.4,368,11,60983.0,baja,3_razones_por_horas,<20 h,Lejanía,,,
+Horas | <20 h | Maltrato del personal,0.9,0.48,53.2,0.1,1.7,368,4,17190.0,baja,3_razones_por_horas,<20 h,Maltrato del personal,,,
+Horas | 20-39 h | No ha tenido necesidad,51.7,3.94,7.6,45.2,58.1,292,162,871754.0,alta,3_razones_por_horas,20-39 h,No ha tenido necesidad,,,
+Horas | 20-39 h | El propio hogar cuida,40.2,3.88,9.6,33.9,46.6,292,112,679312.0,alta,3_razones_por_horas,20-39 h,El propio hogar cuida,,,
+Horas | 20-39 h | Apoyan otros familiares,6.4,2.21,34.4,2.8,10.1,292,14,108548.0,baja,3_razones_por_horas,20-39 h,Apoyan otros familiares,,,
+Horas | 20-39 h | Son caros,1.1,0.59,51.2,0.2,2.1,292,5,19398.0,baja,3_razones_por_horas,20-39 h,Son caros,,,
+Horas | 20-39 h | Desconoce que existen,2.0,1.12,57.3,0.1,3.8,292,4,33059.0,baja,3_razones_por_horas,20-39 h,Desconoce que existen,,,
+Horas | 20-39 h | Desconfianza de alguien ajeno,2.0,0.93,47.5,0.4,3.5,292,6,32939.0,baja,3_razones_por_horas,20-39 h,Desconfianza de alguien ajeno,,,
+Horas | 20-39 h | Lejanía,3.2,1.43,44.6,0.9,5.6,292,6,54105.0,baja,3_razones_por_horas,20-39 h,Lejanía,,,
+Horas | 20-39 h | Maltrato del personal,1.2,0.92,73.7,-0.3,2.8,292,3,20993.0,baja,3_razones_por_horas,20-39 h,Maltrato del personal,,,
+Horas | >=40 h | No ha tenido necesidad,44.4,5.12,11.6,35.9,52.8,359,185,1100386.0,alta,3_razones_por_horas,>=40 h,No ha tenido necesidad,,,
+Horas | >=40 h | El propio hogar cuida,45.8,6.76,14.8,34.6,56.9,359,134,1135422.0,alta,3_razones_por_horas,>=40 h,El propio hogar cuida,,,
+Horas | >=40 h | Apoyan otros familiares,6.3,1.95,30.7,3.1,9.5,359,25,157198.0,baja,3_razones_por_horas,>=40 h,Apoyan otros familiares,,,
+Horas | >=40 h | Son caros,3.9,1.34,34.2,1.7,6.1,359,17,96945.0,baja,3_razones_por_horas,>=40 h,Son caros,,,
+Horas | >=40 h | Desconoce que existen,2.1,1.26,60.8,-0.0,4.2,359,8,51591.0,baja,3_razones_por_horas,>=40 h,Desconoce que existen,,,
+Horas | >=40 h | Desconfianza de alguien ajeno,1.8,0.88,49.4,0.3,3.2,359,7,43966.0,baja,3_razones_por_horas,>=40 h,Desconfianza de alguien ajeno,,,
+Horas | >=40 h | Lejanía,2.6,1.09,41.8,0.8,4.4,359,9,64817.0,baja,3_razones_por_horas,>=40 h,Lejanía,,,
+Horas | >=40 h | Maltrato del personal,1.7,0.88,52.7,0.2,3.1,359,7,41304.0,baja,3_razones_por_horas,>=40 h,Maltrato del personal,,,
+Dependencia | Discapacidad con ayuda en ABVD | No ha tenido necesidad,47.8,3.37,7.0,42.3,53.4,484,230,1259293.0,alta,4_razones_por_dependencia,Discapacidad con ayuda en ABVD,No ha tenido necesidad,,,
+Dependencia | Discapacidad con ayuda en ABVD | El propio hogar cuida,38.6,3.5,9.1,32.8,44.3,484,189,1015436.0,alta,4_razones_por_dependencia,Discapacidad con ayuda en ABVD,El propio hogar cuida,,,
+Dependencia | Discapacidad con ayuda en ABVD | Apoyan otros familiares,6.6,1.63,24.7,3.9,9.3,484,35,173903.0,moderada,4_razones_por_dependencia,Discapacidad con ayuda en ABVD,Apoyan otros familiares,,,
+Dependencia | Discapacidad con ayuda en ABVD | Son caros,4.4,1.22,27.7,2.4,6.4,484,25,116519.0,moderada,4_razones_por_dependencia,Discapacidad con ayuda en ABVD,Son caros,,,
+Dependencia | Discapacidad con ayuda en ABVD | Desconoce que existen,0.9,0.43,48.0,0.2,1.6,484,6,23535.0,baja,4_razones_por_dependencia,Discapacidad con ayuda en ABVD,Desconoce que existen,,,
+Dependencia | Discapacidad con ayuda en ABVD | Desconfianza de alguien ajeno,2.3,0.91,40.5,0.8,3.8,484,10,59387.0,baja,4_razones_por_dependencia,Discapacidad con ayuda en ABVD,Desconfianza de alguien ajeno,,,
+Dependencia | Discapacidad con ayuda en ABVD | Lejanía,4.0,1.37,34.3,1.7,6.3,484,13,105321.0,baja,4_razones_por_dependencia,Discapacidad con ayuda en ABVD,Lejanía,,,
+Dependencia | Discapacidad con ayuda en ABVD | Maltrato del personal,2.6,1.04,39.3,0.9,4.4,484,12,69732.0,baja,4_razones_por_dependencia,Discapacidad con ayuda en ABVD,Maltrato del personal,,,
+Dependencia | Discapacidad sin ayuda en ABVD | No ha tenido necesidad,52.7,6.22,11.8,42.5,62.9,131,75,387065.0,alta,4_razones_por_dependencia,Discapacidad sin ayuda en ABVD,No ha tenido necesidad,,,
+Dependencia | Discapacidad sin ayuda en ABVD | El propio hogar cuida,34.8,6.06,17.4,24.9,44.8,131,43,255894.0,moderada,4_razones_por_dependencia,Discapacidad sin ayuda en ABVD,El propio hogar cuida,,,
+Dependencia | Discapacidad sin ayuda en ABVD | Apoyan otros familiares,2.9,1.42,48.8,0.6,5.3,131,5,21434.0,baja,4_razones_por_dependencia,Discapacidad sin ayuda en ABVD,Apoyan otros familiares,,,
+Dependencia | Discapacidad sin ayuda en ABVD | Son caros,4.9,2.6,52.5,0.7,9.2,131,5,36349.0,baja,4_razones_por_dependencia,Discapacidad sin ayuda en ABVD,Son caros,,,
+Dependencia | Discapacidad sin ayuda en ABVD | Desconoce que existen,1.1,1.08,100.3,-0.7,2.8,131,1,7899.0,baja,4_razones_por_dependencia,Discapacidad sin ayuda en ABVD,Desconoce que existen,,,
+Dependencia | Discapacidad sin ayuda en ABVD | Desconfianza de alguien ajeno,1.1,0.86,79.9,-0.3,2.5,131,2,7921.0,baja,4_razones_por_dependencia,Discapacidad sin ayuda en ABVD,Desconfianza de alguien ajeno,,,
+Dependencia | Discapacidad sin ayuda en ABVD | Lejanía,5.9,2.55,42.9,1.7,10.1,131,6,43684.0,baja,4_razones_por_dependencia,Discapacidad sin ayuda en ABVD,Lejanía,,,
+Dependencia | Discapacidad sin ayuda en ABVD | Maltrato del personal,0.0,0.0,,0.0,0.0,131,0,0.0,no estimable,4_razones_por_dependencia,Discapacidad sin ayuda en ABVD,Maltrato del personal,,,
+Dependencia | Solo 60+ sin discapacidad | No ha tenido necesidad,50.0,5.81,11.6,40.5,59.6,404,251,1350866.0,alta,4_razones_por_dependencia,Solo 60+ sin discapacidad,No ha tenido necesidad,,,
+Dependencia | Solo 60+ sin discapacidad | El propio hogar cuida,47.1,6.76,14.4,36.0,58.2,404,141,1272823.0,alta,4_razones_por_dependencia,Solo 60+ sin discapacidad,El propio hogar cuida,,,
+Dependencia | Solo 60+ sin discapacidad | Apoyan otros familiares,6.6,1.95,29.5,3.4,9.8,404,24,178657.0,moderada,4_razones_por_dependencia,Solo 60+ sin discapacidad,Apoyan otros familiares,,,
+Dependencia | Solo 60+ sin discapacidad | Son caros,0.7,0.35,52.5,0.1,1.2,404,4,17901.0,baja,4_razones_por_dependencia,Solo 60+ sin discapacidad,Son caros,,,
+Dependencia | Solo 60+ sin discapacidad | Desconoce que existen,2.5,1.3,52.7,0.3,4.6,404,9,66801.0,baja,4_razones_por_dependencia,Solo 60+ sin discapacidad,Desconoce que existen,,,
+Dependencia | Solo 60+ sin discapacidad | Desconfianza de alguien ajeno,0.8,0.44,56.7,0.1,1.5,404,6,20825.0,baja,4_razones_por_dependencia,Solo 60+ sin discapacidad,Desconfianza de alguien ajeno,,,
+Dependencia | Solo 60+ sin discapacidad | Lejanía,1.1,0.52,45.3,0.3,2.0,404,7,30900.0,baja,4_razones_por_dependencia,Solo 60+ sin discapacidad,Lejanía,,,
+Dependencia | Solo 60+ sin discapacidad | Maltrato del personal,0.4,0.26,71.3,-0.1,0.8,404,2,9755.0,baja,4_razones_por_dependencia,Solo 60+ sin discapacidad,Maltrato del personal,,,
+ABVD y >=40 h | No ha tenido necesidad,46.8,4.82,10.3,38.8,54.7,215,103,620976.0,alta,4_razones_nucleo_duro,,,,,
+ABVD y >=40 h | El propio hogar cuida,39.4,5.16,13.1,30.9,47.9,215,84,522726.0,alta,4_razones_nucleo_duro,,,,,
+ABVD y >=40 h | Apoyan otros familiares,7.5,2.73,36.4,3.0,12.0,215,18,99672.0,baja,4_razones_nucleo_duro,,,,,
+ABVD y >=40 h | Son caros,4.8,1.88,39.6,1.7,7.8,215,12,63115.0,baja,4_razones_nucleo_duro,,,,,
+ABVD y >=40 h | Desconoce que existen,1.0,0.73,71.0,-0.2,2.2,215,3,13747.0,baja,4_razones_nucleo_duro,,,,,
+ABVD y >=40 h | Desconfianza de alguien ajeno,3.0,1.58,53.1,0.4,5.6,215,5,39515.0,baja,4_razones_nucleo_duro,,,,,
+ABVD y >=40 h | Lejanía,1.8,1.54,87.1,-0.8,4.3,215,2,23466.0,baja,4_razones_nucleo_duro,,,,,
+ABVD y >=40 h | Maltrato del personal,2.7,1.56,56.8,0.2,5.3,215,6,36498.0,baja,4_razones_nucleo_duro,,,,,
+"""Sin necesidad"" | <20 h | Salud física deteriorada",9.3,2.04,22.0,5.9,12.6,209,24,95038.0,moderada,5_danos_entre_sin_necesidad,<20 h,,Salud física deteriorada,,
+"""Sin necesidad"" | <20 h | Algún daño a la salud (física, cansancio, sueño)",30.3,4.59,15.2,22.7,37.8,209,69,310179.0,moderada,5_danos_entre_sin_necesidad,<20 h,,"Algún daño a la salud (física, cansancio, sueño)",,
+"""Sin necesidad"" | <20 h | Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",25.7,4.0,15.6,19.1,32.2,209,55,262955.0,moderada,5_danos_entre_sin_necesidad,<20 h,,"Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",,
+"""Sin necesidad"" | <20 h | Algún daño (salud o trabajo)",42.6,4.79,11.3,34.7,50.4,209,97,436178.0,alta,5_danos_entre_sin_necesidad,<20 h,,Algún daño (salud o trabajo),,
+"""Sin necesidad"" | 20-39 h | Salud física deteriorada",13.6,3.82,28.1,7.3,19.9,162,22,118571.0,moderada,5_danos_entre_sin_necesidad,20-39 h,,Salud física deteriorada,,
+"""Sin necesidad"" | 20-39 h | Algún daño a la salud (física, cansancio, sueño)",41.4,5.07,12.3,33.1,49.7,162,63,360862.0,alta,5_danos_entre_sin_necesidad,20-39 h,,"Algún daño a la salud (física, cansancio, sueño)",,
+"""Sin necesidad"" | 20-39 h | Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",34.7,5.11,14.7,26.3,43.1,162,53,302258.0,alta,5_danos_entre_sin_necesidad,20-39 h,,"Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",,
+"""Sin necesidad"" | 20-39 h | Algún daño (salud o trabajo)",54.9,5.05,9.2,46.6,63.2,162,82,478245.0,alta,5_danos_entre_sin_necesidad,20-39 h,,Algún daño (salud o trabajo),,
+"""Sin necesidad"" | >=40 h | Salud física deteriorada",31.4,4.97,15.8,23.2,39.5,185,49,345021.0,moderada,5_danos_entre_sin_necesidad,>=40 h,,Salud física deteriorada,,
+"""Sin necesidad"" | >=40 h | Algún daño a la salud (física, cansancio, sueño)",58.2,5.09,8.8,49.8,66.6,185,107,640581.0,alta,5_danos_entre_sin_necesidad,>=40 h,,"Algún daño a la salud (física, cansancio, sueño)",,
+"""Sin necesidad"" | >=40 h | Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",47.7,5.11,10.7,39.3,56.1,185,87,525390.0,alta,5_danos_entre_sin_necesidad,>=40 h,,"Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",,
+"""Sin necesidad"" | >=40 h | Algún daño (salud o trabajo)",70.5,4.84,6.9,62.5,78.4,185,132,775546.0,alta,5_danos_entre_sin_necesidad,>=40 h,,Algún daño (salud o trabajo),,
+"""Sin necesidad"" | ABVD y >=40 h | Salud física deteriorada",39.6,6.92,17.5,28.2,51.0,103,32,245967.0,moderada,5_danos_entre_sin_necesidad,ABVD y >=40 h,,Salud física deteriorada,,
+"""Sin necesidad"" | ABVD y >=40 h | Algún daño a la salud (física, cansancio, sueño)",69.6,6.03,8.7,59.7,79.6,103,69,432434.0,alta,5_danos_entre_sin_necesidad,ABVD y >=40 h,,"Algún daño a la salud (física, cansancio, sueño)",,
+"""Sin necesidad"" | ABVD y >=40 h | Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",56.4,6.73,11.9,45.3,67.4,103,57,350059.0,alta,5_danos_entre_sin_necesidad,ABVD y >=40 h,,"Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",,
+"""Sin necesidad"" | ABVD y >=40 h | Algún daño (salud o trabajo)",79.6,5.37,6.8,70.8,88.5,103,82,494445.0,alta,5_danos_entre_sin_necesidad,ABVD y >=40 h,,Algún daño (salud o trabajo),,
+"""Sin necesidad"" | Todos | Salud física deteriorada",18.6,2.4,12.9,14.7,22.6,556,95,558630.0,alta,5_danos_entre_sin_necesidad,Todos,,Salud física deteriorada,,
+"""Sin necesidad"" | Todos | Algún daño a la salud (física, cansancio, sueño)",43.8,2.87,6.5,39.0,48.5,556,239,1311622.0,alta,5_danos_entre_sin_necesidad,Todos,,"Algún daño a la salud (física, cansancio, sueño)",,
+"""Sin necesidad"" | Todos | Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",36.4,2.73,7.5,31.9,40.9,556,195,1090603.0,alta,5_danos_entre_sin_necesidad,Todos,,"Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",,
+"""Sin necesidad"" | Todos | Algún daño (salud o trabajo)",56.4,2.96,5.3,51.5,61.3,556,311,1689969.0,alta,5_danos_entre_sin_necesidad,Todos,,Algún daño (salud o trabajo),,
+"""El hogar cuida"" | Todos | Salud física deteriorada",22.0,2.7,12.3,17.6,26.5,373,78,560630.0,alta,5_danos_entre_hogar_cuida,,,,,
+"""El hogar cuida"" | Todos | Algún daño a la salud (física, cansancio, sueño)",46.0,3.57,7.8,40.1,51.8,373,170,1169822.0,alta,5_danos_entre_hogar_cuida,,,,,
+"""El hogar cuida"" | Todos | Algún daño al trabajo (no puede trabajar fuera, dejó, redujo jornada)",37.2,3.98,10.7,30.7,43.8,373,154,946769.0,alta,5_danos_entre_hogar_cuida,,,,,
+"""El hogar cuida"" | Todos | Algún daño (salud o trabajo)",61.1,2.76,4.5,56.5,65.6,373,224,1553405.0,alta,5_danos_entre_hogar_cuida,,,,,
+Peso en el universo | <20 h,31.6,2.44,7.7,27.6,35.6,1043,374,1968031.0,alta,6_magnitud,<20 h,,,,
+Peso en el universo | 20-39 h,27.7,1.8,6.5,24.7,30.6,1043,300,1721106.0,alta,6_magnitud,20-39 h,,,,
+Peso en el universo | >=40 h,40.7,2.8,6.9,36.1,45.3,1043,369,2534547.0,alta,6_magnitud,>=40 h,,,,
+Peso en el universo | ABVD y >=40 h,22.0,1.9,8.6,18.9,25.1,1043,222,1367877.0,alta,6_magnitud,ABVD y >=40 h,,,,
+"Peso en el universo | ABVD y >=40 h y ""sin necesidad""",10.0,1.43,14.3,7.6,12.3,1043,103,620976.0,alta,6_magnitud,"ABVD y >=40 h y ""sin necesidad""",,,,
+"Peso en el universo | >=40 h, ""sin necesidad"" y algún daño",12.5,1.59,12.8,9.8,15.1,1043,132,775546.0,alta,6_magnitud,">=40 h, ""sin necesidad"" y algún daño",,,,
+Ingreso | Q1-Q2 | No ha tenido necesidad,55.6,4.89,8.8,47.6,63.7,317,178,920300.0,alta,7_razones_por_ingreso,Q1-Q2,No ha tenido necesidad,,,
+Ingreso | Q1-Q2 | El propio hogar cuida,35.4,5.11,14.5,27.0,43.8,317,109,585232.0,alta,7_razones_por_ingreso,Q1-Q2,El propio hogar cuida,,,
+Ingreso | Q1-Q2 | Apoyan otros familiares,4.6,1.23,26.9,2.6,6.6,317,19,75914.0,moderada,7_razones_por_ingreso,Q1-Q2,Apoyan otros familiares,,,
+Ingreso | Q1-Q2 | Son caros,5.4,1.9,35.3,2.3,8.5,317,15,89017.0,baja,7_razones_por_ingreso,Q1-Q2,Son caros,,,
+Ingreso | Q1-Q2 | Desconoce que existen,1.2,0.62,51.2,0.2,2.2,317,5,19960.0,baja,7_razones_por_ingreso,Q1-Q2,Desconoce que existen,,,
+Ingreso | Q1-Q2 | Desconfianza de alguien ajeno,1.1,0.65,61.7,-0.0,2.1,317,4,17491.0,baja,7_razones_por_ingreso,Q1-Q2,Desconfianza de alguien ajeno,,,
+Ingreso | Q1-Q2 | Lejanía,5.3,1.93,36.3,2.1,8.5,317,12,87875.0,baja,7_razones_por_ingreso,Q1-Q2,Lejanía,,,
+Ingreso | Q1-Q2 | Maltrato del personal,2.0,1.15,57.6,0.1,3.9,317,6,32989.0,baja,7_razones_por_ingreso,Q1-Q2,Maltrato del personal,,,
+Ingreso | Q3 | No ha tenido necesidad,52.8,4.84,9.2,44.8,60.8,179,93,519847.0,alta,7_razones_por_ingreso,Q3,No ha tenido necesidad,,,
+Ingreso | Q3 | El propio hogar cuida,39.8,5.59,14.0,30.6,49.0,179,73,391392.0,alta,7_razones_por_ingreso,Q3,El propio hogar cuida,,,
+Ingreso | Q3 | Apoyan otros familiares,3.2,1.44,45.1,0.8,5.6,179,7,31412.0,baja,7_razones_por_ingreso,Q3,Apoyan otros familiares,,,
+Ingreso | Q3 | Son caros,2.3,1.12,48.9,0.4,4.1,179,5,22469.0,baja,7_razones_por_ingreso,Q3,Son caros,,,
+Ingreso | Q3 | Desconoce que existen,1.2,0.95,77.4,-0.3,2.8,179,3,12138.0,baja,7_razones_por_ingreso,Q3,Desconoce que existen,,,
+Ingreso | Q3 | Desconfianza de alguien ajeno,2.3,1.27,56.2,0.2,4.3,179,4,22234.0,baja,7_razones_por_ingreso,Q3,Desconfianza de alguien ajeno,,,
+Ingreso | Q3 | Lejanía,3.3,2.29,70.1,-0.5,7.0,179,4,32115.0,baja,7_razones_por_ingreso,Q3,Lejanía,,,
+Ingreso | Q3 | Maltrato del personal,0.5,0.5,100.3,-0.3,1.3,179,1,4949.0,baja,7_razones_por_ingreso,Q3,Maltrato del personal,,,
+Ingreso | Q4-Q5 | No ha tenido necesidad,41.2,4.89,11.9,33.2,49.3,347,174,993486.0,alta,7_razones_por_ingreso,Q4-Q5,No ha tenido necesidad,,,
+Ingreso | Q4-Q5 | El propio hogar cuida,50.7,6.26,12.3,40.4,61.0,347,141,1221948.0,alta,7_razones_por_ingreso,Q4-Q5,El propio hogar cuida,,,
+Ingreso | Q4-Q5 | Apoyan otros familiares,6.7,1.74,26.1,3.8,9.5,347,26,160992.0,moderada,7_razones_por_ingreso,Q4-Q5,Apoyan otros familiares,,,
+Ingreso | Q4-Q5 | Son caros,1.5,0.7,46.5,0.4,2.7,347,8,36368.0,baja,7_razones_por_ingreso,Q4-Q5,Son caros,,,
+Ingreso | Q4-Q5 | Desconoce que existen,1.5,1.19,81.2,-0.5,3.4,347,3,35259.0,baja,7_razones_por_ingreso,Q4-Q5,Desconoce que existen,,,
+Ingreso | Q4-Q5 | Desconfianza de alguien ajeno,1.6,0.88,54.9,0.2,3.0,347,6,38492.0,baja,7_razones_por_ingreso,Q4-Q5,Desconfianza de alguien ajeno,,,
+Ingreso | Q4-Q5 | Lejanía,1.8,0.83,44.9,0.5,3.2,347,7,44338.0,baja,7_razones_por_ingreso,Q4-Q5,Lejanía,,,
+Ingreso | Q4-Q5 | Maltrato del personal,1.7,0.84,48.9,0.3,3.1,347,7,41549.0,baja,7_razones_por_ingreso,Q4-Q5,Maltrato del personal,,,
+P7_7 | Familia,82.3,2.34,2.8,78.4,86.1,1043,886,5119042.0,alta,8_norma,Universo,,,P7_7,Familia
+P7_7 | <20 h | Familia,83.1,3.21,3.9,77.8,88.3,374,322,1634829.0,alta,8_norma,<20 h,,,P7_7,Familia
+P7_7 | >=40 h | Familia,81.4,3.84,4.7,75.1,87.8,369,303,2064244.0,alta,8_norma,>=40 h,,,P7_7,Familia
+P7_7 | Instituciones de gobierno,15.8,2.35,14.9,11.9,19.7,1043,134,982980.0,alta,8_norma,Universo,,,P7_7,Instituciones de gobierno
+P7_7 | <20 h | Instituciones de gobierno,15.4,3.17,20.5,10.2,20.6,374,44,303591.0,moderada,8_norma,<20 h,,,P7_7,Instituciones de gobierno
+P7_7 | >=40 h | Instituciones de gobierno,16.6,3.83,23.1,10.3,22.9,369,57,420597.0,moderada,8_norma,>=40 h,,,P7_7,Instituciones de gobierno
+P7_7 | Cuidadoras contratadas,1.6,0.48,29.6,0.8,2.4,1043,19,99852.0,moderada,8_norma,Universo,,,P7_7,Cuidadoras contratadas
+P7_7 | <20 h | Cuidadoras contratadas,1.4,0.69,50.0,0.2,2.5,374,7,27270.0,baja,8_norma,<20 h,,,P7_7,Cuidadoras contratadas
+P7_7 | >=40 h | Cuidadoras contratadas,1.7,0.88,51.8,0.3,3.2,369,7,43155.0,baja,8_norma,>=40 h,,,P7_7,Cuidadoras contratadas
+P7_7 | Org. religiosas/civiles,0.3,0.22,70.5,-0.0,0.7,1043,3,19469.0,baja,8_norma,Universo,,,P7_7,Org. religiosas/civiles
+P7_7 | <20 h | Org. religiosas/civiles,0.0,0.0,,0.0,0.0,374,0,0.0,no estimable,8_norma,<20 h,,,P7_7,Org. religiosas/civiles
+P7_7 | >=40 h | Org. religiosas/civiles,0.3,0.19,71.7,-0.0,0.6,369,2,6551.0,baja,8_norma,>=40 h,,,P7_7,Org. religiosas/civiles
+P7_7 | Otro,0.0,0.04,100.2,-0.0,0.1,1043,1,2341.0,baja,8_norma,Universo,,,P7_7,Otro
+P7_7 | <20 h | Otro,0.1,0.12,100.4,-0.1,0.3,374,1,2341.0,baja,8_norma,<20 h,,,P7_7,Otro
+P7_7 | >=40 h | Otro,0.0,0.0,,0.0,0.0,369,0,0.0,no estimable,8_norma,>=40 h,,,P7_7,Otro
+P7_8 | De acuerdo: solo unas horas,36.3,2.4,6.6,32.4,40.3,1043,410,2260343.0,alta,8_norma,Universo,,,P7_8,De acuerdo: solo unas horas
+P7_8 | <20 h | De acuerdo: solo unas horas,37.5,3.52,9.4,31.7,43.3,374,144,738431.0,alta,8_norma,<20 h,,,P7_8,De acuerdo: solo unas horas
+P7_8 | >=40 h | De acuerdo: solo unas horas,32.4,3.83,11.8,26.1,38.7,369,143,821146.0,alta,8_norma,>=40 h,,,P7_8,De acuerdo: solo unas horas
+P7_8 | De acuerdo: todo el día,2.4,0.47,20.0,1.6,3.1,1043,38,147218.0,moderada,8_norma,Universo,,,P7_8,De acuerdo: todo el día
+P7_8 | <20 h | De acuerdo: todo el día,2.9,0.81,28.3,1.5,4.2,374,16,56556.0,moderada,8_norma,<20 h,,,P7_8,De acuerdo: todo el día
+P7_8 | >=40 h | De acuerdo: todo el día,2.9,0.91,31.4,1.4,4.4,369,17,73309.0,baja,8_norma,>=40 h,,,P7_8,De acuerdo: todo el día
+P7_8 | De acuerdo: día y noche,6.2,1.13,18.2,4.3,8.1,1043,69,386079.0,moderada,8_norma,Universo,,,P7_8,De acuerdo: día y noche
+P7_8 | <20 h | De acuerdo: día y noche,4.4,1.17,26.6,2.5,6.3,374,19,86507.0,moderada,8_norma,<20 h,,,P7_8,De acuerdo: día y noche
+P7_8 | >=40 h | De acuerdo: día y noche,7.3,2.25,31.0,3.6,11.0,369,30,183928.0,baja,8_norma,>=40 h,,,P7_8,De acuerdo: día y noche
+P7_8 | No está de acuerdo,54.3,2.82,5.2,49.7,59.0,1043,517,3380201.0,alta,8_norma,Universo,,,P7_8,No está de acuerdo
+P7_8 | <20 h | No está de acuerdo,54.8,3.51,6.4,49.0,60.5,374,192,1077983.0,alta,8_norma,<20 h,,,P7_8,No está de acuerdo
+P7_8 | >=40 h | No está de acuerdo,56.2,4.83,8.6,48.2,64.1,369,174,1423325.0,alta,8_norma,>=40 h,,,P7_8,No está de acuerdo
+P7_8 | No sabe,0.8,0.38,47.0,0.2,1.4,1043,9,49843.0,baja,8_norma,Universo,,,P7_8,No sabe
+P7_8 | <20 h | No sabe,0.4,0.27,61.7,-0.0,0.9,374,3,8554.0,baja,8_norma,<20 h,,,P7_8,No sabe
+P7_8 | >=40 h | No sabe,1.3,0.84,64.9,-0.1,2.7,369,5,32839.0,baja,8_norma,>=40 h,,,P7_8,No sabe
+P6_38 | Iniciativa propia,82.0,1.95,2.4,78.7,85.2,1043,828,5100382.0,alta,8_norma,Universo,,,P6_38,Iniciativa propia
+P6_38 | <20 h | Iniciativa propia,79.1,2.98,3.8,74.2,84.0,374,290,1556637.0,alta,8_norma,<20 h,,,P6_38,Iniciativa propia
+P6_38 | >=40 h | Iniciativa propia,85.4,2.86,3.3,80.7,90.1,369,304,2165417.0,alta,8_norma,>=40 h,,,P6_38,Iniciativa propia
+P6_38 | Obligación,6.2,0.89,14.4,4.7,7.7,1043,89,385295.0,alta,8_norma,Universo,,,P6_38,Obligación
+P6_38 | <20 h | Obligación,9.0,1.77,19.6,6.1,11.9,374,39,177573.0,moderada,8_norma,<20 h,,,P6_38,Obligación
+P6_38 | >=40 h | Obligación,3.7,0.83,22.5,2.3,5.1,369,26,93822.0,moderada,8_norma,>=40 h,,,P6_38,Obligación
+P6_38 | Única(o) que podía,6.3,1.08,17.2,4.5,8.1,1043,63,392832.0,moderada,8_norma,Universo,,,P6_38,Única(o) que podía
+P6_38 | <20 h | Única(o) que podía,7.8,2.28,29.1,4.1,11.6,374,23,154236.0,moderada,8_norma,<20 h,,,P6_38,Única(o) que podía
+P6_38 | >=40 h | Única(o) que podía,5.1,1.48,29.2,2.6,7.5,369,19,128113.0,moderada,8_norma,>=40 h,,,P6_38,Única(o) que podía
+P6_38 | Decisión familiar,5.3,1.09,20.6,3.5,7.1,1043,59,327952.0,moderada,8_norma,Universo,,,P6_38,Decisión familiar
+P6_38 | <20 h | Decisión familiar,3.6,1.0,27.6,2.0,5.3,374,21,71730.0,moderada,8_norma,<20 h,,,P6_38,Decisión familiar
+P6_38 | >=40 h | Decisión familiar,5.6,1.9,34.1,2.4,8.7,369,18,140869.0,baja,8_norma,>=40 h,,,P6_38,Decisión familiar
+P6_38 | Petición de quien recibe,0.3,0.16,56.9,0.0,0.5,1043,4,17223.0,baja,8_norma,Universo,,,P6_38,Petición de quien recibe
+P6_38 | <20 h | Petición de quien recibe,0.4,0.4,99.1,-0.3,1.0,374,1,7855.0,baja,8_norma,<20 h,,,P6_38,Petición de quien recibe
+P6_38 | >=40 h | Petición de quien recibe,0.2,0.2,79.5,-0.1,0.6,369,2,6326.0,baja,8_norma,>=40 h,,,P6_38,Petición de quien recibe
+"P7.11 | La responsabilidad es de hijas, hijos o familia",48.0,4.14,8.6,41.1,54.8,519,243,1617860.0,alta,8_razon_no_residencia,,,,,
+P7.11 | Tratan mal a las personas,25.3,2.97,11.7,20.4,30.2,519,161,853761.0,alta,8_razon_no_residencia,,,,,
+P7.11 | Prefiere estar sola(o)/no le gustan,5.3,1.19,22.6,3.3,7.2,519,34,177594.0,moderada,8_razon_no_residencia,,,,,
+P7.11 | Son muy caros,5.2,2.01,38.6,1.9,8.5,519,25,175409.0,baja,8_razon_no_residencia,,,,,
+P7.11 | No tienen personal capacitado,8.4,2.32,27.6,4.6,12.2,519,17,284181.0,moderada,8_razon_no_residencia,,,,,
+P7.11 | Instalaciones inadecuadas,3.5,1.31,38.0,1.3,5.6,519,9,116399.0,baja,8_razon_no_residencia,,,,,
+P7.11 | Otra,0.7,0.34,48.3,0.1,1.3,519,5,23917.0,baja,8_razon_no_residencia,,,,,
+P7.11 | No sabe,3.7,1.19,32.3,1.7,5.6,519,25,124118.0,baja,8_razon_no_residencia,,,,,

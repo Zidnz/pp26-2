@@ -1,0 +1,70 @@
+﻿indicador,pct,se,cv,li90,ls90,n_muestra_dominio,n_muestra_si,total_expandido,precision,bloque
+"Población 15+ que brinda cuidados (publicado: 32.0%, 31.7 M)",32.0,0.51,1.6,31.2,32.8,16590,5758,31652134.0,alta,0_validacion
+Hogares que contratan enfermería o cuidadoras (publicado: 0.8%),0.7,0.12,18.2,0.5,0.9,6508,45,265054.0,moderada,0_validacion
+Cuidan discapacidad o 60+ | Buscó servicio (P6.42),2.5,0.76,30.5,1.2,3.7,1043,24,154125.0,baja,2_busqueda_cuidan_disc60
+Cuidan discapacidad o 60+ | No buscó por: El propio hogar cuida,41.9,3.93,9.4,35.5,48.4,1019,373,2544153.0,alta,2_busqueda_cuidan_disc60
+Cuidan discapacidad o 60+ | No buscó por: Apoyan otros hogares/familiares/conocidos,6.2,1.14,18.5,4.3,8.0,1019,64,373994.0,moderada,2_busqueda_cuidan_disc60
+Cuidan discapacidad o 60+ | No buscó por: Son caros,2.8,0.66,23.5,1.7,3.9,1019,34,170769.0,moderada,2_busqueda_cuidan_disc60
+Cuidan discapacidad o 60+ | No buscó por: Preocupa el qué dirán,1.5,0.63,42.0,0.5,2.5,1019,12,90529.0,baja,2_busqueda_cuidan_disc60
+Cuidan discapacidad o 60+ | No buscó por: DESCONOCE QUE EXISTEN,1.6,0.62,38.0,0.6,2.6,1019,16,98235.0,baja,2_busqueda_cuidan_disc60
+Cuidan discapacidad o 60+ | No buscó por: Incomodidad/desconfianza de que alguien ajeno cuide,1.5,0.46,31.9,0.7,2.2,1019,18,88133.0,baja,2_busqueda_cuidan_disc60
+Cuidan discapacidad o 60+ | No buscó por: Lejanía,3.0,0.79,26.5,1.7,4.3,1019,26,179905.0,moderada,2_busqueda_cuidan_disc60
+Cuidan discapacidad o 60+ | No buscó por: Maltrato del personal,1.3,0.47,35.6,0.5,2.1,1019,14,79487.0,baja,2_busqueda_cuidan_disc60
+Cuidan discapacidad o 60+ | No buscó por: No ha tenido necesidad,49.4,3.3,6.7,44.0,54.8,1019,556,2997224.0,alta,2_busqueda_cuidan_disc60
+Cuidan discapacidad o 60+ | No buscó por: Otra razón,3.2,0.75,23.4,2.0,4.4,1019,35,194990.0,moderada,2_busqueda_cuidan_disc60
+Todas las cuidadoras | Buscó servicio (P6.42),3.0,0.32,10.6,2.5,3.5,5677,185,954845.0,alta,2_busqueda_todas_cuidadoras
+Todas las cuidadoras | No buscó por: El propio hogar cuida,26.9,1.38,5.1,24.7,29.2,5492,1320,8267022.0,alta,2_busqueda_todas_cuidadoras
+Todas las cuidadoras | No buscó por: Apoyan otros hogares/familiares/conocidos,4.7,0.55,11.6,3.8,5.6,5492,242,1454072.0,alta,2_busqueda_todas_cuidadoras
+Todas las cuidadoras | No buscó por: Son caros,2.1,0.23,10.9,1.7,2.5,5492,117,651081.0,alta,2_busqueda_todas_cuidadoras
+Todas las cuidadoras | No buscó por: Preocupa el qué dirán,0.5,0.14,27.4,0.3,0.7,5492,28,157047.0,moderada,2_busqueda_todas_cuidadoras
+Todas las cuidadoras | No buscó por: DESCONOCE QUE EXISTEN,0.9,0.24,26.5,0.5,1.3,5492,50,278126.0,moderada,2_busqueda_todas_cuidadoras
+Todas las cuidadoras | No buscó por: Incomodidad/desconfianza de que alguien ajeno cuide,1.4,0.2,13.9,1.1,1.7,5492,88,437097.0,alta,2_busqueda_todas_cuidadoras
+Todas las cuidadoras | No buscó por: Lejanía,1.9,0.24,12.7,1.5,2.3,5492,102,581150.0,alta,2_busqueda_todas_cuidadoras
+Todas las cuidadoras | No buscó por: Maltrato del personal,0.9,0.18,21.2,0.6,1.1,5492,50,261380.0,moderada,2_busqueda_todas_cuidadoras
+Todas las cuidadoras | No buscó por: No ha tenido necesidad,67.3,1.37,2.0,65.0,69.5,5492,3860,20644347.0,alta,2_busqueda_todas_cuidadoras
+Todas las cuidadoras | No buscó por: Otra razón,1.5,0.26,17.2,1.1,1.9,5492,81,460796.0,moderada,2_busqueda_todas_cuidadoras
+Población 15-60 | Buscó servicio (P6.42),1.7,0.22,12.8,1.4,2.1,5579,120,1379698.0,alta,2_busqueda_pob15_60
+Población 15-60 | No buscó por: El propio hogar cuida,21.2,1.24,5.8,19.2,23.2,5459,944,16716728.0,alta,2_busqueda_pob15_60
+Población 15-60 | No buscó por: Apoyan otros hogares/familiares/conocidos,2.7,0.4,14.9,2.0,3.4,5459,164,2133243.0,alta,2_busqueda_pob15_60
+Población 15-60 | No buscó por: Son caros,1.5,0.22,14.8,1.1,1.8,5459,93,1160721.0,alta,2_busqueda_pob15_60
+Población 15-60 | No buscó por: Preocupa el qué dirán,0.6,0.12,21.7,0.4,0.8,5459,36,444685.0,moderada,2_busqueda_pob15_60
+Población 15-60 | No buscó por: DESCONOCE QUE EXISTEN,0.9,0.19,21.0,0.6,1.2,5459,61,712130.0,moderada,2_busqueda_pob15_60
+Población 15-60 | No buscó por: Incomodidad/desconfianza de que alguien ajeno cuide,1.1,0.2,18.3,0.8,1.4,5459,66,859489.0,moderada,2_busqueda_pob15_60
+Población 15-60 | No buscó por: Lejanía,1.2,0.18,14.7,0.9,1.5,5459,70,952339.0,alta,2_busqueda_pob15_60
+Población 15-60 | No buscó por: Maltrato del personal,0.5,0.17,36.1,0.2,0.8,5459,30,381847.0,baja,2_busqueda_pob15_60
+Población 15-60 | No buscó por: No ha tenido necesidad,75.7,1.3,1.7,73.5,77.8,5459,4304,59678503.0,alta,2_busqueda_pob15_60
+Población 15-60 | No buscó por: Otra razón,1.0,0.21,20.4,0.7,1.4,5459,50,818824.0,moderada,2_busqueda_pob15_60
+Todas cuidadoras que buscaron | Cumplió lo que buscaba,69.3,4.95,7.1,61.2,77.4,185,139,661625.0,alta,3_quienes_buscaron
+No cumplió | Costo elevado,30.9,10.12,32.8,14.2,47.5,46,11,90536.0,baja,3_quienes_buscaron
+No cumplió | Personal no capacitado,20.8,7.7,37.1,8.1,33.4,46,9,60900.0,baja,3_quienes_buscaron
+No cumplió | Lejanía,19.6,6.77,34.6,8.4,30.7,46,9,57432.0,baja,3_quienes_buscaron
+No cumplió | Instalaciones inadecuadas,11.0,4.4,40.0,3.8,18.2,46,7,32270.0,baja,3_quienes_buscaron
+No cumplió | Sin traslados,5.6,4.02,72.2,-1.0,12.2,46,2,16327.0,baja,3_quienes_buscaron
+No cumplió | LISTA DE ESPERA (cupo insuficiente),7.8,4.33,55.6,0.7,14.9,46,4,22832.0,baja,3_quienes_buscaron
+No cumplió | Sin flexibilidad de horario,15.5,6.77,43.8,4.3,26.6,46,7,45349.0,baja,3_quienes_buscaron
+No cumplió | Sin alimentos/dieta,4.3,3.46,80.2,-1.4,10.0,46,2,12639.0,baja,3_quienes_buscaron
+No cumplió | No aceptan movilidad limitada,2.2,1.63,72.9,-0.4,4.9,46,2,6541.0,baja,3_quienes_buscaron
+No cumplió | No dan cuidados especializados,13.7,5.49,40.1,4.7,22.7,46,7,40147.0,baja,3_quienes_buscaron
+No cumplió | Otra,14.2,5.83,41.0,4.6,23.8,46,7,41630.0,baja,3_quienes_buscaron
+Cuidan disc/60+ | En su casa,58.1,2.74,4.7,53.6,62.7,1043,657,3618967.0,alta,4_preferencia_lugar
+Cuidan disc/60+ | Centro/institución pública,3.5,0.91,25.9,2.0,5.0,1043,30,217824.0,moderada,4_preferencia_lugar
+Cuidan disc/60+ | Centro/institución privada,0.8,0.37,44.5,0.2,1.4,1043,10,51870.0,baja,4_preferencia_lugar
+Cuidan disc/60+ | Casa de familiar/amistad/conocido,1.6,0.49,30.1,0.8,2.4,1043,17,101669.0,baja,4_preferencia_lugar
+Cuidan disc/60+ | No contrataría,35.9,2.63,7.3,31.6,40.2,1043,329,2233354.0,alta,4_preferencia_lugar
+Pob. 15-60 | En su casa,63.8,1.27,2.0,61.7,65.9,5579,3740,51221511.0,alta,4_preferencia_lugar
+Pob. 15-60 | Centro/institución pública,2.7,0.31,11.4,2.2,3.2,5579,167,2152189.0,alta,4_preferencia_lugar
+Pob. 15-60 | Centro/institución privada,2.4,0.27,11.0,2.0,2.9,5579,137,1949311.0,alta,4_preferencia_lugar
+Pob. 15-60 | Casa de familiar/amistad/conocido,2.8,0.3,10.7,2.3,3.3,5579,174,2255661.0,alta,4_preferencia_lugar
+Pob. 15-60 | No contrataría,28.2,1.15,4.1,26.3,30.1,5579,1361,22658389.0,alta,4_preferencia_lugar
+Pob. 15-60 | Le gustaría ser cuidador(a) pagada(o),40.2,1.09,2.7,38.4,42.0,5579,2467,32236744.0,alta,5_oferta_declarada
+Pob. 15-60 | ...y se capacitaría (entre quienes sí),95.0,0.55,0.6,94.1,95.9,2467,2348,30612377.0,alta,5_oferta_declarada
+Todas cuidadoras | Le gustaría ser cuidador(a) pagada(o),41.7,1.07,2.6,40.0,43.5,5677,2572,13202047.0,alta,5_oferta_declarada
+Todas cuidadoras | ...y se capacitaría (entre quienes sí),96.3,0.39,0.4,95.7,97.0,2572,2478,12715647.0,alta,5_oferta_declarada
+Pob. 15-60 Mujeres | Le gustaría ser cuidador(a) pagada(o),45.0,1.41,3.1,42.7,47.3,3017,1499,19129404.0,alta,5_oferta_declarada
+Pob. 15-60 Hombres | Le gustaría ser cuidador(a) pagada(o),34.7,1.43,4.1,32.4,37.1,2562,968,13107340.0,alta,5_oferta_declarada
+Hogares con persona con discapacidad | Contrata enfermería o cuidadora,2.9,0.72,24.5,1.8,4.1,877,24,145797.0,moderada,6_contratacion
+Hogares con persona con discapacidad | Contrata trabajo doméstico (entrada por salida),7.6,1.28,16.7,5.5,9.7,877,68,377681.0,moderada,6_contratacion
+Hogares con persona 60+ | Contrata enfermería o cuidadora,0.6,0.22,35.9,0.2,1.0,1983,13,74361.0,baja,6_contratacion
+Hogares con persona 60+ | Contrata trabajo doméstico (entrada por salida),8.0,0.91,11.4,6.5,9.5,1983,153,991110.0,alta,6_contratacion
+Hogares con discapacidad o 60+ | Contrata enfermería o cuidadora,1.0,0.24,23.6,0.6,1.4,2554,26,159010.0,moderada,6_contratacion
+Hogares con discapacidad o 60+ | Contrata trabajo doméstico (entrada por salida),7.8,0.81,10.3,6.5,9.2,2554,195,1212877.0,alta,6_contratacion

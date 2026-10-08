@@ -1,0 +1,23 @@
+﻿dimension,segmento,poblacion,pct,cv,li90,ls90,n_muestra_dominio,n_muestra_si,total_expandido,precision,dif_pp,dif_li90,dif_ls90,dif_significativa
+Sexo,Mujer,Grupo del problema,77.79,5.99,70.13,85.45,132,106,603277.0,alta,10.29,2.01,18.57,True
+Sexo,Mujer,Universo,68.78,2.42,66.04,71.51,1043,710,4280502.0,alta,,,,
+Sexo,Hombre,Grupo del problema,22.21,20.96,14.55,29.87,132,26,172269.0,moderada,-10.29,-18.57,-2.01,True
+Sexo,Hombre,Universo,31.22,5.32,28.49,33.96,1043,333,1943182.0,alta,,,,
+Edad,15-39,Grupo del problema,34.12,13.68,26.44,41.79,132,47,264592.0,alta,7.27,-1.16,15.69,False
+Edad,15-39,Universo,27.75,6.79,24.65,30.85,1043,310,1727372.0,alta,,,,
+Edad,40-59,Grupo del problema,32.68,15.56,24.31,41.04,132,44,253425.0,moderada,-0.69,-9.69,8.31,False
+Edad,40-59,Universo,33.28,6.71,29.6,36.95,1043,385,2071221.0,alta,,,,
+Edad,60+,Grupo del problema,33.21,18.63,23.03,43.38,132,41,257529.0,moderada,-6.58,-17.83,4.67,False
+Edad,60+,Universo,38.97,7.77,33.99,43.95,1043,348,2425091.0,alta,,,,
+Ingreso,Q1-Q2,Grupo del problema,29.86,18.14,20.95,38.77,132,39,231604.0,moderada,3.38,-6.54,13.3,False
+Ingreso,Q1-Q2,Universo,26.9,7.56,23.56,30.25,1043,321,1674321.0,alta,,,,
+Ingreso,Q3,Grupo del problema,14.56,25.95,8.35,20.78,132,21,112930.0,moderada,-1.43,-8.15,5.28,False
+Ingreso,Q3,Universo,15.82,10.71,13.03,18.6,1043,179,984276.0,alta,,,,
+Ingreso,Q4-Q5,Grupo del problema,31.25,18.61,21.69,40.82,132,40,242375.0,moderada,-9.76,-20.82,1.31,False
+Ingreso,Q4-Q5,Universo,39.79,7.65,34.79,44.8,1043,359,2476573.0,alta,,,,
+Ingreso,Sin dato,Grupo del problema,24.32,24.66,14.46,34.19,132,32,188637.0,moderada,7.81,-2.49,18.1,False
+Ingreso,Sin dato,Universo,17.49,12.27,13.96,21.02,1043,184,1088514.0,alta,,,,
+A quién cuida,Cuida discapacidad,Grupo del problema,72.96,6.86,64.73,81.18,132,97,565805.0,alta,18.86,8.91,28.8,True
+A quién cuida,Cuida discapacidad,Universo,56.45,5.68,51.18,61.72,1043,636,3513257.0,alta,,,,
+A quién cuida,Solo 60+ sin discapacidad,Grupo del problema,27.04,18.49,18.82,35.27,132,35,209741.0,moderada,-18.86,-28.8,-8.91,True
+A quién cuida,Solo 60+ sin discapacidad,Universo,43.55,7.36,38.28,48.82,1043,407,2710427.0,alta,,,,

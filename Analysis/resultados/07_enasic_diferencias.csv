@@ -1,0 +1,7 @@
+﻿comparacion,p1,p2,dif_pp,se_pp,li90,ls90,excluye_cero,n1,n2
+"""No tuvo necesidad"": <20 h menos >=40 h",53.9,44.4,9.6,5.9,-0.1,19.2,False,368,359
+"""El propio hogar cuida"": <20 h menos >=40 h",38.4,45.8,-7.4,7.2,-19.2,4.4,False,368,359
+"Algún daño entre ""sin necesidad"": >=40 h menos <20 h",70.5,42.6,27.9,6.6,17.1,38.7,True,185,209
+"Salud física deteriorada entre ""sin necesidad"": >=40 h menos <20 h",31.4,9.3,22.1,5.4,13.3,30.9,True,185,209
+"""No tuvo necesidad"": Q1 menos Q4 de horas",52.3,43.4,8.9,8.2,-4.6,22.4,False,331,231
+"Algún daño entre ""sin necesidad"": Q4 menos Q1",75.8,44.2,31.6,6.9,20.3,42.9,True,119,185

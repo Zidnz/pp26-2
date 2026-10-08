@@ -1,0 +1,9 @@
+﻿indicador,valor,n
+"Pago semanal mediano, cuidadora contratada (muestra, sin ponderar)",800.0,29.0
+"Pago semanal mediano, enfermería contratada (muestra, sin ponderar)",700.0,16.0
+"Pago semanal mediano, cuidadora o enfermería (muestra, sin ponderar)",800.0,45.0
+Pago mensual equivalente (mediana semanal x 4.33),3464.0,45.0
+"Ingreso mensual mediano ponderado, hogares con discapacidad o 60+",6500.0,2054.0
+"Ingreso mensual p25 ponderado, hogares con discapacidad o 60+",3900.0,2054.0
+Pago mensual como % del ingreso mediano,53.3,
+Pago mensual como % del ingreso p25,88.8,

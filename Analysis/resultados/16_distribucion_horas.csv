@@ -1,0 +1,12 @@
+﻿desde,hasta,etiqueta,universo,pct,cv,li90,ls90,n_muestra_dominio,n_muestra_si,total_expandido,precision
+1.0,9.0,1-9,Universo con horas válidas,13.58,11.52,11.01,16.16,1043,173.0,845366.0,alta
+10.0,19.0,10-19,Universo con horas válidas,18.04,10.8,14.83,21.24,1043,201.0,1122665.0,alta
+20.0,29.0,20-29,Universo con horas válidas,15.73,9.36,13.31,18.15,1043,178.0,979071.0,alta
+30.0,39.0,30-39,Universo con horas válidas,11.92,10.68,9.83,14.02,1043,122.0,742035.0,alta
+40.0,59.0,40-59,Universo con horas válidas,18.22,13.16,14.28,22.17,1043,157.0,1134060.0,alta
+60.0,89.0,60-89,Universo con horas válidas,14.8,16.97,10.67,18.93,1043,125.0,920945.0,moderada
+90.0,119.0,90-119,Universo con horas válidas,6.32,14.06,4.86,7.78,1043,70.0,393156.0,alta
+120.0,168.0,120-168,Universo con horas válidas,1.39,34.78,0.59,2.18,1043,17.0,86386.0,baja
+,,sin dato de horas,Universo (incluye sin dato),0.0,,0.0,0.0,1043,0.0,0.0,no estimable
+98.0,,"declara el tope ""98 o más"" en un bloque",Universo con horas válidas,3.31,22.0,2.11,4.51,1043,37.0,206077.0,moderada
+,,mediana ponderada (horas),Universo con horas válidas,30.0,,,,1043,,,sin varianza
