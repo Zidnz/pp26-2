@@ -18,3 +18,22 @@ svg text{font-family:var(--sans)}
 #map svg{width:100%;height:auto;display:block;max-height:520px}
 #map path{stroke:var(--card);stroke-width:1.2;cursor:pointer}
 #map path.sel{stroke:var(--ink);stroke-width:2.4}
+
+/* Mapa de entidades (pestaña ¿Dónde?, segunda parte): mismo trazo que #map */
+.map-est svg{width:100%;height:auto;display:block}
+.map-est path{stroke:var(--card);stroke-width:.8;cursor:pointer}
+.map-est path.sel{stroke:var(--ink);stroke-width:2}
+.ext.ext3{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+
+/* Tipología de AGEB (pestaña ¿Dónde?, tercera parte): mapa de AGEB, lista de tipos y perfil */
+#mapTipo svg{max-height:640px}
+#mapTipo g.ag path{stroke:var(--card);stroke-width:.35;cursor:pointer;transition:opacity .15s}
+#mapTipo g.ag path.sel{stroke:var(--ink);stroke-width:2}
+#mapTipo g.alc path{fill:none;stroke:var(--ink);stroke-width:1.1;opacity:.7;pointer-events:none}
+#mapTipo g.of circle{fill:var(--ink);stroke:#fff;stroke-width:1;pointer-events:none}
+.tipos{display:grid;gap:8px}
+.tipos button{display:flex;gap:10px;align-items:flex-start;text-align:left;border:1px solid var(--hair);border-radius:10px;background:var(--card);padding:9px 11px;font-size:13px;line-height:1.35}
+.tipos button i{flex:0 0 12px;height:12px;border-radius:3px;background:var(--c);margin-top:3px}
+.tipos button .muted{font-size:11.5px}
+.tipos button[aria-pressed="true"]{border-color:var(--c);box-shadow:0 0 0 2px var(--c) inset}
+.chart h4.mini{font-size:12.5px;font-weight:650;margin:0 0 6px;color:var(--ink-soft)}
