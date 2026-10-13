@@ -1,0 +1,5 @@
+Fuente: INEGI, Censo de Población y Vivienda 2020, Principales resultados por AGEB y manzana urbana, Ciudad de México.
+URL: https://www.inegi.org.mx/contenidos/programas/ccpv/2020/datosabiertos/ageb_manzana/ageb_mza_urbana_09_cpv2020_csv.zip
+Descargado: 2026-10-09 (navegador, servidor del INEGI)
+SHA-256: 1f5f123b8e9a50991d1847271b5a2bf321e813e924e5bcf958cab612311c765a
+Tamaño: 12,990,807 bytes
