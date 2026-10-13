@@ -15,6 +15,7 @@ observatorio/
 ├── build_datos.py          lee Analysis/ y escribe datos_observatorio.json + js/datos/*
 ├── datos_observatorio.json copia legible de los datos (la página no la lee)
 ├── vendor/three.min.js     three.js r128 (MIT), solo para las escenas 3D del Inicio
+├── ../vendor/svg-maps-mexico/  contornos esquemáticos de las 32 entidades (CC BY 4.0); los lee build_datos.py
 ├── ilustraciones/          originales y recortes de las figuras 2D del embudo + build_ilustraciones.py
 ├── css/                    orden de carga: base → layout → componentes → graficas → vistas
 │   ├── base.css            tokens (paleta, fuentes), reinicio, utilidades
@@ -23,12 +24,14 @@ observatorio/
 │   ├── graficas.css        barras con IC, leyendas, texto SVG, mapa
 │   └── vistas.css          portada (tres marcos con escena 3D) y barra de filtro/comparador
 └── js/                     se cargan en este orden (ver index.html)
-    ├── datos/              GENERADOS por build_datos.py: datos.js (var D) y geo.js (var GEO)
+    ├── datos/              GENERADOS por build_datos.py: datos.js (var D), geo.js (var GEO, alcaldías), geo-estados.js (var GEO_EST, 32 entidades) y geo-ageb.js (var GEO_AGEB, AGEB urbanas y oferta núcleo)
     ├── nucleo/             obs.js (espacio de nombres OBS), util.js, alias.js, filtro-segmento.js
     ├── graficas/           componentes.js (lolli, dona, waffle, anillos, líneas, rampa) y motor-3d.js
     │                       (escenario 3D con piso que refleja, materiales y personajes)
     ├── vistas/             un archivo por pestaña (inicio, necesidad, barreras, segmentacion,
     │                       relevo, focalizacion, territorio, indicadores, metodo) + inicio-3d (escenas del Inicio)
+    │                       + territorio-estados (segunda parte de ¿Dónde?: 32 entidades y zonas por AGEB)
+    │                       + territorio-tipologia (tercera parte de ¿Dónde?: tipología de AGEB, modelo 2)
     │                       + inicio-contadores (va después de territorio.js: cuenta alcaldías y gráficas pintadas)
     └── app/                plegables.js (fichas plegables) y pestanas.js (navegación y arranque)
 ```
@@ -68,6 +71,17 @@ Reglas:
 
 - 8 oct 2026: en la pestaña «¿Dónde?» las tarjetas «Valor más alto / más bajo» (`#ext`) muestran la silueta de la alcaldía (con su color del mapa) y una frase corta con la unidad y la advertencia de la capa (conteos pequeños, conteo vs. tasa, alcaldías sin dato). No se agregaron tarjetas nuevas. Código en `js/vistas/territorio.js` (`FR`, `silueta`), estilos en `css/vistas.css` (`.ext`). Las cifras no cambian.
 
+- 8 oct 2026: la pestaña «¿Dónde?» suma dos tarjetas al final. (1) **México · 32 entidades**: mapa de entidades y gráfica «CDMX frente al país» con IC 90 %, con selector de siete indicadores (seis de personas de 60+ de la ENIGH 2022 y la marginación CONAPO 2020); las tarjetas `.ext` de abajo del mapa muestran la entidad más alta, la más baja y la seleccionada, con silueta. (2) **Zonas dentro de cada alcaldía**: cada AGEB urbana como punto (% sin derechohabiencia, color por grado de rezago). Código: `js/vistas/territorio-estados.js` (nuevo); datos: bloques `estados` y `zonas` de `build_datos.py`, que lee `Analysis/resultados/17_*.csv` (notebook A, sección 17) y `13_rezago_ageb_cdmx.csv`; contornos: `js/datos/geo-estados.js`, generado desde `Frontend/vendor/svg-maps-mexico/` (CC BY 4.0). Detalle en `Documentos/bitacora-decisiones.md`.
+
+## Cambio del 9 oct 2026: tipología de AGEB en la pestaña ¿Dónde?
+- La pestaña «¿Dónde?» suma una tercera parte con el segundo modelo (notebook D, sección 18): **mapa de las AGEB urbanas** con cuatro capas (tipo de zona, brecha de oferta con los 235 establecimientos núcleo del DENUE, viviendas sin internet y personas de 60+), lista de los cuatro tipos y perfil del tipo elegido frente a los otros tipos y a la CDMX. Clic en una AGEB para ver sus datos; las AGEB de frontera entre dos tipos se señalan.
+- Tres gráficas para la decisión del piloto: dónde viven las personas de 60+ por tipo, viviendas sin internet (canal de la app) y personas de 60+ a más de 1 km de la oferta formal. Brechas por alcaldía, apiladas por tipo.
+- Tarjeta «¿Qué tan confiable es la tipología?»: silueta contra una referencia sin grupos y estabilidad por k, comparación contra alternativas simples y robustez, con las condiciones en las que no debe usarse.
+- Dos indicadores nuevos en Indicadores: viviendas sin internet y personas de 60+ en AGEB con brecha.
+- Datos: bloque `tipologia` de `build_datos.py` (lee `Analysis/resultados/18_tipologia_*.csv`) y `js/datos/geo-ageb.js` (nuevo, generado desde `18_tipologia_contornos.geojson` y `18_oferta_nucleo_puntos.csv`). Ahora la página sí tiene polígonos de AGEB (Marco Geoestadístico 2025, simplificados a 15 m).
+- Código: `js/vistas/territorio-tipologia.js` (nuevo), `index.html`, `css/graficas.css`. Los colores de los tipos son los de las figuras f11–f14 del notebook.
+- Las cifras que ya existían no cambiaron (se comparó `datos_observatorio.json`: solo se agrega `tipologia` y dos indicadores). Verificado en Chromium a 1440 y 390 px, sin errores de JavaScript en las ocho pestañas. **Pendiente de doble revisión.**
+
 ## Pestañas
 Cada pestaña responde una pregunta. Hay una gráfica principal por tarjeta, una frase de hallazgo y la ficha (fuente y precisión) plegada. La URL guarda la pestaña (`#relevo`, `#territorio`, …).
 1. **Inicio**: «Los datos que cuidan» en un bloque oscuro (enfoque, perfiles de la app, cuatro razones con cifras a los lados del logo 3D y los cuatro contadores) y dos marcos con el mismo formato (título grande y párrafo, escena 3D con piso que refleja, tarjetas debajo): «¿Cuántas personas están en el problema?» (embudo en cinco escenas, de 31.7 M de personas cuidadoras al grupo del problema) y «Lo que encontramos» (un hallazgo por pestaña). Cada tarjeta de los marcos lleva a su pestaña. Cambio del 7 oct 2026 (noche): antes eran contadores, embudo en SVG y cuatro tarjetas.
@@ -75,7 +89,7 @@ Cada pestaña responde una pregunta. Hay una gráfica principal por tarjeta, una
 3. **¿Por qué no se contrata?** (`#barreras`): el mismo filtro; semáforo de hipótesis; razones para no buscar; contratación por quintil; preferencia de lugar; rechazo a residencias; oferta declarada.
 4. **¿Cuánto cuesta?** (`#relevo`): costo de paquetes por horas, asequibilidad con selector de fuente del ingreso (scripts 10 y 14), parte del ingreso del hogar mediano (sigue los mismos selectores), pago por hora de cuidadora, trabajo doméstico y enfermería (script 04), la advertencia «poder pagar no es querer contratar» visible y costo del subsidio contra la solicitud de la CDMX (script 06). Marcado "sin prestaciones · jornada diurna".
 5. **¿A quién primero?** (`#focalizacion`): regla contra modelos (notebook 11), cobertura por grupo y coeficientes.
-6. **¿Dónde?** (`#territorio`): escala de la CDMX (ENIGH directa e inferidas), mapa y dispersión con siete capas.
+6. **¿Dónde?** (`#territorio`): escala de la CDMX (ENIGH directa e inferidas), mapa y dispersión con siete capas, 32 entidades, zonas por AGEB y tipología de AGEB (modelo 2: mapa, decisión del piloto, brechas y validación).
 7. **Indicadores**: tarjetas filtrables; la lista completa va plegada.
 8. **Método**: todo plegado: fuentes, diccionario de variables y de la base, precisión, lo que no se puede afirmar, compatibilidad, calidad y variables del modelo.
 

@@ -68,22 +68,12 @@
       </div>
       <div class="fr-stage"><canvas id="c3-embudo" aria-label="Cinco escenas con personajes, una por cada etapa del embudo del problema"></canvas></div>
       <div class="fr-cards n5" id="cards-embudo"></div>
+      <div class="fr-modelo" id="embudo-modelo"></div>
       <details class="src"><summary>Fuente y precisión</summary><dl id="src-embudo"></dl></details>
     </div>
   </section>
 
-  <!-- 3 · Lo que encontramos (un hallazgo por pestaña) -->
-  <section class="fr" id="fr-hallazgos" aria-labelledby="h-hallazgos">
-    <div class="fr-in">
-      <div class="fr-head">
-        <h2 id="h-hallazgos">Lo que encontramos</h2>
-        <p>Un hallazgo por pestaña. Cada objeto está dibujado con la cifra de su tarjeta.</p>
-      </div>
-      <div class="fr-stage"><canvas id="c3-hallazgos" aria-label="Cuatro objetos dibujados con los datos: dos columnas a escala, una charola de cien esferas con una distinta, dos aros proporcionales y una balanza"></canvas></div>
-      <div class="fr-cards n4" id="cards-hallazgos"></div>
-      <details class="src"><summary>Fuente y precisión</summary><dl id="src-hallazgos"></dl></details>
-    </div>
-  </section>
+  <!-- 3 · «Lo que encontramos» se quitó el 8 oct 2026: repetía tres de las cuatro razones del bloque 1. Su tarjeta del modelo pasó al final del embudo (#embudo-modelo). Respaldo: _to_delete/backup_pre_dedup_2026-10-08/ -->
 </section>
 
 <!-- ======================= NECESIDAD ======================= -->
@@ -146,7 +136,7 @@
   <div class="vhead"><div><div class="kicker">Barreras · nacional</div><h2>La barrera principal no es información ni precio: es la norma familiar.</h2></div>
     <p>Las estimaciones con precisión baja aparecen rayadas y no cuentan como evidencia.</p></div>
   <div class="fbar" data-fb></div>
-  <div class="grid c4" id="segTiles-bar"></div>
+  <!-- 8 oct 2026: se quitó la fila de cajas (#segTiles-bar); repetía «Comparar segmentos» y el semáforo. -->
   <div class="card" style="margin:18px 0">
     <h3>Comparar segmentos</h3>
     <div class="chart" id="ch-cmp-bar" data-chart></div>
@@ -267,6 +257,66 @@
       <div class="scroll-x" style="margin-top:8px"><table id="tterr" class="click"><thead><tr><th>Alcaldía</th><th class="n" id="thV">Valor</th><th class="n" id="thC">Conteo</th><th class="n">% 60+</th></tr></thead><tbody></tbody></table></div>
       <dl id="src-terr"></dl></details>
   </div>
+  <div class="card" style="margin-top:18px">
+    <div class="kicker">México · 32 entidades · ENIGH 2022 y CONAPO 2020</div>
+    <h3 id="eTitle"></h3>
+    <div class="ctrls">
+      <div class="seg" id="segEst"><button data-k="pobreza60" aria-pressed="true">Pobreza 60+</button><button data-k="segsoc60" aria-pressed="false">Sin seguridad social 60+</button><button data-k="salud60" aria-pressed="false">Sin servicios de salud 60+</button><button data-k="sola60" aria-pressed="false">60+ que vive sola</button><button data-k="hog60" aria-pressed="false">Hogares con 60+</button><button data-k="pct_pob60" aria-pressed="false">Peso de 60+</button><button data-k="im" aria-pressed="false">Marginación</button></div>
+    </div>
+    <p class="find" id="eDef"></p>
+    <div class="grid c2" style="margin-top:12px;align-items:start">
+      <div><div id="mapEst" class="map-est" data-chart></div><div class="legend" id="mapEstLegend"></div><div class="ext ext3" id="extEst"></div></div>
+      <div><div class="chart" id="ch-estados" style="margin-top:0" data-chart></div><p class="find" id="eCdmx" style="margin-top:8px"></p></div>
+    </div>
+    <details class="src"><summary>Fuente, precisión y validación</summary><dl id="src-est"></dl></details>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <div class="kicker">CDMX · AGEB urbanas · CONEVAL 2020</div>
+    <h3>Zonas dentro de cada alcaldía: población sin derechohabiencia</h3>
+    <p class="find" id="zonasFind"></p>
+    <div class="chart" id="ch-zonas" data-chart></div>
+    <div class="legend" id="zonasLegend"></div>
+    <details class="src"><summary>Fuente, universo y lectura</summary><dl id="src-zonas"></dl></details>
+  </div>
+
+  <!-- Tipología de AGEB (segundo modelo, notebook D, sección 18): js/vistas/territorio-tipologia.js -->
+  <div class="card" style="margin-top:18px" id="tipoCard">
+    <div class="kicker">CDMX · AGEB urbanas · Censo 2020 · modelo de tipología (notebook D)</div>
+    <h3>Cuatro tipos de zona para decidir dónde probar el relevo</h3>
+    <p class="find" id="tipoFind"></p>
+    <div class="ctrls">
+      <div class="seg" id="segTipo"><button data-k="tipo" aria-pressed="true">Tipo de zona</button><button data-k="brecha" aria-pressed="false">Brecha de oferta</button><button data-k="sin_int" aria-pressed="false">Sin internet</button><button data-k="p60" aria-pressed="false">Personas de 60+</button></div>
+    </div>
+    <p class="find" id="tipoDef"></p>
+    <div class="grid c21" style="margin-top:12px;align-items:start">
+      <div><div id="mapTipo" data-chart></div><div class="legend" id="tipoLegend"></div></div>
+      <div><div class="tipos" id="tipoLista"></div><div id="tipoPerfil"></div></div>
+    </div>
+    <details class="src"><summary>Fuente, universo y lectura</summary><dl id="src-tipo"></dl></details>
+  </div>
+  <div class="grid c3" style="margin-top:18px;align-items:start">
+    <div class="card"><h3>¿Dónde viven las personas de 60+?</h3><p class="find" id="t60Find"></p><div class="chart" id="ch-t60" data-chart></div></div>
+    <div class="card"><h3>¿La app llega a todas las viviendas?</h3><p class="find" id="tIntFind"></p><div class="chart" id="ch-tint" data-chart></div></div>
+    <div class="card"><h3>¿Qué tan lejos queda la oferta formal?</h3><p class="find" id="tLejFind"></p><div class="chart" id="ch-tlej" data-chart></div></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>Brechas de oferta por alcaldía: personas de 60+ en AGEB con brecha</h3>
+    <p class="find" id="tBrFind"></p>
+    <div class="chart" id="ch-tbrecha" data-chart></div>
+    <details class="src"><summary>Definición y límites</summary><dl id="src-tbrecha"></dl></details>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <div class="kicker">Validación del modelo</div>
+    <h3>¿Qué tan confiable es la tipología?</h3>
+    <p class="find" id="tConfFind"></p>
+    <div class="grid c2" style="margin-top:12px;align-items:start">
+      <div class="chart" id="ch-tsil" data-chart></div>
+      <div class="chart" id="ch-tari" data-chart></div>
+    </div>
+    <details class="acc"><summary>Comparación contra alternativas simples (mismo número de grupos)</summary><div class="in scroll-x"><table id="tcomp"><thead><tr><th>Partición</th><th class="n">R² (9 variables)</th><th class="n">Estabilidad (ARI)</th><th class="n">V de Cramér con rezago CONEVAL</th><th class="n">η² limitación</th><th class="n">η² distancia a la oferta</th><th class="n">Vecinos del mismo grupo</th></tr></thead><tbody></tbody></table>
+      <p class="muted" style="font-size:12px;margin-top:8px">El R² favorece de origen a k-means, que optimiza esa medida. La coincidencia con el rezago del CONEVAL es en parte circular. La limitación y la distancia no entraron al modelo.</p></div></details>
+    <details class="acc"><summary>Robustez y cuándo no debe usarse</summary><div class="in"><div class="scroll-x"><table id="trob"><thead><tr><th>Variante (cambia una decisión)</th><th class="n">Coincidencia con el modelo (ARI)</th></tr></thead><tbody></tbody></table></div><ul class="list" style="margin-top:12px" id="limTipo"></ul></div></details>
+  </div>
 </section>
 
 <!-- ======================= INDICADORES ======================= -->
@@ -310,6 +360,8 @@
 
 <script src="js/datos/datos.js"></script>
 <script src="js/datos/geo.js"></script>
+<script src="js/datos/geo-estados.js"></script>
+<script src="js/datos/geo-ageb.js"></script>
 <script src="js/nucleo/obs.js"></script>
 <script src="js/nucleo/util.js"></script>
 <script src="js/nucleo/alias.js"></script>
@@ -326,6 +378,8 @@
 <script src="js/vistas/relevo.js"></script>
 <script src="js/vistas/focalizacion.js"></script>
 <script src="js/vistas/territorio.js"></script>
+<script src="js/vistas/territorio-estados.js"></script>
+<script src="js/vistas/territorio-tipologia.js"></script>
 <script src="js/vistas/indicadores.js"></script>
 <script src="js/vistas/metodo.js"></script>
 <script src="js/vistas/inicio-contadores.js"></script>

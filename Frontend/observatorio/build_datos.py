@@ -1,4 +1,4 @@
-"""Construye datos_observatorio.json, js/datos/datos.js y js/datos/geo.js a partir de los archivos de resultados del repositorio.
+"""Construye datos_observatorio.json, js/datos/datos.js, js/datos/geo.js y js/datos/geo-estados.js a partir de los archivos de resultados del repositorio.
 
 Observatorio del Cuidado (actualizado el 6 oct 2026).
 Ninguna cifra del Observatorio se escribe a mano: todas se leen aquí de Analysis/resultados, Analysis/outputs y
@@ -26,6 +26,10 @@ Archivos que lee (todos deben existir; si falta uno, el script se detiene en lug
   outputs/indice_por_tipo_servicio.csv, outputs/oferta_nucleo_vs_pob60_por_alcaldia.csv
   matrices/inventario_fuentes_cuidado.csv, matrices/pares_oferta_necesidad.csv
   Frontend/js/cdmx-alcaldias.js (límites de alcaldías, INEGI Marco Geoestadístico 2020)
+  resultados/17_enigh_60mas_por_entidad.csv, 17_marginacion_entidad_conapo_2020.csv, 17_validacion_enigh.csv (contexto estatal)
+  resultados/13_rezago_ageb_cdmx.csv (zonas: una fila por AGEB urbana)
+  Frontend/vendor/svg-maps-mexico/index.js (contornos esquemáticos de las 32 entidades, CC BY 4.0)
+  resultados/18_tipologia_*.csv, 18_tipologia_contornos.geojson, 18_oferta_nucleo_puntos.csv (tipología de AGEB, notebook D, sección 18)
 """
 import json, sys
 from pathlib import Path
@@ -326,6 +330,81 @@ inv = leer(A / 'matrices' / 'inventario_fuentes_cuidado.csv')
 D['inventario'] = inv[['id', 'fuente', 'emisor', 'desagregacion_geografica_maxima', 'periodo_cubierto', 'estado_evidencia']].fillna('').to_dict('records')
 D['pares'] = leer(A / 'matrices' / 'pares_oferta_necesidad.csv').fillna('').to_dict('records')
 
+# ---------------------------------------------------------------- Contexto estatal (sección 17 del notebook A) y zonas (AGEB, sección 13)
+e17 = leer(R / '17_enigh_60mas_por_entidad.csv')
+m17 = leer(R / '17_marginacion_entidad_conapo_2020.csv').set_index('clave_entidad')
+v17 = leer(R / '17_validacion_enigh.csv')
+if not v17.coincide.all():
+    raise SystemExit('17_validacion_enigh.csv: el cálculo no reproduce las cifras publicadas por CONEVAL')
+EST_IND = {k: g.iloc[0].definicion for k, g in e17.groupby('indicador')}
+estados = {}
+for cve, g in e17[e17.clave_entidad > 0].groupby('clave_entidad'):
+    r = {'nombre': g.iloc[0].entidad_federativa}
+    for x in g.itertuples():
+        r[x.indicador] = {'v': float(x.pct), 'li': float(x.li90), 'ls': float(x.ls90), 'cv': float(x.cv), 'n': int(x.n_muestra), 'prec': x.precision}
+    mm = m17.loc[int(cve)]
+    r['im'] = {'v': float(mm.IM_2020), 'grado': mm.GM_2020, 'lugar': int(mm.lugar_nacional)}
+    estados[int(cve)] = r
+nal = {x.indicador: {'v': float(x.pct), 'li': float(x.li90), 'ls': float(x.ls90)} for x in e17[e17.clave_entidad == 0].itertuples()}
+D['estados'] = {'entidades': estados, 'nacional': nal, 'definiciones': EST_IND,
+                'validacion': v17.to_dict('records'),
+                'fuentes': {'enigh': 'Analysis/resultados/17_enigh_60mas_por_entidad.csv (notebook A, sección 17; ENIGH 2022, programa de cálculo CONEVAL)',
+                            'im': 'Analysis/resultados/17_marginacion_entidad_conapo_2020.csv (notebook A, sección 17; CONAPO, Índice de marginación 2020)',
+                            'geo': 'Frontend/vendor/svg-maps-mexico (@svg-maps/mexico 2.0.0, V. Cazanave, CC BY 4.0; dibujo esquemático, no cartografía oficial)'}}
+
+ZONA_MIN_POB = 100   # AGEB con menos habitantes dan porcentajes extremos por denominador chico (p. ej. 100 % con 7 personas)
+ag = leer(R / '13_rezago_ageb_cdmx.csv')
+agv = ag[~ag.suprimida & ag.i_sdsalud.notna()]
+agz = agv[agv.poblacion >= ZONA_MIN_POB]
+D['zonas'] = {'ageb': [[r.alcaldia, round(float(r.i_sdsalud), 1), int(r.poblacion), r.grs] for r in agz.itertuples()],
+              'n_total': int(len(ag)), 'n_suprimidas': int(ag.suprimida.sum()), 'n_chicas': int(len(agv) - len(agz)),
+              'min_pob': ZONA_MIN_POB,
+              'fuente': 'Analysis/resultados/13_rezago_ageb_cdmx.csv (notebook A, sección 13; CONEVAL, IRS 2020 por AGEB urbana, indicador i_sdsalud)'}
+
+# ---------------------------------------------------------------- Tipología de AGEB (notebook D, sección 18): segundo modelo
+t_ag = leer(R / '18_tipologia_ageb.csv')
+t_pf = leer(R / '18_tipologia_perfiles.csv')
+t_de = leer(R / '18_tipologia_decision.csv')
+t_k = leer(R / '18_tipologia_seleccion_k.csv')
+t_co = leer(R / '18_tipologia_comparacion.csv')
+t_ro = leer(R / '18_tipologia_robustez.csv')
+t_lo = leer(R / '18_tipologia_dejar_fuera_alcaldia.csv')
+t_pa = leer(R / '18_tipologia_por_alcaldia.csv')
+t_ca = leer(R / '18_tipologia_calidad.csv')
+if sorted(t_ag.tipo.unique()) != list(range(1, len(t_pf) + 1)) or len(t_de) != len(t_pf):
+    raise SystemExit('18_tipologia_*: los tipos de los archivos no coinciden; vuelve a correr el notebook D completo')
+NV = ['pct_60', 'pct_disc', 'pct_0a14', 'prom_ocup', 'part_fem', 'pct_jef_f', 'pct_sinder', 'graproes', 'pct_sin_int']
+D['tipologia'] = {
+    'campos_ageb': ['cvegeo', 'alcaldia', 'tipo', 'poblacion', 'n_60', 'pct_60', 'pct_disc', 'pct_sinder', 'graproes', 'pct_sin_int',
+                    'dist_oferta_km', 'brecha', 'frontera'],
+    'ageb': [[r.CVEGEO, r.alcaldia, int(r.tipo), int(r.poblacion), int(r.n_60), round(r.pct_60, 1), round(r.pct_disc, 1), round(r.pct_sinder, 1),
+              round(r.graproes, 1), round(r.pct_sin_int, 1), round(r.dist_oferta_km, 2), bool(r.brecha_q75), bool(r.frontera)]
+             for r in t_ag.assign(CVEGEO=t_ag.CVEGEO.astype(str).str.zfill(13)).itertuples()],
+    'tipos': [{'tipo': int(r.tipo), 'nombre': r.nombre, 'n_ageb': int(r.n_ageb), 'poblacion': int(r.poblacion), 'pct_pob_cdmx': float(r.pct_pob_cdmx),
+               'n_60': int(r.n_60), 'pct_de_las_60': float(r.pct_de_las_60_cdmx), 'pct_60': float(r.pct_60_ponderado), 'n_disc': int(r.n_disc),
+               'pct_sinder': float(r.pct_sinder_ponderado), 'pct_viv_sin_int': float(r.pct_viv_sin_int_ponderado),
+               'medianas': {v: float(getattr(r, 'med_' + v)) for v in NV}} for r in t_pf.itertuples()],
+    'decision': [{'tipo': int(r.tipo), 'viviendas': int(r.viviendas), 'viviendas_sin_internet': int(r.viviendas_sin_internet),
+                  'pct_viv_sin_int': float(r.pct_viviendas_sin_internet), 'dist_mediana_km': float(r.dist_oferta_km_mediana),
+                  'pct_60_a_mas_de_1km': float(r.pct_60_en_ageb_a_mas_de_1km), 'ageb_brecha': int(r.ageb_brecha_q75),
+                  'ageb_brecha_terciles': int(r.ageb_brecha_q67), 'n_60_brecha': int(r.personas_60_en_brecha_q75)} for r in t_de.itertuples()],
+    'medianas_cdmx': {v: float(t_ag[v].median()) for v in NV},
+    'seleccion_k': [{k: nn(v) for k, v in r.items()} for r in t_k.to_dict('records')],
+    'comparacion': [{k: nn(v) for k, v in r.items()} for r in t_co.to_dict('records')],
+    'robustez': [{'variante': r.variante, 'ari': float(r.ari_vs_modelo)} for r in t_ro.itertuples()],
+    'dejar_fuera': {'coincidencia_ponderada': float((t_lo.coincidencia_pct * t_lo.n_ageb).sum() / t_lo.n_ageb.sum()),
+                    'minima': float(t_lo.coincidencia_pct.min()), 'alcaldia_minima': t_lo.loc[t_lo.coincidencia_pct.idxmin(), 'alcaldia']},
+    'por_alcaldia': [{'alcaldia': r.alcaldia, 'ageb_brecha': int(r.ageb_brecha_q75), 'n_60_brecha': int(r.personas_60_en_brecha_q75),
+                      'pct_tipo': [float(getattr(r, f'pct_pob_tipo_{t}')) for t in range(1, len(t_pf) + 1)]} for r in t_pa.itertuples()],
+    'calidad': t_ca.to_dict('records'),
+    'fuente': 'Analysis/resultados/18_tipologia_*.csv (notebook D, sección 18; Censo 2020 por AGEB urbana, DENUE 05_2026, Marco Geoestadístico 2025)',
+}
+_TA = pd.DataFrame(D['tipologia']['ageb'], columns=D['tipologia']['campos_ageb'])
+D['tipologia']['frontera'] = {'n': int(_TA.frontera.sum()), 'pct': float(100 * _TA.frontera.mean()), 'poblacion': int(_TA.loc[_TA.frontera, 'poblacion'].sum())}
+D['tipologia']['brecha_total'] = {'ageb': int(_TA.brecha.sum()), 'n_60': int(_TA.loc[_TA.brecha, 'n_60'].sum())}
+_vs = sum(r['viviendas_sin_internet'] for r in D['tipologia']['decision']); _vv = sum(r['viviendas'] for r in D['tipologia']['decision'])
+D['tipologia']['sin_internet_total'] = {'viviendas': _vs, 'pct': 100 * _vs / _vv}
+
 # ---------------------------------------------------------------- Ficha de indicadores (KPI)
 K, Cg = D['clave'], D['carga']
 rel40 = una(rel, salario=rel.salario.iloc[0], horas_semana=40)
@@ -373,6 +452,12 @@ D['kpis'] = [
     kpi('Contexto', 'Población en zonas de rezago social medio o mayor', 'Población en AGEB urbanas con grado de rezago social medio, alto o muy alto (excluye AGEB con datos suprimidos)',
         float(D['territorio']['rezago_calidad']['pct_medio_mas_nota'].split(' %')[0]), '% de la población', 'Población en AGEB urbanas, CDMX', 'no aplica (censo)',
         'confirmado (contexto de vulnerabilidad, no necesidad de cuidado)', D['territorio']['fuentes']['rez']),
+    kpi('Contexto', 'Viviendas sin internet en las AGEB urbanas', 'Viviendas particulares habitadas sin internet ÷ viviendas con características (canal de la app)',
+        D['tipologia']['sin_internet_total']['pct'], '% de las viviendas', 'Viviendas en AGEB urbanas de 100 hab. o más, CDMX', 'no aplica (censo)',
+        'confirmado (Censo 2020; la conectividad pudo cambiar desde entonces)', D['tipologia']['fuente']),
+    kpi('Contexto', 'Personas de 60+ en AGEB con brecha de oferta', 'Personas de 60+ en AGEB del cuartil alto de personas de 60+ y del cuartil alto de distancia en línea recta a una residencia o centro de día',
+        D['tipologia']['brecha_total']['n_60'], 'personas', 'AGEB urbanas, CDMX', 'no aplica (censo)',
+        'probable (umbral convencional; no mide capacidad, precio ni transporte)', D['tipologia']['fuente']),
     kpi('Costos', 'Pago observado a cuidadoras', 'Mediana del pago por hora a cuidadoras contratadas (pesos de 2026)',
         D['pago']['cuidadora']['mediana'], '$ por hora', 'Hogares que contratan cuidadora, nacional', 'baja (muestra de ' + str(D['pago']['cuidadora']['n']) + ', sin ponderar)',
         'probable', D['pago']['fuente']),
@@ -416,3 +501,42 @@ geo = geo_js[geo_js.index('{'):geo_js.rindex('}') + 1]
 geo_txt = AVISO + '/* Límites de alcaldías: Frontend/js/cdmx-alcaldias.js (INEGI, Marco Geoestadístico 2020). */\nvar GEO = ' + geo + ';\n'
 (DATOS_JS / 'geo.js').write_text(geo_txt, encoding='utf-8')
 print('ok', DATOS_JS / 'geo.js', len(geo_txt))
+
+# Contornos esquemáticos de las 32 entidades. El paquete los nombra en inglés y con id propio: se enlazan por clave INEGI.
+SVG_ID = ['agu', 'bcn', 'bcs', 'cam', 'coa', 'col', 'chp', 'chh', 'cmx', 'dur', 'gua', 'gro', 'hid', 'jal', 'mex', 'mic',
+          'mor', 'nay', 'nle', 'oax', 'pue', 'que', 'roo', 'slp', 'sin', 'son', 'tab', 'tam', 'tla', 'ver', 'yuc', 'zac']
+mx_js = (RAIZ / 'Frontend' / 'vendor' / 'svg-maps-mexico' / 'index.js').read_text(encoding='utf-8')
+mx = json.loads(mx_js[mx_js.index('{'):mx_js.rindex('}') + 1])
+por_id = {l['id']: l for l in mx['locations']}
+assert sorted(por_id) == sorted(SVG_ID), 'El paquete de contornos no trae las 32 entidades esperadas'
+GEO_EST = {'viewBox': mx['viewBox'], 'entidades': {str(i + 1): {'path': por_id[k]['path'], 'nombre_paquete': por_id[k]['name']} for i, k in enumerate(SVG_ID)}}
+for cve, r in GEO_EST['entidades'].items():   # chequeo de enlace: el nombre del paquete debe parecerse al de CONEVAL
+    a, b = r['nombre_paquete'].lower(), D['estados']['entidades'][int(cve)]['nombre'].lower()
+    assert a[:4] == b[:4] or (cve == '9' and a == 'mexico city') or (cve == '15' and a == 'méxico'), (cve, a, b)
+est_txt = AVISO + '/* Contornos: Frontend/vendor/svg-maps-mexico (@svg-maps/mexico 2.0.0, Victor Cazanave, CC BY 4.0). Esquemático, no cartografía oficial. */\nvar GEO_EST = ' + json.dumps(GEO_EST, ensure_ascii=False) + ';\n'
+(DATOS_JS / 'geo-estados.js').write_text(est_txt, encoding='utf-8')
+print('ok', DATOS_JS / 'geo-estados.js', len(est_txt))
+
+# Contornos de AGEB urbanas y alcaldías del Marco Geoestadístico 2025 (simplificados en el notebook D) y oferta núcleo del DENUE,
+# ya proyectados a coordenadas de SVG (equirrectangular con corrección por coseno de la latitud), para el mapa de la tipología.
+fc = json.loads((R / '18_tipologia_contornos.geojson').read_text(encoding='utf-8'))
+pts = leer(R / '18_oferta_nucleo_puntos.csv')
+todas = [c for f in fc['features'] for poly in (f['geometry']['coordinates'] if f['geometry']['type'] == 'MultiPolygon' else [f['geometry']['coordinates']]) for ring in poly for c in ring]
+lon0, lon1 = min(c[0] for c in todas), max(c[0] for c in todas); lat0, lat1 = min(c[1] for c in todas), max(c[1] for c in todas)
+import math
+kx = math.cos(math.radians((lat0 + lat1) / 2)); ANCHO = 1000; esc_ = ANCHO / ((lon1 - lon0) * kx); ALTO = round((lat1 - lat0) * esc_)
+def _xy(c):
+    return f"{(c[0] - lon0) * kx * esc_:.1f},{(lat1 - c[1]) * esc_:.1f}"
+def _path(geom):
+    polys = geom['coordinates'] if geom['type'] == 'MultiPolygon' else [geom['coordinates']]
+    return ''.join('M' + 'L'.join(_xy(c) for c in ring[:-1]) + 'Z' for poly in polys for ring in poly)
+GA = {'viewBox': f'0 0 {ANCHO} {ALTO}', 'ageb': {}, 'alcaldias': {}}
+for f in fc['features']:
+    (GA['ageb'] if f['properties']['capa'] == 'ageb' else GA['alcaldias'])[f['properties']['id']] = _path(f['geometry'])
+faltan_geo = set(r[0] for r in D['tipologia']['ageb']) - set(GA['ageb'])
+if faltan_geo:
+    raise SystemExit(f'18_tipologia_contornos.geojson no tiene polígono para {len(faltan_geo)} AGEB del modelo')
+GA['oferta'] = [[float(_xy([r.lon, r.lat]).split(',')[0]), float(_xy([r.lon, r.lat]).split(',')[1])] for r in pts.itertuples()]
+ga_txt = AVISO + '/* Contornos: INEGI, Marco Geoestadístico 2025 (simplificados a 15 m en el notebook D). Oferta: DENUE 05_2026, clases núcleo. */\nvar GEO_AGEB = ' + json.dumps(GA, ensure_ascii=False, separators=(',', ':')) + ';\n'
+(DATOS_JS / 'geo-ageb.js').write_text(ga_txt, encoding='utf-8')
+print('ok', DATOS_JS / 'geo-ageb.js', len(ga_txt))
