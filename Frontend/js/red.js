@@ -19,7 +19,7 @@
     const personas = hogar.personas.map((p) => Object.assign({}, p));
     const rel = hogar.relaciones.map((r) => Object.assign({}, r));
     if (pro) {
-      personas.push({ id: 'pro', nombre: pro.nombre.split(' ')[0], edad: null, rol: 'profesional', pro: true });
+      personas.push({ id: 'pro', nombre: pro.nombre.split(' ')[0], edad: null, rol: 'relevo', pro: true });
       if (pro.horas > 0) rel.push({ de: 'pro', a: hogar.foco, horas: pro.horas });
     }
     const inc = {}, out = {};
@@ -118,7 +118,7 @@
     svg.innerHTML = s;
   }
 
-  // Lo que ocurriría con el hogar si se contrata a un profesional.
+  // Lo que ocurriría con el hogar si se asigna un relevo.
   function conProfesional(hogar, pro) { return analizar(hogar, pro, null); }
 
   window.Care.red = { analizar, dibujar, conProfesional };

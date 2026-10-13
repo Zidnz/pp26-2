@@ -4,9 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#2d3347">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <title>Observatorio del cuidado</title>
+  <title>Relevo de cuidado</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
@@ -16,446 +14,345 @@
 <div class="app" id="app">
 
   <div class="strip">
-    <div class="l"><span class="dot"></span><span>Prototipo conceptual · datos sintéticos</span></div>
+    <div class="l"><span class="dot"></span><span>Prototipo · datos simulados</span></div>
     <span id="clock" class="mono"></span>
   </div>
 
   <div class="topbar">
-    <div class="id"><span class="mark"></span><h1 id="topTitle">Peticiones de cuidado</h1></div>
+    <div class="id"><span class="mark"></span><h1 id="topTitle">Necesito cuidado</h1></div>
     <span class="tag" id="topTag"></span>
   </div>
 
-  <!-- ============ 1. PUBLICACIONES (bandeja del clasificador) ============ -->
-  <section class="screen" id="view-publicaciones" hidden>
+  <!-- ============ 1. CASOS ============ -->
+  <section class="screen" id="view-casos" hidden>
     <div class="segwrap">
-      <div class="seg" id="pub-filter" role="group" aria-label="Filtrar por estado">
-        <button data-val="todas" class="on">Todas</button>
-        <button data-val="abierta">Abiertas</button>
-        <button data-val="cubierta">Cubiertas</button>
+      <div class="seg" id="caso-filter" role="group" aria-label="Filtrar casos">
+        <button data-val="todos" class="on">Todos</button>
+        <button data-val="espera">Espera</button>
+        <button data-val="activo">Activos</button>
+        <button data-val="otros">Otros</button>
+      </div>
+    </div>
+    <div class="pane tight">
+      <div class="row-between">
+        <div class="sub" id="caso-count"></div>
+        <button class="btn-primary sm" data-action="new-caso">+ Canalizar</button>
+      </div>
+      <div class="estilos" id="caso-estilo" role="group" aria-label="Vista de la lista">
+        <button type="button" data-estilo="lista" title="Lista"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3"/><circle cx="3.5" cy="12" r="1.3"/><circle cx="3.5" cy="18" r="1.3"/></svg><span>Lista</span></button>
+        <button type="button" data-estilo="head" title="Tarjetas"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18"/></svg><span>Tarjetas</span></button>
+        <button type="button" data-estilo="mosaico" title="Mosaico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg><span>Mosaico</span></button>
+      </div>
+      <div class="list" id="caso-list"></div>
+    </div>
+  </section>
+
+  <!-- ============ 2. RELEVOS ============ -->
+  <section class="screen" id="view-relevos" hidden>
+    <div class="segwrap">
+      <div class="seg" id="rel-filter" role="group" aria-label="Filtrar personas de relevo">
+        <button data-val="aprobada" class="on">Aprobadas</button>
         <button data-val="revision">En revisión</button>
       </div>
     </div>
     <div class="pane tight">
       <div class="row-between">
-        <div>
-          <div class="h-title">Peticiones de cuidado</div>
-          <div class="sub" id="pub-count"></div>
-        </div>
-        <button class="btn-primary sm" data-action="new-pub">+ Nueva</button>
+        <div class="sub" id="rel-count"></div>
+        <button class="btn-primary sm" data-action="new-relevo">+ Registrar</button>
       </div>
-      <div class="pills" id="pub-senal" role="group" aria-label="Filtrar por señal">
-        <button class="pill on" data-val="todas">Todas</button>
-        <button class="pill" data-val="senal">Con señal de cuidado</button>
-      </div>
-      <div class="list" id="pub-list"></div>
+      <div class="list" id="rel-list"></div>
     </div>
   </section>
 
-  <!-- ============ 2. CONTRATAR ============ -->
-  <section class="screen" id="view-contratar" hidden>
-    <div class="pane">
-      <div class="row-between">
-        <div>
-          <div class="h-title">Contratar cuidado</div>
-          <div class="sub">Profesionales ordenados por compatibilidad con la petición</div>
-        </div>
-        <button class="btn-ghost sm" data-action="new-cui">+ Profesional</button>
-      </div>
-
-      <label class="fld">Petición
-        <select id="hire-pub"></select>
-      </label>
-
-      <div id="hire-summary" hidden></div>
-
-      <details class="filters">
-        <summary>Filtros</summary>
-        <div class="filters-grid">
-          <label class="fld">Perfil
-            <select id="hire-perfil">
-              <option value="todos">Todos</option>
-              <option value="cuidador">Cuidador/a</option>
-              <option value="enfermero">Enfermero/a</option>
-            </select>
-          </label>
-          <label class="fld">Zona
-            <select id="hire-zona"></select>
-          </label>
-          <label class="fld wide">Buscar
-            <input type="search" id="hire-q" placeholder="Nombre o habilidad">
-          </label>
-        </div>
-      </details>
-
-      <div class="list" id="hire-list"></div>
-    </div>
-  </section>
-
-  <!-- ============ 3. GRAFO (red del hogar) ============ -->
-  <section class="screen" id="view-grafo" hidden>
+  <!-- ============ 3. SEGUIMIENTO (incluye redes) ============ -->
+  <section class="screen" id="view-seguimiento" hidden>
     <div class="segwrap">
-      <div class="seg" id="redes-seg">
-        <button class="on" data-sub="grafo">Grafo</button>
-        <button data-sub="territorio">Territorio</button>
+      <div class="seg" id="seg-sub" role="group" aria-label="Seguimiento">
+        <button data-sub="hoy" class="on">Visitas</button>
+        <button data-sub="caso">Caso</button>
+        <button data-sub="mapa">Mapa</button>
+        <button data-sub="kpi">KPI</button>
       </div>
     </div>
 
-    <div class="pane tight" data-sub-panel="grafo">
-      <label class="fld">Hogar
-        <select id="red-pub"></select>
-      </label>
+    <div class="pane tight" data-sub-panel="hoy">
+      <div class="daynav">
+        <button class="btn-ghost sm" data-action="dia" data-d="-1" aria-label="Día anterior">‹</button>
+        <div><div class="h-title" id="dia-titulo"></div><div class="sub" id="dia-sub"></div></div>
+        <button class="btn-ghost sm" data-action="dia" data-d="1" aria-label="Día siguiente">›</button>
+      </div>
+      <div class="list" id="dia-list"></div>
+    </div>
+
+    <div class="pane tight" data-sub-panel="caso" hidden>
+      <select id="sc-caso" aria-label="Caso"></select>
       <div class="card graphcard" id="graphWrap">
         <svg viewBox="0 0 300 250" id="graphSvg" role="img" aria-label="Red de cuidado del hogar"></svg>
         <div class="glegend">
           <span><i class="lg solid"></i> sostiene</span>
-          <span><i class="lg dashed"></i> apoyo parcial</span>
-          <span><i class="lg pro"></i> profesional</span>
+          <span><i class="lg dashed"></i> parcial</span>
+          <span><i class="lg pro"></i> relevo</span>
         </div>
       </div>
-
-      <div class="block">
-        <div class="row-between">
-          <div>
-            <div class="eyebrow">Simulación</div>
-            <div class="sub">Toca un nodo del grafo para elegirlo</div>
-          </div>
-          <button class="btn-alert sm" id="nodeBtn">Apagar nodo</button>
-        </div>
-
-        <div class="fragbox">
-          <div id="fragScore" class="frag num">0.00</div>
-          <div id="fragLabel" class="fraglabel"></div>
-        </div>
-
-        <div class="kvgroup">
-          <div class="kv"><span>Personas sin cuidado</span><span class="mono" id="sinCuidado">0</span></div>
-          <div class="kv"><span>Con cuidado parcial</span><span class="mono" id="conParcial">0</span></div>
-          <div class="kv"><span>Horas semanales sin cubrir</span><span class="mono" id="horasSinCubrir">0 h</span></div>
-          <div class="kv"><span>Relevos disponibles</span><span class="mono" id="relevos">0</span></div>
-        </div>
-
-        <div class="note" id="noteBox"></div>
-        <div class="mono statline" id="statLine"></div>
-        <div class="btn-row" id="redActions"></div>
+      <div class="redbar">
+        <div><b class="mono" id="fragScore">0.00</b><span id="fragLabel">fragilidad</span></div>
+        <div><b class="mono" id="horasSinCubrir">0 h</b><span>sin cubrir</span></div>
+        <button class="btn-alert sm" id="nodeBtn">Apagar</button>
       </div>
+      <p class="note" id="noteBox"></p>
+      <div id="sc-body"></div>
     </div>
 
-    <div class="pane tight" data-sub-panel="territorio" hidden>
-      <div class="row-between top">
-        <div>
-          <div class="h-title">Hogares con un solo sostén</div>
-          <div class="sub" id="terrSub"></div>
-        </div>
-        <div class="bignum">
-          <div class="frag num" id="terrPct">0%</div>
-          <div class="sub">sin relevo</div>
-        </div>
+    <div class="pane tight" data-sub-panel="mapa" hidden>
+      <div class="row-between">
+        <div class="sub" id="terrSub"></div>
+        <div class="bignum"><b class="mono" id="terrPct">0%</b><span class="sub"> un solo sostén</span></div>
       </div>
       <div class="mapwrap">
-        <svg id="map" role="img" aria-label="Mapa de la Ciudad de México con los hogares por alcaldía"></svg>
-        <div class="maplegend"><span><i class="ld r"></i>un solo sostén</span><span><i class="ld a"></i>relevo parcial</span><span><i class="ld n"></i>distribuida</span></div>
-        <button type="button" class="mapbtn" id="mapReset">⊙ centrar</button>
+        <svg id="map" role="img" aria-label="Mapa de la Ciudad de México con los casos por alcaldía"></svg>
+        <div class="maplegend"><span><i class="ld r"></i>un sostén</span><span><i class="ld a"></i>parcial</span><span><i class="ld n"></i>distribuida</span></div>
+        <button type="button" class="mapbtn" id="mapReset">⊙</button>
         <div class="mapcard" id="mapCard" hidden></div>
       </div>
-      <div class="mono statline" id="mapNote"></div>
-      <div id="terrList"></div>
-      <div class="legendcol">
-        <span><i class="sq r"></i>un solo sostén, sin relevo (fragilidad ≥ 0.85)</span>
-        <span><i class="sq a"></i>un sostén con relevo parcial (0.60 – 0.85)</span>
-        <span><i class="sq n"></i>red distribuida (&lt; 0.60)</span>
-      </div>
-      <div class="mono statline">un punto por hogar cargado en esta app · no extrapolable</div>
+      <div class="mono statline">punto = caso, en el centro de su alcaldía · límites INEGI 2020</div>
+    </div>
+
+    <div class="pane tight" data-sub-panel="kpi" hidden>
+      <div class="simbanner">SIMULADO · prueba del circuito, no resultados</div>
+      <div id="kpi-body"></div>
+      <button class="btn-ghost wide" id="kpi-export">Exportar agregados (JSON)</button>
     </div>
   </section>
 
-  <!-- ============ 4. CONFIGURACIÓN ============ -->
-  <section class="screen" id="view-config" hidden>
+  <!-- ============ 4. AJUSTES ============ -->
+  <section class="screen" id="view-ajustes" hidden>
     <div class="pane">
-      <div class="h-title">Configuración</div>
-      <div class="sub">Cómo se calcula la compatibilidad y las horas de cuidado. Se guarda en este navegador.</div>
-
       <div class="card panel">
-        <div class="eyebrow">Pesos de compatibilidad</div>
-        <div id="cfg-weights"></div>
-        <p class="sub">Se normalizan; solo importa su proporción.</p>
-      </div>
-
-      <div class="card panel">
-        <div class="eyebrow">Parámetros</div>
-        <label class="fld">Umbral de compatibilidad: <b id="cfg-umbral-val"></b>
-          <input type="range" id="cfg-umbral" min="0" max="100" step="5">
+        <label class="fld">Distancia máxima: <b id="cfg-km-val"></b>
+          <input type="range" id="cfg-km" min="3" max="30" step="1">
         </label>
-        <label class="fld">Distancia máxima útil: <b id="cfg-km-val"></b>
-          <input type="range" id="cfg-km" min="5" max="60" step="1">
+        <label class="fld">Prestaciones sobre el costo: <b id="cfg-fp-val"></b>
+          <input type="range" id="cfg-fp" min="0" max="60" step="1">
         </label>
-        <label class="fld">Horas por semana por turno cubierto: <b id="cfg-ht-val"></b>
-          <input type="range" id="cfg-ht" min="5" max="40" step="1">
-        </label>
-        <p class="sub">Supuesto del prototipo: cuántas horas semanales de cuidado aporta un profesional por cada turno que cubre.</p>
+        <p class="sub">Factor de prestaciones por definir (Daniel).</p>
       </div>
-
-      <div class="card panel">
-        <div class="eyebrow">Revisión de solicitudes</div>
-        <p class="sub">Peticiones y profesionales que esperan revisión. Nada se publica ni se puede contratar hasta que se aprueba. El rol de revisión está simulado en el prototipo.</p>
-        <div id="cfg-revision" class="revlist"></div>
-      </div>
-
-      <div class="card panel">
-        <div class="eyebrow">Marco legal aplicado</div>
+      <details class="card panel">
+        <summary>Parámetros y fuentes</summary>
+        <ul class="params" id="cfg-params"></ul>
+      </details>
+      <details class="card panel">
+        <summary>Marco legal</summary>
         <ul class="marco" id="cfg-marco"></ul>
-        <p class="sub">Referencias orientativas. Confirma artículos y vigencia con el texto oficial o con asesoría jurídica; el prototipo no es asesoría legal.</p>
-      </div>
-
+      </details>
       <div class="card panel">
-        <div class="eyebrow">Datos</div>
         <p class="sub" id="cfg-stats"></p>
         <div class="btn-col">
-          <button class="btn-ghost" id="cfg-export">Exportar JSON</button>
+          <button class="btn-ghost" id="cfg-export">Exportar todo (JSON)</button>
           <button class="btn-ghost" id="cfg-import">Importar JSON</button>
           <input type="file" id="cfg-file" accept="application/json" hidden>
-          <button class="btn-ghost" id="cfg-seed">Restaurar datos de ejemplo</button>
+          <button class="btn-ghost" id="cfg-seed">Restaurar ejemplo</button>
           <button class="btn-ghost danger" id="cfg-clear">Borrar todo</button>
         </div>
       </div>
-
-      <div class="disclaimer">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 9v4m0 4h.01M10.29 3.86l-8.18 14.18A1 1 0 0 0 3 19.7h18a1 1 0 0 0 .89-1.66L13.71 3.86a1 1 0 0 0-1.72 0z"/></svg>
-        <p>Prototipo conceptual con datos sintéticos. El clasificador es un conjunto de reglas de demostración, no un modelo entrenado, y la fragilidad del hogar es un índice propio del prototipo.</p>
-      </div>
+      <p class="sub foot">Tasas de daño: ENASIC 2022, nacionales (probables para la CDMX). Fragilidad: índice propio del prototipo.</p>
     </div>
   </section>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-  <!-- ============ BARRA DE PESTAÑAS ============ -->
   <nav class="tabbar" role="tablist" aria-label="Secciones">
-    <button class="tabbtn" role="tab" id="tab-publicaciones" data-view="publicaciones">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      <span>Peticiones</span>
+    <button class="tabbtn" role="tab" id="tab-casos" data-view="casos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
+      <span>Necesito</span>
     </button>
-    <button class="tabbtn" role="tab" id="tab-contratar" data-view="contratar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="M16 5.2a3 3 0 0 1 0 5.6M17.5 14.3c2 .6 3 2.3 3 4.7"/></svg>
-      <span>Contratar</span>
+    <button class="tabbtn" role="tab" id="tab-relevos" data-view="relevos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="m16 11 2 2 4-4"/></svg>
+      <span>Puedo cuidar</span>
     </button>
-    <button class="tabbtn" role="tab" id="tab-grafo" data-view="grafo">
+    <button class="tabbtn" role="tab" id="tab-seguimiento" data-view="seguimiento">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4m0 0-5.5 5M12 11.5l5.5 5"/></svg>
-      <span>Redes</span>
+      <span>Seguimiento</span>
     </button>
-    <button class="tabbtn" role="tab" id="tab-config" data-view="config">
+    <button class="tabbtn" role="tab" id="tab-ajustes" data-view="ajustes">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
       <span>Ajustes</span>
     </button>
   </nav>
 </div>
 
-<!-- ============ Diálogo: nueva petición (clasificador → publicación) ============ -->
-<dialog id="dlg-pet">
-  <form id="form-pet" novalidate>
+<!-- ============ Detalle (caso o persona de relevo) ============ -->
+<dialog id="dlg-det">
+  <form method="dialog">
     <div class="handle" aria-hidden="true"></div>
-    <h3>Nueva petición</h3>
+    <div id="det-body"></div>
+    <div class="btn-row end sticky" id="det-acciones"></div>
+  </form>
+</dialog>
 
-    <div id="pet-gate">
-      <div class="eyebrow">Antes de empezar</div>
-      <p class="sub">Publicar una petición crea obligaciones de una persona empleadora del hogar. Responde para confirmar que puedes hacerlo.</p>
-      <label class="fld">Tu relación con la persona a cuidar
-        <select name="legit" id="gate-legit"></select>
-      </label>
-      <label class="check"><input type="checkbox" id="gate-mayor"><span>Soy mayor de 18 años</span></label>
-      <label class="check"><input type="checkbox" id="gate-emerg"><span>Hay una emergencia médica en este momento</span></label>
-      <p class="gate-msg" id="gate-msg" role="alert"></p>
-      <button type="button" class="btn-primary" id="gate-ok">Continuar</button>
-    </div>
+<!-- ============ Canalizar caso ============ -->
+<dialog id="dlg-caso">
+  <form id="form-caso" novalidate>
+    <div class="handle" aria-hidden="true"></div>
+    <h3>Canalizar caso</h3>
+    <label class="check emerg"><input type="checkbox" name="emergencia"><span>Emergencia médica ahora</span></label>
+    <p class="gate-msg emerg" id="caso-emerg" hidden>Llamar al 911. El programa no atiende emergencias.</p>
 
-    <div id="pet-body" hidden>
-    <div class="eyebrow">Pega una petición</div>
-    <textarea id="pet-texto" name="texto" rows="5" maxlength="1200" placeholder="Describe la situación con tus palabras…"></textarea>
-    <div class="btn-row">
-      <button type="button" class="btn-primary" id="pet-analizar">Analizar petición</button>
-      <button type="button" class="link" id="pet-manual">o llenar a mano</button>
-    </div>
-
-    <div class="eyebrow ej">Ejemplos</div>
-    <div class="chiprow" id="pet-ejemplos"></div>
-
-    <div id="pet-result" hidden></div>
-
-    <div id="pet-datos" hidden>
-      <div class="eyebrow sep">Datos de la publicación</div>
-      <label class="fld">Título
-        <input name="titulo" maxlength="80">
-      </label>
-      <label class="fld">Nombre de quien solicita
-        <input name="contacto" maxlength="60" autocomplete="off">
-      </label>
-      <div class="row3">
-        <label class="fld">Persona a cuidar
-          <input name="pnombre" maxlength="40" placeholder="Nombre">
+    <div id="caso-body">
+      <div class="eyebrow sep">Focalización</div>
+      <div class="row2">
+        <label class="fld">Horas de cuidado / sem
+          <input name="horas" type="number" min="0" max="168" inputmode="numeric">
         </label>
-        <label class="fld">Edad
-          <input name="pedad" type="number" min="0" max="120" inputmode="numeric">
-        </label>
-        <label class="fld">Parentesco
-          <select name="pparentesco" id="pet-parentesco"></select>
-        </label>
+        <div class="fld">Ayuda en comer, bañarse, moverse…
+          <div class="chips radio">
+            <label class="chip"><input type="radio" name="abvd" value="si"><span>Sí</span></label>
+            <label class="chip"><input type="radio" name="abvd" value="no"><span>No</span></label>
+          </div>
+        </div>
+      </div>
+      <div class="chips">
+        <label class="chip"><input type="checkbox" name="danoSalud"><span>Daño a su salud</span></label>
+        <label class="chip"><input type="checkbox" name="danoTrabajo"><span>Daño a su trabajo</span></label>
+      </div>
+      <div id="caso-prio-res"></div>
+
+      <div class="eyebrow sep">Quién cuida y a quién</div>
+      <div class="row-sx">
+        <div class="chips radio sxpick" data-sx="sexo"></div>
+        <input name="alias" maxlength="24" autocomplete="off" placeholder="Cuidadora (alias)" aria-label="Alias de la cuidadora">
+      </div>
+      <div class="row-sx">
+        <div class="chips radio sxpick" data-sx="psexo"></div>
+        <input name="palias" maxlength="24" autocomplete="off" placeholder="Persona cuidada (alias)" aria-label="Alias de la persona cuidada">
+        <input name="pedad" type="number" min="0" max="120" inputmode="numeric" placeholder="Edad" aria-label="Edad" class="edad">
       </div>
       <div class="row2">
-        <label class="fld">Tipo de cuidado
-          <select name="tipo" id="pet-tipo"></select>
-        </label>
-        <label class="fld">Perfil requerido
-          <select name="perfil">
-            <option value="cualquiera">Cualquiera</option>
-            <option value="cuidador">Cuidador/a</option>
-            <option value="enfermero">Enfermero/a</option>
-          </select>
-        </label>
+        <label class="fld">Alcaldía<select name="alcaldia" id="caso-alcaldia"></select></label>
+        <label class="fld">Parentesco<select name="prol" id="caso-parentesco"></select></label>
       </div>
+      <label class="fld">Situación<select name="grupo" id="caso-grupo"></select></label>
+      <div id="caso-apoyos"></div>
+      <button type="button" class="link" id="caso-add-apoyo">+ Otra persona que ayuda</button>
+
+      <div class="eyebrow sep">Paquete</div>
+      <div class="chips radio" id="caso-horas-pq"></div>
+      <div class="chips" data-name="dias"></div>
       <div class="row2">
-        <label class="fld">Zona
-          <select name="zona" id="pet-zona"></select>
-        </label>
-        <label class="fld">Presupuesto (MXN/h)
-          <input name="presupuesto" type="number" min="30" max="2000" step="5" inputmode="numeric" value="120">
-        </label>
+        <label class="fld">Inicio<input name="inicio" type="time" step="1800" value="09:00"></label>
+        <label class="fld">Paga<select name="pagador" id="caso-pagador"></select></label>
       </div>
-      <fieldset><legend>Necesidades</legend><div class="chips" data-name="necesidades"></div></fieldset>
-      <fieldset><legend>Turnos</legend><div class="chips" data-name="turnos"></div></fieldset>
-      <label class="fld">Urgencia
-        <select name="urgencia">
-          <option value="baja">Baja</option>
-          <option value="media" selected>Media</option>
-          <option value="alta">Alta</option>
-        </select>
-      </label>
+      <label class="fld" id="caso-pct-row">% subsidio<input name="pct" type="number" min="1" max="99" value="50" inputmode="numeric"></label>
+      <div class="chips" data-name="tareas"></div>
+      <div id="caso-pq-res"></div>
 
-      <div class="eyebrow sep">Red de apoyo</div>
-      <label class="fld">Horas por semana que cubre hoy quien solicita
-        <input name="horas" type="number" min="0" max="168" value="30" inputmode="numeric">
-      </label>
-      <div id="pet-apoyos"></div>
-      <button type="button" class="link" id="pet-add-apoyo">+ Agregar persona que ayuda</button>
-
-      <div class="eyebrow sep">Requisitos legales</div>
-      <label class="fld">Tu CURP
-        <input name="curp" id="pet-curp" maxlength="18" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="18 caracteres">
-      </label>
-      <label class="check" id="pet-acredita-row" hidden><input type="checkbox" name="acredita"><span id="pet-acredita-txt"></span></label>
-      <div class="checks">
-        <label class="check"><input type="checkbox" name="contrato"><span>Formalizaré un contrato por escrito con la persona contratada</span></label>
-        <label class="check"><input type="checkbox" name="imss"><span>Inscribiré a la persona contratada en el IMSS</span></label>
-        <label class="check"><input type="checkbox" name="condiciones"><span>Respetaré jornada, descansos y pago acordados</span></label>
-        <label class="check"><input type="checkbox" name="privacidad"><span>He leído el aviso de privacidad</span></label>
-        <label class="check"><input type="checkbox" name="sensibles"><span>Consiento el tratamiento de los datos de salud de la persona a cuidar, o cuento con su consentimiento</span></label>
-        <label class="check"><input type="checkbox" name="veracidad"><span>Declaro bajo protesta de decir verdad que los datos son ciertos</span></label>
-      </div>
-      <ul class="reqs" id="pet-reqs" aria-live="polite"></ul>
-      <p class="sub">La petición pasa a revisión antes de aparecer como abierta y de recibir candidatos. La plataforma intermedia: no es la persona empleadora.</p>
-    </div>
+      <div class="eyebrow sep">Consentimiento</div>
+      <label class="check"><input type="checkbox" name="inst"><span>Identidad validada por la institución</span></label>
+      <label class="check"><input type="checkbox" name="privacidad"><span>Aviso de privacidad entregado</span></label>
+      <label class="check"><input type="checkbox" name="sensibles"><span>Consiente datos de salud</span></label>
     </div>
 
     <p class="form-error" role="alert"></p>
     <div class="btn-row end sticky">
       <button type="button" class="btn-ghost" data-close>Cancelar</button>
-      <button type="submit" class="btn-primary" id="pet-publicar" disabled>Enviar a revisión</button>
+      <button type="submit" class="btn-primary" id="caso-ok" disabled>Canalizar</button>
     </div>
   </form>
 </dialog>
 
-<!-- ============ Diálogo: nuevo profesional ============ -->
-<dialog id="dlg-cui">
-  <form id="form-cui" novalidate>
+<!-- ============ Registrar persona de relevo ============ -->
+<dialog id="dlg-relevo">
+  <form id="form-relevo" novalidate>
     <div class="handle" aria-hidden="true"></div>
-    <h3>Registrar profesional</h3>
-    <label class="fld">Nombre
-      <input name="nombre" maxlength="60">
-    </label>
+    <h3>Puedo cuidar</h3>
+    <div class="row-sx">
+      <div class="chips radio sxpick" data-sx="sexo"></div>
+      <input name="nombre" maxlength="40" autocomplete="off" placeholder="Nombre" aria-label="Nombre">
+    </div>
     <div class="row2">
-      <label class="fld">Perfil
-        <select name="perfil">
-          <option value="cuidador">Cuidador/a</option>
-          <option value="enfermero">Enfermero/a</option>
+      <label class="fld">Alcaldía<select name="alcaldia" id="rel-alcaldia"></select></label>
+      <label class="fld">Certificación
+        <select name="certificacion">
+          <option value="certificada">Certificada</option>
+          <option value="en_proceso">En proceso</option>
+          <option value="no">No</option>
         </select>
       </label>
-      <label class="fld">Zona
-        <select name="zona" id="cui-zona"></select>
-      </label>
     </div>
-    <div class="row2">
-      <label class="fld">Tarifa (MXN/h)
-        <input name="tarifa" type="number" min="30" max="2000" step="5" value="100" inputmode="numeric">
-      </label>
-      <label class="fld">Años de experiencia
-        <input name="experiencia" type="number" min="0" max="50" value="1" inputmode="numeric">
-      </label>
+    <div class="chips" data-name="dias"></div>
+    <div class="row3 eq">
+      <label class="fld">Desde<input name="desde" type="time" step="1800" value="08:00"></label>
+      <label class="fld">Hasta<input name="hasta" type="time" step="1800" value="16:00"></label>
+      <label class="fld">Máx. h/sem<input name="horasMax" type="number" min="3" max="48" value="12" inputmode="numeric"></label>
     </div>
-    <fieldset><legend>Habilidades</legend><div class="chips" data-name="habilidades"></div></fieldset>
-    <fieldset><legend>Atiende a</legend><div class="chips" data-name="tipos"></div></fieldset>
-    <fieldset><legend>Turnos disponibles</legend><div class="chips" data-name="turnos"></div></fieldset>
+    <div class="chips" data-name="tareas"></div>
+    <input type="hidden" name="experiencia" value="0">
 
-    <div class="eyebrow sep">Requisitos legales</div>
-    <label class="fld">CURP
-      <input name="curp" maxlength="18" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="18 caracteres">
-    </label>
-    <label class="fld">Documento de identidad que presentarás
-      <select name="docId" id="cui-doc"></select>
-    </label>
-    <div id="cui-enf" hidden>
-      <label class="fld">Cédula profesional (7 u 8 dígitos)
-        <input name="cedula" inputmode="numeric" maxlength="8" autocomplete="off">
-      </label>
-      <label class="check"><input type="checkbox" name="alcance"><span>Ejerceré solo dentro del alcance de mi título y cédula</span></label>
-    </div>
-    <label class="fld">Fecha de expedición de tu carta de no antecedentes penales
-      <input name="antecedentesFecha" type="date">
-    </label>
+    <div class="eyebrow sep">Documentos</div>
+    <label class="fld">CURP<input name="curp" maxlength="18" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
     <div class="row2">
-      <label class="fld">Referencia (nombre)
-        <input name="refNombre" maxlength="60" autocomplete="off">
-      </label>
-      <label class="fld">Teléfono (10 dígitos)
-        <input name="refTel" type="tel" inputmode="numeric" maxlength="14" autocomplete="off">
-      </label>
+      <label class="fld">Identificación<select name="docId" id="rel-doc"></select></label>
+      <label class="fld">Carta de antecedentes<input name="antecedentesFecha" type="date"></label>
     </div>
-    <div class="checks">
-      <label class="check"><input type="checkbox" name="contrato"><span>Acepto que el trabajo se formaliza con contrato por escrito y afiliación al IMSS</span></label>
-      <label class="check"><input type="checkbox" name="privacidad"><span>He leído el aviso de privacidad</span></label>
-      <label class="check"><input type="checkbox" name="veracidad"><span>Declaro bajo protesta de decir verdad que mis datos y documentos son ciertos</span></label>
+    <div class="row2">
+      <label class="fld">Referencia<input name="refNombre" maxlength="60" autocomplete="off"></label>
+      <label class="fld">Teléfono<input name="refTel" type="tel" inputmode="numeric" maxlength="14" autocomplete="off"></label>
     </div>
-    <ul class="reqs" id="cui-reqs" aria-live="polite"></ul>
-    <p class="sub">Tu perfil no será visible ni contratable hasta que se revisen tus documentos.</p>
+    <label class="check"><input type="checkbox" name="contrato"><span>Contrato, IMSS y pago al piso legal</span></label>
+    <label class="check"><input type="checkbox" name="privacidad"><span>Aviso de privacidad leído</span></label>
+    <label class="check"><input type="checkbox" name="veracidad"><span>Mis datos son ciertos</span></label>
+    <ul class="reqs compact" id="rel-reqs" aria-live="polite"></ul>
 
     <p class="form-error" role="alert"></p>
     <div class="btn-row end sticky">
       <button type="button" class="btn-ghost" data-close>Cancelar</button>
-      <button type="submit" class="btn-primary" id="cui-enviar" disabled>Enviar a revisión</button>
+      <button type="submit" class="btn-primary" id="rel-ok" disabled>Enviar a revisión</button>
     </div>
   </form>
 </dialog>
 
-<!-- ============ Diálogo: formalizar contratación ============ -->
-<dialog id="dlg-hire">
-  <form id="form-hire" novalidate>
+<!-- ============ Asignar o cambiar relevo ============ -->
+<dialog id="dlg-asig">
+  <form id="form-asig" novalidate>
     <div class="handle" aria-hidden="true"></div>
-    <h3>Formalizar contratación</h3>
-    <p class="sub" id="hire-who"></p>
-    <div class="row2">
-      <label class="fld">Tarifa pactada (MXN/h)
-        <input name="tarifa" type="number" min="30" max="2000" step="5" inputmode="numeric">
-      </label>
-      <label class="fld">Modalidad
-        <select name="modalidad" id="hire-modalidad"></select>
-      </label>
+    <h3 id="asig-titulo">Asignar relevo</h3>
+    <div id="asig-body"></div>
+    <div id="asig-formal">
+      <label class="fld" id="asig-motivo-row" hidden>Motivo del cambio<input name="motivo" maxlength="120" autocomplete="off"></label>
+      <label class="check"><input type="checkbox" name="escrito"><span>Contrato por escrito</span></label>
+      <label class="check"><input type="checkbox" name="imss"><span>Alta en el IMSS</span></label>
     </div>
-    <div class="checks">
-      <label class="check"><input type="checkbox" name="escrito"><span>Firmaremos contrato por escrito antes de iniciar</span></label>
-      <label class="check"><input type="checkbox" name="imss"><span>La persona contratada será inscrita en el IMSS</span></label>
-      <label class="check"><input type="checkbox" name="descansos"><span>Se respetarán jornada, descanso semanal y pago</span></label>
-    </div>
-    <ul class="reqs" id="hire-reqs" aria-live="polite"></ul>
-    <p class="sub">Este registro no sustituye el contrato ni el alta ante el IMSS: solo confirma que ambas partes conocen esas obligaciones.</p>
     <div class="btn-row end sticky">
       <button type="button" class="btn-ghost" data-close>Cancelar</button>
-      <button type="submit" class="btn-primary" id="hire-ok" disabled>Confirmar contratación</button>
+      <button type="submit" class="btn-primary" id="asig-ok" disabled>Asignar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============ Confirmar o pedir motivo ============ -->
+<dialog id="dlg-msg">
+  <form id="form-msg" novalidate>
+    <div class="handle" aria-hidden="true"></div>
+    <p class="msg" id="msg-texto"></p>
+    <label class="fld" id="msg-input-row" hidden>Motivo<input id="msg-input" maxlength="160" autocomplete="off"></label>
+    <p class="form-error" id="msg-err" role="alert"></p>
+    <div class="btn-row end sticky">
+      <button type="button" class="btn-ghost" data-close>Cancelar</button>
+      <button type="submit" class="btn-primary" id="msg-ok">Aceptar</button>
+    </div>
+  </form>
+</dialog>
+
+<!-- ============ Exportar JSON ============ -->
+<dialog id="dlg-json">
+  <form method="dialog" novalidate>
+    <div class="handle" aria-hidden="true"></div>
+    <h3>Exportar</h3>
+    <p class="sub mono" id="json-nombre"></p>
+    <textarea id="json-txt" readonly spellcheck="false"></textarea>
+    <div class="btn-row end sticky">
+      <button type="button" class="btn-ghost" data-close>Cerrar</button>
+      <button type="button" class="btn-ghost" id="json-bajar">Descargar</button>
+      <button type="button" class="btn-primary" id="json-copiar">Copiar</button>
     </div>
   </form>
 </dialog>
@@ -464,8 +361,7 @@
 <script src="js/cdmx-alcaldias.js"></script>
 <script src="js/data.js"></script>
 <script src="js/legal.js"></script>
-<script src="js/matching.js"></script>
-<script src="js/clasificador.js"></script>
+<script src="js/relevo.js"></script>
 <script src="js/red.js"></script>
 <script src="js/app.js"></script>
 </body>
