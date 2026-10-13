@@ -1,0 +1,7 @@
+﻿chequeo,n_ageb,poblacion,pct_poblacion_cdmx
+AGEB urbanas en el Censo 2020,2433,9145632,99.3
+Excluidas: menos de 100 habitantes,55,1302,0.01
+Excluidas: algún indicador suprimido o no calculable,5,9332,0.1
+AGEB en el modelo,2373,9134998,99.19
+  ... con grado de rezago CONEVAL,2371,9127890,99.11
+  ... con polígono en el Marco 2025,2371,9127890,99.11
