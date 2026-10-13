@@ -1350,3 +1350,76 @@ Respaldo en `_to_delete/backup_pre_kpi_oferta_2026-10-07/`. Verificado en Chromi
 Archivos: `index.html`, `js/vistas/relevo.js`, `js/app/plegables.js`, `build_datos.py`, `js/datos/datos.js`, `datos_observatorio.json`. Respaldo en `_to_delete/backup_pre_relevo_lleno_2026-10-07/`. Verificado en Chromium a 1440, 2000 y 390 px (con ENIGH CDMX + CACEH + ≤10%), sin errores de JS ni desplazamiento horizontal. **Pendiente:** doble revisión, y decidir si en los hallazgos del Observatorio se publican los 5 anuncios del script 15 (no se incluyeron: la bitácora de anuncios sigue pendiente).
 
 **Ajuste (21:55).** A pedido de Omar, la ficha «ⓘ Lectura, fuente y precisión» de cada tarjeta deja de ser un plegable y pasa a ser un recorrido guiado (coachmark): el botón se resalta con un anillo y abre debajo un globo oscuro con «Paso N de 3», título, texto, puntos de avance (el actual más ancho y claro) y los botones «Omitir» y «Siguiente» («Listo» en el último paso). Los pasos son: 1) Cómo leerla (el texto que antes estaba en `.find`), 2) De dónde sale (Fuente, Archivo, Universo, Pregunta, Muestra…) y 3) Qué tan precisa es (Precisión, Advertencia, Método, Supuesto y notas sueltas como `#relIng`). Si la ficha no trae renglones de precisión, el paso 3 lo dice en lugar de inventar uno. Tarjetas sin `.find` tienen 2 pasos y conservan el rótulo «Fuente y precisión». El globo lee la ficha al abrirse, así que sigue los filtros y selectores. Se cierra con Omitir, Listo, Esc o clic fuera. Se hizo con CSS propio (paleta de `base.css`), no con Tailwind: el reset de Tailwind por CDN chocaría con los estilos del Observatorio. Los plegables fuera de tarjetas («Fuente y precisión» de los marcos de Inicio y «Cómo leer esta pestaña») no cambian. Sin cambios de cifras. Archivos: `js/app/coachmark.js` (nuevo), `js/app/plegables.js`, `css/componentes.css`, `index.html`. Respaldo en `_to_delete/backup_pre_coachmark_2026-10-07/`. Verificado en Chromium a 1280 y 420 px (17 tarjetas, recorrido completo, Esc, encuadre en pantalla), sin errores de JS.
+
+## 2026-10-08 (mañana, hora CDMX) — Pestaña ¿Dónde?: siluetas en las tarjetas, contexto estatal y zonas por AGEB
+
+**Siluetas (10:20–10:28).** Omar pidió algo parecido a una tarjeta de «Guerrero, índice de marginación 11». Primero se agregó una tarjeta nueva; Omar pidió no agregar cajas y usar las existentes. Se quitó la tarjeta y las tarjetas «Valor más alto / más bajo» (`#ext`) muestran ahora la silueta de la alcaldía y una frase con la unidad y la advertencia de la capa (15 asilos en Tlalpan: uno o dos cambian el orden; Milpa Alta tiene 0 asilos *registrados en el DENUE*; dependencia severa es conteo, no tasa).
+
+**Contexto estatal y zonas (10:30).** Omar pidió más gráficas en otra sección de ¿Dónde?, «referentes a zonas, o otro mapa escogiendo el estado». Eligió las tres opciones propuestas:
+1. Mapa de las 32 entidades con selector de indicador. Nueva sección 17 del notebook A: con `pobreza22.csv` (ENIGH 2022, programa del CONEVAL, fuente F23) se estiman por entidad seis indicadores de personas de 60+ con IC 90 % por diseño (linealización de Taylor, estratos `est_dis`, UPM `upm`). Todas las celdas tienen CV < 15 %. Validación: el mismo cálculo da 36.3 % de pobreza y 7.1 % de pobreza extrema nacionales, iguales a las del Comunicado 07/2023 del CONEVAL (consultado 08/10/2026). Se agrega el índice de marginación CONAPO 2020 (F22).
+2. «La CDMX frente al país»: las 32 entidades ordenadas con su IC 90 % y la banda nacional. La lectura de la CDMX solo afirma diferencia cuando los intervalos no se traslapan.
+3. «Zonas dentro de cada alcaldía»: cada AGEB urbana (CONEVAL 2020, `13_rezago_ageb_cdmx.csv`) como punto, por alcaldía, con promedio ponderado y rango p10–p90. Sin mapa porque el proyecto no tiene los polígonos de AGEB. Se excluyen 10 AGEB con datos suprimidos y 25 con menos de 100 habitantes.
+
+Hallazgo de paso: en CONAPO 2020 un índice de marginación **más bajo** significa **más** marginación. El «11» de la imagen de referencia es el IM_2020 de Guerrero (10.99), el valor más bajo del país. Una frase como «el más alto índice de marginación con 11» invierte el sentido; en el Observatorio se dice «más marginada».
+
+Contornos de los estados: `@svg-maps/mexico` 2.0.0 (CC BY 4.0), en `Frontend/vendor/svg-maps-mexico/` con `FUENTE.md`. Es un dibujo esquemático, no cartografía oficial.
+
+Qué NO permite afirmar: tendencias (un solo año), nada por alcaldía con la ENIGH, ni necesidad de cuidado (son condiciones de la población de 60+). La carencia de seguridad social del CONEVAL cuenta como cubiertas a las personas con pensión no contributiva.
+
+Archivos: `Analysis/A_oferta_y_territorio.ipynb` (sección 17), `Analysis/resultados/17_*.csv` (3), `Analysis/matrices/diccionario_observatorio.csv` (bloques `estados` y `zonas`), `Frontend/observatorio/build_datos.py`, `js/datos/*.js`, `datos_observatorio.json`, `index.html`, `js/vistas/territorio.js`, `js/vistas/territorio-estados.js` (nuevo), `css/graficas.css`, `css/vistas.css`. Las cifras que ya existían no cambiaron (se comparó `datos_observatorio.json` antes y después: solo se agregan `estados` y `zonas`). Verificado en Chromium a 1300 y 390 px, sin errores de JavaScript. **Pendiente: doble revisión por otra persona del equipo.**
+
+## 9 oct 2026 — Segundo modelo: tipología de AGEB urbanas (notebook D, sección 18) y su capa en el Observatorio
+
+Motivo: la UCA de Herramientas y Técnicas Avanzadas pide un modelo validado. El modelo 11 (focalización) responde «a quién», con datos nacionales; faltaba algo que informara «dónde» probar el relevo. Omar pidió un segundo modelo en notebook y luego sus gráficas en el Observatorio.
+
+Datos nuevos: Censo 2020 por AGEB urbana de la CDMX (INEGI), bajado del servidor del INEGI y verificado por SHA-256 (`Analysis/datos/censo2020_ageb/FUENTE.txt`); Marco Geoestadístico 2025 (capas `09a` y `09mun`). Antes el proyecto no tenía polígonos de AGEB ni variables demográficas por AGEB: la sección 13 solo traía el rezago del CONEVAL.
+
+Modelo: k-means sobre 9 indicadores del Censo en tres bloques (demanda de cuidado, cuidadoras en el hogar, capacidad de pago y acceso), fijados antes de modelar. k = 4 por estabilidad en 50 submuestras (criterio declarado antes de ver resultados). Comparado contra una regla de dos cortes (60+ × internet) y un índice de una dimensión (CP1).
+
+Hallazgos (cifras en `Analysis/resultados/18_tipologia_*.csv`):
+- La CDMX es un gradiente, no tipos naturales: la silueta real apenas supera la de una referencia sin grupos con la misma covarianza, y Ward y la mezcla gaussiana cortan distinto. Los tipos son una partición estable (ARI ≈ 0.97; 97.8 % de coincidencia al dejar fuera cada alcaldía), no un descubrimiento. Así debe decirse en la defensa.
+- Contra el índice CP1 el modelo agrega poco (R² 0.53 contra 0.49); lo concreto es separar el tipo envejecido (3) del central (4).
+- El 43.1 % de las personas de 60+ vive en el tipo 2; el tipo más envejecido en % (3) concentra el 18.7 %.
+- 36.7 % de las viviendas del tipo 1 y 25.4 % del tipo 2 no tienen internet: la app sola excluye a una parte grande de esas zonas.
+- 151 AGEB con 164,354 personas de 60+ tienen brecha de oferta (exploratorio; umbral convencional).
+
+Decisión pendiente del equipo: si el programa tendrá un canal sin internet o declarará la exclusión; y si la sede del piloto se elige en el tipo 2 (propuesta del notebook, no decisión).
+
+Qué NO permite afirmar: nada de personas (falacia ecológica); no se cruza con el modelo 11 (la ENASIC no tiene AGEB); no es acceso real (distancia en línea recta, sin precio ni cupo); datos de marzo de 2020.
+
+Archivos: `Analysis/D_tipologia_territorial_ageb.ipynb` (nuevo), `Analysis/resultados/18_*` (11), `Analysis/figuras/f11`–`f14`, `Analysis/README.md`, `ML/README.md` (corregido: decía que no había modelos), `Analysis/matrices/diccionario_observatorio.csv` (bloque `tipologia`), `Frontend/observatorio/build_datos.py`, `js/datos/datos.js`, `js/datos/geo-ageb.js` (nuevo), `datos_observatorio.json`, `index.html`, `js/vistas/territorio-tipologia.js` (nuevo), `css/graficas.css`, `README.md`. Las cifras que ya existían no cambiaron. **Pendiente: doble revisión por otra persona del equipo.**
+
+
+## 2026-10-08 (23:00) — La app se reestructura alrededor del relevo por horas (opción C)
+
+**Qué pidió Omar.** "Reestructura la app con la opción C."
+
+**Qué se hizo.** Se reescribió `Frontend/` (la app móvil, no el Observatorio) a partir de la copia del Project del 1 de octubre:
+- **Entrada.** Canalización por la institución con 3 preguntas (horas, ayuda en actividades básicas, daños). Se retira el clasificador de texto libre (`js/clasificador.js`).
+- **Focalización.** Regla ≥ 40 h/sem (notebook 11); con ayuda en actividades básicas, Prioridad 1. Las tasas de daño mostradas salen de `07_enasic_necesidad_vs_norma_estimaciones.csv` y se etiquetan como nacionales. Los casos bajo 40 h quedan "fuera de la regla" y la institución puede incluirlos con motivo escrito.
+- **Asignación.** Solo restricciones (aprobada, certificada, cercanía entre alcaldías, días, horario, cupo, tareas). Se propone una persona. Se retira la suma ponderada (`js/matching.js`).
+- **Paquete.** 3, 6, 9 o 12 h/sem, horario fijo, lista cerrada de tareas sin tareas clínicas, y quién paga (familia, subsidio o mixto).
+- **Costo.** Salario mínimo profesional de trabajo del hogar ($342.47) con divisor por tipo de jornada, igual que el script 15. Mes = 4.33 semanas, igual que el script 10. Prestaciones en 0 % hasta que se defina el factor.
+- **Seguimiento.** Llegada y salida, ausencias, incidentes en ambos sentidos, 2 preguntas semanales (cansancio y malas noches) y KPI operativos marcados SIMULADO, con exportación de agregados para el Observatorio.
+- **Datos personales.** La familia ya no captura CURP; la institución valida identidad fuera de la app. CURP, identificación y carta de antecedentes solo del lado "Puedo cuidar".
+- Red del hogar y territorio se conservan.
+
+**Verificado.** Prueba en navegador (Chromium sin interfaz): canalizar, proponer y asignar, caso nocturno sin propuesta (explica qué restricción falla), registro y aprobación de relevo, visita, respuesta semanal, incidente, KPI, redes, ajustes. Sin errores de JavaScript. Se probó con un mapa de prueba, no con `cdmx-alcaldias.js` real.
+
+**Pendiente.**
+1. Confirmar que `Frontend/` local no cambió después del 1 de octubre; si cambió, revisar antes de reemplazar.
+2. Daniel: vigencia del salario, arts. 60-61 de la LFT, factor de prestaciones para trabajo del hogar por horas y ley de datos aplicable según la institución.
+3. Definir qué certificación se exige a las personas de relevo.
+4. Quién paga: la app muestra el costo, pero la fuente del subsidio no existe.
+5. Instrumento de cansancio para el piloto (Zarit corto, validación en México por confirmar).
+6. Revisión del entregable por otra persona del equipo (doble revisión).
+
+**Por qué no se dejó el matching ponderado como opción.** Pertenecía a la hipótesis de "encontrar cuidadora", que la evidencia descartó el 22 de septiembre (desconocer servicios explica menos del 1 % de la no búsqueda). Las entradas anteriores sobre el matching se dejan tal cual, por la regla de historia real.
+
+## 2026-10-09 — Ajustes de interfaz a pedido de Omar
+
+- Menos texto: listas de una mirada; el detalle se abre al tocar cada caso o persona de relevo.
+- Íconos de mujer y hombre junto a cada nombre (se agrega `sexo` a casos y relevos; clave de almacenamiento `care-relevo-v2`). Nuevo KPI: % de cuidadoras mujeres.
+- Redes se integra a Seguimiento (Visitas · Caso · Mapa · KPI). La app queda con 4 pestañas.
+- Tres vistas de la lista de casos (lista, tarjetas, mosaico) para elegir una con el equipo.
+- `confirm()`/`prompt()` se sustituyen por diálogos propios para que funcione como artefacto de Claude.
