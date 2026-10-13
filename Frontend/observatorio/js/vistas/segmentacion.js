@@ -65,7 +65,7 @@
   var CMPL={horas40:'Cuida 40 h o más',dano:'Algún daño',dano_sinnec:'Daño entre "sin necesidad"',raz_necesidad:'"No tuve necesidad"',raz_hogar:'"El hogar cuida"',pref_casa:'Prefiere en casa',pref_no:'No contrataría',norma_familia:'La familia debe cuidar',unas_horas:'Acepta "unas horas"',no_residencia:'Rechaza residencia'};
   function cmpDraw(t){comparador('#ch-cmp-'+t,CMP[t])}
   $$('.seg-src').forEach(function(x){x.innerHTML=dl({Universo:'Personas cuidadoras de persona con discapacidad o 60+, nacional',Método:'Diseño muestral, IC al 90%; diferencia de cada segmento contra el resto de su misma dimensión',Advertencia:'Una dimensión a la vez; los cruces dejan muestras demasiado chicas',Lectura:'Color: % del segmento relativo al máximo de su renglón. ▲▼ marcan diferencia significativa contra el resto de la misma dimensión (IC 90%). Sin diferencia significativa no significa igual: con muestras chicas el intervalo es ancho. Son varias comparaciones al 90%, así que alguna marca puede ser casualidad. En dimensiones de dos categorías las dos columnas son espejo y no cuentan como dos hallazgos.',Archivo:esc(D.seg_fuente)})});
-  function refreshSeg(){renderFB();tiles('#segTiles-nec',CMP.nec);tiles('#segTiles-bar',['busco','raz_hogar','pref_casa','norma_familia']);
+  function refreshSeg(){renderFB();tiles('#segTiles-nec',CMP.nec);/* 8 oct 2026: sin cajas en Barreras */
     cmpDraw('nec');cmpDraw('bar');renderRaz();renderPref();}
   refreshSeg();
 })();

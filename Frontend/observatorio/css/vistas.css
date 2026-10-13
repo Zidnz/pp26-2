@@ -11,14 +11,15 @@
 .profiles{display:flex;flex-direction:column;gap:8px}
 .profiles span{font-size:13px;color:var(--on-shell-soft);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:6px 14px}
 .profiles b{color:#fff}
-.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:center;margin-top:18px}
-.reasons{display:grid;gap:12px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:stretch;margin-top:18px}
+.hero-grid>.hero-logo{align-self:center}
+.reasons{display:grid;gap:12px;grid-template-rows:1fr 1fr}
 /* Razones vivas (8 oct 2026): tarjeta de vidrio con borde degradado del color del logo, foco que sigue al cursor,
    cifra grande que cuenta y micrográfica dibujada con la misma cifra. Respaldo: _to_delete/backup_pre_razones_vivas_2026-10-08/ */
 .rz{--c:#7dd1c1;--c2:#a8e6d4;position:relative;isolation:isolate;overflow:hidden;border-radius:14px;padding:13px 15px 10px;
   background:linear-gradient(155deg,rgba(255,255,255,.10),rgba(255,255,255,.025) 62%);border:1px solid rgba(255,255,255,.08);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.07),0 14px 30px -20px rgba(5,8,20,.7);
-  transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s}
+  transition:transform .4s cubic-bezier(.2,.8,.2,1),box-shadow .4s;display:flex;flex-direction:column}
 .rz::before{content:"";position:absolute;inset:0;border-radius:inherit;padding:1px;pointer-events:none;opacity:.8;
   background:linear-gradient(140deg,var(--c2),transparent 42%,transparent 70%,color-mix(in srgb,var(--c2) 35%,transparent));
   -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude}
@@ -29,11 +30,14 @@
 .rz-h{display:flex;align-items:baseline;gap:9px}
 .rz-i{font:600 10.5px/1 var(--mono);letter-spacing:.08em;color:var(--c2)}
 .rz h3{font:700 14px/1.2 var(--sans);color:#fff;margin:0}
-.rz-m{display:flex;flex-wrap:wrap;align-items:flex-start;gap:4px 12px;margin-top:8px}
+.rz-m{display:flex;align-items:center;gap:12px;margin-top:8px}
 .rz-n{font:780 36px/.9 var(--sans);font-stretch:80%;letter-spacing:-.025em;color:#fff;white-space:nowrap;min-width:3.1ch}
 .rz-n small{font-size:.48em;font-weight:700;color:var(--c2);margin-left:2px}
-.rz-m p{flex:1 1 150px;font-size:12.5px;line-height:1.42;color:var(--on-shell-soft)}
-.rz-viz{display:block;width:100%;height:auto;margin-top:10px;overflow:visible}
+.rz-m p{flex:1 1 0;font-size:13px;line-height:1.35;color:var(--on-shell-soft);text-wrap:balance}
+.rz-viz{display:block;width:100%;height:auto;margin:12px 0 auto;overflow:visible}
+.rz-cap{font:600 8.6px var(--sans);fill:#fff;fill-opacity:.82}
+.rz-tag{font:700 8.6px var(--sans);fill:var(--c2)}
+.rz-t.hi{fill:#fff;font-weight:700}
 .rz-t{font:500 8.5px var(--mono);fill:var(--on-shell-faint)}
 .rz-v{font:700 9.5px var(--mono);fill:#fff}.rz-v.dim{fill:var(--on-shell-faint)}
 .rz-track{fill:rgba(255,255,255,.06)}
@@ -44,9 +48,11 @@
 .rz-brk{fill:none;stroke:var(--on-shell-faint);stroke-width:1}
 .rz-dot.a{fill:color-mix(in srgb,var(--c2) 55%,transparent)}.rz-dot.z{fill:rgba(255,255,255,.1)}
 .rz-dot.hot{fill:#FF8FA1;filter:drop-shadow(0 0 3px #FF8FA1)}
-.rz-f{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:9px;padding-top:7px;border-top:1px dashed rgba(255,255,255,.12)}
-.rz-p{font:500 9.5px/1.35 var(--mono);color:var(--on-shell-faint)}
-.rz-go{appearance:none;border:0;background:none;padding:3px 0;font:650 11.5px var(--sans);color:var(--c2);white-space:nowrap}
+.rz-f{display:flex;align-items:center;gap:8px;margin-top:10px;cursor:help;padding-top:7px;border-top:1px dashed rgba(255,255,255,.12)}
+.rz-p{font:500 9.5px/1.35 var(--mono);color:var(--on-shell-faint);flex:1 1 auto;min-width:0}
+.rz-q{display:inline-flex;align-items:center;gap:4px;font:600 9px/1 var(--mono);text-transform:uppercase;letter-spacing:.05em;color:var(--on-shell-soft);white-space:nowrap}
+.rz-q i{width:7px;height:7px;border-radius:50%;background:#9aa0b4}.rz-q.ok i{background:#6FD3A8}.rz-q.mid i{background:#E7B65C}.rz-q.low i{background:#FF8FA1}
+.rz-go{appearance:none;border:0;background:none;padding:3px 0 3px 6px;cursor:pointer;font:650 11.5px var(--sans);color:var(--c2);white-space:nowrap}
 .rz-go:hover{text-decoration:underline;text-underline-offset:3px}
 /* Entrada: barras y columnas crecen, puntos aparecen en cascada (estado final sin JS = .rz-in) */
 .rz-a{transform-box:fill-box;transform-origin:left center;transform:scaleX(0);transition:transform 1s cubic-bezier(.2,.8,.2,1) calc(var(--d,0)*130ms + .15s)}
@@ -105,6 +111,13 @@
 .fr-card .chips{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
 .fr-go{border:0;background:none;margin-top:auto;padding:6px 4px 4px;font:700 13.5px var(--sans);color:var(--accent);text-decoration:underline;text-underline-offset:3px}
 .fr-go:hover{color:var(--ink)}
+/* 8 oct 2026: cierre del embudo con el resultado del modelo (antes en «Lo que encontramos») */
+.fr-modelo{margin-top:14px;display:grid;grid-template-columns:auto auto minmax(0,1fr) auto;align-items:center;gap:6px 20px;background:var(--fr-rim);border-radius:18px;padding:14px 20px;box-shadow:0 10px 26px var(--fr-shade);border-left:4px solid var(--accent)}
+.fm-k{font:700 15px/1.2 var(--sans)}
+.fm-n{font:760 30px/1 var(--sans);font-stretch:85%;color:var(--ink);white-space:nowrap}.fm-n small{font-size:.5em;color:var(--ink-faint)}
+.fr-modelo p{font-size:13.5px;line-height:1.45;color:var(--ink-soft)}
+.fm-a{display:flex;flex-direction:column;align-items:flex-end;gap:4px}.fm-a .fr-go{margin:0}
+@container (max-width:720px){.fr-modelo{grid-template-columns:auto minmax(0,1fr)}.fr-modelo p,.fm-a{grid-column:1/-1}.fm-a{flex-direction:row;justify-content:space-between;align-items:center}}
 .fr details.src{margin-top:14px}
 .fr.no3d .fr-stage{display:none}
 .fr.no3d .fr-cards{margin-top:20px}
@@ -125,7 +138,7 @@
 .ext b{font:740 22px/1 var(--sans);font-stretch:88%}
 
 /* Tarjetas «Valor más alto / más bajo» con silueta de la alcaldía y frase */
-.ext>div{display:grid;grid-template-columns:64px 1fr;gap:4px 12px;align-items:start}
-.ext .sil{grid-row:1/4}
+.ext .hd{display:flex;gap:12px;align-items:center}
+.ext .sil{flex:0 0 64px}
 .ext .sil svg{display:block;width:64px;height:48px}
-.ext .fr{grid-column:1/-1;font-size:12px;line-height:1.4;color:var(--ink-soft);margin-top:4px}
+.ext .ext-fr{font-size:12px;line-height:1.4;color:var(--ink-soft);margin-top:8px}
