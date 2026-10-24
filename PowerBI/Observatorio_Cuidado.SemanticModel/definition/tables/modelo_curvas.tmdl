@@ -1,0 +1,62 @@
+table modelo_curvas
+	lineageTag: 3d4feb2d-8161-559a-8298-2c8c0a10375f
+
+	measure 'Cobertura curva' = AVERAGE(modelo_curvas[cobertura])
+		formatString: 0.0\%
+		lineageTag: 71103c76-9a9c-5526-b4c0-10dd2740a0cb
+
+	column objetivo
+		dataType: string
+		lineageTag: aae89985-b7c9-554c-9e3a-6572cb5498d9
+		summarizeBy: none
+		sourceColumn: objetivo
+
+		annotation SummarizationSetBy = User
+
+	column puntaje
+		dataType: string
+		lineageTag: 94399423-9846-5094-a30f-379b8905e34c
+		summarizeBy: none
+		sourceColumn: puntaje
+
+		annotation SummarizationSetBy = User
+
+	column serie
+		dataType: string
+		lineageTag: f9021a98-adc7-5461-ba71-0206dd0012b0
+		summarizeBy: none
+		sourceColumn: serie
+
+		annotation SummarizationSetBy = User
+
+	column pct_seleccion
+		dataType: double
+		formatString: 0.00
+		lineageTag: 6000603d-f029-5308-9b26-0a9f88ea55f8
+		summarizeBy: none
+		sourceColumn: pct_seleccion
+
+		annotation SummarizationSetBy = User
+
+	column cobertura
+		dataType: double
+		formatString: 0.00
+		lineageTag: cc6404ed-128b-5ca9-9ebb-e937132c6e48
+		summarizeBy: none
+		sourceColumn: cobertura
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_curvas = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_curvas.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"objetivo", type text}, {"puntaje", type text}, {"serie", type text}, {"pct_seleccion", type number}, {"cobertura", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

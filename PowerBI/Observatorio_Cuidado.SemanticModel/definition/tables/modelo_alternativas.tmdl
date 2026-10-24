@@ -1,0 +1,173 @@
+table modelo_alternativas
+	lineageTag: 690caca9-8478-5c4d-a6d8-fcbc98e795fc
+
+	measure 'Dif cobertura vs regla' = AVERAGE(modelo_alternativas[dif_cobertura_vs_regla])
+		formatString: +0.0;-0.0;0.0
+		lineageTag: 652c0d3c-a9e6-593c-ab93-1255abc9a7d8
+
+	measure 'IC90 inf alt' = AVERAGE(modelo_alternativas[dif_li90])
+		formatString: 0.0
+		lineageTag: 9b5864ff-6062-50cf-a1f5-553bee2fa64f
+
+	measure 'IC90 sup alt' = AVERAGE(modelo_alternativas[dif_ls90])
+		formatString: 0.0
+		lineageTag: 08a4dbc1-dacc-5118-bebe-1899ea39f032
+
+	measure 'AUC alt' = AVERAGE(modelo_alternativas[auc_ponderado])
+		formatString: 0.000
+		lineageTag: 28152e98-e799-5c7c-bba3-bf87f5803064
+
+	measure 'Brier alt' = AVERAGE(modelo_alternativas[brier_ponderado])
+		formatString: 0.000
+		lineageTag: 24a2eb4a-489a-5707-b366-8d9abad83ee9
+
+	measure 'Cobertura alt' = AVERAGE(modelo_alternativas[cobertura])
+		formatString: 0.0\%
+		lineageTag: 99140beb-d0cf-50be-9901-b72c912a5165
+
+	measure 'Color alternativa' = SWITCH(MAX(modelo_alternativas[tipo]), "Elegido", "#A9711A", "Horas como puntaje", "#77689D", "#9A93AD")
+		lineageTag: a16033b9-626f-5d62-bdb4-357c751e3d79
+
+	column objetivo
+		dataType: string
+		lineageTag: 29091a7e-c395-535b-9733-1c7dac9de12d
+		summarizeBy: none
+		sourceColumn: objetivo
+
+		annotation SummarizationSetBy = User
+
+	column puntaje
+		dataType: string
+		lineageTag: b541f936-54b3-527a-800f-353de2d28cd9
+		summarizeBy: none
+		sourceColumn: puntaje
+
+		annotation SummarizationSetBy = User
+
+	column tipo
+		dataType: string
+		lineageTag: e9ecba39-af25-5a00-8ac6-496628fc7348
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = User
+
+	column auc_ponderado
+		dataType: double
+		formatString: 0.00
+		lineageTag: 704c3b4e-dfdb-597c-ad42-6c40a4ae9227
+		summarizeBy: none
+		sourceColumn: auc_ponderado
+
+		annotation SummarizationSetBy = User
+
+	column brier_ponderado
+		dataType: double
+		formatString: 0.00
+		lineageTag: 6d8118ca-882c-58f7-93aa-b7ed5c4b015c
+		summarizeBy: none
+		sourceColumn: brier_ponderado
+
+		annotation SummarizationSetBy = User
+
+	column brier_referencia
+		dataType: double
+		formatString: 0.00
+		lineageTag: fe32556c-280e-5ce0-9237-5d9ca39ee163
+		summarizeBy: none
+		sourceColumn: brier_referencia
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: double
+		formatString: 0.00
+		lineageTag: a72b37f9-3b70-52a4-b35e-d6d647956517
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column cobertura
+		dataType: double
+		formatString: 0.00
+		lineageTag: 3d2404a5-953d-5cd0-b85e-efc96540c79d
+		summarizeBy: none
+		sourceColumn: cobertura
+
+		annotation SummarizationSetBy = User
+
+	column cob_li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 2531e82f-55d2-5de1-aaff-cc54cd4ef7c6
+		summarizeBy: none
+		sourceColumn: cob_li90
+
+		annotation SummarizationSetBy = User
+
+	column cob_ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: e066f544-84d8-5b5e-b886-00dca46d236f
+		summarizeBy: none
+		sourceColumn: cob_ls90
+
+		annotation SummarizationSetBy = User
+
+	column dif_cobertura_vs_regla
+		dataType: double
+		formatString: 0.00
+		lineageTag: 64b6da47-15c7-54c1-8cea-fee67df01f1e
+		summarizeBy: none
+		sourceColumn: dif_cobertura_vs_regla
+
+		annotation SummarizationSetBy = User
+
+	column dif_li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 99124e59-df4e-522d-96cc-0c5d13f1e09c
+		summarizeBy: none
+		sourceColumn: dif_li90
+
+		annotation SummarizationSetBy = User
+
+	column dif_ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 6637517b-406b-5a68-a737-d5737b14be67
+		summarizeBy: none
+		sourceColumn: dif_ls90
+
+		annotation SummarizationSetBy = User
+
+	column admite_pesos
+		dataType: string
+		lineageTag: fca69636-c2b6-5c59-8d97-2b9c0dd6b003
+		summarizeBy: none
+		sourceColumn: admite_pesos
+
+		annotation SummarizationSetBy = User
+
+	column interpretable
+		dataType: string
+		lineageTag: c74405a1-d839-5192-bc5a-52e89733d1fe
+		summarizeBy: none
+		sourceColumn: interpretable
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_alternativas = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_alternativas.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"objetivo", type text}, {"puntaje", type text}, {"tipo", type text}, {"auc_ponderado", type number}, {"brier_ponderado", type number}, {"brier_referencia", type number}, {"precision", type number}, {"cobertura", type number}, {"cob_li90", type number}, {"cob_ls90", type number}, {"dif_cobertura_vs_regla", type number}, {"dif_li90", type number}, {"dif_ls90", type number}, {"admite_pesos", type text}, {"interpretable", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

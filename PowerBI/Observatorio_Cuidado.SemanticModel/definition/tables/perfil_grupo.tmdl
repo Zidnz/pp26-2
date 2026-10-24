@@ -1,0 +1,159 @@
+table perfil_grupo
+	lineageTag: b1af4e73-2526-5135-a331-63c450aa2065
+
+	measure 'Porcentaje perfil' = AVERAGE(perfil_grupo[pct])
+		formatString: 0.0\%
+		lineageTag: cee8b36a-ee2d-504c-842a-d7e2dcd82c1f
+
+	measure 'Dif perfil pp' = AVERAGE(perfil_grupo[dif_pp])
+		formatString: +0.0;-0.0;0.0
+		lineageTag: 3d67372b-cd82-5706-8513-e57cd20b92f9
+
+	measure 'n perfil' = MAX(perfil_grupo[n])
+		formatString: #,0
+		lineageTag: 3e086b6d-ebe8-5633-9c89-a71117b34b28
+
+	measure 'Precisión perfil' = MAX(perfil_grupo[precision])
+		lineageTag: 8a33e57b-ca87-55dd-abf8-76ce03712e77
+
+	measure '¿Difiere del resto?' = MAX(perfil_grupo[dif_significativa])
+		lineageTag: 686f1dac-b4dd-5ee3-a23d-189e8e70afa3
+
+	measure 'Orden perfil' = MIN(perfil_grupo[orden])
+		formatString: 0
+		lineageTag: 5083fb2c-55d1-5d3f-96e8-e64b72cc6908
+
+	column dimension
+		dataType: string
+		lineageTag: 545730a8-0608-58c4-8974-509d19e4b8c6
+		summarizeBy: none
+		sourceColumn: dimension
+
+		annotation SummarizationSetBy = User
+
+	column segmento
+		dataType: string
+		lineageTag: d6cb351b-d3d7-5b6a-96d1-516946f23836
+		summarizeBy: none
+		sourceColumn: segmento
+
+		annotation SummarizationSetBy = User
+
+	column poblacion
+		dataType: string
+		lineageTag: 574c8476-4b55-5823-b29c-b50da1721f93
+		summarizeBy: none
+		sourceColumn: poblacion
+
+		annotation SummarizationSetBy = User
+
+	column orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 0ef75602-7ca6-5639-8952-73b832dacfe9
+		summarizeBy: none
+		sourceColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: 1568ca0d-7453-5d30-94d0-0ab812b58513
+		summarizeBy: none
+		sourceColumn: pct
+
+		annotation SummarizationSetBy = User
+
+	column cv
+		dataType: double
+		formatString: 0.00
+		lineageTag: bdc5724e-80eb-51ec-8f59-0ee364274e73
+		summarizeBy: none
+		sourceColumn: cv
+
+		annotation SummarizationSetBy = User
+
+	column li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: c0910c29-9c1e-5266-a093-11c27dd5da15
+		summarizeBy: none
+		sourceColumn: li90
+
+		annotation SummarizationSetBy = User
+
+	column ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 93be7f6a-4323-519b-9aaa-5ffaf1ba48c3
+		summarizeBy: none
+		sourceColumn: ls90
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: 8faf7ed4-2380-5b7b-8da1-63dca2d67451
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: string
+		lineageTag: 67339da9-1eec-5e8d-98bb-adc27ad391b4
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column dif_pp
+		dataType: double
+		formatString: 0.00
+		lineageTag: 1a9603a9-7088-55c9-a59e-f3ed3074fa87
+		summarizeBy: none
+		sourceColumn: dif_pp
+
+		annotation SummarizationSetBy = User
+
+	column dif_li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 39024cd4-a953-5a4d-aff9-bc2fa51641ad
+		summarizeBy: none
+		sourceColumn: dif_li90
+
+		annotation SummarizationSetBy = User
+
+	column dif_ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: fc4d8969-b4d8-54bc-bb11-54aa828cd764
+		summarizeBy: none
+		sourceColumn: dif_ls90
+
+		annotation SummarizationSetBy = User
+
+	column dif_significativa
+		dataType: string
+		lineageTag: 8222c130-2376-5a3a-b591-b27c090bb5ab
+		summarizeBy: none
+		sourceColumn: dif_significativa
+
+		annotation SummarizationSetBy = User
+
+	partition perfil_grupo = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "perfil_grupo.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"dimension", type text}, {"segmento", type text}, {"poblacion", type text}, {"orden", Int64.Type}, {"pct", type number}, {"cv", type number}, {"li90", type number}, {"ls90", type number}, {"n", Int64.Type}, {"precision", type text}, {"dif_pp", type number}, {"dif_li90", type number}, {"dif_ls90", type number}, {"dif_significativa", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,189 @@
+table tipologia_tipos
+	lineageTag: 62c4a944-4ebe-58d6-98fd-86fe3b90eebf
+
+	measure 'De las personas 60+ (%)' = AVERAGE(tipologia_tipos[pct_de_las_60])
+		formatString: 0.0\%
+		lineageTag: 3bb61257-0de0-522d-b68d-b5971d28ade6
+
+	measure 'Viviendas sin internet (%)' = AVERAGE(tipologia_tipos[pct_viv_sin_int])
+		formatString: 0.0\%
+		lineageTag: 0cd3929d-a26f-57de-bb97-416e2b5ee0b8
+
+	measure '60+ a más de 1 km de la oferta (%)' = AVERAGE(tipologia_tipos[pct_60_a_mas_de_1km])
+		formatString: 0.0\%
+		lineageTag: 8c3ef0f6-2e43-5cf1-82e8-015b084d6af6
+
+	column tipo
+		dataType: int64
+		formatString: 0
+		lineageTag: 5eaa017e-1c52-5c5f-9353-2aeacae7360a
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = User
+
+	column nombre
+		dataType: string
+		lineageTag: 6b500302-1bf3-5a9e-9f02-147427270e09
+		summarizeBy: none
+		sourceColumn: nombre
+
+		annotation SummarizationSetBy = User
+
+	column tipo_txt
+		dataType: string
+		lineageTag: 7404dd75-ff7d-53ae-9cef-f34b68757363
+		summarizeBy: none
+		sourceColumn: tipo_txt
+		sortByColumn: tipo
+
+		annotation SummarizationSetBy = User
+
+	column n_ageb
+		dataType: int64
+		formatString: 0
+		lineageTag: 83c5611a-7c13-53ff-81d3-e4e6e12edfb4
+		summarizeBy: none
+		sourceColumn: n_ageb
+
+		annotation SummarizationSetBy = User
+
+	column poblacion
+		dataType: int64
+		formatString: 0
+		lineageTag: 06a26e35-03d6-53a4-a75e-b4eed0a054af
+		summarizeBy: none
+		sourceColumn: poblacion
+
+		annotation SummarizationSetBy = User
+
+	column pct_pob_cdmx
+		dataType: double
+		formatString: 0.00
+		lineageTag: 331e5b1f-9d8b-5049-8d82-8ac69f0c6ddc
+		summarizeBy: none
+		sourceColumn: pct_pob_cdmx
+
+		annotation SummarizationSetBy = User
+
+	column n_60
+		dataType: int64
+		formatString: 0
+		lineageTag: 965d732f-a588-5051-aa7b-e1d1d5c59488
+		summarizeBy: none
+		sourceColumn: n_60
+
+		annotation SummarizationSetBy = User
+
+	column pct_de_las_60
+		dataType: double
+		formatString: 0.00
+		lineageTag: 34d4effb-1b6d-5e9e-9f99-d97ef949e703
+		summarizeBy: none
+		sourceColumn: pct_de_las_60
+
+		annotation SummarizationSetBy = User
+
+	column pct_60
+		dataType: double
+		formatString: 0.00
+		lineageTag: 960cfb5a-fa5d-5576-9fb0-01066bab4b15
+		summarizeBy: none
+		sourceColumn: pct_60
+
+		annotation SummarizationSetBy = User
+
+	column n_disc
+		dataType: int64
+		formatString: 0
+		lineageTag: 75d81788-565d-5a0c-a218-9a0721cc78fc
+		summarizeBy: none
+		sourceColumn: n_disc
+
+		annotation SummarizationSetBy = User
+
+	column pct_sinder
+		dataType: double
+		formatString: 0.00
+		lineageTag: 2e56fed2-fef4-554a-b6ab-d5bbf5774966
+		summarizeBy: none
+		sourceColumn: pct_sinder
+
+		annotation SummarizationSetBy = User
+
+	column pct_viv_sin_int
+		dataType: double
+		formatString: 0.00
+		lineageTag: 6c9c6c18-1a74-536f-8c31-3098ed3a6d1e
+		summarizeBy: none
+		sourceColumn: pct_viv_sin_int
+
+		annotation SummarizationSetBy = User
+
+	column viviendas
+		dataType: int64
+		formatString: 0
+		lineageTag: f222d3f6-ca49-5b55-90cd-bca257a44ab4
+		summarizeBy: none
+		sourceColumn: viviendas
+
+		annotation SummarizationSetBy = User
+
+	column viviendas_sin_internet
+		dataType: int64
+		formatString: 0
+		lineageTag: e66fdf10-419c-5fd6-9aec-6e9ce16a625c
+		summarizeBy: none
+		sourceColumn: viviendas_sin_internet
+
+		annotation SummarizationSetBy = User
+
+	column dist_mediana_km
+		dataType: double
+		formatString: 0.00
+		lineageTag: 5a9d870b-2ab1-5f68-b720-d9bd7a571eef
+		summarizeBy: none
+		sourceColumn: dist_mediana_km
+
+		annotation SummarizationSetBy = User
+
+	column pct_60_a_mas_de_1km
+		dataType: double
+		formatString: 0.00
+		lineageTag: 5d6053a1-e893-5efb-b9b8-2769688a5ad7
+		summarizeBy: none
+		sourceColumn: pct_60_a_mas_de_1km
+
+		annotation SummarizationSetBy = User
+
+	column ageb_brecha
+		dataType: int64
+		formatString: 0
+		lineageTag: 2612275c-bf64-5c46-a7c2-674a93138225
+		summarizeBy: none
+		sourceColumn: ageb_brecha
+
+		annotation SummarizationSetBy = User
+
+	column n_60_brecha
+		dataType: int64
+		formatString: 0
+		lineageTag: cb051533-bf82-5ab7-83c2-637a278aba06
+		summarizeBy: none
+		sourceColumn: n_60_brecha
+
+		annotation SummarizationSetBy = User
+
+	partition tipologia_tipos = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "tipologia_tipos.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"tipo", Int64.Type}, {"nombre", type text}, {"tipo_txt", type text}, {"n_ageb", Int64.Type}, {"poblacion", Int64.Type}, {"pct_pob_cdmx", type number}, {"n_60", Int64.Type}, {"pct_de_las_60", type number}, {"pct_60", type number}, {"n_disc", Int64.Type}, {"pct_sinder", type number}, {"pct_viv_sin_int", type number}, {"viviendas", Int64.Type}, {"viviendas_sin_internet", Int64.Type}, {"dist_mediana_km", type number}, {"pct_60_a_mas_de_1km", type number}, {"ageb_brecha", Int64.Type}, {"n_60_brecha", Int64.Type}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

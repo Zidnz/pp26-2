@@ -1,0 +1,28 @@
+﻿variante,variable,descripcion,puntos
+completa,h40,Cuida 40 h o más a la semana,5
+completa,h80,Cuida 80 h o más (se suma a la anterior),0
+completa,abvd1,"Ayuda en 1 o más actividades básicas (comer, vestir, pañal, aseo, cama)",1
+completa,abvd3,Ayuda en 3 o más actividades básicas (se suma a la anterior),2
+completa,clin1,"Hace 1 o más tareas clínicas (medicinas, curaciones, terapia, tratamientos)",3
+completa,disc,Cuida a una persona con discapacidad,0
+completa,req,Necesita que otra persona le apoye para cuidar (P6.9.4 / P6.28.4),3
+completa,fuerza,Tiene dificultad para cuidar porque le falta fuerza física (P6.9.1 / P6.28.1),4
+completa,mujer,Es mujer,2
+completa,edad60,Tiene 60 años o más,0
+sin_fuerza,h40,Cuida 40 h o más a la semana,5
+sin_fuerza,h80,Cuida 80 h o más (se suma a la anterior),0
+sin_fuerza,abvd1,"Ayuda en 1 o más actividades básicas (comer, vestir, pañal, aseo, cama)",1
+sin_fuerza,abvd3,Ayuda en 3 o más actividades básicas (se suma a la anterior),2
+sin_fuerza,clin1,"Hace 1 o más tareas clínicas (medicinas, curaciones, terapia, tratamientos)",3
+sin_fuerza,disc,Cuida a una persona con discapacidad,0
+sin_fuerza,req,Necesita que otra persona le apoye para cuidar (P6.9.4 / P6.28.4),4
+sin_fuerza,mujer,Es mujer,2
+sin_fuerza,edad60,Tiene 60 años o más,0
+sin_fuerza_ni_apoyo,h40,Cuida 40 h o más a la semana,5
+sin_fuerza_ni_apoyo,h80,Cuida 80 h o más (se suma a la anterior),0
+sin_fuerza_ni_apoyo,abvd1,"Ayuda en 1 o más actividades básicas (comer, vestir, pañal, aseo, cama)",1
+sin_fuerza_ni_apoyo,abvd3,Ayuda en 3 o más actividades básicas (se suma a la anterior),3
+sin_fuerza_ni_apoyo,clin1,"Hace 1 o más tareas clínicas (medicinas, curaciones, terapia, tratamientos)",3
+sin_fuerza_ni_apoyo,disc,Cuida a una persona con discapacidad,0
+sin_fuerza_ni_apoyo,mujer,Es mujer,2
+sin_fuerza_ni_apoyo,edad60,Tiene 60 años o más,0

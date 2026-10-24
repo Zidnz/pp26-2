@@ -1,0 +1,101 @@
+table financiamiento
+	lineageTag: 4f93ba33-c018-5ddd-ad2d-0d19b7692384
+
+	measure 'Financiamiento anual (mdp)' = AVERAGE(financiamiento[mdp])
+		formatString: #,0.0
+		lineageTag: 9274ec7d-befc-56b6-9e32-5865fb59ad89
+
+	measure '% de la solicitud CDMX' = AVERAGE(financiamiento[pct_solicitud])
+		formatString: 0.00\%
+		lineageTag: 22db0e75-4bcc-5dd4-a4bc-ca222d72ee28
+
+	measure 'Solicitud CDMX 2026 (mdp)' = MAX(financiamiento[solicitud_mdp])
+		formatString: #,0.0
+		lineageTag: cf0adacc-b285-5926-98f4-b97fde7be7c5
+
+	measure 'Orden escenario' = MIN(financiamiento[escenario_orden])
+		formatString: 0
+		lineageTag: cab5ba42-88a9-5a01-87a5-f75fdecd0f53
+
+	column escenario
+		dataType: string
+		lineageTag: 8fb45049-3366-57a2-9140-ee76cdcadee2
+		summarizeBy: none
+		sourceColumn: escenario
+
+		annotation SummarizationSetBy = User
+
+	column escenario_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 824c4bae-bada-5d1d-807c-ab8d1f56a777
+		summarizeBy: none
+		sourceColumn: escenario_orden
+
+		annotation SummarizationSetBy = User
+
+	column opex
+		dataType: double
+		formatString: 0.00
+		lineageTag: aea875a9-4cd0-568f-bdce-aafb8946cead
+		summarizeBy: none
+		sourceColumn: opex
+
+		annotation SummarizationSetBy = User
+
+	column opex_txt
+		dataType: string
+		lineageTag: 6283df1f-6139-5247-8b19-61cdb2c0643b
+		summarizeBy: none
+		sourceColumn: opex_txt
+
+		annotation SummarizationSetBy = User
+
+	column mdp
+		dataType: double
+		formatString: 0.00
+		lineageTag: 62af7979-221f-545e-8cf4-4d961713b1e8
+		summarizeBy: none
+		sourceColumn: mdp
+
+		annotation SummarizationSetBy = User
+
+	column pct_solicitud
+		dataType: double
+		formatString: 0.00
+		lineageTag: eccce244-fa27-545c-9f45-b877d184ec92
+		summarizeBy: none
+		sourceColumn: pct_solicitud
+
+		annotation SummarizationSetBy = User
+
+	column solicitud_mdp
+		dataType: double
+		formatString: 0.00
+		lineageTag: ea16fe53-a71f-5db2-9f6b-8a431c4521a5
+		summarizeBy: none
+		sourceColumn: solicitud_mdp
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: e0b57810-a00c-5019-922b-9e63803d0c04
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	partition financiamiento = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "financiamiento.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"escenario", type text}, {"escenario_orden", Int64.Type}, {"opex", type number}, {"opex_txt", type text}, {"mdp", type number}, {"pct_solicitud", type number}, {"solicitud_mdp", type number}, {"fuente", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

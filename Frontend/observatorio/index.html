@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Observatorio del Cuidado</title>
+<link rel="icon" type="image/svg+xml" href="ilustraciones/logo_marca.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
@@ -11,7 +12,7 @@
 <link rel="stylesheet" href="css/layout.css">
 <link rel="stylesheet" href="css/componentes.css">
 <link rel="stylesheet" href="css/graficas.css">
-<link rel="stylesheet" href="css/vistas.css">
+<link rel="stylesheet" href="css/vistas.css?v=20261023d">
 </head>
 <body>
 
@@ -30,7 +31,6 @@
   </nav>
   <div class="side-foot">
     <div class="side-quote"><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 25.5s-8-4.9-8-10.6c0-2.9 2.1-5 4.6-5 1.5 0 2.6.8 3.4 2 .8-1.2 1.9-2 3.4-2 2.5 0 4.6 2.1 4.6 5 0 5.7-8 10.6-8 10.6z" fill="var(--mint)"/><path d="M4 27.5l5.6 6.2c1.3 1.4 3.1 2.3 5 2.3H24" fill="none" stroke="var(--lav)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M44 27.5l-5.6 6.2c-1.3 1.4-3.1 2.3-5 2.3H24" fill="none" stroke="var(--lav)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.5 31.5l5.4-4.3c1.4-1.1 3.4-1 4.7.2L23 30.5M38.5 31.5l-5.4-4.3c-1.4-1.1-3.4-1-4.7.2L25 30.5" fill="none" stroke="var(--lav)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg><p>El cuidado también es trabajo</p></div>
-    <div class="meta">Actualizado 6 oct 2026 · datos reales agregados<br><b>Pendiente de doble revisión</b></div>
   </div>
 </aside>
 
@@ -51,10 +51,9 @@
       <div class="profiles"><span><b>Necesito cuidado</b> · la cuidadora familiar pide relevo</span><span><b>Puedo cuidar</b> · cuidadoras verificadas con pago justo</span></div>
     </div>
     <div class="hero-grid">
-      <div class="reasons" id="reasons-a"></div>
       <div class="hero-logo"><div class="medallon" id="medallon"><img src="ilustraciones/logo_personajes.webp" width="710" height="669" alt="Ilustración: una cuidadora familiar descansa en un sillón con una taza mientras una cuidadora con uniforme lila acompaña a una mujer mayor con bastón"><!-- Versión anterior (emblema con aro, corazón y reloj; 7 oct 2026). Para regresar a ella, cambiar el <img> de arriba por este:
         <img src="ilustraciones/logo_cuidado.webp" width="710" height="724" alt="Ilustración: una cuidadora familiar descansa en un sillón con una taza mientras una cuidadora con uniforme lila acompaña a una mujer mayor con bastón, dentro de un aro verde y lila con un corazón arriba y un reloj abajo"> --></div><div class="medallon-sombra" aria-hidden="true"></div></div>
-      <div class="reasons" id="reasons-b"></div>
+      <div class="carrusel" id="carrusel"></div>
     </div>
     <div class="stats" id="stats"></div>
   </section>
@@ -66,8 +65,7 @@
         <h2 id="h-embudo">¿Cuántas personas están en el problema?</h2>
         <p id="embFind"></p>
       </div>
-      <div class="fr-stage"><canvas id="c3-embudo" aria-label="Cinco escenas con personajes, una por cada etapa del embudo del problema"></canvas></div>
-      <div class="fr-cards n5" id="cards-embudo"></div>
+      <div class="sel" id="sel-embudo"></div>
       <div class="fr-modelo" id="embudo-modelo"></div>
       <details class="src"><summary>Fuente y precisión</summary><dl id="src-embudo"></dl></details>
     </div>
@@ -80,8 +78,11 @@
 <section class="view" id="v-necesidad" role="tabpanel">
   <div class="vhead"><div><div class="kicker">Necesidad · nacional</div><h2>La carga crece con las horas; la necesidad declarada, no.</h2></div>
     <p>"No tuve necesidad" casi no cambia con la intensidad del cuidado. El daño declarado sí.</p></div>
+  <!-- 14 oct 2026 (noche): la barra «Segmentar por» vuelve y ahora filtra TODA la pestaña (sección 12b). La fila de KPI reacciona al filtro.
+       Respaldo: _to_delete/backup_pre_filtro_pestana_2026-10-14/ -->
   <div class="fbar" data-fb></div>
-  <div class="grid c4" id="segTiles-nec"></div>
+  <div class="grid c4" id="kpi-nec"></div>
+  <details class="src" style="margin-top:6px"><summary>Fuente y método de los indicadores</summary><dl id="src-kpi-nec"></dl></details>
   <div class="card" style="margin:18px 0">
     <h3>Comparar segmentos</h3>
     <div class="chart" id="ch-cmp-nec" data-chart></div>
@@ -97,9 +98,30 @@
     <div class="card">
       <h3>¿Cuánto cambia con más horas de cuidado?</h3>
       <p class="find">Diferencia en puntos porcentuales e intervalo al 90%. Si el intervalo cruza el cero, la diferencia no se distingue de 0.</p>
+      <div class="ctrls" id="ctrlDif"><div class="seg" id="segDif"><button data-d="h" aria-pressed="true" title="40 h o más frente a menos de 20 h">40 h vs. 20 h</button><button data-d="q" aria-pressed="false" title="Comprobación: cuartil de horas más alto frente al más bajo">Cuartiles</button></div></div>
       <div class="chart" id="ch-dif" data-chart></div>
       <details class="src"><summary>Fuente y precisión</summary><dl id="src-dif"></dl></details>
     </div>
+  </div>
+  <!-- 21 oct 2026: segmentación por clases latentes (notebook 23). No la recorta el filtro de la pestaña. Respaldo: _to_delete/backup_pre_seg23_observatorio_2026-10-21/ -->
+  <div class="card s23" style="margin-top:18px">
+    <div class="kicker" style="margin:0">Segmentación · clases latentes</div>
+    <h3>A las mismas horas, ¿quién declara más daño?</h3>
+    <p class="find" id="s23Find"></p>
+    <div class="chips"><span class="chip ev">exploratorio</span><span class="chip geo">nacional</span><span class="chip">no la recorta el filtro</span></div>
+    <div class="grid c21 s23-g">
+      <div>
+        <div class="ctrls"><div class="seg" id="s23Y" aria-label="Desenlace"></div><div class="seg" id="s23B" aria-label="Quién recibe el cuidado"></div></div>
+        <div class="chart" id="ch-s23" data-chart></div>
+        <div class="legend"><span><i style="background:#c0435a"></i>Dificultad en la tarea</span><span><i style="background:#b8b3c9"></i>Sin dificultad declarada</span><span>Rayado: menos de 30 casos, no se compara</span></div>
+      </div>
+      <div class="s23-side">
+        <div id="s23Tiles"></div>
+        <div class="s23-perf"><div class="kicker">Cómo se reconoce la clase</div><div class="chart" id="ch-s23p"></div></div>
+      </div>
+    </div>
+    <div class="note" id="s23Note"></div>
+    <details class="src"><summary>Fuente y precisión</summary><dl id="src-s23"></dl></details>
   </div>
   <div class="grid c2" style="margin-top:18px">
     <div class="card dark">
@@ -155,7 +177,7 @@
       <h3>¿Contratan más los hogares con más ingreso?</h3>
       <p class="find" id="qFind"></p>
       <div class="chart" id="ch-quintil" data-chart></div>
-      <div class="legend"><span><i style="background:#fff;border:2px solid #5d4d8f;border-radius:50%"></i>punto hueco: precisión baja</span></div>
+      <div class="legend"><span class="muted">Línea: IC 90 % (aprox. a partir del CV). Barra rayada: precisión baja, sin intervalo.</span></div>
       <details class="src"><summary>Fuente y precisión</summary><dl><dt>Universo</dt><dd>Hogares con persona con discapacidad o 60+, nacional</dd><dt>Archivo</dt><dd>Analysis/resultados/04_contratacion_por_quintil.csv</dd></dl></details>
     </div>
   </div>
@@ -178,7 +200,7 @@
 <!-- ======================= RELEVO ======================= -->
 <section class="view" id="v-relevo" role="tabpanel">
   <div class="vhead"><div><div class="kicker">Costos · nacional y CDMX</div><h2>Unas horas de cuidado pagado cuestan una fracción de la jornada completa.</h2></div>
-    <p><span class="chip p-moderada">sin prestaciones · jornada diurna</span> Los costos todavía no incluyen IMSS, aguinaldo ni vacaciones, ni la hora nocturna: la asequibilidad está sobreestimada.</p></div>
+    <p><span class="chip p-moderada">sin prestaciones · jornada diurna</span> Las gráficas de asequibilidad (script 10) todavía no incluyen IMSS, aguinaldo ni vacaciones, ni la hora nocturna: están sobreestimadas. La tarjeta de jornada ya muestra el costo con carga laboral (script 20, por confirmar).</p></div>
   <div class="grid c4" id="relTiles"></div>
   <div class="grid c21" style="margin-top:18px">
     <div class="card">
@@ -205,11 +227,24 @@
       <div class="note"><span>⚠</span><span id="relNo"></span></div>
     </div>
   </div>
-  <div class="card" style="margin-top:18px">
-    <h3>Si se subsidia: costo anual en la CDMX contra el presupuesto de cuidados</h3>
+  <!-- Ampliación del 13 oct 2026: costo por tipo de jornada (script 19). Bloque en js/vistas/relevo.js -->
+  <div class="grid c2 fila-relevo" style="margin-top:18px">
+  <div class="card" id="jorBloque">
+    <div class="kicker">Ampliación · 13 y 20 oct 2026</div>
+    <h3>¿Cambia el costo si el relevo es de noche o con carga laboral?</h3>
+    <p class="find" id="jorFind"></p>
+    <div class="ctrls"><div class="seg" id="segJor"><button data-h="3" aria-pressed="false">3 h/sem</button><button data-h="6" aria-pressed="true">6 h/sem</button><button data-h="9" aria-pressed="false">9 h/sem</button><button data-h="12" aria-pressed="false">12 h/sem</button></div><div class="seg" id="segCarga"><button data-c="1" aria-pressed="true">Sin carga</button><button data-c="2" aria-pressed="false">+ IMSS e Infonavit (22%)</button><button data-c="3" aria-pressed="false">+ aguinaldo y vacaciones</button></div></div>
+    <div class="chart" id="ch-jor" data-chart></div>
+    <details class="src"><summary>Fuente y precisión</summary><dl id="src-jor"></dl></details>
+  </div>
+  <div class="card">
+    <div class="kicker">Actualizado 20 oct 2026 · script 20</div>
+    <h3>Si se subsidia el relevo: financiamiento anual en la CDMX contra la solicitud de cuidados</h3>
     <p class="find" id="subFind"></p>
+    <div class="ctrls"><div class="seg" id="segOpex"><button data-o="0" aria-pressed="true">Operación $0</button><button data-o="250" aria-pressed="false">$250</button><button data-o="500" aria-pressed="false">$500</button><button data-o="1000" aria-pressed="false">$1,000 por hogar-mes</button></div></div>
     <div class="chart" id="ch-sub" data-chart></div>
     <details class="src"><summary>Fuente y precisión</summary><dl id="src-sub"></dl></details>
+  </div>
   </div>
 </section>
 
@@ -224,15 +259,67 @@
       <p class="find" id="grpFind"></p>
       <div class="ctrls"><div class="seg" id="segMod"><button data-m="Regresión logística" aria-pressed="true">Regresión logística</button><button data-m="Gradient boosting" aria-pressed="false">Gradient boosting</button></div></div>
       <div class="chart" id="ch-grupos" data-chart></div>
-      <div class="legend"><span><i style="background:#2a78d6;border-radius:50%"></i>Regla 40 h o más</span><span><i style="background:#eb6834;transform:rotate(45deg) scale(.85)"></i>Modelo</span><span class="muted">n en rojo: menos de 200 casos con daño</span></div>
+      <div class="legend"><span class="muted">Cobertura: % de las personas con daño que cada método selecciona (IC 90 % entre paréntesis). En rojo: menos de 200 casos con daño. Diferencia resaltada: 10 pp o más.</span></div>
       <details class="src"><summary>Fuente y precisión</summary><dl id="src-mod"></dl></details>
     </div>
     <div class="card">
       <h3>Qué asocia el modelo con el daño</h3>
       <p class="find">Coeficientes estandarizados de la regresión logística. Son asociaciones, no causas.</p>
       <div class="chart" id="ch-coef" data-chart></div>
-      <div class="legend"><span><i style="background:#c0435a"></i>Más probabilidad de declarar daño</span><span><i style="background:#23806f"></i>Menos</span></div>
+      <div class="legend"><span><i style="background:#c0435a"></i>Más probabilidad de declarar daño</span><span><i style="background:#23806f"></i>Menos</span><span class="muted">Sin intervalos: pendiente en el script 11.</span></div>
     </div>
+  </div>
+  <!-- Ampliación del 13 oct 2026: js/vistas/focalizacion-ampliado.js -->
+  <div class="card" style="margin-top:18px" id="m2Bloque">
+    <div class="kicker">Ampliación · 13 oct 2026</div>
+    <h3>¿Por qué estos dos modelos y qué tan bien funcionan?</h3>
+    <p class="find">Se probaron otras cinco familias de modelos con el mismo protocolo. Las cuatro gráficas de abajo cambian según el objetivo.</p>
+    <div class="ctrls"><div class="seg" id="segObj"><button data-o="DANO_ALGUNO" aria-pressed="true">Objetivo: algún daño</button><button data-o="DANO_SALUD_FISICA" aria-pressed="false">Objetivo: salud física deteriorada</button></div></div>
+  </div>
+  <div class="grid c2" style="margin-top:18px">
+    <div class="card">
+      <h3>Ocho formas de elegir, la misma cantidad de personas</h3>
+      <p class="find" id="altFind"></p>
+      <div class="chart" id="ch-alt" data-chart></div>
+      <div class="legend"><span><i style="background:#a9711a;border-radius:50%"></i>Elegidos</span><span><i style="background:#9a93ad;border-radius:50%"></i>Alternativas</span><span><i style="background:#77689d;border-radius:50%"></i>Horas como puntaje</span><span class="muted">pp contra la regla, IC 90 %</span></div>
+      <details class="src"><summary>Por qué regresión logística y gradient boosting</summary>
+        <ul class="list"><li><b>Pesos de la encuesta:</b> el modelo tiene que aceptar el factor de expansión. Por eso no se probó k vecinos (kNN): en scikit-learn no acepta pesos.</li><li><b>Muestra chica:</b> con 1,043 personas, un modelo con muchos parámetros memoriza la muestra.</li><li><b>Regresión logística, el modelo explicable:</b> un coeficiente por variable, probabilidades calibradas.</li><li><b>Gradient boosting, el techo flexible:</b> capta curvas e interacciones sin especificarlas. Si no supera a la logística, la flexibilidad no aporta.</li><li><b>Resultado:</b> la familia de modelo importa poco. El árbol de decisión de profundidad 3 rinde igual y se explica como un puñado de reglas.</li><li><b>Límite:</b> ningún modelo se afinó; la comparación es entre familias.</li></ul>
+        <div class="scroll-x"><table><thead><tr><th>Método</th><th>Tipo</th><th class="n">AUC</th><th class="n">Brier</th><th class="n">Cobertura</th><th>Admite pesos</th><th>Interpretable</th></tr></thead><tbody id="taltb"></tbody></table></div></details>
+    </div>
+    <div class="card">
+      <h3>¿A cuántas personas con daño llega, según el cupo?</h3>
+      <p class="find" id="curFind"></p>
+      <div class="chart" id="ch-cur" data-chart></div>
+      <div class="legend"><span><i style="background:#77689d"></i>Las horas más altas</span><span><i style="background:#a9711a"></i>Regresión logística</span><span><i style="background:#23806f"></i>Gradient boosting</span><span><i style="background:#2b3045;border-radius:50%"></i>Regla 40 h o más</span><span class="muted">punteada: al azar</span></div>
+      <details class="src"><summary>Tabla por cupo</summary><div class="scroll-x"><table><thead><tr><th class="n">Cupo</th><th class="n">Regla equivalente</th><th class="n">Horas</th><th class="n">Logística</th><th class="n">Diferencia (IC 90 %)</th></tr></thead><tbody id="tcupob"></tbody></table></div></details>
+    </div>
+  </div>
+  <div class="grid c2" style="margin-top:18px">
+    <div class="card">
+      <h3>¿Qué variables usa cada modelo?</h3>
+      <p class="find" id="impFind"></p>
+      <div class="chart" id="ch-imp" data-chart></div>
+      <div class="legend"><span><i style="background:#a9711a"></i>Regresión logística</span><span><i style="background:#23806f"></i>Gradient boosting</span><span class="muted">caída del AUC, en centésimas</span></div>
+    </div>
+    <div class="card">
+      <h3>¿Las probabilidades se pueden leer como porcentajes?</h3>
+      <p class="find" id="calFind"></p>
+      <div class="ctrls"><div class="seg" id="segCalMod"><button data-m="Regresión logística" aria-pressed="true">Regresión logística</button><button data-m="Gradient boosting" aria-pressed="false">Gradient boosting</button></div></div>
+      <div class="chart" id="ch-cal" data-chart></div>
+      <div class="legend"><span class="muted">Diagonal: calibración perfecta · puntos: deciles · línea vertical: IC 90 %</span></div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <div class="kicker">Decisión del equipo · los datos informan, no deciden</div>
+    <h3>¿Qué objetivo conviene: algún daño o salud física deteriorada?</h3>
+    <p class="find" id="objFind"></p>
+    <div class="grid c4" id="objTiles" style="margin-top:12px"></div>
+    <div class="grid c2" style="margin-top:14px;align-items:start">
+      <div><h3 style="font-size:14px">Cuánto sube cada daño con las horas</h3><div class="chart" id="ch-objh" data-chart></div><div class="legend"><span><i style="background:#77689d"></i>Algún daño</span><span><i style="background:#a9711a"></i>Salud física deteriorada</span><span class="muted">IC 90 %</span></div></div>
+      <div><h3 style="font-size:14px">A quién gana o pierde el modelo frente a la regla</h3><div class="chart" id="ch-objg" data-chart></div><div class="legend"><span><i style="background:#77689d"></i>Algún daño</span><span><i style="background:#a9711a"></i>Salud física</span><span class="muted">pp de cobertura; tenue: menos de 100 casos</span></div></div>
+    </div>
+    <details class="acc"><summary>Tabla de criterios</summary><div class="in scroll-x"><table><thead><tr><th>Criterio</th><th>Tipo</th><th>Algún daño</th><th>Salud física</th><th>Favorece</th></tr></thead><tbody id="tobjb"></tbody></table></div></details>
+    <details class="src"><summary>Fuente y precisión</summary><dl id="src-m2"></dl></details>
   </div>
   <details class="acc"><summary>Tabla completa de resultados</summary><div class="in scroll-x"><table id="tglob"><thead><tr><th>Método</th><th class="n">AUC</th><th class="n">Selecciona</th><th class="n">Precisión</th><th class="n">Cobertura (IC 90%)</th><th class="n">Diferencia vs. regla (IC 90%)</th></tr></thead><tbody></tbody></table></div></details>
   <details class="acc"><summary>Cuándo no debe usarse el modelo</summary><div class="in"><ul class="list" id="limMod"></ul></div></details>
@@ -269,14 +356,6 @@
       <div><div class="chart" id="ch-estados" style="margin-top:0" data-chart></div><p class="find" id="eCdmx" style="margin-top:8px"></p></div>
     </div>
     <details class="src"><summary>Fuente, precisión y validación</summary><dl id="src-est"></dl></details>
-  </div>
-  <div class="card" style="margin-top:18px">
-    <div class="kicker">CDMX · AGEB urbanas · CONEVAL 2020</div>
-    <h3>Zonas dentro de cada alcaldía: población sin derechohabiencia</h3>
-    <p class="find" id="zonasFind"></p>
-    <div class="chart" id="ch-zonas" data-chart></div>
-    <div class="legend" id="zonasLegend"></div>
-    <details class="src"><summary>Fuente, universo y lectura</summary><dl id="src-zonas"></dl></details>
   </div>
 
   <!-- Tipología de AGEB (segundo modelo, notebook D, sección 18): js/vistas/territorio-tipologia.js -->
@@ -325,15 +404,20 @@
     <p>Cuando un indicador no tiene fuente, aparece como "no medible" en lugar de llenarse con un supuesto.</p></div>
   <div class="seg" id="segKpi" style="margin-bottom:14px"></div>
   <div class="grid c4" id="kpiTiles"></div>
-  <details class="acc" style="margin-top:22px"><summary>Lista completa con definiciones y archivos</summary><div class="in"><div class="scroll"><table id="tkpi"><thead><tr><th>#</th><th>Dimensión</th><th>Indicador</th><th>Definición</th><th>Universo</th><th>Evidencia</th><th>Archivo</th></tr></thead><tbody></tbody></table></div></div></details>
+  <details class="acc" style="margin-top:22px"><summary>Lista completa con definiciones y archivos</summary><div class="in"><div class="scroll"><table id="tkpi"><thead><tr><th>#</th><th>Dimensión</th><th>Indicador</th><th>Definición</th><th>Universo</th><th>Evidencia</th><th>Origen</th></tr></thead><tbody></tbody></table></div></div></details>
 </section>
 
 <!-- ======================= MÉTODO ======================= -->
 <section class="view" id="v-metodo" role="tabpanel">
   <div class="vhead"><div><div class="kicker">Método</div><h2>Cada cifra dice de dónde sale y qué tan precisa es.</h2></div>
     <p>Ninguna cifra de este sitio se escribió a mano: <span class="mono" style="font-size:12.5px">build_datos.py</span> las lee de los archivos de resultados y arma la página.</p></div>
+  <div class="mdec">
+    <h3 class="mdec-t">Cada modelo responde a una decisión</h3>
+    <p class="mdec-p">Un modelo solo se queda si cambia una decisión del programa: dónde, a quién o en qué orden. Cada uno se compara con una alternativa simple, y si la alternativa lo iguala, se dice.</p>
+    <div class="grid c3" id="modDec"></div>
+  </div>
   <details class="acc"><summary>Fuentes de datos</summary><div class="in"><div class="scroll"><table id="tinv"><thead><tr><th>ID</th><th>Fuente</th><th>Emisor</th><th>Desagregación máxima</th><th>Periodo</th><th>Estado</th></tr></thead><tbody></tbody></table></div></div></details>
-  <details class="acc"><summary>Diccionario de variables y de la base</summary><div class="in"><p class="find" style="margin:0 0 10px">Archivo completo, con cada bloque de <span class="mono" style="font-size:12px">datos_observatorio.json</span>: <a id="dicLink" class="mono" style="font-size:12px"></a>. <span class="mono" style="font-size:12px">build_datos.py</span> se detiene si un bloque no está documentado.</p><div class="scroll-x"><table id="tdic"><thead><tr><th>Variable</th><th>Definición</th><th>Origen</th></tr></thead><tbody></tbody></table></div></div></details>
+  <details class="acc"><summary>Diccionario de variables y de la base</summary><div class="in"><p class="find" style="margin:0 0 10px">Archivo completo, con cada bloque de <span class="mono" style="font-size:12px">datos_observatorio.json</span>: <a id="dicLink" class="mono" style="font-size:12px"></a>. <span class="mono" style="font-size:12px">build_datos.py</span> se detiene si un bloque no está documentado.</p><div class="dic-bar"><div class="seg" id="dicVista" role="group" aria-label="Vista del diccionario"><button type="button" data-v="linaje" aria-pressed="true">Linaje</button><button type="button" data-v="tabla" aria-pressed="false">Tabla</button></div></div><div id="dicLinaje" class="dic-lin"></div><div id="dicTabla" hidden><div class="dic-tools"><input type="search" id="dicQ" placeholder="Buscar variable, pregunta o definición" aria-label="Buscar en el diccionario"><div class="dic-chips" id="dicChips" role="group" aria-label="Filtrar por grupo"></div></div><ul class="dic-list" id="dicList"></ul><p class="dic-vacio" id="dicVacio" hidden>Ninguna variable coincide con la búsqueda.</p></div></div></details>
   <details class="acc"><summary>Cómo leer la precisión</summary><div class="in"><div class="grid c4">
     <div class="light"><span class="chip p-alta">alta</span><span style="font-size:13px">CV &lt; 15%: hallazgo</span></div>
     <div class="light"><span class="chip p-moderada">moderada</span><span style="font-size:13px">CV 15–30%: con cautela</span></div>
@@ -354,7 +438,7 @@
 </section>
 </main>
 
-<footer><div class="wrap"><span>Observatorio del Cuidado · Proyecto integrador 7.º semestre LCDN · UNRC · 2026-2</span><span>Reproducir: python Frontend/observatorio/build_datos.py</span></div></footer>
+<footer><div class="wrap"><span>Observatorio del Cuidado · Proyecto integrador 7.º semestre LCDN · UNRC · 2026-2</span></div></footer>
 </div><!-- .content -->
 </div><!-- .shell -->
 
@@ -372,16 +456,19 @@
 <script src="js/graficas/ilustraciones.js"></script>
 <script src="js/vistas/inicio.js"></script>
 <script src="js/vistas/inicio-3d.js"></script>
+<script src="js/vistas/inicio-seleccion.js"></script>
 <script src="js/vistas/necesidad.js"></script>
 <script src="js/vistas/barreras.js"></script>
 <script src="js/vistas/segmentacion.js"></script>
 <script src="js/vistas/relevo.js"></script>
 <script src="js/vistas/focalizacion.js"></script>
+<script src="js/vistas/focalizacion-ampliado.js"></script>
 <script src="js/vistas/territorio.js"></script>
 <script src="js/vistas/territorio-estados.js"></script>
 <script src="js/vistas/territorio-tipologia.js"></script>
-<script src="js/vistas/indicadores.js"></script>
-<script src="js/vistas/metodo.js"></script>
+<script src="js/vistas/indicadores-formulas.js?v=20261023b"></script>
+<script src="js/vistas/indicadores.js?v=20261023b"></script>
+<script src="js/vistas/metodo.js?v=20261021b"></script>
 <script src="js/vistas/inicio-contadores.js"></script>
 <script src="js/app/coachmark.js"></script>
 <script src="js/app/plegables.js"></script>

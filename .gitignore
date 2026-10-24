@@ -39,25 +39,12 @@ desktop.ini
 # Archivos de bloqueo de Office
 ~$*
 
-# --- Agregado el 2026-10-08 al sincronizar el repositorio ---
-# Carpeta local de borradores y respaldos; nada de aquí se publica
+# --- Data warehouse (DW/): el almacén se regenera con DW/etl/run_etl.py ---
+DW/observatorio_dw.sqlite
+
+# --- Respaldos, temporales y empaquetados (agregado 2026-10-24) ---
+# Los respaldos viven fuera de git: el historial lo da git, la razón de cada cambio la bitácora.
 _to_delete/
+_respaldo_*/
 *.tgz
-*.tar.gz
-
-# Word y PDF viven fuera del repositorio (regla del proyecto: Word cita los
-# resultados, no los origina). Se versionan los generadores de Documentos/.
-*.docx
-Documentos/**/*.pdf
-
-# Restos de una práctica de C++ de 2015 que quedaron en Documentos/
-*.exe
-*.o
-Documentos/*.dev
-Documentos/*.layout
-Documentos/Makefile.win
-Documentos/main.cpp
-
-# Demo del 11 sept (MILPÍN): no pertenece a este proyecto y trae una clave fija
-scripts/app.py
-scripts/danita.html
+_obs_snapshot*

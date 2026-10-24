@@ -1,0 +1,96 @@
+table alcaldias_indicadores
+	lineageTag: d180f64a-aca3-5fea-944a-deb12da6e618
+
+	measure 'Valor alcaldía' = AVERAGE(alcaldias_indicadores[valor])
+		formatString: #,0.00
+		lineageTag: fb053efd-4c0a-5a12-ac9e-00e0de1698be
+
+	measure 'Conteo alcaldía' = SUM(alcaldias_indicadores[conteo])
+		formatString: #,0
+		lineageTag: 2c9491e2-05b2-5924-b278-247645aeb4f3
+
+	measure '% de la población 60+' = AVERAGE(alcaldias_indicadores[pct_pob60])
+		formatString: 0.0\%
+		lineageTag: ed0cec69-b8a7-53cd-9638-4559bb9c1239
+
+	column alcaldia
+		dataType: string
+		lineageTag: 5b123bec-0e22-5785-9a97-e096d4e6f735
+		summarizeBy: none
+		sourceColumn: alcaldia
+
+		annotation SummarizationSetBy = User
+
+	column indicador_clave
+		dataType: string
+		lineageTag: ab5ec768-575c-599b-b1e3-fae056055066
+		summarizeBy: none
+		sourceColumn: indicador_clave
+
+		annotation SummarizationSetBy = User
+
+	column indicador
+		dataType: string
+		lineageTag: 3636992b-5119-5fae-b268-e305a30a6ec9
+		summarizeBy: none
+		sourceColumn: indicador
+
+		annotation SummarizationSetBy = User
+
+	column indicador_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 1038337e-23c8-5c04-8b07-10e95ac11077
+		summarizeBy: none
+		sourceColumn: indicador_orden
+
+		annotation SummarizationSetBy = User
+
+	column valor
+		dataType: double
+		formatString: 0.00
+		lineageTag: c186d3a8-97f8-5363-a4f1-cf4885065dae
+		summarizeBy: none
+		sourceColumn: valor
+
+		annotation SummarizationSetBy = User
+
+	column conteo
+		dataType: int64
+		formatString: 0
+		lineageTag: 514c659d-c718-510d-8912-7a8fd198ce25
+		summarizeBy: none
+		sourceColumn: conteo
+
+		annotation SummarizationSetBy = User
+
+	column pct_pob60
+		dataType: double
+		formatString: 0.00
+		lineageTag: f2fe56d5-dd6a-549d-8dbf-fd95602c72c9
+		summarizeBy: none
+		sourceColumn: pct_pob60
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: 363d01d7-788b-582a-8e72-61a74309f870
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	partition alcaldias_indicadores = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "alcaldias_indicadores.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"alcaldia", type text}, {"indicador_clave", type text}, {"indicador", type text}, {"indicador_orden", Int64.Type}, {"valor", type number}, {"conteo", Int64.Type}, {"pct_pob60", type number}, {"fuente", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

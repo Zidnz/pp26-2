@@ -1,6 +1,6 @@
 /* Observatorio del Cuidado · js/vistas/territorio-estados.js
-   Pestaña «¿Dónde?», segunda parte: (1) mapa de las 32 entidades y la CDMX frente al país (ENIGH 2022, CONAPO 2020);
-   (2) zonas: AGEB urbanas dentro de cada alcaldía (CONEVAL 2020).
+   Pestaña «¿Dónde?», segunda parte: mapa de las 32 entidades y la CDMX frente al país (ENIGH 2022, CONAPO 2020).
+   (23 oct 2026: se quitó la gráfica de zonas por alcaldía, AGEB de CONEVAL 2020; respaldo en _respaldo_graficas_2026-10-23/)
    Importa de OBS: $, $$, FAINT, MONO, dl, ent, esc, fmt, prec, seg, svg
    Exporta a OBS:  — */
 (function(){
@@ -75,28 +75,4 @@
   }
   seg('#segEst','k',function(k){key=k;render()}); render();
 
-  /* ---------- Zonas: cada AGEB urbana dentro de su alcaldía ---------- */
-  var Z=D.zonas,GRS=['Muy bajo','Bajo','Medio','Alto','Muy alto'],GC={'Muy bajo':SEQ[0],'Bajo':SEQ[1],'Medio':SEQ[2],'Alto':SEQ[3],'Muy alto':SEQ[4]};
-  var por={};Z.ageb.forEach(function(a){(por[a[0]]=por[a[0]]||[]).push(a)});
-  function q(arr,p){var s=arr.slice().sort(function(a,b){return a-b}),i=(s.length-1)*p,l=Math.floor(i);return s[l]+(s[Math.min(l+1,s.length-1)]-s[l])*(i-l)}
-  var AL=Object.keys(por).map(function(n){var L=por[n],pw=0,sw=0;L.forEach(function(a){pw+=a[2];sw+=a[1]*a[2]});var v=L.map(function(a){return a[1]});return {n:n,L:L,m:sw/pw,p10:q(v,.1),p90:q(v,.9),k:L.length}}).sort(function(a,b){return b.m-a.m});
-  var W=900,rh=24,pt=16,pb=30,pl=150,pr=14,H=pt+pb+rh*AL.length,mxv=60;
-  function X(v){return pl+(W-pl-pr)*Math.min(v,mxv)/mxv}
-  var g=svg(W,H,'AGEB por alcaldía: porcentaje sin derechohabiencia');
-  for(var t=0;t<=mxv;t+=10)g+='<line x1="'+X(t)+'" x2="'+X(t)+'" y1="'+pt+'" y2="'+(H-pb)+'" stroke="rgba(63,71,96,.08)"/><text x="'+X(t)+'" y="'+(H-pb+14)+'" text-anchor="middle" '+MONO+' font-size="10" fill="'+FAINT+'">'+t+(t===mxv?'+':'')+'%</text>';
-  var seed=7;function rnd(){seed=(seed*16807)%2147483647;return seed/2147483647}
-  var fuera=0;
-  AL.forEach(function(a,i){var y=pt+i*rh+rh/2;
-    g+='<text x="'+(pl-8)+'" y="'+(y+3.5)+'" text-anchor="end" font-size="10.5" fill="rgba(43,48,69,.78)">'+esc(a.n)+'</text>';
-    g+='<line x1="'+X(a.p10)+'" x2="'+X(a.p90)+'" y1="'+y+'" y2="'+y+'" stroke="#5d4d8f" stroke-width="7" stroke-linecap="round" opacity=".14"/>';
-    a.L.forEach(function(z){if(z[1]>mxv)fuera++;g+='<circle cx="'+X(z[1]).toFixed(1)+'" cy="'+(y+(rnd()-.5)*(rh-8)).toFixed(1)+'" r="2.4" fill="'+GC[z[3]]+'" stroke="'+(z[3]==='Muy bajo'?'#b09fd3':'none')+'" stroke-width=".5" opacity=".85"/>'});
-    g+='<line x1="'+X(a.m)+'" x2="'+X(a.m)+'" y1="'+(y-rh/2+3)+'" y2="'+(y+rh/2-3)+'" stroke="#2b3045" stroke-width="2.2"><title>'+esc(a.n)+': promedio '+fmt(a.m)+'%, p10–p90 '+fmt(a.p10)+'–'+fmt(a.p90)+'%, '+a.k+' AGEB</title></line>'});
-  g+='<text x="'+(W-pr)+'" y="'+(H-4)+'" text-anchor="end" font-size="11" fill="'+FAINT+'">% de la población sin derechohabiencia, por AGEB →</text>';
-  $('#ch-zonas').innerHTML=g+'</svg>';
-  $('#zonasLegend').innerHTML=GRS.map(function(k){return '<span><i style="background:'+GC[k]+';'+(k==='Muy bajo'?'box-shadow:inset 0 0 0 1px #b09fd3':'')+'"></i>Rezago '+k.toLowerCase()+'</span>'}).join('')+'<span><i style="background:#2b3045;width:3px"></i>promedio ponderado</span><span><i style="background:rgba(93,77,143,.2)"></i>rango p10–p90</span>';
-  var rngIn=AL.map(function(a){return a.p90-a.p10}),rngMed=q(rngIn,.5),entre=AL[0].m-AL[AL.length-1].m;
-  $('#zonasFind').innerHTML='Dentro de una misma alcaldía, la distancia entre sus AGEB (p10 a p90, mediana <b>'+fmt(rngMed)+' puntos</b>) '+(rngMed>1.2*entre?'es mayor que':rngMed>=0.8*entre?'es comparable a':'es menor que')+' la distancia entre la alcaldía con mayor y menor promedio (<b>'+fmt(entre)+' puntos</b>). '+(rngMed>=0.8*entre?'El promedio de la alcaldía esconde zonas muy distintas.':'')+'';
-  $('#src-zonas').innerHTML=dl({Fuente:'CONEVAL, Índice de Rezago Social 2020 por AGEB urbana (i_sdsalud, grs)',Universo:ent(Z.ageb.length)+' de '+ent(Z.n_total)+' AGEB urbanas. Se excluyen '+Z.n_suprimidas+' con datos suprimidos y '+Z.n_chicas+' con menos de '+Z.min_pob+' habitantes (un porcentaje sobre pocas personas sale extremo).'+(fuera?' '+fuera+' AGEB con más de '+mxv+'% se dibujan en el borde.':''),
-    Lectura:'Contexto de vulnerabilidad, no necesidad de cuidado. Falacia ecológica: que una AGEB tenga cierto porcentaje no dice nada de un hogar concreto. Un solo corte (2020). El grado de rezago es relativo al país.',
-    'Por qué no hay mapa':'El proyecto no tiene los polígonos de las AGEB (Marco Geoestadístico del INEGI).',Archivo:esc(Z.fuente)});
 })();

@@ -114,3 +114,8 @@ details.acc .in{padding:0 18px 16px}
 .cm-pop :focus-visible{outline:2px solid var(--lav);outline-offset:2px}
 @keyframes cm-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.cm-pop{animation:none}.cm-dot,.cm-trigger{transition:none}}
+
+/* 14 oct 2026: resalte breve de la tarjeta a la que lleva un botón con data-ancla (pestanas.js) */
+@keyframes ancla-pulso{0%{box-shadow:0 0 0 0 rgba(139,88,201,.55)}100%{box-shadow:0 0 0 14px rgba(139,88,201,0)}}
+.ancla-on{animation:ancla-pulso 1.1s ease-out 2}
+@media (prefers-reduced-motion: reduce){.ancla-on{animation:none;outline:3px solid #8B58C9;outline-offset:3px}}

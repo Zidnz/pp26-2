@@ -1,0 +1,85 @@
+table inventario
+	lineageTag: 2379908e-a0dd-5ec3-96f2-c9ced45170d1
+
+	measure Fuentes = COUNTROWS(inventario)
+		formatString: #,0
+		lineageTag: e3896c8c-1539-5811-b313-4359bf76dab3
+
+	column id
+		dataType: string
+		lineageTag: d7c944e7-c023-5c17-b4b9-ac420a1a84a0
+		summarizeBy: none
+		sourceColumn: id
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: 54effa01-1ab7-5376-89e7-e1c9163f9df8
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	column emisor
+		dataType: string
+		lineageTag: 09068a67-44aa-5144-a864-94ecd1d3cbdb
+		summarizeBy: none
+		sourceColumn: emisor
+
+		annotation SummarizationSetBy = User
+
+	column desagregacion_geografica_maxima
+		dataType: string
+		lineageTag: f85d3651-7bff-501f-ad22-fdd0d94478be
+		summarizeBy: none
+		sourceColumn: desagregacion_geografica_maxima
+
+		annotation SummarizationSetBy = User
+
+	column periodo_cubierto
+		dataType: string
+		lineageTag: 49a6e5f3-3f87-5092-8185-03218d82effe
+		summarizeBy: none
+		sourceColumn: periodo_cubierto
+
+		annotation SummarizationSetBy = User
+
+	column estado_evidencia
+		dataType: string
+		lineageTag: 9e54ed9c-afae-55d9-9c8d-3c127fc00efc
+		summarizeBy: none
+		sourceColumn: estado_evidencia
+
+		annotation SummarizationSetBy = User
+
+	column estado_categoria
+		dataType: string
+		lineageTag: 21120c18-01a3-5365-8960-f6cf7d508795
+		summarizeBy: none
+		sourceColumn: estado_categoria
+
+		annotation SummarizationSetBy = User
+
+	column estado_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 9cdf4445-8d11-5f94-863a-5f528cc4b439
+		summarizeBy: none
+		sourceColumn: estado_orden
+
+		annotation SummarizationSetBy = User
+
+	partition inventario = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "inventario.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"id", type text}, {"fuente", type text}, {"emisor", type text}, {"desagregacion_geografica_maxima", type text}, {"periodo_cubierto", type text}, {"estado_evidencia", type text}, {"estado_categoria", type text}, {"estado_orden", Int64.Type}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

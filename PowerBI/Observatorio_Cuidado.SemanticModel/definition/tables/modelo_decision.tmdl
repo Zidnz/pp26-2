@@ -1,0 +1,65 @@
+table modelo_decision
+	lineageTag: 5f2a6324-2ec5-550b-85f1-1d1517a2f619
+
+	column orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 7b9790ca-998b-5ca7-8bdb-dedc07acfe04
+		summarizeBy: none
+		sourceColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column criterio
+		dataType: string
+		lineageTag: e53853a9-9e92-5b57-be40-a870d66520fd
+		summarizeBy: none
+		sourceColumn: criterio
+
+		annotation SummarizationSetBy = User
+
+	column tipo
+		dataType: string
+		lineageTag: 7d798adc-05fc-5fb3-af93-04afc5b73e12
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = User
+
+	column algun_dano
+		dataType: string
+		lineageTag: c0118b38-26e3-5c7e-a7f8-153353c8cbac
+		summarizeBy: none
+		sourceColumn: algun_dano
+
+		annotation SummarizationSetBy = User
+
+	column salud_fisica
+		dataType: string
+		lineageTag: fc93d342-0a86-5985-8fbd-05cf592bff63
+		summarizeBy: none
+		sourceColumn: salud_fisica
+
+		annotation SummarizationSetBy = User
+
+	column favorece
+		dataType: string
+		lineageTag: 1489ef1d-69f7-5e0b-a5ab-a40dd0f97acb
+		summarizeBy: none
+		sourceColumn: favorece
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_decision = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_decision.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"orden", Int64.Type}, {"criterio", type text}, {"tipo", type text}, {"algun_dano", type text}, {"salud_fisica", type text}, {"favorece", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

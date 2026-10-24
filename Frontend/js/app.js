@@ -1,10 +1,12 @@
-/* Interfaz del programa de relevo: casos, personas de relevo, seguimiento (con redes) y ajustes.
- * Listas de una mirada; el detalle se abre al tocar cada tarjeta. */
+/* Interfaz de Mientras: casos (con solicitud, entrevista y resultado), personas de relevo, seguimiento
+ * (programa, visitas, red, mapa, KPI) y ajustes. Listas de una mirada; el detalle se abre al tocar cada tarjeta.
+ * Cambio 20 oct 2026: la canalización con 3 preguntas y la regla de 40 h se sustituyen por solicitud con dos vías
+ * de entrada, entrevista de valoración, puntaje provisional, tres niveles y reparto de una bolsa de horas. */
 (function () {
   'use strict';
 
   Care.store.load();
-  const { ZONAS, GRUPOS, PARENTESCOS, TIPOS_INCIDENTE, store, red, legal, relevo: RV, fechas: F } = Care;
+  const { ZONAS, TIPOS_INCIDENTE, store, red, legal, relevo: RV, fechas: F, prioridad: PR, CONFIG_PROGRAMA: CP } = Care;
   const $ = (sel, root) => (root || document).querySelector(sel);
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
   const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
@@ -18,15 +20,16 @@
   const relById = (id) => store.state.relevos.find((r) => r.id === id);
   const diasTxt = (arr) => arr.slice().sort().map((d) => RV.DIAS[d]).join(' ');
   const hhmm = (s) => String(s).replace(/:00/g, '');
-  let estiloGuardado = 'lista';
-  try { estiloGuardado = localStorage.getItem('relevo-estilo') || 'lista'; } catch (e) { /* sin almacenamiento */ }
-  const ui = { estilo: estiloGuardado, view: 'casos', casoFiltro: 'todos', relFiltro: 'aprobada', segSub: 'hoy', dia: F.hoyISO(), scCaso: '', apagado: false, objetivo: null };
+  let rolGuardado = 'cuidadora';
+  try { rolGuardado = localStorage.getItem('mientras-rol') || 'cuidadora'; } catch (e) { /* sin almacenamiento */ }
+  const ui = { rol: rolGuardado, estilo: 'lista', view: 'casos', casoFiltro: 'todos', relFiltro: 'aprobada', segSub: 'prog', dia: F.hoyISO(), scCaso: '', apagado: false, objetivo: null };
 
   /* ---------- Íconos de persona (mujer / hombre) ---------- */
   const SX = {
     M: '<svg class="sx sx-m" viewBox="0 0 16 20" role="img" aria-label="mujer"><circle cx="8" cy="4" r="3.2"/><path d="M8 8.4c-2.4 0-3.6 1.6-4.1 3.6L2.6 16.4h3.1V20h4.6v-3.6h3.1L12.1 12C11.6 10 10.4 8.4 8 8.4z"/></svg>',
     H: '<svg class="sx sx-h" viewBox="0 0 16 20" role="img" aria-label="hombre"><circle cx="8" cy="4" r="3.2"/><path d="M4.6 8.6h6.8c.9 0 1.6.7 1.6 1.6v5h-2V20H5v-4.8H3v-5c0-.9.7-1.6 1.6-1.6z"/></svg>',
   };
+  const SEXO_TXT = { M: 'Mujer', H: 'Hombre' };
   const sx = (s) => SX[s] || '<svg class="sx sx-n" viewBox="0 0 16 20" role="img" aria-label="sin dato"><circle cx="8" cy="4" r="3.2"/><rect x="4" y="8.6" width="8" height="11.4" rx="2"/></svg>';
   const quien = (sexo, nombre, extra) => `<span class="who">${sx(sexo)}<span>${esc(nombre)}${extra ? `<small>${esc(extra)}</small>` : ''}</span></span>`;
 
@@ -71,7 +74,30 @@
   }
 
   /* ---------- Modelo derivado ---------- */
-  const prioDe = (c) => RV.prioridad(c.cuidadora.horas, c.cuidadora.abvd);
+  // Puntaje, nivel y horas NO se guardan: se calculan con config.js en cada render, así un cambio de pesos o de bolsa
+  // se refleja en todos los casos.
+  const NV_CSS = { alta: 'p1', media: 'p2', baja: 'np' }; // reutiliza los estilos de prioridad
+  const primeraAsignacion = (c) => (c.asignacion ? ((c.asignacion.historial || [])[0] || {}).desde || c.asignacion.fecha : null);
+  const bolsa = () => (cfg().bolsaSim != null ? cfg().bolsaSim : CP.presupuesto_horas_mes);
+  function valorar(entrevista, sexo, fecha, hasta) {
+    const v = PR.puntuar(Object.assign({}, entrevista.modelo, { sexo }), CP);
+    const ef = PR.puntajeEfectivo(v.base, PR.semanasEnCola(fecha, hasta || F.hoyISO()), CP);
+    return Object.assign(v, ef, { nivel: PR.nivel(ef.efectivo, CP), barthel: PR.totalBarthel(entrevista.barthel), zarit: PR.totalZarit(entrevista.zarit, CP), regla: PR.reglaHoras(entrevista.modelo.horas) });
+  }
+  const valDe = (c) => valorar(c.entrevista, c.cuidadora.sexo, c.fecha, primeraAsignacion(c));
+  const enPlan = (c) => c.estado !== 'cerrado' && c.entrevista;
+  /** Reparto de la bolsa entre todos los casos valorados que no están cerrados. `extra`: caso aún no guardado. */
+  function calcularPlan(extra) {
+    const cs = store.state.casos.filter(enPlan).map((c) => ({ id: c.id, efectivo: valDe(c).efectivo }));
+    if (extra) cs.push(extra);
+    const r = PR.asignarHoras(cs, CP, bolsa());
+    r.sem = {}; Object.keys(r.horas).forEach((id) => { r.sem[id] = PR.horasSemana(r.horas[id], CP); });
+    return r;
+  }
+  let plan = calcularPlan();
+  const horasDe = (c) => ({ mes: plan.horas[c.id] || 0, sem: plan.sem[c.id] || 0, cola: plan.en_cola.includes(c.id) });
+  const enRevision = (c) => !!(c.revision && c.revision.estado === 'pendiente');
+  const apelAbiertas = (c) => (c.apelaciones || []).filter((a) => a.estado === 'abierta');
   const evalDe = (c) => RV.evaluarPaquete(c.paquete, cfg().factorPrest);
   const proDe = (c) => {
     const r = c.estado === 'activo' && c.asignacion && relById(c.asignacion.relevoId);
@@ -79,20 +105,41 @@
   };
   const analisisHogar = (c, apagado) => red.analizar(c.hogar, proDe(c), apagado || null);
   const fragClase = (x) => (x >= 0.85 ? 'r' : x >= 0.6 ? 'a' : 'n');
-  const ESTADO = { espera: 'Espera', activo: 'Activo', fuera: 'Fuera de regla', cerrado: 'Cerrado' };
-  const PRIO_CORTO = { P1: 'P1', P2: 'P2', NP: '—' };
+  const ESTADO = { espera: 'En cola', activo: 'Con relevo', cerrado: 'Cerrado' };
   const CERT = { certificada: 'Certificada', en_proceso: 'En proceso', no: 'Sin certificar' };
-  const primeraAsignacion = (c) => (c.asignacion ? ((c.asignacion.historial || [])[0] || {}).desde || c.asignacion.fecha : null);
   const diasEntre = (a, b) => Math.round((F.desdeISO(b) - F.desdeISO(a)) / 86400000);
   const costoMes = (ev) => ev.mesConPrest || ev.mes;
+  const pts = (n) => (Math.round(n * 10) / 10).toLocaleString('es-MX');
+  const canalTxt = (c) => (c.canal_origen === 'referencia' ? `Referencia · ${c.referencia ? c.referencia.institucion : ''}` : 'Autorregistro');
+
+  /* Personajes (ilustraciones del Observatorio, sin copiarlas). Ver README: cuáles conviene reemplazar. */
+  const ILU = 'observatorio/ilustraciones/';
+  const PERSONAJE = {
+    bienvenida: ILU + 'logo_personajes.webp', alta: ILU + 'agotada.png', media: ILU + 'cuidadoraSilla.png',
+    baja: ILU + 'familia.png',
+  };
+  const personaje = (k, cls) => `<img class="personaje ${cls || ''}" src="${PERSONAJE[k]}" alt="" loading="lazy">`;
 
   /* ================= Navegación ================= */
-  const VIEWS = ['casos', 'relevos', 'seguimiento', 'ajustes'];
-  const TITULOS = { casos: 'Necesito cuidado', relevos: 'Puedo cuidar', seguimiento: 'Seguimiento', ajustes: 'Ajustes' };
+  /* Cada rol ve solo lo suyo (24 oct 2026). La cuidadora no ve casos de otras familias; la persona de relevo
+   * no ve a las demás personas de relevo; el programa ve todo. En el piloto, cada rol entraría con su cuenta. */
+  const VISTAS_ROL = { cuidadora: ['mia'], relevo: ['yo'], programa: ['casos', 'relevos', 'seguimiento', 'ajustes'] };
+  const VIEWS = VISTAS_ROL.programa;
+  const TITULOS = { mia: 'Necesito relevo', yo: 'Puedo cuidar', casos: 'Casos', relevos: 'Personas de relevo', seguimiento: 'Seguimiento', ajustes: 'Ajustes' };
+  const leerId = (k) => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
+  const guardarId = (k, v) => { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) { /* sin almacenamiento */ } };
+  function cambiarRol(rol) {
+    if (!VISTAS_ROL[rol]) rol = 'cuidadora';
+    ui.rol = rol;
+    try { localStorage.setItem('mientras-rol', rol); } catch (e) { /* sin almacenamiento */ }
+    show(VISTAS_ROL[rol][0]);
+  }
+  $('#rolbar').addEventListener('click', (e) => { const b = e.target.closest('button[data-rol]'); if (b) cambiarRol(b.dataset.rol); });
 
   function show(view) {
     if (view === 'redes') { view = 'seguimiento'; ui.segSub = 'caso'; }
-    if (!VIEWS.includes(view)) view = 'casos';
+    const permitidas = VISTAS_ROL[ui.rol] || VISTAS_ROL.cuidadora;
+    if (!permitidas.includes(view)) view = permitidas[0];
     ui.view = view;
     if (location.hash !== '#' + view) history.replaceState(null, '', '#' + view);
     render();
@@ -116,49 +163,41 @@
   }
 
   /* ================= 1. Casos ================= */
-  const ORDEN = { espera: 0, activo: 1, fuera: 2, cerrado: 3 };
+  const ORDEN = { espera: 0, activo: 1, cerrado: 2 };
   function renderCasos() {
     const { casos } = store.state;
-    const lista = casos.filter((c) => ui.casoFiltro === 'todos' || (ui.casoFiltro === 'otros' ? ['fuera', 'cerrado'].includes(c.estado) : c.estado === ui.casoFiltro))
-      .slice().sort((a, b) => ORDEN[a.estado] - ORDEN[b.estado] || prioDe(a).nivel.localeCompare(prioDe(b).nivel) || a.fecha.localeCompare(b.fecha));
+    const filtro = (c) => ui.casoFiltro === 'todos' ? c.estado !== 'cerrado' : ui.casoFiltro === 'revision' ? enRevision(c) || apelAbiertas(c).length > 0 : c.estado === ui.casoFiltro;
+    const lista = casos.filter(filtro).slice().sort((a, b) => ORDEN[a.estado] - ORDEN[b.estado] || valDe(b).efectivo - valDe(a).efectivo || a.fecha.localeCompare(b.fecha));
     const n = (e) => casos.filter((c) => c.estado === e).length;
-    $('#caso-count').innerHTML = `<b>${n('espera')}</b> en espera · <b>${n('activo')}</b> activos`;
+    const rev = casos.filter((c) => enRevision(c) || apelAbiertas(c).length).length;
+    $('#caso-count').innerHTML = `<b>${n('espera')}</b> en cola · <b>${n('activo')}</b> con relevo${rev ? ` · <b>${rev}</b> por revisar` : ''}`;
     $('#caso-list').innerHTML = lista.length ? lista.map(casoCard).join('') : '<div class="empty">Sin casos.</div>';
   }
 
   function casoCard(c) {
-    const p = prioDe(c);
-    const ev = evalDe(c);
+    const v = valDe(c), hz = horasDe(c), nv = NV_CSS[v.nivel];
     const r = c.asignacion && c.estado === 'activo' && relById(c.asignacion.relevoId);
     const inc = store.state.incidentes.filter((i) => i.casoId === c.id && i.estado === 'abierto').length;
+    const marcas = (enRevision(c) ? '<span class="badge alta">revisión</span>' : '') + (apelAbiertas(c).length ? '<span class="badge pendiente">apelación</span>' : '');
     let pie;
-    if (c.estado === 'espera') pie = `<span class="wait">${diasEntre(c.fecha, F.hoyISO())} d sin relevo</span><button type="button" class="btn-primary sm" data-action="proponer" data-id="${esc(c.id)}">Proponer</button>`;
-    else if (r) pie = `<span class="relv"><small>relevo</small>${quien(r.sexo, r.nombre)}</span>${inc ? `<span class="badge alta">${inc} incidente${inc > 1 ? 's' : ''}</span>` : ''}`;
+    if (c.estado === 'espera') pie = `<span class="wait${!hz.cola && !v.semanas ? ' nueva' : ''}">${hz.cola ? 'sin horas este ciclo' : v.semanas ? v.semanas + ' sem en cola' : 'Nueva'}</span>${marcas}<button type="button" class="btn-primary sm" data-action="proponer" data-id="${esc(c.id)}"${hz.cola ? ' disabled' : ''}>Asignar</button>`;
+    else if (r) pie = `<span class="relv"><small>relevo</small>${quien(r.sexo, r.nombre)}</span>${marcas}${inc ? `<span class="badge alta">${inc} incidente${inc > 1 ? 's' : ''}</span>` : ''}`;
     else pie = `<span class="wait">${ESTADO[c.estado]}</span>`;
-    const espera = c.estado === 'espera' ? ` · ${diasEntre(c.fecha, F.hoyISO())} d` : '';
-    return `<article class="card ccard s-${p.nivel.toLowerCase()}${['fuera', 'cerrado'].includes(c.estado) ? ' done' : ''}" data-action="ver-caso" data-id="${esc(c.id)}" tabindex="0" role="button" aria-label="Ver caso ${esc(c.folio)}">
-      <div class="chead"><span>${esc(p.nivel === 'NP' ? 'Fuera de regla' : p.nivel)} · ${ESTADO[c.estado]}${espera}</span><span class="mono">${esc(c.folio)}</span></div>
-      <div class="cbig"><b class="mono">${esc(c.cuidadora.horas)}<small>h</small></b><span>cuida por semana</span></div>
+    return `<article class="card ccard s-${nv}${c.estado === 'cerrado' ? ' done' : ''}" data-action="ver-caso" data-id="${esc(c.id)}" tabindex="0" role="button" aria-label="Ver caso ${esc(c.folio)}">
+      <div class="chead"><span>Nivel ${PR.NIVEL[v.nivel]} · ${ESTADO[c.estado]}</span><span class="mono">${esc(c.folio)}</span></div>
+      <div class="cbig"><b class="mono">${hz.mes}<small>h</small></b><span>al mes · ≈ ${hz.sem} h/sem</span></div>
       <div class="crow"><i class="pdot" aria-hidden="true"></i>
-        ${quien(c.cuidadora.sexo, c.cuidadora.alias)}<span class="arrow" aria-hidden="true">→</span>${quien(c.persona.sexo, c.persona.alias, c.persona.edad ? String(c.persona.edad) : '')}
-        <span class="badge pr ${p.nivel.toLowerCase()}" title="${esc(p.etiqueta)}">${PRIO_CORTO[p.nivel]}</span>
+        ${quien(c.cuidadora.sexo, c.cuidadora.alias)}<span class="arrow" aria-hidden="true">→</span>${quien(c.persona.sexo, c.persona.alias)}
+        <span class="badge pr ${nv}" title="Nivel ${PR.NIVEL[v.nivel]}">${pts(v.efectivo)}</span>
       </div>
-      <div class="facts f-cuida"><span><b>${esc(c.cuidadora.horas)} h</b> cuida</span><span>${c.cuidadora.abvd ? 'ABVD' : 'sin ABVD'}</span><span>${esc(c.alcaldia)}</span></div>
-      <div class="facts"><span><b>${c.paquete.horas} h</b> ${esc(diasTxt(c.paquete.dias))} ${esc(hhmm(ev.horario))}</span><span><b>${pesos(costoMes(ev))}</b>/mes</span></div>
+      <div class="facts f-cuida"><span><b>${pts(v.efectivo)}</b> pts${v.extra ? ` (${pts(v.base)} + ${pts(v.extra)} espera)` : ''}</span><span>${esc(canalTxt(c))}</span><span>${esc(c.alcaldia)}</span></div>
       <div class="cfoot">${pie}</div>
     </article>`;
   }
   segmento('#caso-filter', 'casoFiltro', renderCasos);
   function pintaEstilo() {
     $('#caso-list').className = 'list estilo-' + ui.estilo;
-    $$('#caso-estilo button').forEach((b) => { const on = b.dataset.estilo === ui.estilo; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
   }
-  $('#caso-estilo').addEventListener('click', (e) => {
-    const b = e.target.closest('button'); if (!b) return;
-    ui.estilo = b.dataset.estilo;
-    try { localStorage.setItem('relevo-estilo', ui.estilo); } catch (err) { /* sin almacenamiento */ }
-    pintaEstilo();
-  });
   pintaEstilo();
 
   /* ---------- Detalle de un caso (visual) ---------- */
@@ -170,52 +209,71 @@
     return `<div class="dots10">${Array.from({ length: 10 }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div>`;
   }
 
+  /* Bloque de explicación: los 3 factores que más pesaron, en lenguaje simple. Lo usan el detalle y el resultado. */
+  function factoresHTML(v) {
+    const top = v.top3.length ? v.top3.map((d) => `<li><b class="mono">+${d.puntos}</b><span>${esc(d.etiqueta)}</span></li>`).join('') : '<li><span>Ninguna respuesta sumó puntos.</span></li>';
+    return `<ol class="factores">${top}</ol>
+      ${v.extra ? `<p class="wk-n">Más ${pts(v.extra)} por ${v.semanas} semana${v.semanas === 1 ? '' : 's'} en cola (tope ${CP.envejecimiento.tope_envejecimiento}).</p>` : ''}
+      ${v.provisional ? '<p class="provisional">Puntaje provisional — modelo en validación</p>' : ''}`;
+  }
+
   function abrirCaso(id) {
     const c = casoById(id); if (!c) return;
-    const p = prioDe(c), ev = evalDe(c), a = analisisHogar(c);
+    const v = valDe(c), hz = horasDe(c), nv = NV_CSS[v.nivel];
     const r = c.asignacion && relById(c.asignacion.relevoId);
-    const total = costoMes(ev), fam = RV.pagoFamilia(ev, c.pagador, c.pctSubsidio);
-    const pf = total ? Math.round((100 * fam) / total) : 0;
     const hist = (c.asignacion && c.asignacion.historial) || [];
+    const ev = c.paquete ? evalDe(c) : null;
+    const total = ev ? costoMes(ev) : 0, fam = ev ? RV.pagoFamilia(ev, c.pagador, c.pctSubsidio) : 0;
+    const pf = total ? Math.round((100 * fam) / total) : 0;
+    const pref = c.paquete || c.preferencias;
     $('#det-body').innerHTML = `
-      <div class="hero h-${p.nivel.toLowerCase()}">
+      <div class="hero h-${nv}">
         <div class="hero-top"><span class="mono">${esc(c.folio)} · ${esc(c.alcaldia)}</span><span class="badge e-${c.estado}">${ESTADO[c.estado]}</span></div>
-        <div class="hero-who">${quien(c.cuidadora.sexo, c.cuidadora.alias, 'cuida')}<span class="arrow">→</span>${quien(c.persona.sexo, c.persona.alias, c.persona.edad ? c.persona.edad + ' años' : '')}</div>
-        <div class="hero-tags"><span class="pill-p">${esc(p.etiqueta)}</span><span class="pill-s">${esc(c.persona.grupo)}</span></div>
+        <div class="hero-who">${quien(c.cuidadora.sexo, c.cuidadora.alias, 'cuida')}<span class="arrow">→</span>${quien(c.persona.sexo, c.persona.alias)}</div>
+        <div class="hero-tags"><span class="pill-p">Nivel ${PR.NIVEL[v.nivel]}</span><span class="pill-s">${esc(canalTxt(c))}</span></div>
       </div>
       <div class="tiles">
-        ${tile(esc(c.cuidadora.horas) + '<small>h</small>', 'cuida / semana', '', `<em>${c.cuidadora.abvd ? 'con ABVD' : 'sin ABVD'}</em>`)}
-        ${tile(pesos(total), 'al mes', '', `<em>${ev.mesConPrest ? '+' + ev.factor + ' % prest.' : 'sin prest.'}</em>`)}
-        ${tile(f2(a.fragilidad), 'fragilidad', 'fr-' + fragClase(a.fragilidad), medidor(a.fragilidad))}
+        ${tile(pts(v.efectivo) + `<small>/${v.max}</small>`, 'puntaje efectivo', '', v.extra ? `<em>${pts(v.base)} + ${pts(v.extra)} espera</em>` : '<em>sin espera</em>')}
+        ${tile(hz.mes + '<small>h</small>', 'al mes', '', `<em>${hz.cola ? 'en cola: bolsa agotada' : '≈ ' + hz.sem + ' h/sem'}</em>`)}
+        ${tile(v.barthel == null ? '—' : String(v.barthel), 'Barthel', '', `<em>${esc(PR.nivelBarthel(v.barthel))}</em>`)}
       </div>
 
-      <section class="blk"><h5>Paquete · ${c.paquete.horas} h/sem</h5>
-        ${semana(c.paquete.dias, `<b>${esc(ev.horario)}</b> · jornada ${esc(ev.tipo)} · $${ev.hora.toFixed(2)}/h`)}
-        <div class="tags">${tags(c.paquete.tareas, 'alt')}</div>
+      ${enRevision(c) ? `<section class="blk revbox"><h5>Revisión humana pendiente</h5>
+        <ul class="motivos">${c.revision.motivos.map((m) => `<li>${esc(m.txt)}</li>`).join('')}</ul>
+        <p class="wk-n">El puntaje no se cambia de forma automática: una persona del programa revisa el caso.</p></section>` : ''}
+      ${c.revision && c.revision.estado === 'revisada' ? `<p class="wk-n">Revisado ${esc(c.revision.fechaResolucion)}: ${esc(c.revision.nota)}</p>` : ''}
+
+      <section class="blk"><h5>Por qué este puntaje</h5>${factoresHTML(v)}
+        <p class="wk-n">Regla de referencia (≥ 40 h/sem): <b>${v.regla === 'dentro' ? 'dentro' : 'fuera'}</b>. La tarjeta no la supera de forma demostrable (script 22).</p>
+        <p class="wk-n">Sobrecarga (Zarit): ${v.zarit == null ? 'sin capturar · reactivos pendientes de licencia' : v.zarit + ' / ' + CP.zarit.n_reactivos * CP.zarit.escala_max} · se usa para seguimiento, no para el puntaje.</p>
       </section>
 
-      <section class="blk"><h5>Quién paga · ${esc(RV.PAGADORES[c.pagador])}</h5>
+      ${apelAbiertas(c).length || (c.apelaciones || []).length ? `<section class="blk"><h5>Solicitudes de revisión</h5>
+        ${(c.apelaciones || []).map((a) => `<div class="inc"><span class="badge ${a.estado === 'abierta' ? 'pendiente' : 'aprobada'}">${a.estado === 'abierta' ? 'Abierta' : 'Resuelta'}</span><span>${esc(a.motivo)}<small>${esc(a.fecha)}${a.resolucion ? ' · ' + esc(a.resolucion) : ''}</small></span>${a.estado === 'abierta' ? `<button type="button" class="btn-ghost sm" data-action="resolver-ap" data-id="${esc(c.id)}" data-ap="${esc(a.id)}">Resolver</button>` : ''}</div>`).join('')}
+      </section>` : ''}
+
+      ${pref ? `<section class="blk"><h5>${c.paquete ? 'Paquete · ' + c.paquete.horas + ' h/sem' : 'Preferencias para el relevo'}</h5>
+        ${semana(pref.dias, ev ? `<b>${esc(ev.horario)}</b> · jornada ${esc(ev.tipo)} · $${ev.hora.toFixed(2)}/h` : `desde las ${esc(pref.inicio)}`)}
+        <div class="tags">${tags(pref.tareas, 'alt')}</div>
+        ${c.paquete && hz.sem && hz.sem !== c.paquete.horas ? `<p class="wk-n">El ciclo actual le da ${hz.sem} h/sem. Se aplica desde Seguimiento › Programa.</p>` : ''}
+      </section>` : ''}
+
+      ${ev ? `<section class="blk"><h5>Quién paga · ${esc(RV.PAGADORES[c.pagador])}</h5>
         <div class="split"><i class="fam" style="width:${pf}%"></i><i class="sub" style="width:${100 - pf}%"></i></div>
         <div class="split-l"><span><i class="fam"></i>Familia ${pesos(fam)}</span><span><i class="sub"></i>Subsidio ${pesos(total - fam)}</span></div>
-      </section>
+      </section>` : ''}
 
       <section class="blk"><h5>Relevo</h5>
-        ${r ? `<div class="slot ok">${quien(r.sexo, r.nombre, 'desde ' + c.asignacion.fecha.slice(5))}</div>` : '<div class="slot">Sin relevo asignado</div>'}
+        ${r && c.estado === 'activo' ? `<div class="slot ok">${quien(r.sexo, r.nombre, 'desde ' + c.asignacion.fecha.slice(5))}</div>` : '<div class="slot">El programa todavía no asigna relevo</div>'}
         ${hist.map((h) => `<p class="wk-n">Antes ${esc((relById(h.relevoId) || {}).nombre || '')}: ${esc(h.motivo)}</p>`).join('')}
       </section>
-
-      <section class="blk"><h5>Daño reportado</h5>
-        <div class="harm"><span class="${c.cuidadora.danoSalud ? 'on' : ''}">Salud</span><span class="${c.cuidadora.danoTrabajo ? 'on' : ''}">Trabajo</span></div>
-        <div class="enasic">${puntos(p.ref.pct)}<p><b>${Math.round(p.ref.pct / 10)} de cada 10</b> personas en su situación reportan daño · ENASIC 2022, nacional</p></div>
-      </section>
-      ${c.inclusion ? `<p class="wk-n">Incluido por criterio: ${esc(c.inclusion.motivo)}</p>` : ''}
       ${c.cierre ? `<p class="wk-n">Cerrado: ${esc(c.cierre.motivo)}</p>` : ''}`;
     const A = (act, txt, cls) => `<button type="button" class="${cls || 'btn-ghost'} sm" data-action="${act}" data-id="${esc(c.id)}">${txt}</button>`;
     let acc = '';
-    if (c.estado === 'espera') acc = A('cerrar', 'Cerrar caso') + A('proponer', 'Proponer relevo', 'btn-primary');
-    else if (c.estado === 'activo') acc = A('reasignar', 'Cambiar relevo') + A('seguir', 'Seguimiento', 'btn-primary');
-    else if (c.estado === 'fuera') acc = A('del-caso', 'Eliminar', 'btn-ghost danger') + A('incluir', 'Incluir por criterio', 'btn-primary');
-    else acc = A('del-caso', 'Eliminar', 'btn-ghost danger');
+    if (enRevision(c)) acc += A('revisado', 'Marcar revisado');
+    if (c.estado === 'espera') acc += A('cerrar', 'Cerrar caso') + (hz.cola ? '' : A('proponer', 'Asignar relevo', 'btn-primary'));
+    else if (c.estado === 'activo') acc += A('reasignar', 'Cambiar relevo') + A('seguir', 'Seguimiento', 'btn-primary');
+    else acc += A('del-caso', 'Eliminar', 'btn-ghost danger');
     $('#det-acciones').innerHTML = acc;
     $('#dlg-det').showModal(); $('#dlg-det').scrollTop = 0;
   }
@@ -224,6 +282,13 @@
   function abrirAsignacion(casoId, reasignar) {
     const c = casoById(casoId); if (!c) return;
     if ($('#dlg-det').open) $('#dlg-det').close();
+    // Primera asignación: el paquete sale de las horas del ciclo y de las preferencias de la solicitud.
+    if (!c.paquete) {
+      const hz = horasDe(c), pf = c.preferencias || { dias: [0], inicio: '09:00', tareas: [RV.TAREAS[0]] };
+      if (!hz.sem) { toast('Sin horas este ciclo: la bolsa no alcanza'); return; }
+      c.paquete = { horas: hz.sem, dias: pf.dias.slice(), inicio: pf.inicio, tareas: pf.tareas.slice() };
+      c.paqueteTemporal = true; // se descarta si se cancela la asignación
+    }
     const res = RV.proponer(c, store.state, cfg(), reasignar && c.asignacion ? [c.asignacion.relevoId] : []);
     ui.asig = { casoId, reasignar, relevoId: res.propuesta ? res.propuesta.r.id : null };
     $('#form-asig').reset();
@@ -259,6 +324,10 @@
     $('#asig-ok').disabled = !ok;
   }
   ['input', 'change'].forEach((ev) => $('#form-asig').addEventListener(ev, refreshAsig));
+  $('#dlg-asig').addEventListener('close', () => {
+    const c = ui.asig && casoById(ui.asig.casoId);
+    if (c && c.paqueteTemporal) { if (c.estado !== 'activo') delete c.paquete; delete c.paqueteTemporal; }
+  });
   $('#form-asig').addEventListener('submit', (e) => {
     e.preventDefault();
     if ($('#asig-ok').disabled || !ui.asig.relevoId) return;
@@ -266,6 +335,7 @@
     const c = casoById(ui.asig.casoId), r = relById(ui.asig.relevoId);
     const antes = analisisHogar(c).fragilidad;
     const formal = { escrito: true, imss: true, fecha: F.hoyISO() };
+    delete c.paqueteTemporal;
     if (ui.asig.reasignar) store.reasignar(c.id, r.id, d.motivo, formal); else store.asignar(c.id, r.id, formal);
     $('#dlg-asig').close();
     toast(`${r.nombre} asignada · fragilidad ${f2(antes)} → ${f2(analisisHogar(casoById(c.id)).fragilidad)}`);
@@ -327,12 +397,60 @@
   function renderSeguimiento() {
     $$('#view-seguimiento [data-sub-panel]').forEach((p) => { p.hidden = p.dataset.subPanel !== ui.segSub; });
     $$('#seg-sub button').forEach((b) => b.classList.toggle('on', b.dataset.sub === ui.segSub));
-    if (ui.segSub === 'hoy') renderDia();
+    if (ui.segSub === 'prog') renderPrograma();
+    else if (ui.segSub === 'hoy') renderDia();
     else if (ui.segSub === 'caso') renderSegCaso();
     else if (ui.segSub === 'mapa') drawTerritorio();
     else renderKPI();
   }
   segmento('#seg-sub', 'segSub', () => render());
+
+  /* ---------- Programa: bolsa, niveles, puntajes por canal, revisión y apelaciones ---------- */
+  function franjaPuntajes(vals, max) {
+    // Un punto por caso sobre la escala 0-max; la línea marca la mediana.
+    const W = 280, H = 40, x = (v) => 10 + ((W - 20) * v) / max;
+    const cuenta = {};
+    const puntos = vals.slice().sort((a, b) => a - b).map((v) => { const k = Math.round(v * 2) / 2; cuenta[k] = (cuenta[k] || 0) + 1; return `<circle cx="${x(v).toFixed(1)}" cy="${(30 - (cuenta[k] - 1) * 7).toFixed(1)}" r="3.4"/>`; }).join('');
+    const med = vals.length ? vals.slice().sort((a, b) => a - b)[Math.floor((vals.length - 1) / 2)] : null;
+    const cortes = [CP.umbrales.media, CP.umbrales.alta].map((u) => `<line class="corte" x1="${x(u)}" x2="${x(u)}" y1="2" y2="36"/>`).join('');
+    return `<svg class="franja" viewBox="0 0 ${W} ${H}" role="img" aria-label="Puntajes">${cortes}<line class="eje" x1="10" x2="${W - 10}" y1="36" y2="36"/>${med != null ? `<line class="med" x1="${x(med)}" x2="${x(med)}" y1="4" y2="36"/>` : ''}${puntos}</svg>`;
+  }
+  function renderPrograma() {
+    const s = store.state, cs = s.casos.filter(enPlan);
+    const vals = cs.map((c) => ({ c, v: valDe(c), h: horasDe(c) }));
+    const B = plan.presupuesto, minimos = cs.length * CP.horas_minimas;
+    const porNivel = ['alta', 'media', 'baja'].map((nv) => { const g = vals.filter((x) => x.v.nivel === nv); return { nv, n: g.length, h: g.length ? Math.round(g.reduce((t, x) => t + x.h.mes, 0) / g.length) : 0 }; });
+    const max = Object.values(CP.pesos).reduce((t, v) => t + Math.max(0, v), 0);
+    const canales = Object.keys(CP.canales).map((k) => {
+      const g = vals.filter((x) => x.c.canal_origen === k).map((x) => x.v.base);
+      const prom = g.length ? g.reduce((t, v) => t + v, 0) / g.length : null;
+      return `<div class="canal"><div class="row-between"><b>${esc(CP.canales[k])}</b><span class="mono sub">n = ${g.length}${prom != null ? ` · promedio ${pts(prom)} · baja ${g.filter((v) => v < CP.umbrales.media).length}` : ''}</span></div>${franjaPuntajes(g, max)}</div>`;
+    }).join('');
+    const rev = s.casos.filter(enRevision), aps = s.casos.filter((c) => apelAbiertas(c).length);
+    const lnk = (c, txt) => `<button type="button" class="linkrow" data-action="ver-caso" data-id="${esc(c.id)}"><span class="mono">${esc(c.folio)}</span><span>${esc(txt)}</span></button>`;
+    $('#prog-body').innerHTML = `
+      <div class="card panel">
+        <div class="eyebrow">Bolsa del mes${cfg().bolsaSim != null ? ' · simulada' : ''}</div>
+        <div class="bolsa"><b class="mono">${plan.usado}</b><span>de ${B} h asignadas</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${Math.min(100, pct(minimos, B))}%"></div><div class="bar-fill b2" style="width:${Math.max(0, Math.min(100, pct(plan.usado - Math.min(minimos, plan.usado), B)))}%"></div></div>
+        <p class="sub">${Math.min(minimos, B)} h son mínimos garantizados (${cs.length} × ${CP.horas_minimas} h) · el resto se reparte por puntaje · sobran ${plan.sobrante} h${plan.sobrante && !plan.en_cola.length ? ' (todos en el tope de ' + CP.horas_maximas + ' h)' : ''}.</p>
+        ${plan.capacidad_ok ? '' : `<div class="warnbox"><b>La bolsa no alcanza para los mínimos.</b> ${plan.en_cola.length} caso(s) quedan en cola sin horas este mes; su puntaje sigue subiendo por la espera.</div>`}
+      </div>
+      <div class="kpigrid">${porNivel.map((x) => `<div class="kpi nv-${x.nv}"><b class="mono">${x.n}</b><span>nivel ${PR.NIVEL[x.nv].toLowerCase()}</span><small>${x.h} h/mes en promedio</small></div>`).join('')}</div>
+      <div class="card panel">
+        <div class="eyebrow">Puntaje base por canal de origen</div>
+        <p class="sub">¿El autorregistro capta a cuidadoras de menor intensidad? Cada punto es un caso; líneas punteadas: cortes Media (${CP.umbrales.media}) y Alta (${CP.umbrales.alta}); línea sólida: mediana. Con pocos casos no se concluye nada.</p>
+        ${canales}
+      </div>
+      <div class="card panel">
+        <div class="eyebrow">Revisión humana · ${rev.length}</div>
+        ${rev.map((c) => lnk(c, c.revision.motivos[0].txt)).join('') || '<p class="sub">Ninguna.</p>'}
+        <div class="eyebrow sep">Solicitudes de revisión abiertas · ${aps.length}</div>
+        ${aps.map((c) => lnk(c, apelAbiertas(c)[0].motivo)).join('') || '<p class="sub">Ninguna.</p>'}
+      </div>
+      <button class="btn-ghost wide" data-action="aplicar-ciclo">Aplicar horas del ciclo a los casos con relevo</button>
+      <p class="sub foot">${s.ultimoCiclo ? 'Último ciclo aplicado: ' + esc(s.ultimoCiclo) + '. ' : ''}Puntajes de la tarjeta «${esc(CP.variante_tarjeta)}» (script 22), provisionales. Datos simulados.</p>`;
+  }
 
   function renderDia() {
     const hoy = F.hoyISO(), d = ui.dia, fecha = F.desdeISO(d);
@@ -536,9 +654,17 @@
     const conSexo = casos.filter((c) => c.cuidadora.sexo);
     return {
       casos_canalizados: casos.length,
-      pct_dentro_de_la_regla: pct(casos.filter((c) => prioDe(c).nivel !== 'NP').length, casos.length),
+      pct_dentro_de_la_regla_40h: pct(casos.filter((c) => c.entrevista && PR.reglaHoras(c.entrevista.modelo.horas) === 'dentro').length, casos.length),
+      casos_nivel_alta: casos.filter((c) => enPlan(c) && valDe(c).nivel === 'alta').length,
+      casos_nivel_media: casos.filter((c) => enPlan(c) && valDe(c).nivel === 'media').length,
+      casos_nivel_baja: casos.filter((c) => enPlan(c) && valDe(c).nivel === 'baja').length,
+      casos_autorregistro: casos.filter((c) => c.canal_origen === 'autorregistro').length,
+      casos_referencia: casos.filter((c) => c.canal_origen === 'referencia').length,
+      casos_en_revision_humana: casos.filter(enRevision).length,
+      apelaciones_abiertas: casos.reduce((t, c) => t + apelAbiertas(c).length, 0),
+      bolsa_horas_mes: plan.presupuesto,
+      horas_asignadas_mes: plan.usado,
       pct_cuidadoras_mujeres: pct(conSexo.filter((c) => c.cuidadora.sexo === 'M').length, conSexo.length),
-      incluidos_por_criterio: casos.filter((c) => c.inclusion).length,
       mediana_dias_canalizacion_a_asignacion: mediana(asignados.map((c) => diasEntre(c.fecha, primeraAsignacion(c)))),
       casos_en_espera: enEspera.length,
       max_dias_en_espera: enEspera.length ? Math.max(...enEspera.map((c) => diasEntre(c.fecha, hoy))) : 0,
@@ -563,10 +689,12 @@
     const k = calcularKPI();
     const t = (titulo, val, nota, warn) => `<div class="kpi${warn ? ' warn' : ''}"><b class="mono">${val == null ? '—' : esc(val)}</b><span>${esc(titulo)}</span>${nota ? `<small>${esc(nota)}</small>` : ''}</div>`;
     $('#kpi-body').innerHTML = `<div class="kpigrid">
-      ${t('casos', k.casos_canalizados, `${k.pct_dentro_de_la_regla} % en la regla`)}
+      ${t('casos', k.casos_canalizados, `${k.pct_dentro_de_la_regla_40h} % con ≥ 40 h`)}
+      ${t('niveles', `${k.casos_nivel_alta}·${k.casos_nivel_media}·${k.casos_nivel_baja}`, 'alta · media · baja')}
+      ${t('revisión', k.casos_en_revision_humana + k.apelaciones_abiertas, `${k.casos_en_revision_humana} chequeos · ${k.apelaciones_abiertas} apelaciones`, k.casos_en_revision_humana + k.apelaciones_abiertas > 0)}
       ${t('cuidadoras mujeres', k.pct_cuidadoras_mujeres + ' %')}
       ${t('en espera', k.casos_en_espera, `máx. ${k.max_dias_en_espera} d`, k.casos_en_espera > 0)}
-      ${t('días a asignar', k.mediana_dias_canalizacion_a_asignacion, 'mediana')}
+      ${t('días a asignar', k.mediana_dias_canalizacion_a_asignacion, 'mediana, de la valoración al relevo')}
       ${t('horas entregadas', `${k.pct_cumplimiento_28d} %`, `${k.horas_entregadas_28d}/${k.horas_programadas_28d} h · 28 d`)}
       ${t('puntualidad', k.pct_puntualidad_28d + ' %', '≤ 10 min')}
       ${t('ausencias', k.pct_ausencias_28d + ' %', '28 d', k.pct_ausencias_28d >= 10)}
@@ -615,8 +743,19 @@
       ['Hora mixta (÷ 7.5)', '$' + legal.HORA.mixta.toFixed(2), '< 3.5 h nocturnas'],
       ['Hora nocturna (÷ 7)', '$' + legal.HORA.nocturna.toFixed(2), '20:00-06:00 o ≥ 3.5 h nocturnas'],
       ['Semanas por mes', RV.SEMANAS_MES, 'como el script 10'],
-      ['Regla', `≥ ${RV.UMBRAL_HORAS} h/sem`, 'notebook 11'],
-      ['Tasas de daño', '79.6 / 70.5 / 54.9 / 42.6 %', 'resultados/07 · nacional'],
+      ['Regla de referencia', `≥ ${RV.UMBRAL_HORAS} h/sem`, 'notebook 11 · se muestra junto al puntaje'],
+    ].map(([a, b, n]) => `<li><span>${esc(a)}<small>${esc(n)}</small></span><b class="mono">${esc(b)}</b></li>`).join('');
+    if (document.activeElement !== $('#cfg-bolsa')) $('#cfg-bolsa').value = bolsa();
+    $('#cfg-bolsa-val').textContent = bolsa().toLocaleString('es-MX') + ' h';
+    $('#cfg-bolsa-nota').textContent = `El archivo js/config.js fija ${CP.presupuesto_horas_mes.toLocaleString('es-MX')} h (ilustrativo). Este control solo simula: no cambia el archivo.`;
+    $('#cfg-prio').innerHTML = [
+      ['Bolsa (presupuesto_horas_mes)', CP.presupuesto_horas_mes + ' h', 'ilustrativo'],
+      ['Mínimo garantizado', CP.horas_minimas + ' h/mes', '≈ 3 h/sem'],
+      ['Tope por hogar', CP.horas_maximas + ' h/mes', '≈ 12 h/sem'],
+      ['Niveles', `Alta ≥ ${CP.umbrales.alta} · Media ≥ ${CP.umbrales.media}`, 'Media = umbral del script 22; Alta provisional'],
+      ['Envejecimiento', `+${CP.envejecimiento.puntos_por_semana}/sem · tope ${CP.envejecimiento.tope_envejecimiento}`, 'provisional'],
+      ['Tarjeta', CP.variante_tarjeta, 'script 22 · ENASIC 2022 nacional'],
+      ...Object.keys(CP.pesos).map((k) => [PR.ETIQUETA[k], CP.pesos[k] + ' pts', k]),
     ].map(([a, b, n]) => `<li><span>${esc(a)}<small>${esc(n)}</small></span><b class="mono">${esc(b)}</b></li>`).join('');
     const el = $('#cfg-marco');
     if (!el.childElementCount) el.innerHTML = Object.values(legal.MARCO).map((m) => `<li><b>${esc(m.norma)}</b>${esc(m.tema)}</li>`).join('');
@@ -625,7 +764,8 @@
   }
   $('#cfg-km').addEventListener('input', (e) => store.update((s) => { s.config.maxKm = +e.target.value; }));
   $('#cfg-fp').addEventListener('input', (e) => store.update((s) => { s.config.factorPrest = +e.target.value; }));
-  $('#cfg-export').addEventListener('click', () => descargar(store.state, 'relevo-cuidado-completo.json'));
+  $('#cfg-bolsa').addEventListener('input', (e) => store.update((s) => { s.config.bolsaSim = +e.target.value; }));
+  $('#cfg-export').addEventListener('click', () => descargar(store.state, 'mientras-completo.json'));
   $('#cfg-import').addEventListener('click', () => $('#cfg-file').click());
   $('#cfg-file').addEventListener('change', async (e) => {
     const f = e.target.files[0]; e.target.value = '';
@@ -646,99 +786,217 @@
   const checked = (form, name) => $$(`[data-name="${name}"] input:checked`, form).map((i) => i.value);
   function sxPick(el) {
     const n = el.dataset.sx;
-    el.innerHTML = ['M', 'H'].map((v) => `<label class="chip ico"><input type="radio" name="${n}" value="${v}"><span>${SX[v]}</span></label>`).join('');
+    el.innerHTML = ['M', 'H'].map((v) => `<label class="chip ico"><input type="radio" name="${n}" value="${v}"><span>${SX[v]}${SEXO_TXT[v]}</span></label>`).join('');
   }
-  function apoyoRow() {
-    return `<div class="apoyo">
-      <input name="an" maxlength="24" autocomplete="off" placeholder="Nombre" aria-label="Nombre">
-      <select name="ap" aria-label="Parentesco">${options(PARENTESCOS, 'hijo', cap)}</select>
-      <input name="ah" type="number" min="0" max="168" value="10" inputmode="numeric" aria-label="Horas por semana">
-      <button type="button" class="x" data-action="rm-apoyo" aria-label="Quitar">×</button>
-    </div>`;
-  }
-
   function initForms() {
-    $('#caso-alcaldia').innerHTML = '<option value="">Elige…</option>' + options(Object.keys(ZONAS));
-    $('#caso-parentesco').innerHTML = options(PARENTESCOS, 'madre', cap);
-    $('#caso-grupo').innerHTML = options(GRUPOS);
-    $('#caso-pagador').innerHTML = Object.keys(RV.PAGADORES).map((k) => `<option value="${k}">${RV.PAGADORES[k]}</option>`).join('');
-    $('#caso-horas-pq').innerHTML = RV.PAQUETES.map((h) => `<label class="chip"><input type="radio" name="pq" value="${h}"${h === 6 ? ' checked' : ''}><span>${h} h/sem</span></label>`).join('');
-    chips($('#form-caso [data-name="dias"]'), RV.DIAS, (d) => d);
-    chips($('#form-caso [data-name="tareas"]'), RV.TAREAS);
     $('#rel-alcaldia').innerHTML = options(Object.keys(ZONAS));
     $('#rel-doc').innerHTML = '<option value="">Elige…</option>' + options(legal.DOCS_ID);
     chips($('#form-relevo [data-name="dias"]'), RV.DIAS, (d) => d);
     chips($('#form-relevo [data-name="tareas"]'), RV.TAREAS);
-    $$('.sxpick').forEach(sxPick);
+    $$('#form-relevo .sxpick').forEach(sxPick);
     const fa = $('#form-relevo').elements.antecedentesFecha;
     fa.max = F.hoyISO(); fa.min = F.sumaDias(F.hoyISO(), -legal.VIGENCIA_ANTECEDENTES_DIAS);
     $$('dialog [data-close]').forEach((b) => b.addEventListener('click', () => b.closest('dialog').close()));
     $$('dialog').forEach((d) => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
   }
 
-  /* ---------- Canalizar caso ---------- */
-  function openCaso() {
-    const f = $('#form-caso'); f.reset();
-    $('#caso-apoyos').innerHTML = ''; $('.form-error', f).textContent = '';
-    $('#dlg-caso').showModal(); $('#dlg-caso').scrollTop = 0;
-    refreshCaso();
-    f.elements.horas.focus();
-  }
-  function datosCaso() {
-    const f = $('#form-caso'), e = f.elements;
-    return {
-      emergencia: e.emergencia.checked, horas: e.horas.value === '' ? null : +e.horas.value, abvd: e.abvd.value,
-      danoSalud: e.danoSalud.checked, danoTrabajo: e.danoTrabajo.checked,
-      sexo: e.sexo.value, psexo: e.psexo.value,
-      alias: e.alias.value.trim(), alcaldia: e.alcaldia.value, palias: e.palias.value.trim(), pedad: e.pedad.value === '' ? null : +e.pedad.value,
-      prol: e.prol.value, grupo: e.grupo.value,
-      paquete: { horas: +e.pq.value, dias: checked(f, 'dias').map(Number), inicio: e.inicio.value || '09:00', tareas: checked(f, 'tareas') },
-      pagador: e.pagador.value, pct: +e.pct.value || 0,
-      inst: e.inst.checked, privacidad: e.privacidad.checked, sensibles: e.sensibles.checked,
-    };
-  }
-  function refreshCaso() {
-    const d = datosCaso();
-    $('#caso-emerg').hidden = !d.emergencia;
-    $('#caso-body').hidden = d.emergencia;
-    $('#caso-pct-row').hidden = d.pagador !== 'mixto';
-    if (d.horas == null || !d.abvd) $('#caso-prio-res').innerHTML = '';
-    else {
-      const p = RV.prioridad(d.horas, d.abvd === 'si');
-      $('#caso-prio-res').innerHTML = `<div class="priores ${p.nivel.toLowerCase()}"><b>${esc(p.etiqueta)}</b> · ${p.ref.pct} % con daño (ENASIC)${p.nivel === 'NP' ? ' · queda fuera de la regla' : ''}</div>`;
-    }
-    const ev = RV.evaluarPaquete(d.paquete, cfg().factorPrest);
-    const fam = RV.pagoFamilia(ev, d.pagador, d.pct);
-    $('#caso-pq-res').innerHTML = d.paquete.dias.length ? `<div class="pqsum"><span>${ev.visitas}×${(ev.durMin / 60).toFixed(1)} h · ${esc(ev.horario)} · ${esc(ev.tipo)}</span><b>${pesos(costoMes(ev))}/mes</b><span>familia ${pesos(fam)}</span>
-      ${ev.errores.map((x) => `<p class="form-error">${esc(x)}</p>`).join('')}</div>` : '';
-    const reqs = legal.requisitosCanalizacion(d);
-    const completo = d.horas != null && d.abvd && d.alias && d.alcaldia && d.palias && ev.ok && d.paquete.tareas.length && legal.pendientes(reqs).length === 0;
-    $('#caso-ok').disabled = d.emergencia || !completo;
-  }
-  ['input', 'change'].forEach((ev) => $('#form-caso').addEventListener(ev, refreshCaso));
-  $('#caso-add-apoyo').addEventListener('click', () => { if ($$('#caso-apoyos .apoyo').length < 4) $('#caso-apoyos').insertAdjacentHTML('beforeend', apoyoRow()); });
-  $('#form-caso').addEventListener('submit', (e) => {
-    e.preventDefault();
-    if ($('#caso-ok').disabled) { $('.form-error', e.target).textContent = 'Faltan datos.'; return; }
-    const d = datosCaso();
-    const apoyos = $$('#caso-apoyos .apoyo').map((row) => ({ nombre: $('[name="an"]', row).value.trim(), rol: $('[name="ap"]', row).value, horas: Math.max(0, +$('[name="ah"]', row).value || 0) })).filter((x) => x.nombre);
-    const p = RV.prioridad(d.horas, d.abvd === 'si');
-    const caso = {
-      id: store.uid('k'), folio: store.nextFolio(), fecha: F.hoyISO(), institucion: 'Institución canalizadora (simulada)', alcaldia: d.alcaldia,
-      estado: p.nivel === 'NP' ? 'fuera' : 'espera',
-      cuidadora: { alias: d.alias, sexo: d.sexo || null, horas: d.horas, abvd: d.abvd === 'si', danoSalud: d.danoSalud, danoTrabajo: d.danoTrabajo },
-      persona: { alias: d.palias, sexo: d.psexo || null, grupo: d.grupo, edad: d.pedad },
-      hogar: Care.buildHogar({ cuidadora: { nombre: d.alias, rol: 'cuidadora', horas: d.horas }, cuidada: { nombre: d.palias, edad: d.pedad, rol: d.prol }, apoyos }),
-      paquete: d.paquete, pagador: d.pagador, pctSubsidio: d.pagador === 'mixto' ? d.pct : 0, inclusion: null, asignacion: null,
-      consentimiento: { inst: true, privacidad: true, sensibles: true, fecha: F.hoyISO() },
-    };
-    store.update((s) => s.casos.unshift(caso));
-    $('#dlg-caso').close();
-    ui.casoFiltro = caso.estado === 'fuera' ? 'otros' : 'espera';
-    $$('#caso-filter button').forEach((x) => x.classList.toggle('on', x.dataset.val === ui.casoFiltro));
-    render();
-    toast(`${caso.folio} · ${p.etiqueta}`);
+  /* ================= Solicitud de relevo ("Necesito cuidado") =================
+   * Entrada (autorregistro o referencia) → Registro → Consentimiento → Entrevista (3 bloques) → Resultado
+   * (puntaje, nivel, horas estimadas, factores, solicitar revisión, canal alterno) → entra a la cola.
+   * Minimización: solo se pide lo que usa el puntaje o la asignación. Sin CURP, sin diagnósticos, sin edad. */
+  const PASOS = [
+    { id: 'entrada', t: 'Cómo llega' }, { id: 'registro', t: 'Registro' }, { id: 'consentimiento', t: 'Consentimiento' },
+    { id: 'modelo', t: 'Entrevista 1/3' }, { id: 'zarit', t: 'Entrevista 2/3' }, { id: 'barthel', t: 'Entrevista 3/3' }, { id: 'resultado', t: 'Resultado' },
+  ];
+  const nuevaSol = () => ({
+    canal: '', institucion: '', quien: '', presente: false, alias: '', sexo: '', palias: '', psexo: '', alcaldia: '',
+    aviso: false, expreso: false, modelo: { horas: '', abvd: [], clin: [], req: null, fuerza: null }, zarit: {}, barthel: {},
+    pref: { dias: [], inicio: '09:00', tareas: [] }, apelacion: null,
   });
+  const radio = (name, val, lab, on) => `<label class="chip"><input type="radio" name="${name}" value="${esc(val)}"${on ? ' checked' : ''}><span>${lab}</span></label>`;
+  const check = (name, val, lab, on) => `<label class="chip"><input type="checkbox" name="${name}" value="${esc(val)}"${on ? ' checked' : ''}><span>${esc(lab)}</span></label>`;
+  const sinoChips = (name, v) => radio(name, 'si', 'Sí', v === true) + radio(name, 'no', 'No', v === false);
+  const codigo = (txt) => (ui.rol === 'programa' ? `<span class="cod mono">${esc(txt)}</span>` : '');
+  const entrevistaDe = (d) => ({ modelo: { horas: +d.modelo.horas, abvd: d.modelo.abvd.slice(), clin: d.modelo.clin.slice(), req: !!d.modelo.req, fuerza: !!d.modelo.fuerza },
+    zarit: PR.totalZarit(d.zarit, CP) == null ? null : Object.assign({}, d.zarit), barthel: Object.assign({}, d.barthel) });
+
+  function pintaPaso() {
+    const d = ui.sol.d, paso = PASOS[ui.sol.paso];
+    $('#sol-paso').textContent = `${ui.sol.paso + 1}/${PASOS.length} · ${paso.t}`;
+    $('#sol-bar').style.width = Math.round(((ui.sol.paso + 1) / PASOS.length) * 100) + '%';
+    $('#sol-atras').textContent = ui.sol.paso ? 'Atrás' : 'Cancelar';
+    $('#sol-sig').textContent = paso.id === 'resultado' ? 'Entrar a la cola' : paso.id === 'consentimiento' ? 'Acepto y sigo' : 'Siguiente';
+    $('#sol-err').textContent = '';
+    let h = '';
+    if (paso.id === 'entrada') {
+      h = `${personaje('bienvenida', 'hero-img')}
+        <h3 class="marca">${esc(CP.nombre)}</h3><p class="eslogan">${esc(CP.eslogan)}</p>
+        <p class="complementario">${esc(CP.aviso_complementario)}</p>
+        <div class="eyebrow sep">¿Cómo llega esta solicitud?</div>
+        <div class="vias">
+          <label class="via"><input type="radio" name="canal" value="autorregistro"${d.canal === 'autorregistro' ? ' checked' : ''}><span><b>Me registro yo</b><small>Autorregistro</small></span></label>
+          <label class="via"><input type="radio" name="canal" value="referencia"${d.canal === 'referencia' ? ' checked' : ''}><span><b>Me refiere una institución</b><small>DIF, centro de salud, escuela, clínica o módulo</small></span></label>
+        </div>
+        <div id="sol-ref"${d.canal === 'referencia' ? '' : ' hidden'}>
+          <p class="sub">Lo llena la persona de la institución.</p>
+          <label class="fld">Institución<select name="institucion"><option value="">Elige…</option>${options(CP.instituciones, d.institucion)}</select></label>
+          <label class="fld">Quién refiere (cargo, sin nombre)<input name="quien" maxlength="60" autocomplete="off" value="${esc(d.quien)}" placeholder="Ej. trabajadora social"></label>
+          <label class="check"><input type="checkbox" name="presente"${d.presente ? ' checked' : ''}><span>La persona referida está presente y quiere continuar</span></label>
+        </div>`;
+    } else if (paso.id === 'registro') {
+      h = `<h3>Registro</h3><p class="sub">Solo pedimos lo que usan el puntaje o la asignación. No pedimos CURP, diagnósticos ni domicilio.</p>
+        <div class="eyebrow sep">Quien cuida</div>
+        <div class="row-sx"><div class="chips radio">${['M', 'H'].map((v) => `<label class="chip ico"><input type="radio" name="sexo" value="${v}"${d.sexo === v ? ' checked' : ''}><span>${SX[v]}${SEXO_TXT[v]}</span></label>`).join('')}</div>
+          <input name="alias" maxlength="24" autocomplete="off" placeholder="Alias" aria-label="Alias de quien cuida" value="${esc(d.alias)}"></div>
+        ${ui.rol === 'programa' ? '<p class="wk-n">El sexo de quien cuida entra al puntaje (variable SEXO de la ENASIC).</p>' : ''}
+        <div class="eyebrow sep">Persona cuidada</div>
+        <div class="row-sx"><div class="chips radio">${['M', 'H'].map((v) => `<label class="chip ico"><input type="radio" name="psexo" value="${v}"${d.psexo === v ? ' checked' : ''}><span>${SX[v]}${SEXO_TXT[v]}</span></label>`).join('')}</div>
+          <input name="palias" maxlength="24" autocomplete="off" placeholder="Alias" aria-label="Alias de la persona cuidada" value="${esc(d.palias)}"></div>
+        <label class="fld">Alcaldía (para asignar relevo cerca)<select name="alcaldia"><option value="">Elige…</option>${options(Object.keys(ZONAS), d.alcaldia)}</select></label>`;
+    } else if (paso.id === 'consentimiento') {
+      h = `<h3>Consentimiento</h3>
+        <p class="sub">Para valorar tu solicitud te preguntaremos cuántas horas cuidas, en qué actividades ayudas, qué tareas de salud haces, qué tan dependiente es la persona que cuidas y cómo te sientes con el cuidado.</p>
+        <p class="sub">Son <b>datos sensibles</b>. Se usan solo para calcular tu prioridad, tus horas y asignar relevo. Puedes retirar tu consentimiento cuando quieras.</p>
+        <button type="button" class="link" data-action="ver-aviso">Leer el aviso de privacidad</button>
+        <label class="check"><input type="checkbox" name="aviso"${d.aviso ? ' checked' : ''}><span>Leí el aviso de privacidad</span></label>
+        <label class="check"><input type="checkbox" name="expreso"${d.expreso ? ' checked' : ''}><span>Acepto de forma expresa que se registren datos sobre mi salud, mi carga de cuidado y la dependencia de la persona que cuido</span></label>`;
+    } else if (paso.id === 'modelo') {
+      const m = d.modelo;
+      h = `<h3>Tu cuidado</h3><p class="sub">Bloque 1 de 3. Mismas preguntas y categorías que la ENASIC 2022: con ellas se calcula el puntaje.</p>
+        <label class="fld">${esc(PR.PREGUNTAS_MODELO[0].txt)} ${codigo('P6_7 + P6_26')}<input name="horas" type="number" min="0" max="168" inputmode="numeric" value="${esc(m.horas)}"></label>
+        <div class="fld">${esc(PR.PREGUNTAS_MODELO[1].txt)} ${codigo('P6_2 · ABVD')}<div class="chips">${PR.ABVD.map((o) => check('abvd', o.id, o.txt, m.abvd.includes(o.id))).join('')}</div></div>
+        <div class="fld">${esc(PR.PREGUNTAS_MODELO[2].txt)} ${codigo('P6_2 · clínicas')}<div class="chips">${PR.CLIN.map((o) => check('clin', o.id, o.txt, m.clin.includes(o.id))).join('')}</div></div>
+        <div class="fld">${esc(PR.PREGUNTAS_MODELO[3].txt)} ${codigo('P6_9_4 / P6_28_4')}<div class="chips radio">${sinoChips('req', m.req)}</div></div>
+        <div class="fld">${esc(PR.PREGUNTAS_MODELO[4].txt)} ${codigo('P6_9_1 / P6_28_1')}<div class="chips radio">${sinoChips('fuerza', m.fuerza)}</div></div>`;
+    } else if (paso.id === 'zarit') {
+      // Los textos del Zarit requieren licencia: mientras no la haya, el bloque no se pregunta (antes mostraba 22 marcadores).
+      h = `<h3>Cómo te sientes</h3>
+        <div class="card panel pendiente-lic"><b>Este bloque todavía no está activo.</b>
+          <p class="sub">Aquí irán preguntas sobre tu cansancio y tu carga de cuidado (escala tipo Zarit). Se activan cuando el programa tenga la licencia del cuestionario. No cambian tu prioridad.</p></div>
+        <p class="sub">Puedes seguir al siguiente bloque.</p>`;
+    } else if (paso.id === 'barthel') {
+      h = `<h3>La persona que cuidas</h3><p class="sub">Bloque 3 de 3 · actividades básicas de la vida diaria (índice de Barthel).</p>
+        ${PR.BARTHEL.map((it) => `<div class="fld">${esc(it.txt)}<div class="chips radio">${it.niveles.map(([p, t]) => radio(it.id, p, esc(t), String(d.barthel[it.id]) === String(p))).join('')}</div></div>`).join('')}
+        <p class="sub" id="barthel-total"></p>`;
+    } else {
+      const ent = entrevistaDe(d);
+      const v = valorar(ent, d.sexo, F.hoyISO());
+      const est = calcularPlan({ id: '__nuevo', efectivo: v.efectivo });
+      const hMes = est.horas.__nuevo || 0;
+      const ch = PR.chequeos(ent, CP);
+      h = `${personaje(v.nivel, 'hero-img')}
+        ${ui.rol === 'programa'
+          ? `<div class="resnivel nv-${v.nivel}"><span>Nivel</span><b>${PR.NIVEL[v.nivel]}</b><small class="mono">${pts(v.base)} de ${v.max} puntos</small></div>`
+          : `<div class="resnivel neutro"><span>Prioridad</span><b>${PR.NIVEL[v.nivel]}</b></div>`}
+        <p class="provisional">Puntaje provisional — modelo en validación</p>
+        <section class="blk"><h5>Lo que más pesó</h5>${factoresHTML(Object.assign({}, v, { provisional: false }))}</section>
+        <section class="blk"><h5>Horas asignadas</h5>
+          <div class="bolsa"><b class="mono">${hMes}</b><span>h al mes · ≈ ${PR.horasSemana(hMes, CP)} h por semana</span></div>
+          <p class="wk-n">${hMes ? `Estimado con la bolsa actual (${est.presupuesto} h) y los casos en cola. Se confirma en el ciclo del mes.` : 'La bolsa de este mes no alcanza: entras a la cola y tu puntaje sube cada semana de espera.'} Mínimo garantizado: ${CP.horas_minimas} h/mes si la bolsa alcanza.</p>
+          <p class="complementario">${esc(CP.aviso_complementario)}</p>
+        </section>
+        ${v.nivel === 'baja' ? `<section class="blk alterno"><h5>Además de tus horas</h5>
+          <p class="sub">Mientras llega tu relevo, estos apoyos pueden ayudarte. [Directorio pendiente: se llenará con servicios reales de tu alcaldía.]</p>
+          <ul class="motivos"><li>Redes de apoyo para personas cuidadoras cerca de ${esc(d.alcaldia || 'tu alcaldía')}</li><li>Centros de día públicos para personas mayores o con discapacidad</li><li>Módulo del Sistema Público de Cuidados más cercano</li></ul></section>` : ''}
+        ${ch.length ? `<section class="blk revbox"><h5>Una persona revisará tu caso</h5><ul class="motivos">${ch.map((x) => `<li>${esc(x.txt)}</li>`).join('')}</ul><p class="wk-n">Algunas respuestas no coinciden entre sí. Tu puntaje no cambia; una persona del programa lo revisa.</p></section>` : ''}
+        <section class="blk"><h5>¿No estás de acuerdo?</h5>
+          ${d.apelacion ? `<p class="sub">Solicitud de revisión registrada: «${esc(d.apelacion)}». Se guarda con tu caso.</p>` : '<p class="sub">Puedes pedir que una persona revise tu valoración.</p>'}
+          <button type="button" class="btn-ghost sm" data-action="sol-apelar">${d.apelacion ? 'Cambiar motivo' : 'Solicitar revisión'}</button>
+        </section>
+        <div class="eyebrow sep">¿Cuándo te sirve el relevo?</div>
+        <div class="chips">${RV.DIAS.map((t, i) => check('pdias', i, t, d.pref.dias.includes(i))).join('')}</div>
+        <label class="fld">Desde las<input name="pinicio" type="time" step="1800" value="${esc(d.pref.inicio)}"></label>
+        <div class="fld">¿Con qué te ayudaría la persona de relevo?<div class="chips">${RV.TAREAS.map((t) => check('ptareas', t, t, d.pref.tareas.includes(t))).join('')}</div></div>
+        <p class="wk-n">El programa asigna a la persona de relevo según la prioridad; no se elige de un catálogo.</p>`;
+    }
+    $('#sol-body').innerHTML = h;
+    totalesSol();
+    $('#dlg-sol').scrollTop = 0;
+  }
+  function totalesSol() {
+    const d = ui.sol.d;
+    const z = $('#zarit-total'), b = $('#barthel-total');
+    if (z) { const n = Object.keys(d.zarit).length, t = PR.totalZarit(d.zarit, CP); z.textContent = t == null ? `${n} de ${CP.zarit.n_reactivos} respondidos` : `Total: ${t} de ${CP.zarit.n_reactivos * CP.zarit.escala_max}`; }
+    if (b) { const t = PR.totalBarthel(d.barthel); b.textContent = t == null ? '' : `Total: ${t}/100 · ${PR.nivelBarthel(t)}`; }
+  }
+  function leerPaso() {
+    const d = ui.sol.d, f = $('#form-sol'), e = f.elements, id = PASOS[ui.sol.paso].id;
+    const val = (n) => (e[n] ? e[n].value : '');
+    const marcados = (n) => $$(`input[name="${n}"]:checked`, f).map((i) => i.value);
+    if (id === 'entrada') { d.canal = val('canal'); d.institucion = val('institucion'); d.quien = val('quien').trim(); d.presente = !!(e.presente && e.presente.checked); $('#sol-ref').hidden = d.canal !== 'referencia'; }
+    else if (id === 'registro') { d.sexo = val('sexo'); d.psexo = val('psexo'); d.alias = val('alias').trim(); d.palias = val('palias').trim(); d.alcaldia = val('alcaldia'); }
+    else if (id === 'consentimiento') { d.aviso = e.aviso.checked; d.expreso = e.expreso.checked; }
+    else if (id === 'modelo') {
+      d.modelo.horas = val('horas'); d.modelo.abvd = marcados('abvd'); d.modelo.clin = marcados('clin');
+      d.modelo.req = val('req') ? val('req') === 'si' : null; d.modelo.fuerza = val('fuerza') ? val('fuerza') === 'si' : null;
+    } else if (id === 'zarit') { PR.reactivosZarit(CP).forEach((it) => { const v = val(it.id); if (v !== '') d.zarit[it.id] = +v; }); }
+    else if (id === 'barthel') { PR.BARTHEL.forEach((it) => { const v = val(it.id); if (v === '') delete d.barthel[it.id]; else d.barthel[it.id] = +v; }); }
+    else { d.pref.dias = marcados('pdias').map(Number); d.pref.inicio = val('pinicio') || '09:00'; d.pref.tareas = marcados('ptareas'); }
+    totalesSol();
+  }
+  function errorPaso() {
+    const d = ui.sol.d, id = PASOS[ui.sol.paso].id;
+    if (id === 'entrada') {
+      if (!d.canal) return 'Elige cómo llega la solicitud.';
+      if (d.canal === 'referencia' && (!d.institucion || d.quien.length < 3 || !d.presente)) return 'La referencia necesita institución, cargo de quien refiere y que la persona esté presente.';
+    } else if (id === 'registro') {
+      if (!d.sexo || !d.alias || !d.palias || !d.alcaldia) return 'Faltan datos del registro.';
+    } else if (id === 'consentimiento') {
+      if (!d.aviso || !d.expreso) return 'Sin consentimiento expreso no se puede hacer la entrevista.';
+    } else if (id === 'modelo') {
+      const h = d.modelo.horas;
+      if (h === '' || isNaN(+h) || +h < 0 || +h > 168) return 'Escribe las horas a la semana (0 a 168).';
+      if (d.modelo.req == null || d.modelo.fuerza == null) return 'Responde las dos preguntas de sí o no.';
+    } else if (id === 'zarit') {
+      const n = Object.keys(d.zarit).length;
+      if (n && n < CP.zarit.n_reactivos) return `Responde los ${CP.zarit.n_reactivos} reactivos o deja el bloque vacío.`;
+    } else if (id === 'barthel') {
+      if (PR.totalBarthel(d.barthel) == null) return 'Responde las 10 actividades.';
+    } else {
+      if (!d.pref.dias.length || !d.pref.tareas.length) return 'Elige al menos un día y una tarea para el relevo.';
+    }
+    return '';
+  }
+  function openSol() {
+    ui.sol = { paso: 0, d: nuevaSol() };
+    $('#dlg-sol').showModal();
+    pintaPaso();
+  }
+  function guardarSol() {
+    const d = ui.sol.d, hoy = F.hoyISO(), ent = entrevistaDe(d);
+    const ch = PR.chequeos(ent, CP);
+    const caso = {
+      id: store.uid('k'), folio: store.nextFolio(), fecha: hoy, alcaldia: d.alcaldia, estado: 'espera',
+      canal_origen: d.canal, referencia: d.canal === 'referencia' ? { institucion: d.institucion, quien: d.quien, fecha: hoy } : null,
+      cuidadora: { alias: d.alias, sexo: d.sexo, horas: ent.modelo.horas, abvd: ent.modelo.abvd.length > 0 },
+      persona: { alias: d.palias, sexo: d.psexo || null },
+      entrevista: ent,
+      consentimiento: { expreso: true, aviso: 'pendiente revisión legal', fecha: hoy },
+      hogar: Care.buildHogar({ cuidadora: { nombre: d.alias, rol: 'cuidadora', horas: ent.modelo.horas }, cuidada: { nombre: d.palias, rol: 'familiar' } }),
+      preferencias: { dias: d.pref.dias.slice(), inicio: d.pref.inicio, tareas: d.pref.tareas.slice() },
+      pagador: 'subsidio', pctSubsidio: 0, asignacion: null,
+      apelaciones: d.apelacion ? [{ id: store.uid('ap'), fecha: hoy, motivo: d.apelacion, estado: 'abierta' }] : [],
+      revision: ch.length ? { estado: 'pendiente', motivos: ch, fecha: hoy } : null,
+    };
+    store.addSolicitud(caso);
+    $('#dlg-sol').close();
+    if (ui.rol === 'cuidadora') { guardarId('mientras-mi-caso', caso.id); show('mia'); toast(`Solicitud ${caso.folio} enviada`); return; }
+    ui.casoFiltro = 'espera';
+    $$('#caso-filter button').forEach((x) => x.classList.toggle('on', x.dataset.val === 'espera'));
+    show('casos');
+    const v = valDe(caso);
+    toast(`${caso.folio} · nivel ${PR.NIVEL[v.nivel]}${ch.length ? ' · a revisión humana' : ''}`);
+  }
+  ['input', 'change'].forEach((ev) => $('#form-sol').addEventListener(ev, leerPaso));
+  $('#form-sol').addEventListener('submit', (e) => {
+    e.preventDefault();
+    leerPaso();
+    const err = errorPaso();
+    if (err) { $('#sol-err').textContent = err; return; }
+    if (PASOS[ui.sol.paso].id === 'resultado') { guardarSol(); return; }
+    ui.sol.paso++; pintaPaso();
+  });
+  $('#sol-atras').addEventListener('click', () => { if (!ui.sol.paso) { $('#dlg-sol').close(); return; } leerPaso(); ui.sol.paso--; pintaPaso(); });
 
   /* ---------- Registrar persona de relevo ---------- */
   function openRelevo() {
@@ -769,14 +1027,15 @@
   $('#form-relevo').addEventListener('submit', (e) => {
     e.preventDefault();
     if ($('#rel-ok').disabled) return;
-    const d = datosRelevo();
+    const d = datosRelevo(), nuevoId = store.uid('r');
     store.update((s) => s.relevos.unshift({
-      id: store.uid('r'), nombre: d.nombre, sexo: d.sexo || null, alcaldia: d.alcaldia, dias: d.diasSel, desde: d.desde, hasta: d.hasta, horasMax: d.horasMax,
+      id: nuevoId, nombre: d.nombre, sexo: d.sexo || null, alcaldia: d.alcaldia, dias: d.diasSel, desde: d.desde, hasta: d.hasta, horasMax: d.horasMax,
       tareas: d.tareas, certificacion: d.certificacion, experiencia: d.experiencia,
       legal: { curp: d.curp, docId: d.docId, antecedentesFecha: d.antecedentesFecha, referencia: { nombre: d.refNombre.trim(), tel: d.refTel.replace(/\D/g, '') }, aceptado: new Date().toISOString() },
       verificacion: { estado: 'pendiente', fecha: F.hoyISO() },
     }));
     $('#dlg-relevo').close();
+    if (ui.rol === 'relevo') { guardarId('mientras-mi-relevo', nuevoId); show('yo'); toast('Enviado a revisión'); return; }
     ui.relFiltro = 'revision';
     $$('#rel-filter button').forEach((x) => x.classList.toggle('on', x.dataset.val === 'revision'));
     render();
@@ -795,14 +1054,23 @@
     switch (b.dataset.action) {
       case 'ver-caso': abrirCaso(id); break;
       case 'ver-relevo': abrirRelevo(id); break;
-      case 'new-caso': openCaso(); break;
+      case 'new-sol': openSol(); break;
+      case 'ver-aviso': await pedir(CP.aviso_privacidad + ' Datos que se recogen: horas de cuidado, actividades y tareas de salud, dependencia de la persona cuidada (Barthel) y sobrecarga. Sin CURP ni diagnósticos.', { ok: 'Entendido' }); break;
+      case 'sol-apelar': { const m = await pedir('¿Por qué crees que tu valoración no refleja tu situación?', { input: true, min: 5, ok: 'Registrar' }); if (m) { ui.sol.d.apelacion = m; pintaPaso(); } break; }
+      case 'revisado': { cerrarDet(); const m = await pedir('Nota de la revisión (qué se verificó):', { input: true, min: 5, ok: 'Marcar revisado' }); if (m) { store.resolverRevision(id, m); toast('Revisión registrada; el puntaje no cambia'); } break; }
+      case 'resolver-ap': { cerrarDet(); const apId = b.dataset.ap; const m = await pedir('Resolución (si cambia una respuesta, se vuelve a entrevistar):', { input: true, min: 5, ok: 'Resolver' }); if (m) { store.resolverApelacion(id, apId, m); toast('Solicitud de revisión resuelta'); } break; }
+      case 'aplicar-ciclo': {
+        const activos = store.state.casos.filter((c) => c.estado === 'activo' && c.paquete);
+        if (await pedir(`Ajustar el paquete semanal de ${activos.length} casos con relevo a las horas de este ciclo. Puede cambiar días y costos.`, { ok: 'Aplicar' })) { store.aplicarCiclo(Object.assign({}, plan.sem)); toast('Ciclo aplicado'); }
+        break;
+      }
       case 'new-relevo': openRelevo(); break;
-      case 'rm-apoyo': b.closest('.apoyo').remove(); break;
+      case 'mia-nueva': guardarId('mientras-mi-caso', ''); render(); break;
+      case 'yo-nuevo': guardarId('mientras-mi-relevo', ''); render(); break;
       case 'proponer': abrirAsignacion(id, false); break;
       case 'reasignar': abrirAsignacion(id, true); break;
       case 'seguir': case 'see-red': cerrarDet(); ui.scCaso = id; ui.segSub = 'caso'; ui.objetivo = null; ui.apagado = false; show('seguimiento'); break;
       case 'map-close': $('#mapCard').hidden = true; break;
-      case 'incluir': { cerrarDet(); const m = await pedir('Motivo para incluirlo fuera de la regla:', { input: true, min: 5, ok: 'Incluir' }); if (m) { store.incluirPorCriterio(id, m); toast('Incluido; pasa a espera'); } break; }
       case 'cerrar': { cerrarDet(); const m = await pedir('Motivo del cierre:', { input: true, ok: 'Cerrar caso' }); if (m) { store.cerrarCaso(id, m); toast('Caso cerrado'); } break; }
       case 'del-caso': cerrarDet(); if (await pedir('Eliminar el caso y su historial.', { ok: 'Eliminar', peligro: true })) store.removeCaso(id); break;
       case 'aprobar': cerrarDet(); if (await pedir('¿Identidad, carta y referencia revisadas?', { ok: 'Aprobar' })) { store.resolverRelevo(id, true); toast('Aprobada'); } break;
@@ -818,14 +1086,87 @@
     }
   });
 
+  /* ================= Vistas propias de la cuidadora y de la persona de relevo ================= */
+  const NIVEL_TXT = { alta: 'Prioridad alta', media: 'Prioridad media', baja: 'Prioridad baja' };
+  const dato = (val, lab) => `<div class="tl"><b class="mono">${val}</b><span>${esc(lab)}</span></div>`;
+  function renderMia() {
+    const c = casoById(leerId('mientras-mi-caso'));
+    if (!c) {
+      $('#mia-body').innerHTML = `<div class="hero-rol">${personaje('bienvenida', 'hero-img')}
+        <h2>¿Cuidas a alguien muchas horas a la semana?</h2>
+        <p>Mientras te da horas de relevo: una persona capacitada cuida a tu familiar mientras tú descansas o resuelves tus pendientes.</p>
+        <button type="button" class="btn-primary wide" data-action="new-sol">Solicitar relevo</button>
+        <p class="complementario">${esc(CP.aviso_complementario)}</p></div>`;
+      return;
+    }
+    const v = valDe(c), hz = horasDe(c);
+    const r = c.estado === 'activo' && c.asignacion && relById(c.asignacion.relevoId);
+    const estado = r ? `Con relevo: <b>${esc(r.nombre)}</b>` : c.estado === 'espera' ? (hz.cola ? 'En espera: este mes no alcanzó la bolsa de horas' : 'En espera de que el programa te asigne relevo') : ESTADO[c.estado];
+    $('#mia-body').innerHTML = `<div class="card panel mia">
+        <div class="mia-top"><span>Tu solicitud · ${esc(c.alcaldia)}</span><span class="mono">${esc(c.folio)}</span></div>
+        <h2>${NIVEL_TXT[v.nivel]}</h2>
+        <p class="sub">${estado}</p>
+        <div class="tiles dos">${dato(hz.mes + '<small>h</small>', 'de relevo al mes')}${dato('≈ ' + hz.sem + '<small>h</small>', 'a la semana')}</div>
+        ${enRevision(c) ? '<p class="sub">Una persona del programa revisará algunas respuestas. Tu lugar en la fila no cambia.</p>' : ''}
+      </div>
+      <p class="complementario">${esc(CP.aviso_complementario)}</p>
+      <button type="button" class="btn-ghost wide" data-action="mia-nueva">Hacer otra solicitud (demostración)</button>`;
+  }
+  function renderYo() {
+    const r = relById(leerId('mientras-mi-relevo'));
+    if (!r) {
+      $('#yo-body').innerHTML = `<div class="hero-rol">${personaje('media', 'hero-img')}
+        <h2>¿Quieres trabajar dando relevo?</h2>
+        <p>Registras tus días, horario y zona. El programa te asigna casos según su prioridad: no eliges familia ni la familia te elige. Trabajo con contrato, IMSS y pago al piso legal.</p>
+        <button type="button" class="btn-primary wide" data-action="new-relevo">Registrarme</button></div>`;
+      return;
+    }
+    const aprob = store.aprobado(r), carga = RV.cargaDe(r.id, store.state);
+    const casos = store.state.casos.filter((c) => c.estado === 'activo' && c.asignacion && c.asignacion.relevoId === r.id);
+    const ver = r.verificacion || {};
+    const estado = !aprob ? (ver.estado === 'rechazada' ? 'Registro rechazado' : 'En revisión: el programa valida tus documentos') : r.certificacion === 'certificada' ? 'Aprobada y certificada' : 'Aprobada · falta certificación para recibir casos';
+    $('#yo-body').innerHTML = `<div class="card panel mia">
+        <div class="mia-top"><span>Tu registro · ${esc(r.alcaldia)}</span><span class="mono">${esc(diasTxt(r.dias))}</span></div>
+        <h2>${esc(r.nombre)}</h2>
+        <p class="sub">${estado}</p>
+        <div class="tiles dos">${dato(carga + '<small>/' + r.horasMax + ' h</small>', 'por semana')}${dato(casos.length, casos.length === 1 ? 'caso' : 'casos')}</div>
+      </div>
+      <button type="button" class="btn-ghost wide" data-action="yo-nuevo">Registrar a otra persona (demostración)</button>`;
+  }
+
+  /* ================= Bienvenida (primera vez que se abre la app) =================
+   * Pantalla de carga con el logo y, después, «¿Cómo vas a usar Mientras?» para elegir el rol.
+   * Se muestra una sola vez (localStorage «mientras-intro»); se puede repetir con ?intro o desde Ajustes. */
+  const INTRO_K = 'mientras-intro';
+  function abrirIntro() {
+    const el = $('#intro');
+    el.hidden = false; el.classList.remove('fuera', 'elegir');
+    const lenta = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setTimeout(() => { el.classList.add('elegir'); const b = $('#intro .intro-opc button'); if (b) b.focus(); }, lenta ? 1700 : 200);
+  }
+  $('#intro').addEventListener('click', (e) => {
+    const b = e.target.closest('button[data-intro]'); if (!b) return;
+    try { localStorage.setItem(INTRO_K, '1'); } catch (err) { /* sin almacenamiento */ }
+    cambiarRol(b.dataset.intro);
+    const el = $('#intro'); el.classList.add('fuera');
+    setTimeout(() => { el.hidden = true; }, 350);
+  });
+  $('#cfg-intro').addEventListener('click', abrirIntro);
+
   /* ================= Render general ================= */
   function render() {
+    plan = calcularPlan();
+    $('#brandline').textContent = `${CP.nombre} · ${CP.eslogan}`;
     $$('.screen').forEach((s) => { s.hidden = s.id !== 'view-' + ui.view; });
+    $$('#rolbar button').forEach((b) => { const on = b.dataset.rol === ui.rol; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
+    $('.tabbar').hidden = ui.rol !== 'programa';
     $$('.tabbtn').forEach((t) => { const on = t.dataset.view === ui.view; t.classList.toggle('on', on); t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
     $('#topTitle').textContent = TITULOS[ui.view];
-    $('#topTag').textContent = ui.view === 'seguimiento' ? { hoy: 'visitas', caso: 'red y semana', mapa: 'territorio', kpi: 'simulado' }[ui.segSub] : '';
+    $('#topTag').textContent = ui.view === 'seguimiento' ? { prog: 'programa', hoy: 'visitas', caso: 'red y semana', mapa: 'territorio', kpi: 'simulado' }[ui.segSub] : '';
     renderAjustes();
-    if (ui.view === 'casos') renderCasos();
+    if (ui.view === 'mia') renderMia();
+    else if (ui.view === 'yo') renderYo();
+    else if (ui.view === 'casos') renderCasos();
     else if (ui.view === 'relevos') renderRelevos();
     else if (ui.view === 'seguimiento') renderSeguimiento();
   }
@@ -835,4 +1176,7 @@
   initForms();
   tick(); setInterval(tick, 30000);
   show(location.hash.slice(1));
+  let introVista = '';
+  try { introVista = localStorage.getItem(INTRO_K) || ''; } catch (e) { /* sin almacenamiento */ }
+  if (!introVista || /[?&]intro\b/.test(location.search)) abrirIntro();
 })();

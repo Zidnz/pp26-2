@@ -1,0 +1,13 @@
+﻿fuente_id,fuente,tabla_hecho,n_periodos_distintos,periodos,permite_tendencia
+F02,Censo de Poblacion y Vivienda 2020: resultados por AGEB y manzana urbana,fact_indicador_territorial,1,2020,0
+F04,Encuesta Nacional para el Sistema de Cuidados (ENASIC) 2022,fact_asequibilidad,1,2022,0
+F04,Encuesta Nacional para el Sistema de Cuidados (ENASIC) 2022,fact_estimacion_encuesta,1,2022,0
+F09,Directorio Estadistico Nacional de Unidades Economicas (DENUE),fact_indicador_territorial,1,mayo 2026,0
+F20,Indice y Grado de Rezago Social 2020 por AGEB urbana,fact_indicador_territorial,1,2020,0
+F22,Indices de marginacion 2020 por entidad y municipio,fact_indicador_territorial,1,2020,0
+F23,ENIGH 2022: base final de la Medicion multidimensional de la pobreza 2022 (pobreza22.csv),fact_asequibilidad,1,2022,0
+F23,ENIGH 2022: base final de la Medicion multidimensional de la pobreza 2022 (pobreza22.csv),fact_indicador_territorial,1,2022,0
+P01,Población de más de 60 años.csv (archivo del proyecto),fact_indicador_territorial,1,desconocido,0
+P02,Capacidad disponible en residencias permanentes de sector privado para adultos y adultas mayores.csv (archivo del proyecto),fact_indicador_territorial,1,desconocido,0
+P03,Población con discapacidad que necesita ayuda para las actividades de la vida diaria.csv (archivo del proyecto),fact_indicador_territorial,1,desconocido,0
+X01,"Pobreza por grupos poblacionales a escala municipal 2010, 2015 y 2020 (hoja adultmay)",fact_indicador_territorial,1,2020,0

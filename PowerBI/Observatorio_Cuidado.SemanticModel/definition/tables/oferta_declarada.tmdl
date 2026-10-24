@@ -1,0 +1,102 @@
+table oferta_declarada
+	lineageTag: 4c676994-ad3c-5118-aea1-40fc7f81b1bc
+
+	measure 'Trabajaría: mujeres' = CALCULATE(AVERAGE(oferta_declarada[pct]), oferta_declarada[clave] = "mujeres")
+		formatString: 0.0\%
+		lineageTag: d39418a7-67c2-531d-9d9e-3290edc79f8e
+
+	measure 'Trabajaría: hombres' = CALCULATE(AVERAGE(oferta_declarada[pct]), oferta_declarada[clave] = "hombres")
+		formatString: 0.0\%
+		lineageTag: 45ffe506-2691-5253-b025-750a053754b5
+
+	column clave
+		dataType: string
+		lineageTag: 5d5a9f60-d07a-5393-8052-65e8aa3c68cb
+		summarizeBy: none
+		sourceColumn: clave
+
+		annotation SummarizationSetBy = User
+
+	column grupo
+		dataType: string
+		lineageTag: 9cf33c88-1c68-5f40-a127-4741debd303e
+		summarizeBy: none
+		sourceColumn: grupo
+
+		annotation SummarizationSetBy = User
+
+	column pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: 8f66cc36-779e-57f6-80fe-61866695e26d
+		summarizeBy: none
+		sourceColumn: pct
+
+		annotation SummarizationSetBy = User
+
+	column cv
+		dataType: double
+		formatString: 0.00
+		lineageTag: 91f83cbb-e041-55ed-9ca9-d5b10ea14782
+		summarizeBy: none
+		sourceColumn: cv
+
+		annotation SummarizationSetBy = User
+
+	column li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: ad42b014-4903-5e2f-8b19-bebb2962417f
+		summarizeBy: none
+		sourceColumn: li90
+
+		annotation SummarizationSetBy = User
+
+	column ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: bdb660a0-6335-57a5-9de2-9cc4637a9c6f
+		summarizeBy: none
+		sourceColumn: ls90
+
+		annotation SummarizationSetBy = User
+
+	column total_expandido
+		dataType: double
+		formatString: 0.00
+		lineageTag: 44f39c8c-6f17-5477-a4e8-5cd8ffc2cfcf
+		summarizeBy: none
+		sourceColumn: total_expandido
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: string
+		lineageTag: 35c5ca68-8c31-54ad-bbce-a4c79126b8f7
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: 80742aca-3f5c-52de-8c51-2e33a168a2c8
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	partition oferta_declarada = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "oferta_declarada.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"clave", type text}, {"grupo", type text}, {"pct", type number}, {"cv", type number}, {"li90", type number}, {"ls90", type number}, {"total_expandido", type number}, {"precision", type text}, {"n", Int64.Type}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

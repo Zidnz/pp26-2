@@ -1,0 +1,155 @@
+table estados
+	lineageTag: f0f9ac11-aba6-5afa-9aa9-2489db2b95b5
+
+	measure 'Valor entidad' = AVERAGE(estados[valor])
+		formatString: 0.0\%
+		lineageTag: 354f5b0a-83a2-5983-9203-4142e222fa9e
+
+	measure 'Valor nacional' = AVERAGE(estados[nacional])
+		formatString: 0.0\%
+		lineageTag: d3939de3-5877-56c9-8b7f-101b7820df6d
+
+	measure 'IC90 inf ent' = AVERAGE(estados[li90])
+		formatString: 0.0
+		lineageTag: 54eff9da-574c-5f3d-812e-ddb2e189309e
+
+	measure 'IC90 sup ent' = AVERAGE(estados[ls90])
+		formatString: 0.0
+		lineageTag: 7e11e764-4e38-5796-b718-116e3925057c
+
+	measure 'Color entidad' = IF(MAX(estados[es_cdmx]) = "Sí", "#C0435A", "#B09FD3")
+		lineageTag: f507717e-5825-5738-99ee-9e37cc376b5b
+
+	column cve_ent
+		dataType: int64
+		formatString: 0
+		lineageTag: 778aaae3-b649-54c5-acb6-c578e9a6c23d
+		summarizeBy: none
+		sourceColumn: cve_ent
+
+		annotation SummarizationSetBy = User
+
+	column entidad
+		dataType: string
+		lineageTag: 3de91641-c9f7-5b31-8e89-423430e430c4
+		summarizeBy: none
+		sourceColumn: entidad
+
+		annotation SummarizationSetBy = User
+
+	column indicador_clave
+		dataType: string
+		lineageTag: b09761e5-894e-5d0e-830f-feaba17fa223
+		summarizeBy: none
+		sourceColumn: indicador_clave
+
+		annotation SummarizationSetBy = User
+
+	column indicador
+		dataType: string
+		lineageTag: 1991ea9b-8057-5fd6-af1e-53ef7ada79bb
+		summarizeBy: none
+		sourceColumn: indicador
+
+		annotation SummarizationSetBy = User
+
+	column indicador_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 9f3c3125-5c5d-5494-a7e2-27234f9ff63c
+		summarizeBy: none
+		sourceColumn: indicador_orden
+
+		annotation SummarizationSetBy = User
+
+	column valor
+		dataType: double
+		formatString: 0.00
+		lineageTag: 90721d5e-6b1b-5555-885f-a62fe51c4360
+		summarizeBy: none
+		sourceColumn: valor
+
+		annotation SummarizationSetBy = User
+
+	column li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 1eec0f71-b060-5848-8281-cc9429013756
+		summarizeBy: none
+		sourceColumn: li90
+
+		annotation SummarizationSetBy = User
+
+	column ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 47c43a43-29ce-5dc9-9b62-2074e8a26787
+		summarizeBy: none
+		sourceColumn: ls90
+
+		annotation SummarizationSetBy = User
+
+	column cv
+		dataType: double
+		formatString: 0.00
+		lineageTag: 174096f3-a6e0-577f-8b45-63828a3e8b7d
+		summarizeBy: none
+		sourceColumn: cv
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: 1581d7dc-8b0f-590d-845f-32ebb7938142
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: string
+		lineageTag: 57e6e69f-b3d7-5648-8de4-c33122fbcb53
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column nacional
+		dataType: double
+		formatString: 0.00
+		lineageTag: 2af59bd2-fb5d-59cc-9c26-1c2967f1f3e0
+		summarizeBy: none
+		sourceColumn: nacional
+
+		annotation SummarizationSetBy = User
+
+	column es_cdmx
+		dataType: string
+		lineageTag: 8152bbfa-5527-51c4-ba86-a2d2ed704d9a
+		summarizeBy: none
+		sourceColumn: es_cdmx
+
+		annotation SummarizationSetBy = User
+
+	column marginacion_grado
+		dataType: string
+		lineageTag: 037f26de-43c7-5511-89ed-04d2fd076670
+		summarizeBy: none
+		sourceColumn: marginacion_grado
+
+		annotation SummarizationSetBy = User
+
+	partition estados = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "estados.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"cve_ent", Int64.Type}, {"entidad", type text}, {"indicador_clave", type text}, {"indicador", type text}, {"indicador_orden", Int64.Type}, {"valor", type number}, {"li90", type number}, {"ls90", type number}, {"cv", type number}, {"n", Int64.Type}, {"precision", type text}, {"nacional", type number}, {"es_cdmx", type text}, {"marginacion_grado", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

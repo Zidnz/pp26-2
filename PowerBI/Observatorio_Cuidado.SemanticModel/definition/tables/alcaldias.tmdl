@@ -1,0 +1,207 @@
+table alcaldias
+	lineageTag: e23e63f1-e53f-53d7-b34c-36602e5f3d4c
+
+	measure Alcaldías = COUNTROWS(alcaldias)
+		formatString: #,0
+		lineageTag: af426818-529e-5e05-ba5b-e0a1ba9135bb
+
+	column alcaldia
+		dataType: string
+		lineageTag: 0c25e4c0-44d3-5e64-9312-e592292dd2e9
+		summarizeBy: none
+		sourceColumn: alcaldia
+
+		annotation SummarizationSetBy = User
+
+	column abr
+		dataType: string
+		lineageTag: b379d479-8105-5d39-91ef-ea2e30bd2b96
+		summarizeBy: none
+		sourceColumn: abr
+
+		annotation SummarizationSetBy = User
+
+	column asilos
+		dataType: int64
+		formatString: 0
+		lineageTag: a064c640-3fdd-5324-9d24-a1701edb8777
+		summarizeBy: none
+		sourceColumn: asilos
+
+		annotation SummarizationSetBy = User
+
+	column centros_dia
+		dataType: int64
+		formatString: 0
+		lineageTag: c5d7d3f3-abc2-5ce3-a980-f05fe1ca9284
+		summarizeBy: none
+		sourceColumn: centros_dia
+
+		annotation SummarizationSetBy = User
+
+	column pct_pob60
+		dataType: double
+		formatString: 0.00
+		lineageTag: 980c4056-a3e0-578d-9de9-a405edae019f
+		summarizeBy: none
+		sourceColumn: pct_pob60
+
+		annotation SummarizationSetBy = User
+
+	column idx_asilos
+		dataType: double
+		formatString: 0.00
+		lineageTag: 0ff755c9-8f23-5602-a34a-e991ad79bb5c
+		summarizeBy: none
+		sourceColumn: idx_asilos
+
+		annotation SummarizationSetBy = User
+
+	column idx_centros
+		dataType: double
+		formatString: 0.00
+		lineageTag: d3cddde3-de7e-54da-b44a-a4e1a7bd8a94
+		summarizeBy: none
+		sourceColumn: idx_centros
+
+		annotation SummarizationSetBy = User
+
+	column ql_plazas
+		dataType: double
+		formatString: 0.00
+		lineageTag: a16547c7-233c-5803-9b1c-dc22159b4f91
+		summarizeBy: none
+		sourceColumn: ql_plazas
+
+		annotation SummarizationSetBy = User
+
+	column plazas
+		dataType: int64
+		formatString: 0
+		lineageTag: f8219a87-72c8-5708-b2fb-782be7597b7a
+		summarizeBy: none
+		sourceColumn: plazas
+
+		annotation SummarizationSetBy = User
+
+	column dep_total
+		dataType: int64
+		formatString: 0
+		lineageTag: 2d480ebd-2cb5-5ba3-88cb-28d2d1d17c7e
+		summarizeBy: none
+		sourceColumn: dep_total
+
+		annotation SummarizationSetBy = User
+
+	column dep_pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: 1e4e8910-51a9-5c1b-a4df-accb94b70cc6
+		summarizeBy: none
+		sourceColumn: dep_pct
+
+		annotation SummarizationSetBy = User
+
+	column pob65_pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: 2fd6a227-65dc-5ef2-b644-3e18f963cdcc
+		summarizeBy: none
+		sourceColumn: pob65_pct
+
+		annotation SummarizationSetBy = User
+
+	column pob65_n
+		dataType: int64
+		formatString: 0
+		lineageTag: e9ef9e58-4270-5012-ac22-6ec314d60bf2
+		summarizeBy: none
+		sourceColumn: pob65_n
+
+		annotation SummarizationSetBy = User
+
+	column rez_pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: 297bea62-3e72-55f4-b931-b58d8fbf1fc6
+		summarizeBy: none
+		sourceColumn: rez_pct
+
+		annotation SummarizationSetBy = User
+
+	column rez_nageb
+		dataType: int64
+		formatString: 0
+		lineageTag: dc3e55de-d636-5899-9f69-5eb55d45c7ce
+		summarizeBy: none
+		sourceColumn: rez_nageb
+
+		annotation SummarizationSetBy = User
+
+	column sds_pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: 1c52f81b-9593-5c14-bf64-82f48024d66a
+		summarizeBy: none
+		sourceColumn: sds_pct
+
+		annotation SummarizationSetBy = User
+
+	column sds_p10
+		dataType: double
+		formatString: 0.00
+		lineageTag: 156a4914-fd84-5960-b118-c534e2f0644f
+		summarizeBy: none
+		sourceColumn: sds_p10
+
+		annotation SummarizationSetBy = User
+
+	column sds_p90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 920a808f-1891-514b-ae3c-ab0b8d30c153
+		summarizeBy: none
+		sourceColumn: sds_p90
+
+		annotation SummarizationSetBy = User
+
+	column pob_ageb
+		dataType: int64
+		formatString: 0
+		lineageTag: c5fc3725-0060-520b-86c1-3d58b2b503bb
+		summarizeBy: none
+		sourceColumn: pob_ageb
+
+		annotation SummarizationSetBy = User
+
+	column pct_asilos
+		dataType: double
+		formatString: 0.00
+		lineageTag: a620ecb1-3b65-5091-a1a2-abcf59b5958f
+		summarizeBy: none
+		sourceColumn: pct_asilos
+
+		annotation SummarizationSetBy = User
+
+	column pct_centros
+		dataType: double
+		formatString: 0.00
+		lineageTag: 8dc0fb1c-d719-5008-8e2e-dc3a3c1382c6
+		summarizeBy: none
+		sourceColumn: pct_centros
+
+		annotation SummarizationSetBy = User
+
+	partition alcaldias = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "alcaldias.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"alcaldia", type text}, {"abr", type text}, {"asilos", Int64.Type}, {"centros_dia", Int64.Type}, {"pct_pob60", type number}, {"idx_asilos", type number}, {"idx_centros", type number}, {"ql_plazas", type number}, {"plazas", Int64.Type}, {"dep_total", Int64.Type}, {"dep_pct", type number}, {"pob65_pct", type number}, {"pob65_n", Int64.Type}, {"rez_pct", type number}, {"rez_nageb", Int64.Type}, {"sds_pct", type number}, {"sds_p10", type number}, {"sds_p90", type number}, {"pob_ageb", Int64.Type}, {"pct_asilos", type number}, {"pct_centros", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

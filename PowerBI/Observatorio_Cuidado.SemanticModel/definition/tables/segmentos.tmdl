@@ -1,0 +1,59 @@
+table segmentos
+	lineageTag: c3504011-6972-5efe-8fe8-6fa45f18479a
+
+	column seg_id
+		dataType: string
+		isHidden
+		lineageTag: dad2be4e-2d1b-5b9d-8233-e3d80657c5e4
+		summarizeBy: none
+		sourceColumn: seg_id
+
+		annotation SummarizationSetBy = User
+
+	column dimension
+		dataType: string
+		lineageTag: a49bbf3f-a165-5316-974f-b4e5621027d1
+		summarizeBy: none
+		sourceColumn: dimension
+
+		annotation SummarizationSetBy = User
+
+	column segmento
+		dataType: string
+		lineageTag: ddff44a2-e204-54b8-89c2-101bb72750e0
+		summarizeBy: none
+		sourceColumn: segmento
+
+		annotation SummarizationSetBy = User
+
+	column segmento_etiqueta
+		dataType: string
+		lineageTag: cb18a6ab-5282-57fe-8145-e4cc0c805acc
+		summarizeBy: none
+		sourceColumn: segmento_etiqueta
+		sortByColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 5fde88ee-eab3-5f1e-a9fb-85443bfd46ea
+		summarizeBy: none
+		sourceColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	partition segmentos = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "segmentos.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"seg_id", type text}, {"dimension", type text}, {"segmento", type text}, {"segmento_etiqueta", type text}, {"orden", Int64.Type}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

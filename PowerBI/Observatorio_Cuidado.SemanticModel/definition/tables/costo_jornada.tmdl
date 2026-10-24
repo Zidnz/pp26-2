@@ -1,0 +1,92 @@
+table costo_jornada
+	lineageTag: f5b2cca2-81a2-517d-bba5-b05d6c76db53
+
+	measure 'Costo mensual jornada' = AVERAGE(costo_jornada[costo_mensual])
+		formatString: \$#,0
+		lineageTag: 07fe3055-c869-58af-9943-9e9b54447abc
+
+	measure 'Carga patronal %' = AVERAGE(costo_jornada[carga_pct])
+		formatString: 0.0\%
+		lineageTag: 449dc536-69a3-58de-a7a1-7d7dad373727
+
+	column jornada
+		dataType: string
+		lineageTag: f6b1b60b-d005-5db4-b53d-4eb8bdb615ec
+		summarizeBy: none
+		sourceColumn: jornada
+
+		annotation SummarizationSetBy = User
+
+	column horas
+		dataType: int64
+		formatString: 0
+		lineageTag: ba4b2d4d-6d01-5340-ba38-b2306b3ed847
+		summarizeBy: none
+		sourceColumn: horas
+
+		annotation SummarizationSetBy = User
+
+	column horas_txt
+		dataType: string
+		lineageTag: c56567f6-b01a-5740-9468-250bc8ae88e4
+		summarizeBy: none
+		sourceColumn: horas_txt
+
+		annotation SummarizationSetBy = User
+
+	column carga
+		dataType: int64
+		formatString: 0
+		lineageTag: 4a5f046a-1795-5497-93c3-b787a558bdd5
+		summarizeBy: none
+		sourceColumn: carga
+
+		annotation SummarizationSetBy = User
+
+	column carga_txt
+		dataType: string
+		lineageTag: 8c5e321d-b990-58b5-808d-1cdd75305637
+		summarizeBy: none
+		sourceColumn: carga_txt
+
+		annotation SummarizationSetBy = User
+
+	column carga_pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: e377802b-f1b5-5a15-8d72-fcb17befcf62
+		summarizeBy: none
+		sourceColumn: carga_pct
+
+		annotation SummarizationSetBy = User
+
+	column costo_mensual
+		dataType: double
+		formatString: 0.00
+		lineageTag: b376d9cd-9947-5de8-958d-b1cc0effd364
+		summarizeBy: none
+		sourceColumn: costo_mensual
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: 74ae1759-fdf3-54e9-920f-63213d686fcc
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	partition costo_jornada = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "costo_jornada.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"jornada", type text}, {"horas", Int64.Type}, {"horas_txt", type text}, {"carga", Int64.Type}, {"carga_txt", type text}, {"carga_pct", type number}, {"costo_mensual", type number}, {"fuente", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

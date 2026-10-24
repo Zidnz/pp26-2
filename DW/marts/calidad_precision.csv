@@ -1,0 +1,21 @@
+﻿script_origen,precision,n_estimaciones
+03_enasic_barreras_estimaciones.csv,alta,32
+03_enasic_barreras_estimaciones.csv,baja,20
+03_enasic_barreras_estimaciones.csv,moderada,17
+04_contratacion_por_quintil.csv,baja,7
+04_contratacion_por_quintil.csv,moderada,3
+07_enasic_necesidad_vs_norma_estimaciones.csv,alta,61
+07_enasic_necesidad_vs_norma_estimaciones.csv,baja,73
+07_enasic_necesidad_vs_norma_estimaciones.csv,moderada,29
+07_enasic_necesidad_vs_norma_estimaciones.csv,no estimable,3
+12_segmentacion_estimaciones.csv,alta,135
+12_segmentacion_estimaciones.csv,baja,95
+12_segmentacion_estimaciones.csv,moderada,18
+12_segmentacion_estimaciones.csv,no estimable,1
+12b_segmentacion_series.csv,alta,176
+12b_segmentacion_series.csv,baja,91
+12b_segmentacion_series.csv,moderada,113
+12b_segmentacion_series.csv,no aplica,66
+12b_segmentacion_series.csv,no estimable,3
+16_perfil_grupo_problema.csv,alta,14
+16_perfil_grupo_problema.csv,moderada,8

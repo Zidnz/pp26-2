@@ -1,0 +1,23 @@
+﻿objetivo,objetivo_txt,dimension,grupo,grupo_txt,grupo_orden,puntaje,cobertura,dif_vs_regla_pp,n_grupo,n_con_dano,pocos_casos
+DANO_ALGUNO,Algún daño,SEXO,Hombre,Hombres,2,Regresión logística,32.946054,-12.877376,333,156,No
+DANO_ALGUNO,Algún daño,SEXO,Mujer,Mujeres,1,Regresión logística,59.743713,7.260546,710,475,No
+DANO_ALGUNO,Algún daño,EDAD,15-39,15 a 39 años,3,Regresión logística,52.437387,-8.407199,310,182,No
+DANO_ALGUNO,Algún daño,EDAD,40-59,40 a 59 años,4,Regresión logística,52.561377,16.995428,385,250,No
+DANO_ALGUNO,Algún daño,EDAD,60+,60 y más,5,Regresión logística,53.823999,-3.367852,348,199,No
+DANO_ALGUNO,Algún daño,TIPO,Cuida discapacidad,Cuida discapacidad,6,Regresión logística,69.650797,18.497803,636,449,No
+DANO_ALGUNO,Algún daño,TIPO,Solo 60+ sin discapacidad,Solo 60+ sin discap.,7,Regresión logística,20.886907,-29.267106,407,182,No
+DANO_ALGUNO,Algún daño,ING,Q1-Q2,Ingreso Q1–Q2,8,Regresión logística,58.384523,12.904372,321,218,No
+DANO_ALGUNO,Algún daño,ING,Q3,Ingreso Q3,9,Regresión logística,65.429735,24.206014,179,116,No
+DANO_ALGUNO,Algún daño,ING,Q4-Q5,Ingreso Q4–Q5,10,Regresión logística,46.658634,-14.735977,359,199,No
+DANO_ALGUNO,Algún daño,ING,Sin dato,Ingreso sin dato,11,Regresión logística,45.312036,-1.232153,184,98,Sí
+DANO_SALUD_FISICA,Salud física deteriorada,SEXO,Hombre,Hombres,2,Regresión logística,45.108014,-10.43897,333,40,Sí
+DANO_SALUD_FISICA,Salud física deteriorada,SEXO,Mujer,Mujeres,1,Regresión logística,75.708909,18.368727,710,182,No
+DANO_SALUD_FISICA,Salud física deteriorada,EDAD,15-39,15 a 39 años,3,Regresión logística,58.961207,-5.371003,310,42,Sí
+DANO_SALUD_FISICA,Salud física deteriorada,EDAD,40-59,40 a 59 años,4,Regresión logística,65.720598,26.126773,385,102,No
+DANO_SALUD_FISICA,Salud física deteriorada,EDAD,60+,60 y más,5,Regresión logística,77.638003,7.967045,348,78,Sí
+DANO_SALUD_FISICA,Salud física deteriorada,TIPO,Cuida discapacidad,Cuida discapacidad,6,Regresión logística,78.261166,23.426713,636,183,No
+DANO_SALUD_FISICA,Salud física deteriorada,TIPO,Solo 60+ sin discapacidad,Solo 60+ sin discap.,7,Regresión logística,40.399057,-23.929855,407,39,Sí
+DANO_SALUD_FISICA,Salud física deteriorada,ING,Q1-Q2,Ingreso Q1–Q2,8,Regresión logística,66.674763,15.200002,321,61,Sí
+DANO_SALUD_FISICA,Salud física deteriorada,ING,Q3,Ingreso Q3,9,Regresión logística,72.63786,21.265754,179,40,Sí
+DANO_SALUD_FISICA,Salud física deteriorada,ING,Q4-Q5,Ingreso Q4–Q5,10,Regresión logística,66.742476,0.352251,359,80,Sí
+DANO_SALUD_FISICA,Salud física deteriorada,ING,Sin dato,Ingreso sin dato,11,Regresión logística,75.944386,23.990976,184,41,Sí

@@ -1,0 +1,57 @@
+﻿objetivo,puntaje,variable,variable_txt,caida_auc,caida_auc_cent,de
+DANO_ALGUNO,Regresión logística,HORAS,Horas de cuidado a la semana,0.039728,3.97281,0.028232
+DANO_ALGUNO,Regresión logística,N_ABVD,Actividades básicas con ayuda,0.00716,0.715977,0.014377
+DANO_ALGUNO,Regresión logística,N_CLINICAS,Número de condiciones clínicas,0.018276,1.827626,0.017603
+DANO_ALGUNO,Regresión logística,CUIDA_DISC,Cuida a persona con discapacidad,-0.000454,-0.045372,0.005603
+DANO_ALGUNO,Regresión logística,CUIDA_MENORES,También cuida a menores,0.028951,2.8951,0.021761
+DANO_ALGUNO,Regresión logística,ANIOS_CUIDANDO,Años cuidando,-0.000317,-0.031697,0.007438
+DANO_ALGUNO,Regresión logística,CAPACITACION,Tiene capacitación,0.003685,0.368548,0.008271
+DANO_ALGUNO,Regresión logística,APOYO_FAMILIA,Recibe apoyo de la familia,-0.002491,-0.249095,0.005
+DANO_ALGUNO,Regresión logística,REQUIERE_APOYO,La persona requiere apoyo,0.017815,1.781525,0.016423
+DANO_ALGUNO,Regresión logística,FALTA_FUERZA,Le falta fuerza física,0.023869,2.386926,0.017381
+DANO_ALGUNO,Regresión logística,MUJER,Es mujer,0.010068,1.006771,0.013038
+DANO_ALGUNO,Regresión logística,EDAD_N,Edad,0.001925,0.192458,0.010171
+DANO_ALGUNO,Regresión logística,ESCOLARIDAD,Escolaridad,0.000665,0.066452,0.008752
+DANO_ALGUNO,Regresión logística,QUINTIL,Quintil de ingreso,0.006749,0.674868,0.013888
+DANO_ALGUNO,Gradient boosting,HORAS,Horas de cuidado a la semana,0.044208,4.420755,0.038041
+DANO_ALGUNO,Gradient boosting,N_ABVD,Actividades básicas con ayuda,0.028508,2.85083,0.026837
+DANO_ALGUNO,Gradient boosting,N_CLINICAS,Número de condiciones clínicas,0.010252,1.025202,0.014498
+DANO_ALGUNO,Gradient boosting,CUIDA_DISC,Cuida a persona con discapacidad,0.000216,0.021584,0.003846
+DANO_ALGUNO,Gradient boosting,CUIDA_MENORES,También cuida a menores,0.011427,1.142745,0.012365
+DANO_ALGUNO,Gradient boosting,ANIOS_CUIDANDO,Años cuidando,0.004548,0.454843,0.014818
+DANO_ALGUNO,Gradient boosting,CAPACITACION,Tiene capacitación,0.003835,0.383537,0.007188
+DANO_ALGUNO,Gradient boosting,APOYO_FAMILIA,Recibe apoyo de la familia,0.0,2.4e-05,3e-05
+DANO_ALGUNO,Gradient boosting,REQUIERE_APOYO,La persona requiere apoyo,0.01938,1.938023,0.018608
+DANO_ALGUNO,Gradient boosting,FALTA_FUERZA,Le falta fuerza física,0.022151,2.215109,0.018284
+DANO_ALGUNO,Gradient boosting,MUJER,Es mujer,0.004908,0.49077,0.010822
+DANO_ALGUNO,Gradient boosting,EDAD_N,Edad,0.008185,0.818527,0.021855
+DANO_ALGUNO,Gradient boosting,ESCOLARIDAD,Escolaridad,0.003266,0.326578,0.017214
+DANO_ALGUNO,Gradient boosting,QUINTIL,Quintil de ingreso,0.000358,0.035825,0.015786
+DANO_SALUD_FISICA,Regresión logística,HORAS,Horas de cuidado a la semana,0.010318,1.031753,0.015943
+DANO_SALUD_FISICA,Regresión logística,N_ABVD,Actividades básicas con ayuda,0.002607,0.260746,0.010387
+DANO_SALUD_FISICA,Regresión logística,N_CLINICAS,Número de condiciones clínicas,0.026353,2.635328,0.025484
+DANO_SALUD_FISICA,Regresión logística,CUIDA_DISC,Cuida a persona con discapacidad,-0.001288,-0.128793,0.017578
+DANO_SALUD_FISICA,Regresión logística,CUIDA_MENORES,También cuida a menores,-0.001111,-0.111099,0.00483
+DANO_SALUD_FISICA,Regresión logística,ANIOS_CUIDANDO,Años cuidando,0.001271,0.127097,0.007298
+DANO_SALUD_FISICA,Regresión logística,CAPACITACION,Tiene capacitación,0.001559,0.155927,0.009487
+DANO_SALUD_FISICA,Regresión logística,APOYO_FAMILIA,Recibe apoyo de la familia,-0.000592,-0.059191,0.006783
+DANO_SALUD_FISICA,Regresión logística,REQUIERE_APOYO,La persona requiere apoyo,0.020944,2.09436,0.021174
+DANO_SALUD_FISICA,Regresión logística,FALTA_FUERZA,Le falta fuerza física,0.056817,5.681713,0.029467
+DANO_SALUD_FISICA,Regresión logística,MUJER,Es mujer,0.004516,0.451629,0.017769
+DANO_SALUD_FISICA,Regresión logística,EDAD_N,Edad,0.005368,0.536792,0.013086
+DANO_SALUD_FISICA,Regresión logística,ESCOLARIDAD,Escolaridad,0.005157,0.515748,0.015786
+DANO_SALUD_FISICA,Regresión logística,QUINTIL,Quintil de ingreso,-0.002529,-0.252863,0.014593
+DANO_SALUD_FISICA,Gradient boosting,HORAS,Horas de cuidado a la semana,0.022471,2.24711,0.030167
+DANO_SALUD_FISICA,Gradient boosting,N_ABVD,Actividades básicas con ayuda,0.013481,1.348079,0.019534
+DANO_SALUD_FISICA,Gradient boosting,N_CLINICAS,Número de condiciones clínicas,0.02226,2.225999,0.02068
+DANO_SALUD_FISICA,Gradient boosting,CUIDA_DISC,Cuida a persona con discapacidad,0.002469,0.246895,0.010339
+DANO_SALUD_FISICA,Gradient boosting,CUIDA_MENORES,También cuida a menores,-0.000314,-0.031367,0.004379
+DANO_SALUD_FISICA,Gradient boosting,ANIOS_CUIDANDO,Años cuidando,-0.001697,-0.169695,0.012764
+DANO_SALUD_FISICA,Gradient boosting,CAPACITACION,Tiene capacitación,0.002447,0.244679,0.007052
+DANO_SALUD_FISICA,Gradient boosting,APOYO_FAMILIA,Recibe apoyo de la familia,4.3e-05,0.004255,0.000283
+DANO_SALUD_FISICA,Gradient boosting,REQUIERE_APOYO,La persona requiere apoyo,0.027424,2.742437,0.027238
+DANO_SALUD_FISICA,Gradient boosting,FALTA_FUERZA,Le falta fuerza física,0.048213,4.821278,0.032521
+DANO_SALUD_FISICA,Gradient boosting,MUJER,Es mujer,0.000447,0.044691,0.014683
+DANO_SALUD_FISICA,Gradient boosting,EDAD_N,Edad,0.020033,2.003294,0.033857
+DANO_SALUD_FISICA,Gradient boosting,ESCOLARIDAD,Escolaridad,0.003587,0.358678,0.019657
+DANO_SALUD_FISICA,Gradient boosting,QUINTIL,Quintil de ingreso,-0.006427,-0.642706,0.017662

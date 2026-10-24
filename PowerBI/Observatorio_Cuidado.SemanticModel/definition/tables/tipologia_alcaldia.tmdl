@@ -1,0 +1,72 @@
+table tipologia_alcaldia
+	lineageTag: 7c030183-d5f0-53b6-890e-e3d310a6453f
+
+	measure '% de AGEB' = AVERAGE(tipologia_alcaldia[pct_ageb])
+		formatString: 0.0\%
+		lineageTag: 4abf9324-7ec3-5dc3-b559-e27e58a8f14b
+
+	column alcaldia
+		dataType: string
+		lineageTag: 75ae87a8-e1eb-5fa3-afe7-5ed2a1875afb
+		summarizeBy: none
+		sourceColumn: alcaldia
+
+		annotation SummarizationSetBy = User
+
+	column tipo
+		dataType: int64
+		formatString: 0
+		lineageTag: 1420ddf7-e6d5-520c-891f-576327316ceb
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = User
+
+	column tipo_txt
+		dataType: string
+		lineageTag: a1b0db42-6fbe-5b5c-8828-77ceabb68b78
+		summarizeBy: none
+		sourceColumn: tipo_txt
+
+		annotation SummarizationSetBy = User
+
+	column pct_ageb
+		dataType: double
+		formatString: 0.00
+		lineageTag: d27d71ca-798f-53d9-b8fc-ee0e96d23387
+		summarizeBy: none
+		sourceColumn: pct_ageb
+
+		annotation SummarizationSetBy = User
+
+	column ageb_brecha
+		dataType: int64
+		formatString: 0
+		lineageTag: 326b380b-83bc-5ff4-b418-5a30aacd8295
+		summarizeBy: none
+		sourceColumn: ageb_brecha
+
+		annotation SummarizationSetBy = User
+
+	column n_60_brecha
+		dataType: int64
+		formatString: 0
+		lineageTag: a22990fd-0838-5028-88da-ab623abbf125
+		summarizeBy: none
+		sourceColumn: n_60_brecha
+
+		annotation SummarizationSetBy = User
+
+	partition tipologia_alcaldia = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "tipologia_alcaldia.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"alcaldia", type text}, {"tipo", Int64.Type}, {"tipo_txt", type text}, {"pct_ageb", type number}, {"ageb_brecha", Int64.Type}, {"n_60_brecha", Int64.Type}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

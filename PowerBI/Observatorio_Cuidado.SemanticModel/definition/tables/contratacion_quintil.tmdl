@@ -1,0 +1,87 @@
+table contratacion_quintil
+	lineageTag: df163ba7-bdeb-54e3-a17a-ea1dbae7e2a7
+
+	measure 'Contrata (%)' = AVERAGE(contratacion_quintil[pct])
+		formatString: 0.00\%
+		lineageTag: 83394489-55f9-5a95-91a3-cd5f8b47aa85
+
+	measure 'Precisión quintil' = MAX(contratacion_quintil[precision])
+		lineageTag: 04da3878-417d-5463-9fb7-bea229bda87e
+
+	measure 'Casos en muestra' = SUM(contratacion_quintil[n_si])
+		formatString: #,0
+		lineageTag: 271c8865-f721-5491-ad05-1e0982aec7ea
+
+	column quintil
+		dataType: int64
+		formatString: 0
+		lineageTag: b4ad3ccc-0003-5cda-b1ab-00d1fb5ca414
+		summarizeBy: none
+		sourceColumn: quintil
+
+		annotation SummarizationSetBy = User
+
+	column quintil_txt
+		dataType: string
+		lineageTag: d8dedaf5-0edf-5ce5-b633-c2a502db590d
+		summarizeBy: none
+		sourceColumn: quintil_txt
+
+		annotation SummarizationSetBy = User
+
+	column servicio
+		dataType: string
+		lineageTag: 4b0a0694-5a77-557e-9681-9a8577a559b1
+		summarizeBy: none
+		sourceColumn: servicio
+
+		annotation SummarizationSetBy = User
+
+	column pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: 4b4098f8-4598-5514-a2b8-bd75acc8fd54
+		summarizeBy: none
+		sourceColumn: pct
+
+		annotation SummarizationSetBy = User
+
+	column cv
+		dataType: double
+		formatString: 0.00
+		lineageTag: 971cbd0f-df28-5835-812d-b8accafb6ad1
+		summarizeBy: none
+		sourceColumn: cv
+
+		annotation SummarizationSetBy = User
+
+	column n_si
+		dataType: int64
+		formatString: 0
+		lineageTag: 8bca3bfd-904d-57fc-b506-f8a42ac3937c
+		summarizeBy: none
+		sourceColumn: n_si
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: string
+		lineageTag: 720bdff7-68fa-5a90-bf10-7253888f5f0d
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	partition contratacion_quintil = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "contratacion_quintil.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"quintil", Int64.Type}, {"quintil_txt", type text}, {"servicio", type text}, {"pct", type number}, {"cv", type number}, {"n_si", Int64.Type}, {"precision", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

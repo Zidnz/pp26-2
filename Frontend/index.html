@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#2d3347">
-  <title>Relevo de cuidado</title>
+  <title>Mientras · Relevo por horas para quien cuida</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
@@ -14,34 +14,43 @@
 <div class="app" id="app">
 
   <div class="strip">
-    <div class="l"><span class="dot"></span><span>Prototipo · datos simulados</span></div>
+    <div class="l"><span class="dot"></span><span>Mientras · prototipo · datos simulados</span></div>
     <span id="clock" class="mono"></span>
   </div>
 
   <div class="topbar">
-    <div class="id"><span class="mark"></span><h1 id="topTitle">Necesito cuidado</h1></div>
+    <div class="id"><img class="mark" src="observatorio/ilustraciones/logo_marca.svg" alt=""><div><h1 id="topTitle">Necesito cuidado</h1><div class="brandline" id="brandline"></div></div></div>
     <span class="tag" id="topTag"></span>
   </div>
+
+  <!-- Selector de vista (solo para la demostración: en un piloto real cada rol entra con su propia cuenta) -->
+  <div class="rolbar" id="rolbar" role="group" aria-label="Ver la app como">
+    <span>Ver como</span>
+    <button type="button" data-rol="cuidadora">Cuidadora</button>
+    <button type="button" data-rol="relevo">Relevo</button>
+    <button type="button" data-rol="programa">Programa</button>
+  </div>
+
+  <!-- ============ 0a. CUIDADORA: solo su solicitud ============ -->
+  <section class="screen" id="view-mia" hidden><div class="pane" id="mia-body"></div></section>
+
+  <!-- ============ 0b. PERSONA DE RELEVO: solo su registro ============ -->
+  <section class="screen" id="view-yo" hidden><div class="pane" id="yo-body"></div></section>
 
   <!-- ============ 1. CASOS ============ -->
   <section class="screen" id="view-casos" hidden>
     <div class="segwrap">
       <div class="seg" id="caso-filter" role="group" aria-label="Filtrar casos">
         <button data-val="todos" class="on">Todos</button>
-        <button data-val="espera">Espera</button>
-        <button data-val="activo">Activos</button>
-        <button data-val="otros">Otros</button>
+        <button data-val="espera">En cola</button>
+        <button data-val="activo">Con relevo</button>
+        <button data-val="revision">Revisión</button>
       </div>
     </div>
     <div class="pane tight">
       <div class="row-between">
         <div class="sub" id="caso-count"></div>
-        <button class="btn-primary sm" data-action="new-caso">+ Canalizar</button>
-      </div>
-      <div class="estilos" id="caso-estilo" role="group" aria-label="Vista de la lista">
-        <button type="button" data-estilo="lista" title="Lista"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13"/><circle cx="3.5" cy="6" r="1.3"/><circle cx="3.5" cy="12" r="1.3"/><circle cx="3.5" cy="18" r="1.3"/></svg><span>Lista</span></button>
-        <button type="button" data-estilo="head" title="Tarjetas"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M3 9h18"/></svg><span>Tarjetas</span></button>
-        <button type="button" data-estilo="mosaico" title="Mosaico"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="8" height="8" rx="2"/><rect x="13" y="3" width="8" height="8" rx="2"/><rect x="3" y="13" width="8" height="8" rx="2"/><rect x="13" y="13" width="8" height="8" rx="2"/></svg><span>Mosaico</span></button>
+        <button class="btn-primary sm" data-action="new-sol">+ Solicitar relevo</button>
       </div>
       <div class="list" id="caso-list"></div>
     </div>
@@ -60,6 +69,10 @@
         <div class="sub" id="rel-count"></div>
         <button class="btn-primary sm" data-action="new-relevo">+ Registrar</button>
       </div>
+      <div class="card infocard">
+        <img src="observatorio/ilustraciones/cuidadoraSilla.png" alt="" loading="lazy">
+        <p><b>Registras tu disponibilidad y tu zona.</b> El programa te asigna casos según su prioridad: no eliges familia ni la familia te elige.</p>
+      </div>
       <div class="list" id="rel-list"></div>
     </div>
   </section>
@@ -68,11 +81,17 @@
   <section class="screen" id="view-seguimiento" hidden>
     <div class="segwrap">
       <div class="seg" id="seg-sub" role="group" aria-label="Seguimiento">
+        <button data-sub="prog">Programa</button>
         <button data-sub="hoy" class="on">Visitas</button>
         <button data-sub="caso">Caso</button>
         <button data-sub="mapa">Mapa</button>
         <button data-sub="kpi">KPI</button>
       </div>
+    </div>
+
+    <div class="pane tight" data-sub-panel="prog" hidden>
+      <div class="simbanner">SIMULADO · panel del programa con casos de ejemplo</div>
+      <div id="prog-body"></div>
     </div>
 
     <div class="pane tight" data-sub-panel="hoy">
@@ -135,7 +154,15 @@
           <input type="range" id="cfg-fp" min="0" max="60" step="1">
         </label>
         <p class="sub">Factor de prestaciones por definir (Daniel).</p>
+        <label class="fld">Bolsa de horas al mes (simulación): <b id="cfg-bolsa-val"></b>
+          <input type="range" id="cfg-bolsa" min="50" max="3000" step="10">
+        </label>
+        <p class="sub" id="cfg-bolsa-nota"></p>
       </div>
+      <details class="card panel">
+        <summary>Priorización (js/config.js)</summary>
+        <ul class="params" id="cfg-prio"></ul>
+      </details>
       <details class="card panel">
         <summary>Parámetros y fuentes</summary>
         <ul class="params" id="cfg-params"></ul>
@@ -152,6 +179,7 @@
           <input type="file" id="cfg-file" accept="application/json" hidden>
           <button class="btn-ghost" id="cfg-seed">Restaurar ejemplo</button>
           <button class="btn-ghost danger" id="cfg-clear">Borrar todo</button>
+          <button class="btn-ghost" id="cfg-intro">Ver la bienvenida otra vez</button>
         </div>
       </div>
       <p class="sub foot">Tasas de daño: ENASIC 2022, nacionales (probables para la CDMX). Fragilidad: índice propio del prototipo.</p>
@@ -160,14 +188,31 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+  <!-- ============ Bienvenida: solo la primera vez (o con ?intro) ============ -->
+  <div class="intro" id="intro" hidden>
+    <div class="intro-marca">
+      <img src="observatorio/ilustraciones/logo_marca.svg" alt="">
+      <h2>Mientras</h2>
+      <p>Relevo por horas para quien cuida</p>
+      <div class="intro-carga" aria-hidden="true"><i></i></div>
+    </div>
+    <div class="intro-opc" role="group" aria-label="¿Cómo vas a usar Mientras?">
+      <h3>¿Cómo vas a usar Mientras?</h3>
+      <button type="button" data-intro="cuidadora"><b>Cuido a un familiar</b><small>Pedir horas de relevo para descansar</small></button>
+      <button type="button" data-intro="relevo"><b>Quiero dar relevo</b><small>Registrarme para cuidar por horas</small></button>
+      <button type="button" data-intro="programa"><b>Trabajo en el programa</b><small>Ver casos, asignar y dar seguimiento</small></button>
+      <p class="intro-nota">Prototipo con datos simulados</p>
+    </div>
+  </div>
+
   <nav class="tabbar" role="tablist" aria-label="Secciones">
     <button class="tabbtn" role="tab" id="tab-casos" data-view="casos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
-      <span>Necesito</span>
+      <span>Casos</span>
     </button>
     <button class="tabbtn" role="tab" id="tab-relevos" data-view="relevos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="m16 11 2 2 4-4"/></svg>
-      <span>Puedo cuidar</span>
+      <span>Relevos</span>
     </button>
     <button class="tabbtn" role="tab" id="tab-seguimiento" data-view="seguimiento">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4m0 0-5.5 5M12 11.5l5.5 5"/></svg>
@@ -189,72 +234,16 @@
   </form>
 </dialog>
 
-<!-- ============ Canalizar caso ============ -->
-<dialog id="dlg-caso">
-  <form id="form-caso" novalidate>
+<!-- ============ Solicitud: entrada → registro → consentimiento → entrevista (3 bloques) → resultado ============ -->
+<dialog id="dlg-sol">
+  <form id="form-sol" novalidate>
     <div class="handle" aria-hidden="true"></div>
-    <h3>Canalizar caso</h3>
-    <label class="check emerg"><input type="checkbox" name="emergencia"><span>Emergencia médica ahora</span></label>
-    <p class="gate-msg emerg" id="caso-emerg" hidden>Llamar al 911. El programa no atiende emergencias.</p>
-
-    <div id="caso-body">
-      <div class="eyebrow sep">Focalización</div>
-      <div class="row2">
-        <label class="fld">Horas de cuidado / sem
-          <input name="horas" type="number" min="0" max="168" inputmode="numeric">
-        </label>
-        <div class="fld">Ayuda en comer, bañarse, moverse…
-          <div class="chips radio">
-            <label class="chip"><input type="radio" name="abvd" value="si"><span>Sí</span></label>
-            <label class="chip"><input type="radio" name="abvd" value="no"><span>No</span></label>
-          </div>
-        </div>
-      </div>
-      <div class="chips">
-        <label class="chip"><input type="checkbox" name="danoSalud"><span>Daño a su salud</span></label>
-        <label class="chip"><input type="checkbox" name="danoTrabajo"><span>Daño a su trabajo</span></label>
-      </div>
-      <div id="caso-prio-res"></div>
-
-      <div class="eyebrow sep">Quién cuida y a quién</div>
-      <div class="row-sx">
-        <div class="chips radio sxpick" data-sx="sexo"></div>
-        <input name="alias" maxlength="24" autocomplete="off" placeholder="Cuidadora (alias)" aria-label="Alias de la cuidadora">
-      </div>
-      <div class="row-sx">
-        <div class="chips radio sxpick" data-sx="psexo"></div>
-        <input name="palias" maxlength="24" autocomplete="off" placeholder="Persona cuidada (alias)" aria-label="Alias de la persona cuidada">
-        <input name="pedad" type="number" min="0" max="120" inputmode="numeric" placeholder="Edad" aria-label="Edad" class="edad">
-      </div>
-      <div class="row2">
-        <label class="fld">Alcaldía<select name="alcaldia" id="caso-alcaldia"></select></label>
-        <label class="fld">Parentesco<select name="prol" id="caso-parentesco"></select></label>
-      </div>
-      <label class="fld">Situación<select name="grupo" id="caso-grupo"></select></label>
-      <div id="caso-apoyos"></div>
-      <button type="button" class="link" id="caso-add-apoyo">+ Otra persona que ayuda</button>
-
-      <div class="eyebrow sep">Paquete</div>
-      <div class="chips radio" id="caso-horas-pq"></div>
-      <div class="chips" data-name="dias"></div>
-      <div class="row2">
-        <label class="fld">Inicio<input name="inicio" type="time" step="1800" value="09:00"></label>
-        <label class="fld">Paga<select name="pagador" id="caso-pagador"></select></label>
-      </div>
-      <label class="fld" id="caso-pct-row">% subsidio<input name="pct" type="number" min="1" max="99" value="50" inputmode="numeric"></label>
-      <div class="chips" data-name="tareas"></div>
-      <div id="caso-pq-res"></div>
-
-      <div class="eyebrow sep">Consentimiento</div>
-      <label class="check"><input type="checkbox" name="inst"><span>Identidad validada por la institución</span></label>
-      <label class="check"><input type="checkbox" name="privacidad"><span>Aviso de privacidad entregado</span></label>
-      <label class="check"><input type="checkbox" name="sensibles"><span>Consiente datos de salud</span></label>
-    </div>
-
-    <p class="form-error" role="alert"></p>
+    <div class="wiz-top"><span class="mono" id="sol-paso"></span><div class="wiz-bar"><i id="sol-bar"></i></div></div>
+    <div id="sol-body"></div>
+    <p class="form-error" role="alert" id="sol-err"></p>
     <div class="btn-row end sticky">
-      <button type="button" class="btn-ghost" data-close>Cancelar</button>
-      <button type="submit" class="btn-primary" id="caso-ok" disabled>Canalizar</button>
+      <button type="button" class="btn-ghost" id="sol-atras">Atrás</button>
+      <button type="submit" class="btn-primary" id="sol-sig">Siguiente</button>
     </div>
   </form>
 </dialog>
@@ -263,7 +252,9 @@
 <dialog id="dlg-relevo">
   <form id="form-relevo" novalidate>
     <div class="handle" aria-hidden="true"></div>
+    <img class="personaje sm" src="observatorio/ilustraciones/cuidadoraSilla.png" alt="" loading="lazy">
     <h3>Puedo cuidar</h3>
+    <p class="sub">Registra tu disponibilidad y tu zona. El programa asigna según la prioridad de cada caso.</p>
     <div class="row-sx">
       <div class="chips radio sxpick" data-sx="sexo"></div>
       <input name="nombre" maxlength="40" autocomplete="off" placeholder="Nombre" aria-label="Nombre">
@@ -359,6 +350,8 @@
 
 <script src="vendor/d3.min.js"></script>
 <script src="js/cdmx-alcaldias.js"></script>
+<script src="js/config.js"></script>
+<script src="js/prioridad.js"></script>
 <script src="js/data.js"></script>
 <script src="js/legal.js"></script>
 <script src="js/relevo.js"></script>

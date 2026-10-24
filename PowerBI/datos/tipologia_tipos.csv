@@ -1,0 +1,5 @@
+﻿tipo,nombre,tipo_txt,n_ageb,poblacion,pct_pob_cdmx,n_60,pct_de_las_60,pct_60,n_disc,pct_sinder,pct_viv_sin_int,viviendas,viviendas_sin_internet,dist_mediana_km,pct_60_a_mas_de_1km,ageb_brecha,n_60_brecha
+1,Periferia joven con carencias,1 · Periferia joven con carencias,637,2825720,30.681185,333858,22.463611,11.814971,153689,31.839071,36.650672,735640,269617,1.057164,54.576497,49,51127
+2,Consolidada de transición,2 · Consolidada de transición,912,3899875,42.344177,640761,43.113556,16.430296,223124,27.334133,25.421957,1135542,288677,0.932833,46.245792,80,87806
+3,Envejecida de escolaridad media-alta,3 · Envejecida de escolaridad media-alta,474,1108553,12.036479,277483,18.670423,25.031099,63571,23.08135,13.411983,369826,49601,0.675672,26.110789,10,10663
+4,Central de alta escolaridad,4 · Central de alta escolaridad,348,1293742,14.04723,234115,15.75241,18.095957,49765,19.75819,9.7172,492220,47830,0.749796,28.856331,12,14758

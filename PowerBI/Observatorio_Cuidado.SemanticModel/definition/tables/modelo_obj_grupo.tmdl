@@ -1,0 +1,125 @@
+table modelo_obj_grupo
+	lineageTag: fcbdf71e-79c5-5f94-b167-b123718fc9ed
+
+	measure 'Gana o pierde (pp)' = AVERAGE(modelo_obj_grupo[dif_vs_regla_pp])
+		formatString: +0.0;-0.0;0.0
+		lineageTag: a86d085f-c900-5a35-97c2-9c35d5e02e31
+
+	measure 'Orden grupo obj' = MIN(modelo_obj_grupo[grupo_orden])
+		formatString: 0
+		lineageTag: c7c73a5a-495d-53ca-aaef-b33132ce30d9
+
+	column objetivo
+		dataType: string
+		lineageTag: 5c27137a-7a3a-5619-bfa1-cab026ecb114
+		summarizeBy: none
+		sourceColumn: objetivo
+
+		annotation SummarizationSetBy = User
+
+	column objetivo_txt
+		dataType: string
+		lineageTag: 8f7ddc37-52bd-5759-a3f0-fde2291da383
+		summarizeBy: none
+		sourceColumn: objetivo_txt
+
+		annotation SummarizationSetBy = User
+
+	column dimension
+		dataType: string
+		lineageTag: 3e0d7024-0ddd-58da-a3c9-b9d0e381aa6e
+		summarizeBy: none
+		sourceColumn: dimension
+
+		annotation SummarizationSetBy = User
+
+	column grupo
+		dataType: string
+		lineageTag: 0a28d45f-5746-5c02-8724-c0986437b495
+		summarizeBy: none
+		sourceColumn: grupo
+
+		annotation SummarizationSetBy = User
+
+	column grupo_txt
+		dataType: string
+		lineageTag: 8946617c-a268-5230-b5b8-0da202894115
+		summarizeBy: none
+		sourceColumn: grupo_txt
+
+		annotation SummarizationSetBy = User
+
+	column grupo_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 999331fd-7956-5fd8-a002-6a113d7bcb06
+		summarizeBy: none
+		sourceColumn: grupo_orden
+
+		annotation SummarizationSetBy = User
+
+	column puntaje
+		dataType: string
+		lineageTag: 1fe4092a-2c29-5a77-b2e1-0f21d1e0fbfb
+		summarizeBy: none
+		sourceColumn: puntaje
+
+		annotation SummarizationSetBy = User
+
+	column cobertura
+		dataType: double
+		formatString: 0.00
+		lineageTag: 50efed3e-7b70-58a8-86fe-e3c98980b064
+		summarizeBy: none
+		sourceColumn: cobertura
+
+		annotation SummarizationSetBy = User
+
+	column dif_vs_regla_pp
+		dataType: double
+		formatString: 0.00
+		lineageTag: 542c8bf6-ac7e-5cce-a2b2-30efe20871a0
+		summarizeBy: none
+		sourceColumn: dif_vs_regla_pp
+
+		annotation SummarizationSetBy = User
+
+	column n_grupo
+		dataType: int64
+		formatString: 0
+		lineageTag: a9981f0c-9b42-56eb-8c4b-dea2ddefccdf
+		summarizeBy: none
+		sourceColumn: n_grupo
+
+		annotation SummarizationSetBy = User
+
+	column n_con_dano
+		dataType: int64
+		formatString: 0
+		lineageTag: 1136581c-426b-5f79-af46-e8c138642fca
+		summarizeBy: none
+		sourceColumn: n_con_dano
+
+		annotation SummarizationSetBy = User
+
+	column pocos_casos
+		dataType: string
+		lineageTag: 73a3b7c0-f8fc-568c-9161-4d7294be19b9
+		summarizeBy: none
+		sourceColumn: pocos_casos
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_obj_grupo = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_obj_grupo.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"objetivo", type text}, {"objetivo_txt", type text}, {"dimension", type text}, {"grupo", type text}, {"grupo_txt", type text}, {"grupo_orden", Int64.Type}, {"puntaje", type text}, {"cobertura", type number}, {"dif_vs_regla_pp", type number}, {"n_grupo", Int64.Type}, {"n_con_dano", Int64.Type}, {"pocos_casos", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

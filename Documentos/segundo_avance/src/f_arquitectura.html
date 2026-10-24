@@ -1,0 +1,21 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="fig.css"><style>
+.L{display:grid;grid-template-columns:190px 1fr 330px;gap:16px;align-items:stretch;margin-bottom:12px}
+.lab{background:#3f4760;color:#fff;border-radius:12px;padding:14px;font-weight:700;font-size:16px}
+.lab span{display:block;font-weight:400;font-size:13px;color:#c9c2e0;margin-top:6px}
+.lab.par{background:#77689d}
+.dn{text-align:center;color:#77689d;font-size:15px;font-weight:800;margin:-4px 0 6px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row .b{flex:1}
+</style><div class="f">
+<div class="k">Arquitectura del Observatorio · 20 oct 2026</div><h1>Tres capas en un solo sentido, y un almacén que corre en paralelo</h1>
+<div class="L"><div class="lab">1 · Análisis<span>Python en Jupyter y scripts</span></div>
+<div class="row"><div class="b"><b>Notebook A</b><br><span class="s">oferta y territorio · §01 02 08 09 13 17</span></div><div class="b"><b>Notebook B</b><br><span class="s">ENASIC · §03 07 12 16 11 (modelo 1)</span></div><div class="b"><b>Notebook C</b><br><span class="s">costos · §04 05 06 10 14</span></div><div class="b"><b>Notebook D</b><br><span class="s">tipología AGEB · §18 (modelo 2)</span></div><div class="b"><b>Scripts 19 y 20</b><br><span class="s">costo por jornada · sostenibilidad</span></div><div class="b am"><b>Scripts 21 y 22</b><br><span class="s">priorización · exploratorios, no llegan a la página</span></div></div>
+<div class="b"><b>Tecnologías</b><br><span class="tag">pandas</span><span class="tag">numpy</span><span class="tag">scipy</span><span class="tag">scikit-learn</span><span class="tag">geopandas</span><span class="tag">matplotlib*</span><br><span class="s">*solo figuras para Word y PowerPoint</span></div></div>
+<div class="dn">▼ Analysis/resultados/*.csv · outputs/*.csv · matrices/*.csv · 18_tipologia_contornos.geojson</div>
+<div class="L"><div class="lab">2 · Construcción<span>un solo script</span></div>
+<div class="b dk"><b class="m" style="color:#fff;font-size:16px">Frontend/observatorio/build_datos.py</b><br><span class="s">Arma el diccionario D con 44 bloques (antes 41: se agregaron jornada, sostenibilidad y modelo2), valida y proyecta los mapas de AGEB. Si algo falta, se detiene.</span></div>
+<div class="b al"><b class="m">DW/etl/run_etl.py</b> <span class="s">· en paralelo, desde el 20 oct</span><br><span class="s">Lee los mismos resultados y arma un almacén SQLite (esquema estrella, 3 data marts). <b>La página no lo lee</b>: corre al lado y se reconcilia.</span></div></div>
+<div class="dn">▼ variables globales D · GEO · GEO_EST · GEO_AGEB (scripts clásicos, sin fetch)</div>
+<div class="L"><div class="lab">3 · Página<span>navegador, sin servidor</span></div>
+<div class="row"><div class="b"><b class="m">index.html</b><br><span class="s">8 pestañas</span></div><div class="b"><b class="m">css/ ×5</b><br><span class="s">tokens, layout, componentes, gráficas, vistas</span></div><div class="b"><b class="m">js/ ×29</b><br><span class="s">núcleo · gráficas · vistas · app</span></div><div class="b ok"><b>file://</b><br><span class="s">abre con doble clic</span></div></div>
+<div class="b"><b>Tecnologías</b><br><span class="tag">HTML5</span><span class="tag">CSS</span><span class="tag">JavaScript (sin framework)</span><span class="tag">SVG</span><span class="tag">three.js r128</span><span class="tag">Google Fonts</span></div></div>
+</div>

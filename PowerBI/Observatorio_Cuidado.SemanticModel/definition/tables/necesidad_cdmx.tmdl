@@ -1,0 +1,73 @@
+table necesidad_cdmx
+	lineageTag: c32fd217-13ad-5286-9feb-5e77b14bd0f0
+
+	measure 'Hogares CDMX con 60+ o discapacidad (ENIGH)' = SUM(necesidad_cdmx[total])
+		formatString: #,0
+		lineageTag: 1868cba3-18d2-5e9e-b846-1d8447a124be
+
+	column pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: b60ca53b-7a01-5d52-9671-749e589af246
+		summarizeBy: none
+		sourceColumn: pct
+
+		annotation SummarizationSetBy = User
+
+	column li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 1cd2f22c-41f5-56db-ae6b-73872086379e
+		summarizeBy: none
+		sourceColumn: li90
+
+		annotation SummarizationSetBy = User
+
+	column ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: ba230ead-11f4-56b1-8c39-d930adb6c468
+		summarizeBy: none
+		sourceColumn: ls90
+
+		annotation SummarizationSetBy = User
+
+	column cv
+		dataType: double
+		formatString: 0.00
+		lineageTag: d870b2cf-90ea-56a9-b636-77a9465654ab
+		summarizeBy: none
+		sourceColumn: cv
+
+		annotation SummarizationSetBy = User
+
+	column total
+		dataType: int64
+		formatString: 0
+		lineageTag: 5719c7b5-86a9-5413-8509-8f1829759a29
+		summarizeBy: none
+		sourceColumn: total
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: eed0160a-2bda-502d-8e29-15865af5d47c
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	partition necesidad_cdmx = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "necesidad_cdmx.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"pct", type number}, {"li90", type number}, {"ls90", type number}, {"cv", type number}, {"total", Int64.Type}, {"fuente", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

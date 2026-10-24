@@ -1,0 +1,113 @@
+﻿alcaldia,indicador_clave,indicador,indicador_orden,valor,conteo,pct_pob60,fuente
+Cuauhtémoc,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,0.729,5,6.289,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Azcapotzalco,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,0.696,4,5.273,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Iztacalco,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,0.386,2,4.754,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Gustavo A. Madero,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,0.807,12,13.642,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Venustiano Carranza,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,0.347,2,5.294,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Iztapalapa,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,0.522,10,17.57,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Miguel Hidalgo,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,1.539,8,4.768,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Álvaro Obregón,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,1.007,9,8.201,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Coyoacán,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,1.405,13,8.487,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Tlalpan,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,1.886,15,7.298,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Cuajimalpa de Morelos,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,1.591,3,1.73,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Benito Juárez,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,1.723,11,5.856,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Tláhuac,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,0.592,2,3.097,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+La Magdalena Contreras,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,1.798,5,2.552,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Xochimilco,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,1.795,8,4.088,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Milpa Alta,idx_asilos,"Asilos frente a población de 60+ (índice, 1 = proporcional)",1,0.0,0,1.101,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Cuauhtémoc,idx_centros,Centros de día frente a población de 60+ (índice),2,0.252,2,6.289,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Azcapotzalco,idx_centros,Centros de día frente a población de 60+ (índice),2,0.301,2,5.273,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Iztacalco,idx_centros,Centros de día frente a población de 60+ (índice),2,0.668,4,4.754,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Gustavo A. Madero,idx_centros,Centros de día frente a población de 60+ (índice),2,0.756,13,13.642,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Venustiano Carranza,idx_centros,Centros de día frente a población de 60+ (índice),2,1.199,8,5.294,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Iztapalapa,idx_centros,Centros de día frente a población de 60+ (índice),2,1.22,27,17.57,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Miguel Hidalgo,idx_centros,Centros de día frente a población de 60+ (índice),2,0.499,3,4.768,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Álvaro Obregón,idx_centros,Centros de día frente a población de 60+ (índice),2,1.258,13,8.201,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Coyoacán,idx_centros,Centros de día frente a población de 60+ (índice),2,0.935,10,8.487,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Tlalpan,idx_centros,Centros de día frente a población de 60+ (índice),2,0.653,6,7.298,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Cuajimalpa de Morelos,idx_centros,Centros de día frente a población de 60+ (índice),2,0.918,2,1.73,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Benito Juárez,idx_centros,Centros de día frente a población de 60+ (índice),2,0.949,7,5.856,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Tláhuac,idx_centros,Centros de día frente a población de 60+ (índice),2,2.05,8,3.097,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+La Magdalena Contreras,idx_centros,Centros de día frente a población de 60+ (índice),2,1.244,4,2.552,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Xochimilco,idx_centros,Centros de día frente a población de 60+ (índice),2,2.135,11,4.088,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Milpa Alta,idx_centros,Centros de día frente a población de 60+ (índice),2,4.325,6,1.101,"Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)"
+Cuauhtémoc,ql_plazas,Plazas en residencias privadas (cociente de localización),3,1.27,197,6.289,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Azcapotzalco,ql_plazas,Plazas en residencias privadas (cociente de localización),3,1.43,186,5.273,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Iztacalco,ql_plazas,Plazas en residencias privadas (cociente de localización),3,0.12,14,4.754,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Gustavo A. Madero,ql_plazas,Plazas en residencias privadas (cociente de localización),3,0.23,76,13.642,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Venustiano Carranza,ql_plazas,Plazas en residencias privadas (cociente de localización),3,,,5.294,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Iztapalapa,ql_plazas,Plazas en residencias privadas (cociente de localización),3,0.05,20,17.57,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Miguel Hidalgo,ql_plazas,Plazas en residencias privadas (cociente de localización),3,3.74,439,4.768,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Álvaro Obregón,ql_plazas,Plazas en residencias privadas (cociente de localización),3,0.69,140,8.201,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Coyoacán,ql_plazas,Plazas en residencias privadas (cociente de localización),3,1.73,361,8.487,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Tlalpan,ql_plazas,Plazas en residencias privadas (cociente de localización),3,2.24,403,7.298,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Cuajimalpa de Morelos,ql_plazas,Plazas en residencias privadas (cociente de localización),3,,,1.73,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Benito Juárez,ql_plazas,Plazas en residencias privadas (cociente de localización),3,0.71,102,5.856,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Tláhuac,ql_plazas,Plazas en residencias privadas (cociente de localización),3,,,3.097,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+La Magdalena Contreras,ql_plazas,Plazas en residencias privadas (cociente de localización),3,1.45,91,2.552,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Xochimilco,ql_plazas,Plazas en residencias privadas (cociente de localización),3,1.57,158,4.088,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Milpa Alta,ql_plazas,Plazas en residencias privadas (cociente de localización),3,,,1.101,Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)
+Cuauhtémoc,dep_pct,Personas con dependencia severa (% de la CDMX),4,5.6,4680,6.289,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Azcapotzalco,dep_pct,Personas con dependencia severa (% de la CDMX),4,5.1,4220,5.273,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Iztacalco,dep_pct,Personas con dependencia severa (% de la CDMX),4,4.9,4088,4.754,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Gustavo A. Madero,dep_pct,Personas con dependencia severa (% de la CDMX),4,14.3,11935,13.642,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Venustiano Carranza,dep_pct,Personas con dependencia severa (% de la CDMX),4,5.0,4200,5.294,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Iztapalapa,dep_pct,Personas con dependencia severa (% de la CDMX),4,19.3,16076,17.57,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Miguel Hidalgo,dep_pct,Personas con dependencia severa (% de la CDMX),4,4.2,3504,4.768,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Álvaro Obregón,dep_pct,Personas con dependencia severa (% de la CDMX),4,8.0,6653,8.201,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Coyoacán,dep_pct,Personas con dependencia severa (% de la CDMX),4,7.6,6310,8.487,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Tlalpan,dep_pct,Personas con dependencia severa (% de la CDMX),4,7.3,6056,7.298,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Cuajimalpa de Morelos,dep_pct,Personas con dependencia severa (% de la CDMX),4,1.7,1448,1.73,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Benito Juárez,dep_pct,Personas con dependencia severa (% de la CDMX),4,4.5,3786,5.856,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Tláhuac,dep_pct,Personas con dependencia severa (% de la CDMX),4,3.8,3192,3.097,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+La Magdalena Contreras,dep_pct,Personas con dependencia severa (% de la CDMX),4,2.7,2272,2.552,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Xochimilco,dep_pct,Personas con dependencia severa (% de la CDMX),4,4.4,3641,4.088,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Milpa Alta,dep_pct,Personas con dependencia severa (% de la CDMX),4,1.5,1252,1.101,Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)
+Cuauhtémoc,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,12.991608,59125,6.289,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Azcapotzalco,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,16.318222,54425,5.273,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Iztacalco,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,18.598496,47874,4.754,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Gustavo A. Madero,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,23.140982,151056,13.642,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Venustiano Carranza,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,19.33893,50845,5.294,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Iztapalapa,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,30.739191,178837,17.57,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Miguel Hidalgo,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,9.648402,56364,4.768,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Álvaro Obregón,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,27.348429,87576,8.201,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Coyoacán,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,15.949532,89394,8.487,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Tlalpan,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,25.244566,70776,7.298,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Cuajimalpa de Morelos,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,19.694138,21798,1.73,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Benito Juárez,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,5.602033,60073,5.856,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Tláhuac,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,32.869811,28749,3.097,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+La Magdalena Contreras,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,30.370741,27751,2.552,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Xochimilco,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,32.937283,40165,4.088,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Milpa Alta,pob65_pct,"Pobreza en población de 65 y más, 2020 (%)",5,45.783604,11062,1.101,"Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)"
+Cuauhtémoc,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,4.44,5,6.289,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Azcapotzalco,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,0.09,1,5.273,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Iztacalco,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,0.0,1,4.754,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Gustavo A. Madero,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,10.58,31,13.642,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Venustiano Carranza,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,3.72,3,5.294,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Iztapalapa,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,18.13,74,17.57,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Miguel Hidalgo,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,0.0,0,4.768,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Álvaro Obregón,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,3.17,7,8.201,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Coyoacán,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,0.59,2,8.487,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Tlalpan,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,13.82,27,7.298,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Cuajimalpa de Morelos,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,1.38,1,1.73,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Benito Juárez,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,0.0,0,5.856,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Tláhuac,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,7.92,12,3.097,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+La Magdalena Contreras,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,6.39,3,2.552,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Xochimilco,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,20.62,31,4.088,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Milpa Alta,rez_pct,"Población en AGEB con rezago social medio o mayor, 2020 (%)",6,47.73,24,1.101,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Cuauhtémoc,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,28.35,545884,6.289,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Azcapotzalco,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,20.93,432204,5.273,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Iztacalco,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,27.22,404695,4.754,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Gustavo A. Madero,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,25.83,1165153,13.642,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Venustiano Carranza,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,28.26,443640,5.294,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Iztapalapa,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,32.67,1835454,17.57,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Miguel Hidalgo,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,19.5,414450,4.768,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Álvaro Obregón,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,24.74,759003,8.201,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Coyoacán,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,26.13,614447,8.487,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Tlalpan,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,28.6,681495,7.298,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Cuajimalpa de Morelos,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,24.04,212735,1.73,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Benito Juárez,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,20.02,434153,5.856,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Tláhuac,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,26.95,382271,3.097,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+La Magdalena Contreras,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,27.5,246428,2.552,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Xochimilco,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,31.06,429468,4.088,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"
+Milpa Alta,sds_pct,"Población sin derechohabiencia a servicios de salud, 2020 (%)",7,30.11,128710,1.101,"Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)"

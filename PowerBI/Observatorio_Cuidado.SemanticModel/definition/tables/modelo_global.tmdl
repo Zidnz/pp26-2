@@ -1,0 +1,162 @@
+table modelo_global
+	lineageTag: a16d8b3d-7b34-57cd-a8e6-43524fc714bd
+
+	measure 'Cobertura regla' = CALCULATE(AVERAGE(modelo_global[cobertura]), modelo_global[objetivo] = "DANO_ALGUNO", modelo_global[puntaje] = "Regla >= 40 h")
+		formatString: 0.0\%
+		lineageTag: 378f67d5-64a6-5956-8bbb-fb0ac281d211
+
+	measure 'Cobertura logística' = CALCULATE(AVERAGE(modelo_global[cobertura]), modelo_global[objetivo] = "DANO_ALGUNO", modelo_global[puntaje] = "Regresión logística")
+		formatString: 0.0\%
+		lineageTag: 411f9532-3067-5518-adb0-bee9dc6f5049
+
+	measure 'Diferencia logística pp' = CALCULATE(AVERAGE(modelo_global[dif_cobertura_vs_regla]), modelo_global[objetivo] = "DANO_ALGUNO", modelo_global[puntaje] = "Regresión logística")
+		formatString: +0.0;-0.0;0.0
+		lineageTag: 81851ac5-0b10-5035-aa21-e4c51dc03b7c
+
+	measure 'Diferencia salud física pp' = CALCULATE(AVERAGE(modelo_global[dif_cobertura_vs_regla]), modelo_global[objetivo] = "DANO_SALUD_FISICA", modelo_global[puntaje] = "Regresión logística")
+		formatString: +0.0;-0.0;0.0
+		lineageTag: 92cf5627-0825-54b4-9712-c0d7b2f531f0
+
+	measure AUC = AVERAGE(modelo_global[auc_ponderado])
+		formatString: 0.000
+		lineageTag: b19de29e-5e4e-5dbb-9fde-2abc441909ef
+
+	measure 'Cobertura (%)' = AVERAGE(modelo_global[cobertura])
+		formatString: 0.0\%
+		lineageTag: 8c78afee-1c27-5c6d-aba3-349f3ef93fdb
+
+	measure 'Precisión (%)' = AVERAGE(modelo_global[precision])
+		formatString: 0.0\%
+		lineageTag: 4da873c7-e66b-570b-84e6-22f5b74c944d
+
+	measure 'Dif vs regla (pp)' = AVERAGE(modelo_global[dif_cobertura_vs_regla])
+		formatString: +0.0;-0.0;0.0
+		lineageTag: 62586f08-a086-59a4-9f84-b1c5a865062e
+
+	measure 'IC90 inf dif' = AVERAGE(modelo_global[dif_li90])
+		formatString: 0.0
+		lineageTag: 61ea00d8-e4b0-597e-b22f-47192d4e61c1
+
+	measure 'IC90 sup dif' = AVERAGE(modelo_global[dif_ls90])
+		formatString: 0.0
+		lineageTag: a6311fce-b345-51ce-89a2-2398c859163e
+
+	column objetivo
+		dataType: string
+		lineageTag: 7869bc59-ebb2-554d-8922-7e2ef503de10
+		summarizeBy: none
+		sourceColumn: objetivo
+
+		annotation SummarizationSetBy = User
+
+	column puntaje
+		dataType: string
+		lineageTag: 5428283f-05b1-5141-a513-45d0ce9a9ef1
+		summarizeBy: none
+		sourceColumn: puntaje
+
+		annotation SummarizationSetBy = User
+
+	column auc_ponderado
+		dataType: double
+		formatString: 0.00
+		lineageTag: c487b0f2-3809-5af8-b5f8-1431eb9abfb7
+		summarizeBy: none
+		sourceColumn: auc_ponderado
+
+		annotation SummarizationSetBy = User
+
+	column tasa_seleccion
+		dataType: double
+		formatString: 0.00
+		lineageTag: 5db21e09-069d-5a8f-98ef-d1649418b17e
+		summarizeBy: none
+		sourceColumn: tasa_seleccion
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: double
+		formatString: 0.00
+		lineageTag: d2606235-bd5c-5be2-a287-21d6082ef0b9
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column cobertura
+		dataType: double
+		formatString: 0.00
+		lineageTag: 93cacaa3-6331-56ce-99b5-23e2d79ea881
+		summarizeBy: none
+		sourceColumn: cobertura
+
+		annotation SummarizationSetBy = User
+
+	column cobertura_li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: d49ebca0-f9e1-5023-8490-ec2c48f21eee
+		summarizeBy: none
+		sourceColumn: cobertura_li90
+
+		annotation SummarizationSetBy = User
+
+	column cobertura_ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 74b61fd8-ffad-5a65-ab28-a1e9a9d3a06f
+		summarizeBy: none
+		sourceColumn: cobertura_ls90
+
+		annotation SummarizationSetBy = User
+
+	column dif_cobertura_vs_regla
+		dataType: double
+		formatString: 0.00
+		lineageTag: 4680918a-8c45-51f4-851e-7f76cc147b25
+		summarizeBy: none
+		sourceColumn: dif_cobertura_vs_regla
+
+		annotation SummarizationSetBy = User
+
+	column dif_li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 6e19ec64-04dc-526e-afbe-2723554330a9
+		summarizeBy: none
+		sourceColumn: dif_li90
+
+		annotation SummarizationSetBy = User
+
+	column dif_ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 4c35da76-0fb8-5a6d-abdf-5870ba0dca2a
+		summarizeBy: none
+		sourceColumn: dif_ls90
+
+		annotation SummarizationSetBy = User
+
+	column n_seleccionados_muestra
+		dataType: int64
+		formatString: 0
+		lineageTag: be686418-367f-5580-94d4-de0a5be3c292
+		summarizeBy: none
+		sourceColumn: n_seleccionados_muestra
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_global = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_global.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"objetivo", type text}, {"puntaje", type text}, {"auc_ponderado", type number}, {"tasa_seleccion", type number}, {"precision", type number}, {"cobertura", type number}, {"cobertura_li90", type number}, {"cobertura_ls90", type number}, {"dif_cobertura_vs_regla", type number}, {"dif_li90", type number}, {"dif_ls90", type number}, {"n_seleccionados_muestra", Int64.Type}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

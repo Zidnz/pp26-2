@@ -1,0 +1,20 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="fig.css"><style>
+pre{background:#2d3347;color:#c9c2e0;border-radius:14px;padding:22px 26px;font-family:'DejaVu Sans Mono',monospace;font-size:14px;line-height:1.55;margin:0}
+pre b{color:#7dd1c1;font-weight:400} pre i{color:#f4c27a;font-style:normal}
+</style><div class="f">
+<div class="k">Estructura de archivos · 20 oct 2026</div><h1>Frontend/observatorio/</h1>
+<pre>observatorio/
+├── <b>index.html</b>              estructura de la página (se edita a mano)
+├── <b>build_datos.py</b>          lee Analysis/ y escribe datos_observatorio.json + js/datos/*
+├── <b>datos_observatorio.json</b> copia legible de los datos (la página no la lee)
+├── <b>vendor/three.min.js</b>     three.js r128 (MIT)
+├── <b>ilustraciones/</b>          figuras 2D (embudo, Método) + build_ilustraciones.py
+├── css/                    base → layout → componentes → graficas → vistas
+└── js/
+    ├── datos/              GENERADOS: datos.js (D, 44 bloques), geo.js, geo-estados.js, geo-ageb.js
+    ├── nucleo/             obs.js, util.js, alias.js, filtro-segmento.js
+    ├── graficas/           componentes.js, motor-3d.js, ilustraciones.js
+    ├── vistas/             una por pestaña + <i>inicio-seleccion</i> (embudo, 14 oct), <i>focalizacion-ampliado</i> (13 oct),
+    │                       inicio-3d, territorio-estados, territorio-tipologia, inicio-contadores
+    └── app/                coachmark.js, plegables.js, pestanas.js</pre>
+</div>

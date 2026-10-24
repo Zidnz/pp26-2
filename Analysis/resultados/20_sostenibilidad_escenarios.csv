@@ -1,0 +1,76 @@
+﻿bloque,jornada,horas_semana,carga,carga_pct,costo_mensual,fuente_ingreso,hogar,ingreso_2026,copago,subsidio_laboral,escenario,aceptacion,hogares,costo_laboral_anual_mdp,subsidio_laboral_anual_mdp,pct_solicitud,opex_hogar_mes,mdp,valor_evento_anual,efecto_minimo_pp
+costo_unitario,Diurna,3.0,1.0,0.0,556.09,,,,,,,,,,,,,,,
+costo_unitario,Diurna,3.0,2.0,22.0,678.42,,,,,,,,,,,,,,,
+costo_unitario,Diurna,3.0,3.0,30.2,724.13,,,,,,,,,,,,,,,
+costo_unitario,Diurna,6.0,1.0,0.0,1112.17,,,,,,,,,,,,,,,
+costo_unitario,Diurna,6.0,2.0,22.0,1356.85,,,,,,,,,,,,,,,
+costo_unitario,Diurna,6.0,3.0,30.2,1448.26,,,,,,,,,,,,,,,
+costo_unitario,Diurna,9.0,1.0,0.0,1668.26,,,,,,,,,,,,,,,
+costo_unitario,Diurna,9.0,2.0,22.0,2035.27,,,,,,,,,,,,,,,
+costo_unitario,Diurna,9.0,3.0,30.2,2172.39,,,,,,,,,,,,,,,
+costo_unitario,Diurna,12.0,1.0,0.0,2224.34,,,,,,,,,,,,,,,
+costo_unitario,Diurna,12.0,2.0,22.0,2713.7,,,,,,,,,,,,,,,
+costo_unitario,Diurna,12.0,3.0,30.2,2896.52,,,,,,,,,,,,,,,
+costo_unitario,Mixta,3.0,1.0,0.0,593.16,,,,,,,,,,,,,,,
+costo_unitario,Mixta,3.0,2.0,22.0,723.65,,,,,,,,,,,,,,,
+costo_unitario,Mixta,3.0,3.0,30.2,772.41,,,,,,,,,,,,,,,
+costo_unitario,Mixta,6.0,1.0,0.0,1186.32,,,,,,,,,,,,,,,
+costo_unitario,Mixta,6.0,2.0,22.0,1447.31,,,,,,,,,,,,,,,
+costo_unitario,Mixta,6.0,3.0,30.2,1544.81,,,,,,,,,,,,,,,
+costo_unitario,Mixta,9.0,1.0,0.0,1779.47,,,,,,,,,,,,,,,
+costo_unitario,Mixta,9.0,2.0,22.0,2170.96,,,,,,,,,,,,,,,
+costo_unitario,Mixta,9.0,3.0,30.2,2317.22,,,,,,,,,,,,,,,
+costo_unitario,Mixta,12.0,1.0,0.0,2372.63,,,,,,,,,,,,,,,
+costo_unitario,Mixta,12.0,2.0,22.0,2894.61,,,,,,,,,,,,,,,
+costo_unitario,Mixta,12.0,3.0,30.2,3089.62,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,3.0,1.0,0.0,635.53,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,3.0,2.0,22.0,775.34,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,3.0,3.0,30.2,827.58,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,6.0,1.0,0.0,1271.05,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,6.0,2.0,22.0,1550.68,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,6.0,3.0,30.2,1655.15,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,9.0,1.0,0.0,1906.58,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,9.0,2.0,22.0,2326.03,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,9.0,3.0,30.2,2482.73,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,12.0,1.0,0.0,2542.11,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,12.0,2.0,22.0,3101.37,,,,,,,,,,,,,,,
+costo_unitario,Nocturna,12.0,3.0,30.2,3310.31,,,,,,,,,,,,,,,
+copago,,,,,,ENASIC nacional,p25,4618.0,923.6,433.25,,,,,,,,,,
+copago,,,,,,ENASIC nacional,med,7850.6,1356.85,0.0,,,,,,,,,,
+copago,,,,,,ENASIC nacional,p75,13854.0,1356.85,0.0,,,,,,,,,,
+copago,,,,,,ENASIC nacional,ponderado,,1185.73,170.94,,,,,,,,,,
+copago,,,,,,ENIGH CDMX,p25,11303.11,1356.85,0.0,,,,,,,,,,
+copago,,,,,,ENIGH CDMX,med,19068.88,1356.85,0.0,,,,,,,,,,
+copago,,,,,,ENIGH CDMX,p75,31418.42,1356.85,0.0,,,,,,,,,,
+copago,,,,,,ENIGH CDMX,ponderado,,1356.67,0.0,,,,,,,,,,
+escala_cdmx,,,,,,,,,,,bajo (ilustrativo),0.05,3528.0,57.44,7.24,0.11,,,,
+escala_cdmx,,,,,,,,,,,medio (ilustrativo),0.25,17639.0,287.21,36.18,0.54,,,,
+escala_cdmx,,,,,,,,,,,"máximo (cota: 1 − ""no contrataría"")",0.641,45227.0,736.4,92.77,1.37,,,,
+financiamiento_total_cdmx,,,,,,,,,,,bajo (ilustrativo),,,,,0.11,0.0,7.24,,
+financiamiento_total_cdmx,,,,,,,,,,,bajo (ilustrativo),,,,,0.26,250.0,17.82,,
+financiamiento_total_cdmx,,,,,,,,,,,bajo (ilustrativo),,,,,0.42,500.0,28.4,,
+financiamiento_total_cdmx,,,,,,,,,,,bajo (ilustrativo),,,,,0.73,1000.0,49.57,,
+financiamiento_total_cdmx,,,,,,,,,,,medio (ilustrativo),,,,,0.54,0.0,36.18,,
+financiamiento_total_cdmx,,,,,,,,,,,medio (ilustrativo),,,,,1.32,250.0,89.1,,
+financiamiento_total_cdmx,,,,,,,,,,,medio (ilustrativo),,,,,2.1,500.0,142.02,,
+financiamiento_total_cdmx,,,,,,,,,,,medio (ilustrativo),,,,,3.67,1000.0,247.85,,
+financiamiento_total_cdmx,,,,,,,,,,,"máximo (cota: 1 − ""no contrataría"")",,,,,1.37,0.0,92.77,,
+financiamiento_total_cdmx,,,,,,,,,,,"máximo (cota: 1 − ""no contrataría"")",,,,,3.39,250.0,228.45,,
+financiamiento_total_cdmx,,,,,,,,,,,"máximo (cota: 1 − ""no contrataría"")",,,,,5.4,500.0,364.14,,
+financiamiento_total_cdmx,,,,,,,,,,,"máximo (cota: 1 − ""no contrataría"")",,,,,9.42,1000.0,635.5,,
+costo_evitado,,,,,,,,,,,,,,,,,0.0,,20000.0,81.41
+costo_evitado,,,,,,,,,,,,,,,,,250.0,,20000.0,96.41
+costo_evitado,,,,,,,,,,,,,,,,,500.0,,20000.0,111.41
+costo_evitado,,,,,,,,,,,,,,,,,1000.0,,20000.0,141.41
+costo_evitado,,,,,,,,,,,,,,,,,0.0,,50000.0,32.56
+costo_evitado,,,,,,,,,,,,,,,,,250.0,,50000.0,38.56
+costo_evitado,,,,,,,,,,,,,,,,,500.0,,50000.0,44.56
+costo_evitado,,,,,,,,,,,,,,,,,1000.0,,50000.0,56.56
+costo_evitado,,,,,,,,,,,,,,,,,0.0,,100000.0,16.28
+costo_evitado,,,,,,,,,,,,,,,,,250.0,,100000.0,19.28
+costo_evitado,,,,,,,,,,,,,,,,,500.0,,100000.0,22.28
+costo_evitado,,,,,,,,,,,,,,,,,1000.0,,100000.0,28.28
+costo_evitado,,,,,,,,,,,,,,,,,0.0,,200000.0,8.14
+costo_evitado,,,,,,,,,,,,,,,,,250.0,,200000.0,9.64
+costo_evitado,,,,,,,,,,,,,,,,,500.0,,200000.0,11.14
+costo_evitado,,,,,,,,,,,,,,,,,1000.0,,200000.0,14.14

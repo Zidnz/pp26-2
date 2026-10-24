@@ -1,0 +1,96 @@
+table tipologia_comparacion
+	lineageTag: 7c3aa6bc-cffa-5c53-8c62-bbfed5463b66
+
+	column particion
+		dataType: string
+		lineageTag: c4412bbe-2cad-5584-ad71-0b4bf87ec366
+		summarizeBy: none
+		sourceColumn: particion
+
+		annotation SummarizationSetBy = User
+
+	column grupos
+		dataType: int64
+		formatString: 0
+		lineageTag: 7afb693b-b15f-52a9-a99d-c7c6b6f52e0b
+		summarizeBy: none
+		sourceColumn: grupos
+
+		annotation SummarizationSetBy = User
+
+	column r2_9_variables
+		dataType: double
+		formatString: 0.00
+		lineageTag: bff0a46f-0bfd-562c-9c7a-d2ab78661a69
+		summarizeBy: none
+		sourceColumn: r2_9_variables
+
+		annotation SummarizationSetBy = User
+
+	column ari_promedio
+		dataType: double
+		formatString: 0.00
+		lineageTag: d40434c5-e63a-5744-838d-d5d0bc5ca6b7
+		summarizeBy: none
+		sourceColumn: ari_promedio
+
+		annotation SummarizationSetBy = User
+
+	column ari_min
+		dataType: double
+		formatString: 0.00
+		lineageTag: 6ffd255a-1731-5054-b33a-9bee528cc486
+		summarizeBy: none
+		sourceColumn: ari_min
+
+		annotation SummarizationSetBy = User
+
+	column cramer_v_rezago_coneval
+		dataType: double
+		formatString: 0.00
+		lineageTag: e11c0d93-dfb2-51ba-89f1-cce74ccb778f
+		summarizeBy: none
+		sourceColumn: cramer_v_rezago_coneval
+
+		annotation SummarizationSetBy = User
+
+	column eta2_pct_limitacion
+		dataType: double
+		formatString: 0.00
+		lineageTag: 4ef4764a-10cd-508d-8690-f4087090d08f
+		summarizeBy: none
+		sourceColumn: eta2_pct_limitacion
+
+		annotation SummarizationSetBy = User
+
+	column eta2_log_distancia_oferta
+		dataType: double
+		formatString: 0.00
+		lineageTag: 22e5f53c-c9e0-54e1-92d3-54b7089bbdf3
+		summarizeBy: none
+		sourceColumn: eta2_log_distancia_oferta
+
+		annotation SummarizationSetBy = User
+
+	column vecinos_mismo_grupo
+		dataType: double
+		formatString: 0.00
+		lineageTag: bd046e47-e661-5cb6-b7fd-9a8c9c5ba511
+		summarizeBy: none
+		sourceColumn: vecinos_mismo_grupo
+
+		annotation SummarizationSetBy = User
+
+	partition tipologia_comparacion = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "tipologia_comparacion.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"particion", type text}, {"grupos", Int64.Type}, {"r2_9_variables", type number}, {"ari_promedio", type number}, {"ari_min", type number}, {"cramer_v_rezago_coneval", type number}, {"eta2_pct_limitacion", type number}, {"eta2_log_distancia_oferta", type number}, {"vecinos_mismo_grupo", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

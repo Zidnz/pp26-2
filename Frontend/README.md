@@ -1,4 +1,4 @@
-# Frontend — Relevo de cuidado por horas (prototipo móvil)
+# Frontend — Mientras: relevo por horas para quien cuida (prototipo móvil)
 
 App en HTML/CSS/JS puro, sin build ni dependencias. Se presenta como app móvil (en escritorio, dentro de un marco de teléfono).
 
@@ -6,7 +6,48 @@ App en HTML/CSS/JS puro, sin build ni dependencias. Se presenta como app móvil 
 python -m http.server 8000   # desde Frontend/, o abrir index.html con doble clic
 ```
 
-**Datos simulados.** Casos, personas de relevo, visitas, incidentes y respuestas semanales vienen de `seed()` en `js/data.js` y se guardan en `localStorage` (clave `care-relevo-v2`). No hay backend. Demuestran que el flujo funciona; **no validan la hipótesis ni miden impacto.** Las respuestas semanales de ejemplo se generan sin tendencia a propósito.
+**Datos simulados.** Casos, personas de relevo, visitas, incidentes y respuestas semanales vienen de `seed()` en `js/data.js` y se guardan en `localStorage` (clave `mientras-v3`; antes `care-relevo-v2`). No hay backend. Demuestran que el flujo funciona; **no validan la hipótesis ni miden impacto.** Las respuestas semanales de ejemplo se generan sin tendencia a propósito.
+
+## Qué cambió (2026-10-24): una vista por rol y bienvenida
+
+- **Bienvenida** la primera vez: logo con barra de carga y «¿Cómo vas a usar Mientras?» (cuidadora · relevo · programa). Se repite con `index.html?intro` o desde Ajustes.
+- **Barra «Ver como»** bajo el encabezado (solo para la demostración; en un piloto real cada rol entraría con su cuenta):
+  - **Cuidadora:** una pantalla; pide relevo y después ve **solo su caso** (prioridad en texto, horas, estado). No ve otras familias ni códigos ENASIC.
+  - **Relevo:** una pantalla; se registra y ve **solo su registro**.
+  - **Programa:** las 4 pestañas (Casos, Relevos, Seguimiento, Ajustes) con todo lo descrito abajo.
+- Zarit sin marcadores (tarjeta «no activo»), Barthel con chips, sexo con texto, una sola vista de lista y contraste AA. Detalle en la bitácora (24 oct, 17:00 y 17:05).
+- Lo que sigue abajo describe la vista **Programa**. Donde dice «tres vistas (lista, tarjetas, mosaico)», hoy solo queda la lista.
+
+## Qué cambió (2026-10-20): Mientras, priorización con bolsa de horas
+
+Nombre y eslogan **provisionales** («Mientras · Relevo por horas para quien cuida»): los propuso Claude a pedido de Omar; se cambian en `js/config.js`.
+
+Flujo: **Entrada → Registro → Consentimiento → Entrevista (3 bloques) → Puntaje y nivel → Horas asignadas → Asignación de relevo por el programa.**
+
+| Antes (8 oct) | Ahora (20 oct) |
+|---|---|
+| La institución canalizaba con 3 preguntas | Dos vías: **autorregistro** o **referencia institucional** (DIF, centro de salud, escuela, clínica, módulo). `canal_origen` obligatorio |
+| Prioridad 1/2 por la regla ≥ 40 h | Puntaje de la **tarjeta «completa» del script 22** (0-20) + envejecimiento en cola → niveles **Alta / Media / Baja**. La regla de 40 h se sigue mostrando como referencia |
+| Paquete de 3-12 h elegido al canalizar | **Bolsa mensual** (`presupuesto_horas_mes`): mínimo garantizado a todas y el resto proporcional al puntaje, con tope por hogar. El paquete semanal sale de esas horas |
+| Daño a la salud y al trabajo, red de apoyos y parentesco al canalizar | **Minimización**: solo lo que usa el puntaje o la asignación. Sin CURP, diagnósticos, edad ni domicilio de la familia |
+| Sin explicación del resultado | Los 3 factores que más pesaron, «Puntaje provisional — modelo en validación» y botón **Solicitar revisión** (apelación) |
+| — | **Chequeos de consistencia** (horas contra Barthel, actividades básicas contra Barthel, horas inverosímiles, Zarit contra «falta fuerza» y «requiere apoyo»): mandan a **revisión humana**, no bajan el puntaje |
+| — | Nivel Baja: canal alterno (redes de apoyo y servicios públicos; directorio **pendiente**) |
+| — | Seguimiento › **Programa**: bolsa, niveles, **puntajes por canal**, revisiones y apelaciones |
+
+**Archivos nuevos:** `js/config.js` (todos los parámetros), `js/prioridad.js` (entrevista, puntaje, niveles, envejecimiento, reparto, Zarit, Barthel, chequeos; funciones puras), `tests/prueba_asignacion.js` (`node tests/prueba_asignacion.js` desde `Frontend/`). **Modificados:** `index.html`, `css/app.css`, `js/app.js`, `js/data.js`, `js/relevo.js` (solo el encabezado).
+
+### Lo que hay que saber antes de presentarlo
+- **El puntaje no supera a la regla de 40 h** (script 22: +2.2 pp, IC 90 % −3.4 a 7.7). Repartir horas en proporción a él supone que 10 puntos = el doble de necesidad que 5: nadie lo ha validado.
+- **«Nadie queda fuera» depende de la bolsa**, no del código: si `presupuesto_horas_mes` < casos × `horas_minimas`, el mínimo va a los puntajes más altos y el resto espera con su puntaje envejeciendo (escenario 2 de la prueba).
+- Con los mínimos garantizados, la diferencia entre niveles es chica (prueba con 100 personas: Alta ≈ 23.5 h/mes, Baja ≈ 16.1).
+- Las dos variables que más pesan después de las horas («le falta fuerza», 4; «requiere apoyo», 3) son autodeclaradas con un solo sí: son las más fáciles de manipular. Los chequeos las cruzan con Barthel y Zarit, pero Zarit no tiene reactivos todavía.
+- `mujer` = 2 puntos: confirmar con Daniel si un programa público puede puntuar por sexo.
+- Los casos del ejemplo están armados para que el panel muestre más puntajes bajos en autorregistro. **Es una ilustración, no un hallazgo.**
+- La bolsa del ejemplo es **simulada** (260 h para 11 casos; control en Ajustes). La del archivo (2,000 h) es ilustrativa.
+
+### Personajes
+Se reutilizan las ilustraciones del Observatorio **por ruta** (`observatorio/ilustraciones/…`), sin copiarlas: `logo_personajes.webp` (bienvenida), `agotada.png` (resultado Alta), `cuidadoraSilla.png` (resultado Media y «Puedo cuidar»), `familia.png` (resultado Baja). Los PNG pesan ≈ 1.3 MB cada uno. Reemplazos sugeridos en la bitácora (20 oct 2026, 23:10).
 
 ## Qué cambió (2026-10-08, opción C)
 
@@ -22,10 +63,10 @@ La app dejó de ser un buscador de cuidadoras ("encontrar a alguien") y ahora op
 | Sin seguimiento | Llegada y salida, ausencias, incidentes en ambos sentidos, 2 preguntas semanales y KPI operativos |
 | Red del hogar y territorio | **Se quedan**, con el relevo asignado como nodo |
 
-**Se eliminaron** `js/clasificador.js` y `js/matching.js` (pertenecían a la hipótesis de "encontrar cuidadora", descartada el 22 sept). Siguen en el historial de Git.
+**Se eliminaron** `js/clasificador.js` y `js/matching.js` (pertenecían a la hipótesis de "encontrar cuidadora", descartada el 22 sept). **Corrección del 20 oct 2026:** no hay `.git` en la carpeta, así que no quedan en ningún historial. Las copias que estaban en `../_to_delete/` se borraron el 20 oct 2026: ya no existen.
 
 ## Pestañas
-1. **Necesito** — casos canalizados en tres vistas (lista, tarjetas, mosaico). Cada caso muestra quién cuida a quién (ícono de mujer u hombre), horas, ABVD, alcaldía, paquete, costo al mes y relevo. Al tocarlo se abre el detalle con costo, pagador, historial, fragilidad, tareas y la tasa de la ENASIC.
+1. **Necesito** — (desde el 20 oct) botón «Solicitar relevo» con el flujo de arriba; casos ordenados por puntaje efectivo, con nivel, horas al mes, canal y marcas de revisión. Antes: casos canalizados en tres vistas (lista, tarjetas, mosaico). Cada caso muestra quién cuida a quién (ícono de mujer u hombre), horas, ABVD, alcaldía, paquete, costo al mes y relevo. Al tocarlo se abre el detalle con costo, pagador, historial, fragilidad, tareas y la tasa de la ENASIC.
 2. **Puedo cuidar** — personas de relevo con certificación, disponibilidad y cupo. Registro con CURP, identificación, carta de no antecedentes y referencia; pasa a revisión. Sin certificación vigente no recibe asignaciones.
 3. **Seguimiento** — *Visitas* del día (llegó, salió, no llegó, canceló); *Caso*: red del hogar (apagar un nodo), dos preguntas semanales e incidentes; *Mapa* por alcaldía; *KPI* marcados SIMULADO con exportación de agregados.
 4. **Ajustes** — distancia máxima, factor de prestaciones, parámetros con su fuente, marco legal y datos.
@@ -63,6 +104,6 @@ El JSON exportado (`operacion_agregados_SIMULADO.json`) trae solo totales: sin f
 - **El efecto.** Las 2 preguntas semanales no son un instrumento validado y no hay grupo de comparación. La escala corta de Zarit es candidata; su validación en México está por confirmar.
 
 ## Archivos
-`index.html` · `css/app.css` · `js/data.js` (catálogos, datos simulados, almacenamiento) · `js/legal.js` (parámetros legales y requisitos) · `js/relevo.js` (focalización, paquetes, jornada, costo, asignación) · `js/red.js` (red del hogar) · `js/app.js` (interfaz) · `js/cdmx-alcaldias.js` (límites de alcaldías) · `vendor/d3.min.js` (d3 7.9.0).
+`index.html` · `css/app.css` · `js/config.js` (parámetros de priorización) · `js/prioridad.js` (puntaje, niveles, reparto, instrumentos, chequeos) · `js/data.js` (catálogos, datos simulados, almacenamiento) · `js/legal.js` (parámetros legales y requisitos) · `js/relevo.js` (focalización, paquetes, jornada, costo, asignación) · `js/red.js` (red del hogar) · `js/app.js` (interfaz) · `js/cdmx-alcaldias.js` (límites de alcaldías) · `vendor/d3.min.js` (d3 7.9.0) · `tests/prueba_asignacion.js`.
 
 **Fuente de los límites:** INEGI, Marco Geoestadístico 2020, publicado en el Portal de Datos Abiertos de la CDMX (https://datos.cdmx.gob.mx/dataset/alcaldias). Simplificados para visualización.

@@ -1,0 +1,568 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 1789.68687604213,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "ageb_tipologia",
+          "nodeLineageTag": "e0a07ed3-c69e-501e-acfa-326e42f2972b",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2204.8010042234546,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "alcaldias",
+          "nodeLineageTag": "e23e63f1-e53f-53d7-b34c-36602e5f3d4c",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 2619.9151324047793,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "alcaldias_indicadores",
+          "nodeLineageTag": "d180f64a-aca3-5fea-944a-deb12da6e618",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 3035.0292605861036,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "asequibilidad",
+          "nodeLineageTag": "5a861f6a-3d0d-5b1f-99ec-bc6491412dd6",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 14658.224849663198,
+            "y": 312.86367154773353
+          },
+          "nodeIndex": "brecha_alcaldia",
+          "nodeLineageTag": "6f2e7656-04f0-554b-a8cb-a5bb202e3b79",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 12167.540080575247,
+            "y": 276.86367154773353
+          },
+          "nodeIndex": "brecha_sexo",
+          "nodeLineageTag": "9c2fd705-ae73-50e8-92ab-2e6bacf9a1d2",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 10507.083567849946,
+            "y": 252.86367154773353
+          },
+          "nodeIndex": "clave",
+          "nodeLineageTag": "63743952-106a-5fad-9c83-2c81d082acde",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 3450.143388767428,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "contratacion_quintil",
+          "nodeLineageTag": "df163ba7-bdeb-54e3-a17a-ea1dbae7e2a7",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 3865.2575169487523,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "costo_jornada",
+          "nodeLineageTag": "f5b2cca2-81a2-517d-bba5-b05d6c76db53",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 4280.3716451300761,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "dimension_cdmx",
+          "nodeLineageTag": "340b0484-10ec-5073-97d4-8c5a6a77e120",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 14243.110721481873,
+            "y": 300.86367154773353
+          },
+          "nodeIndex": "embudo",
+          "nodeLineageTag": "28a99a16-d980-5d02-a0cf-f1c2a1e42463",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 11752.425952393922,
+            "y": 264.86367154773353
+          },
+          "nodeIndex": "escala_subsidio",
+          "nodeLineageTag": "a338f81c-e3a5-54ec-bbda-4be18bdaa4b3",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 4695.4857733114,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "estados",
+          "nodeLineageTag": "f0f9ac11-aba6-5afa-9aa9-2489db2b95b5",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 5110.5999014927247,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "financiamiento",
+          "nodeLineageTag": "4f93ba33-c018-5ddd-ad2d-0d19b7692384",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 10922.197696031271,
+            "y": 252.86367154773353
+          },
+          "nodeIndex": "inventario",
+          "nodeLineageTag": "2379908e-a0dd-5ec3-96f2-c9ced45170d1",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 5525.714029674049,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "kpis_ficha",
+          "nodeLineageTag": "c46c9e79-e45c-5722-b6e7-dc5f764bc236",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 103.73743198920599,
+            "y": 501.72734309546706
+          },
+          "nodeIndex": "modelo_alternativas",
+          "nodeLineageTag": "690caca9-8478-5c4d-a6d8-fcbc98e795fc",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 428.63262450522717,
+            "y": 498.222454890392
+          },
+          "nodeIndex": "modelo_calibracion",
+          "nodeLineageTag": "8e76e895-bea2-516c-8693-7585419620c7",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 13412.882465119223,
+            "y": 288.86367154773353
+          },
+          "nodeIndex": "modelo_coeficientes",
+          "nodeLineageTag": "2673b2a8-6497-536a-9f84-cfcb8ddbed3c",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 0,
+            "y": 193.80853357293242
+          },
+          "nodeIndex": "modelo_cupo",
+          "nodeLineageTag": "5e94e7d6-4578-54d9-9d59-c66c77da6feb",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 260.80016189313386,
+            "y": 0
+          },
+          "nodeIndex": "modelo_curvas",
+          "nodeLineageTag": "3d4feb2d-8161-559a-8298-2c8c0a10375f",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 13827.996593300548,
+            "y": 288.86367154773353
+          },
+          "nodeIndex": "modelo_decision",
+          "nodeLineageTag": "5f2a6324-2ec5-550b-85f1-1d1517a2f619",
+          "size": {
+            "height": 224,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 5940.8281578553733,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "modelo_global",
+          "nodeLineageTag": "a16d8b3d-7b34-57cd-a8e6-43524fc714bd",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 6355.9422860366976,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "modelo_grupos",
+          "nodeLineageTag": "f751ae9a-6fe1-50c9-85af-ce8a3371a729",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 525.70571921414319,
+            "y": 188.14747780776565
+          },
+          "nodeIndex": "modelo_importancia",
+          "nodeLineageTag": "04d5a494-da1f-500c-84c3-c33e529720fa",
+          "size": {
+            "height": 272,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 6771.0564142180219,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "modelo_obj_grupo",
+          "nodeLineageTag": "fcbdf71e-79c5-5f94-b167-b123718fc9ed",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 7186.1705423993462,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "modelo_por_horas",
+          "nodeLineageTag": "88f2d920-2695-5678-a0b9-fcc14f70ec1a",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 7601.2846705806705,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "modelo_resumen",
+          "nodeLineageTag": "3ebb92dd-b824-582c-9de0-f9e7a5463be1",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 12582.654208756572,
+            "y": 276.86367154773353
+          },
+          "nodeIndex": "necesidad_cdmx",
+          "nodeLineageTag": "c32fd217-13ad-5286-9feb-5e77b14bd0f0",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 263.77188732529089,
+            "y": 276.3773143334933
+          },
+          "nodeIndex": "objetivos",
+          "nodeLineageTag": "330031bc-da3e-5bea-8c9f-02f231eff638",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 8016.3987987619948,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "oferta_declarada",
+          "nodeLineageTag": "4c676994-ad3c-5118-aea1-40fc7f81b1bc",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 8431.51292694332,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "pago_hora",
+          "nodeLineageTag": "811b6cf8-b41b-5a02-a798-96e353075cab",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 8846.6270551246453,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "perfil_grupo",
+          "nodeLineageTag": "b1af4e73-2526-5135-a331-63c450aa2065",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 9261.74118330597,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "razones",
+          "nodeLineageTag": "b66b379e-7edc-5c20-92ec-cd55dc0cc4c9",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 555.09434178276365,
+            "y": 458.76058787900604
+          },
+          "nodeIndex": "seg_indicadores",
+          "nodeLineageTag": "71732dce-75a7-5542-aad0-17e8a215a877",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1374.5727478608055,
+            "y": 137.64501234998559
+          },
+          "nodeIndex": "seg_series",
+          "nodeLineageTag": "4518ba8c-6f65-5baf-817d-7981f75a9a90",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 962.44593272828808,
+            "y": 80.633772746488688
+          },
+          "nodeIndex": "segmentos",
+          "nodeLineageTag": "c3504011-6972-5efe-8fe8-6fa45f18479a",
+          "size": {
+            "height": 200,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 12997.768336937897,
+            "y": 276.86367154773353
+          },
+          "nodeIndex": "tipologia_alcaldia",
+          "nodeLineageTag": "7c030183-d5f0-53b6-890e-e3d310a6453f",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 11337.311824212597,
+            "y": 252.86367154773353
+          },
+          "nodeIndex": "tipologia_comparacion",
+          "nodeLineageTag": "7c3aa6bc-cffa-5c53-8c62-bbfed5463b66",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 9676.8553114872957,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "tipologia_k",
+          "nodeLineageTag": "e22eed4c-d198-523c-ab9b-103ad7eeef83",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 15073.338977844523,
+            "y": 312.86367154773353
+          },
+          "nodeIndex": "tipologia_robustez",
+          "nodeLineageTag": "20a69235-b9bb-5782-aeba-fc099f0ce80e",
+          "size": {
+            "height": 176,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 10091.969439668621,
+            "y": 250.86367154773353
+          },
+          "nodeIndex": "tipologia_tipos",
+          "nodeLineageTag": "62c4a944-4ebe-58d6-98fd-86fe3b90eebf",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

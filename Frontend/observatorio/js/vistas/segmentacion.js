@@ -12,7 +12,7 @@
     $$('[data-fb]').forEach(function(fb){
       fb.innerHTML='<span class="lbl">Segmentar por</span><div class="seg">'+DIMS_S.map(function(d){return '<button data-d="'+d+'" aria-pressed="'+(F.dim===d)+'">'+d+'</button>'}).join('')+'</div>'+
         (F.dim!=='Total'?'<div class="seg">'+lv(F.dim).map(function(g){return '<button data-g="'+esc(g)+'" aria-pressed="'+(F.seg===g)+'">'+esc(g.replace('>=','≥ '))+'</button>'}).join('')+'</div>':'')+
-        '<span class="note">Nacional · una dimensión a la vez</span>';
+        '<span class="note">'+(F.dim==='Total'?'Filtra toda la pestaña · nacional · una dimensión a la vez':'<b>'+esc(segName())+'</b> · '+nSeg()+' · nacional')+'</span>';
       fb.querySelectorAll('[data-d]').forEach(function(b){b.addEventListener('click',function(){F.dim=b.dataset.d;F.seg=lv(F.dim)[0];refreshSeg()})});
       fb.querySelectorAll('[data-g]').forEach(function(b){b.addEventListener('click',function(){F.seg=b.dataset.g;refreshSeg()})});
     });
@@ -43,7 +43,7 @@
       s+='<text x="0" y="'+(y+rowH/2+4)+'" font-size="12.5" font-weight="600" fill="'+C_INK+'">'+esc(CMPL[k]||k)+'</text>'});
     cols.forEach(function(c){
       var sel=F.dim===c.d&&F.seg===c.g;
-      s+='<g data-d="'+esc(c.d)+'" data-g="'+esc(c.g)+'" style="cursor:pointer"><title>'+(c.d==='Total'?'Total nacional: clic para quitar el filtro':esc(c.d+': '+c.g)+': clic para filtrar la pestaña')+'</title>';
+      s+='<g data-d="'+esc(c.d)+'" data-g="'+esc(c.g)+'" style="cursor:pointer"><title>'+(c.d==='Total'?'Total nacional: clic para quitar el filtro':esc(c.d+': '+c.g)+': clic para filtrar toda la pestaña')+'</title>';
       s+='<rect x="'+c.x+'" y="26" width="'+cw+'" height="'+(H-26-24)+'" fill="transparent"/>';
       s+='<text x="'+(c.x+cw/2)+'" y="'+(hh-9)+'" text-anchor="middle" font-size="11.5" font-weight="'+(sel||c.d==='Total'?700:500)+'" fill="'+C_INK+'">'+esc(c.lbl)+'</text>';
       rows.forEach(function(k,ri){
@@ -59,13 +59,28 @@
       s+='</g>'});
     s+='<text x="0" y="'+(H-6)+'" font-size="11" fill="'+FAINT+'">Más oscuro = más alto dentro de cada renglón (de mínimo a máximo)  ·  ▲ ▼ significativamente más alto o más bajo que el resto de su dimensión (IC 90%)  ·  rayado = precisión baja, no se compara</text>';
     $(el).innerHTML=s+'</svg>';
+    // 14 oct 2026 (noche): clic en una columna = filtrar toda la pestaña (antes solo movía gráficas fuera de la vista)
     $$(el+' [data-d]').forEach(function(gx){gx.addEventListener('click',function(){F.dim=gx.dataset.d;F.seg=gx.dataset.g;refreshSeg()})});
   }
   var CMP={nec:['horas40','dano','dano_sinnec','raz_necesidad'],bar:['raz_hogar','pref_casa','pref_no','norma_familia','unas_horas','no_residencia']};
   var CMPL={horas40:'Cuida 40 h o más',dano:'Algún daño',dano_sinnec:'Daño entre "sin necesidad"',raz_necesidad:'"No tuve necesidad"',raz_hogar:'"El hogar cuida"',pref_casa:'Prefiere en casa',pref_no:'No contrataría',norma_familia:'La familia debe cuidar',unas_horas:'Acepta "unas horas"',no_residencia:'Rechaza residencia'};
   function cmpDraw(t){comparador('#ch-cmp-'+t,CMP[t])}
   $$('.seg-src').forEach(function(x){x.innerHTML=dl({Universo:'Personas cuidadoras de persona con discapacidad o 60+, nacional',Método:'Diseño muestral, IC al 90%; diferencia de cada segmento contra el resto de su misma dimensión',Advertencia:'Una dimensión a la vez; los cruces dejan muestras demasiado chicas',Lectura:'Color: % del segmento relativo al máximo de su renglón. ▲▼ marcan diferencia significativa contra el resto de la misma dimensión (IC 90%). Sin diferencia significativa no significa igual: con muestras chicas el intervalo es ancho. Son varias comparaciones al 90%, así que alguna marca puede ser casualidad. En dimensiones de dos categorías las dos columnas son espejo y no cuentan como dos hallazgos.',Archivo:esc(D.seg_fuente)})});
-  function refreshSeg(){renderFB();tiles('#segTiles-nec',CMP.nec);/* 8 oct 2026: sin cajas en Barreras */
-    cmpDraw('nec');cmpDraw('bar');renderRaz();renderPref();}
+  // Tamaño de muestra del segmento (para la barra)
+  /* n: dominio = universo dentro del segmento */ function nSeg(){var r=OBS.S2('kpi','grupo');return r?'n = '+r.n_muestra_dominio.toLocaleString('es-MX')+' en la muestra':''}
+  /* 14 oct 2026 (noche): cada tarjeta dice si su gráfica cambió con el filtro. 'si' = se re-estima; 'horas' = se re-estima salvo con
+     el filtro de Intensidad (ya está cortada por horas); 'no' = otro universo o composición nacional, con el motivo. */
+  var FILTRA={'ch-carga':['horas'],'ch-dif':['horas'],'ch-horas':['horas'],'grupo':['si'],'ch-raz':['si'],'ch-pref':['si'],'ch-p711':['si'],
+    'ch-perfil':['no','Muestra la composición del grupo nacional; se abre en la dimensión de tu filtro para que leas tu segmento.'],
+    'ch-sexo':['no','Viene de un archivo distinto de la ENASIC (productor y año sin documentar).'],
+    'ch-quintil':['no','Su universo son hogares (THOGAR), no personas cuidadoras.']};
+  function marcas(){Object.keys(FILTRA).forEach(function(id){var el=document.getElementById(id);if(!el)return;var c=el.closest('.card');if(!c)return;
+    var m=c.querySelector(':scope > .fstate');if(!m){m=document.createElement('div');m.className='fstate';var h=c.querySelector(':scope > h3, :scope > div > h3');(h||c.firstChild)&&c.insertBefore(m,h?h.nextSibling:c.firstChild)}
+    var t=FILTRA[id][0],on=OBS.filtroAplica(t);
+    if(F.dim==='Total'){m.hidden=true;return}
+    m.hidden=false;m.className='fstate '+(on?'on':'off');
+    m.innerHTML=on?'Filtrado: <b>'+esc(segName())+'</b>':t==='horas'?'Total nacional: con el filtro de intensidad no aplica, esta gráfica ya está cortada por horas.':'Total nacional: no cambia con el filtro. '+esc(FILTRA[id][1])})}
+  function refreshSeg(){renderFB();OBS.alSeg.forEach(function(f){f()});marcas();
+    cmpDraw('nec');cmpDraw('bar');}
   refreshSeg();
 })();

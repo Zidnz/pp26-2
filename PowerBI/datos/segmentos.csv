@@ -1,0 +1,15 @@
+﻿seg_id,dimension,segmento,segmento_etiqueta,orden
+Total|Total,Total,Total,Total,1
+Sexo|Mujer,Sexo,Mujer,Mujeres,2
+Sexo|Hombre,Sexo,Hombre,Hombres,3
+Edad|15-39,Edad,15-39,15 a 39 años,4
+Edad|40-59,Edad,40-59,40 a 59 años,5
+Edad|60+,Edad,60+,60 años y más,6
+Ingreso|Q1-Q2,Ingreso,Q1-Q2,Ingreso Q1–Q2,7
+Ingreso|Q3,Ingreso,Q3,Ingreso Q3,8
+Ingreso|Q4-Q5,Ingreso,Q4-Q5,Ingreso Q4–Q5,9
+A quién cuida|Cuida discapacidad,A quién cuida,Cuida discapacidad,Cuida discapacidad,10
+A quién cuida|Solo 60+ sin discapacidad,A quién cuida,Solo 60+ sin discapacidad,Solo 60+ sin discapacidad,11
+Intensidad|<20 h,Intensidad,<20 h,Menos de 20 h,12
+Intensidad|20-39 h,Intensidad,20-39 h,20 a 39 h,13
+Intensidad|>=40 h,Intensidad,>=40 h,40 h o más,14

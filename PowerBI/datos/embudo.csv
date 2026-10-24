@@ -1,0 +1,6 @@
+﻿orden,etapa,total,fuente
+1,Personas de 15 años y más que cuidan,31652134.0,Analysis/resultados/03_enasic_barreras_estimaciones.csv
+2,Cuidan a una persona con discapacidad o de 60+,6223684.0,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv (suma de los tres grupos de horas)
+3,Cuidan 40 h o más a la semana,2534547.0,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv
+4,"No buscaron servicios y dicen ""no tuve necesidad""",1100386.0,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv
+5,Y declaran daño a su salud o su trabajo,775546.0,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv

@@ -1,0 +1,22 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="fig.css"><style>
+.g{display:grid;grid-template-columns:repeat(5,1fr);gap:0 8px;align-items:stretch}
+.st{display:flex;flex-direction:column;gap:8px}.st .b{flex:1}
+pre{margin:6px 0 0;font-family:'DejaVu Sans Mono',monospace;font-size:12px;white-space:pre-wrap;line-height:1.45;color:#2b3045}
+.big{font-size:40px;font-weight:800;color:#c0435a;letter-spacing:-1px}
+</style><div class="f">
+<div class="k">Trazabilidad · ejemplo real</div><h1>Recorrido de una cifra: «70.5 %» de la portada, de la encuesta a la pantalla</h1>
+<div class="g">
+<div class="st"><div class="h">1 · Microdatos</div><div class="b"><b>ENASIC 2022</b> (INEGI)<br><span class="s">tabla de población cuidadora; factor de expansión, estratos EST_DIS y conglomerados UPM_DIS</span><pre>No se sube al repositorio
+(datos/enasic/, 38 MB)</pre></div></div>
+<div class="st"><div class="h">2 · Notebook B §07</div><div class="b"><b>estimar()</b><br><span class="s">proporción ponderada, varianza por linealización de Taylor, IC 90 %, CV</span><pre>"Sin necesidad" | >=40 h |
+Algún daño (salud o trabajo)
+pct 70.5 · cv 6.9 · n 185</pre></div></div>
+<div class="st"><div class="h">3 · Resultado</div><div class="b"><span class="m">07_enasic_necesidad_vs_norma_estimaciones.csv</span><pre>li90 62.5 · ls90 78.4
+precision: alta</pre></div></div>
+<div class="st"><div class="h">4 · build_datos.py</div><div class="b dk"><pre style="color:#fff">fila(e07, '"Sin necesidad" |
+  >=40 h | Algún daño…')
+→ D.carga.dano[2]</pre><span class="s">se detiene si no hay exactamente una fila</span></div></div>
+<div class="st"><div class="h">5 · Página</div><div class="b ok"><span class="m">inicio.js</span> (razón 01) y <span class="m">necesidad.js</span> → <span class="m">iconosDano()</span><div class="big">70.5%</div><span class="s">ficha ⓘ: archivo, IC, n y precisión</span></div></div>
+</div>
+<div class="b am" style="margin-top:14px;font-size:14px"><b>Para cambiar la cifra</b> no se edita la página: se corrige el notebook, se vuelve a correr y luego <span class="m">python Frontend/observatorio/build_datos.py</span>. La página la toma sola al recargar.</div>
+</div>

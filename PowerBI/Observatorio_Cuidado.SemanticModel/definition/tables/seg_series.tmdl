@@ -1,0 +1,213 @@
+table seg_series
+	lineageTag: 4518ba8c-6f65-5baf-817d-7981f75a9a90
+
+	measure Porcentaje = AVERAGE(seg_series[pct])
+		formatString: 0.0\%
+		lineageTag: 18729950-27d6-528c-9715-9d03c5d4d912
+
+	measure 'Diferencia pp' = AVERAGE(seg_series[pct])
+		formatString: +0.0;-0.0;0.0
+		lineageTag: dee2be11-276e-58cc-9bbe-e09959896516
+
+	measure 'IC90 inferior' = AVERAGE(seg_series[li90])
+		formatString: 0.0
+		lineageTag: f54d426b-ecbd-57c4-bece-e1d5e7e3f19a
+
+	measure 'IC90 superior' = AVERAGE(seg_series[ls90])
+		formatString: 0.0
+		lineageTag: 0dc4942c-0bb9-51ca-b313-282adfd521f6
+
+	measure 'n muestra' = MAX(seg_series[n])
+		formatString: #,0
+		lineageTag: 34eac345-7e38-5e09-a424-d4a2143b4664
+
+	measure Precisión = MAX(seg_series[precision])
+		lineageTag: 5d4a30be-a63c-51e6-a3d2-d32a962e26d6
+
+	measure 'Orden categoría' = MIN(seg_series[cat_orden])
+		formatString: 0
+		lineageTag: b15065f3-fed8-595c-802e-97454cebc728
+
+	measure 'Color precisión' = SWITCH(MAX(seg_series[precision]), "baja", "#D9D4E6", "moderada", "#A99FC9", "sin varianza", "#9A93AD", "#77689D")
+		lineageTag: 89e83c12-e81b-5f1a-b66f-6f92464c121e
+
+	measure 'Color diferencia' = IF(MAX(seg_series[dif_significativa]) = "Sí", "#C0435A", "#B8B3C9")
+		lineageTag: 151760ca-59d5-5065-9939-34afcc229936
+
+	measure 'KPI personas' = CALCULATE(AVERAGE(seg_series[total_expandido]), seg_series[serie] = "kpi", seg_series[categoria] = "personas")
+		formatString: #,0
+		lineageTag: 00b13b66-d22c-5439-992b-d18a3d9ede9f
+
+	measure 'KPI grupo del problema' = CALCULATE(AVERAGE(seg_series[pct]), seg_series[serie] = "kpi", seg_series[categoria] = "grupo")
+		formatString: 0.0\%
+		lineageTag: 2fbd6992-ec34-503a-ab7f-a25f8f07e00c
+
+	measure 'KPI grupo personas' = CALCULATE(AVERAGE(seg_series[total_expandido]), seg_series[serie] = "kpi", seg_series[categoria] = "grupo")
+		formatString: #,0
+		lineageTag: 8944712a-3b50-5e34-886e-ad25295ea3f7
+
+	measure 'KPI horas a la semana' = CALCULATE(AVERAGE(seg_series[pct]), seg_series[serie] = "kpi", seg_series[categoria] = "horas_total")
+		formatString: #,0
+		lineageTag: ff8aedc3-bb63-58cd-a23c-53883e96307e
+
+	measure 'KPI horas promedio' = CALCULATE(AVERAGE(seg_series[pct]), seg_series[serie] = "kpi", seg_series[categoria] = "horas_media")
+		formatString: 0.0
+		lineageTag: 53b258c7-caff-584a-8e5f-80529ba3f68e
+
+	measure 'Mediana de horas' = CALCULATE(AVERAGE(seg_series[pct]), seg_series[serie] = "horas", seg_series[categoria] = "mediana")
+		formatString: 0
+		lineageTag: 30b61d63-a2b8-552a-924d-4dd06297f083
+
+	measure 'Tratan mal (P7.11)' = CALCULATE(AVERAGE(seg_series[pct]), seg_series[serie] = "p711", seg_series[categoria] = "Tratan mal a las personas")
+		formatString: 0.0\%
+		lineageTag: 233fde38-dc5a-56c7-9ae9-f7e5eba22a85
+
+	column seg_id
+		dataType: string
+		isHidden
+		lineageTag: 8e091e3e-e70c-5c3c-b755-cefadb7546be
+		summarizeBy: none
+		sourceColumn: seg_id
+
+		annotation SummarizationSetBy = User
+
+	column dimension
+		dataType: string
+		lineageTag: 67c380ff-5d45-56eb-b81b-87983d911f76
+		summarizeBy: none
+		sourceColumn: dimension
+
+		annotation SummarizationSetBy = User
+
+	column segmento
+		dataType: string
+		lineageTag: a1bd05d4-e696-5d70-be55-611913a125f4
+		summarizeBy: none
+		sourceColumn: segmento
+
+		annotation SummarizationSetBy = User
+
+	column serie
+		dataType: string
+		lineageTag: 32bcea20-ef8e-512c-974c-a006a0b9d924
+		summarizeBy: none
+		sourceColumn: serie
+
+		annotation SummarizationSetBy = User
+
+	column serie_txt
+		dataType: string
+		lineageTag: e33f53b0-e0df-5afe-a4bc-12335ae5c0d9
+		summarizeBy: none
+		sourceColumn: serie_txt
+
+		annotation SummarizationSetBy = User
+
+	column categoria
+		dataType: string
+		lineageTag: b01d4355-fe91-5e6a-8bc5-774d7d5e392b
+		summarizeBy: none
+		sourceColumn: categoria
+
+		annotation SummarizationSetBy = User
+
+	column etiqueta
+		dataType: string
+		lineageTag: 3cf7e3d3-bb0c-5713-9dab-3e2db8efc5e1
+		summarizeBy: none
+		sourceColumn: etiqueta
+
+		annotation SummarizationSetBy = User
+
+	column cat_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: ec9fff40-34aa-527a-b632-107f6052c81b
+		summarizeBy: none
+		sourceColumn: cat_orden
+
+		annotation SummarizationSetBy = User
+
+	column pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: 57b5b7bc-9808-587c-815b-62412c91e802
+		summarizeBy: none
+		sourceColumn: pct
+
+		annotation SummarizationSetBy = User
+
+	column cv
+		dataType: double
+		formatString: 0.00
+		lineageTag: be9fd7a4-03fc-50b9-ac92-cfc81da0e9b5
+		summarizeBy: none
+		sourceColumn: cv
+
+		annotation SummarizationSetBy = User
+
+	column li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: c59e929c-ba82-52a7-b7d0-a9689ffbd203
+		summarizeBy: none
+		sourceColumn: li90
+
+		annotation SummarizationSetBy = User
+
+	column ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: b164adf2-6493-544d-88fd-7485ca5b42ef
+		summarizeBy: none
+		sourceColumn: ls90
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: 234813aa-26ea-5fd3-b4de-bf9a7138baeb
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	column total_expandido
+		dataType: double
+		formatString: 0.00
+		lineageTag: 3241b3a3-e097-524e-828b-aa9cc7e92858
+		summarizeBy: none
+		sourceColumn: total_expandido
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: string
+		lineageTag: c28df3cb-855f-5d2b-b292-d51e677e8b21
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column dif_significativa
+		dataType: string
+		lineageTag: 40c48e9a-1db6-501c-877a-f5d6baebfe38
+		summarizeBy: none
+		sourceColumn: dif_significativa
+
+		annotation SummarizationSetBy = User
+
+	partition seg_series = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "seg_series.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"seg_id", type text}, {"dimension", type text}, {"segmento", type text}, {"serie", type text}, {"serie_txt", type text}, {"categoria", type text}, {"etiqueta", type text}, {"cat_orden", Int64.Type}, {"pct", type number}, {"cv", type number}, {"li90", type number}, {"ls90", type number}, {"n", Int64.Type}, {"total_expandido", type number}, {"precision", type text}, {"dif_significativa", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

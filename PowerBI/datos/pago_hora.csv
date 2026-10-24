@@ -1,0 +1,4 @@
+﻿orden,servicio,n,p25,mediana,p75,mediana_ponderada,horas_sem_mediana,fuente
+1,Cuidadora,26,29.34,43.87,88.51,69.27,24.0,"Analysis/resultados/04_pago_observado_cuidado.csv (pesos de 2026, sin ponderar salvo la mediana ponderada)"
+2,Enfermería,14,100.3,139.5,303.05,173.17,6.0,"Analysis/resultados/04_pago_observado_cuidado.csv (pesos de 2026, sin ponderar salvo la mediana ponderada)"
+3,Doméstica entrada por salida,366,57.72,76.97,107.63,80.81,7.0,"Analysis/resultados/04_pago_observado_cuidado.csv (pesos de 2026, sin ponderar salvo la mediana ponderada)"

@@ -1,0 +1,216 @@
+table seg_indicadores
+	lineageTag: 71732dce-75a7-5542-aad0-17e8a215a877
+
+	measure 'Porcentaje seg' = AVERAGE(seg_indicadores[pct])
+		formatString: 0.0\%
+		lineageTag: 70dd7b78-5184-5dcb-a89c-97a95d57b064
+
+	measure 'Dif vs resto pp' = AVERAGE(seg_indicadores[dif_pp])
+		formatString: +0.0;-0.0;0.0
+		lineageTag: 1dba4e0d-d5dd-594f-a62b-19156a0005e9
+
+	measure 'IC90 inf seg' = AVERAGE(seg_indicadores[li90])
+		formatString: 0.0
+		lineageTag: 80bb2e59-8963-537d-a665-fa3479f44c17
+
+	measure 'IC90 sup seg' = AVERAGE(seg_indicadores[ls90])
+		formatString: 0.0
+		lineageTag: 30029c39-298a-5d82-98fa-e0ff03542749
+
+	measure 'n seg' = MAX(seg_indicadores[n])
+		formatString: #,0
+		lineageTag: e6608fe8-525d-5c5b-92c4-998e2bc9fa95
+
+	measure 'Precisión seg' = MAX(seg_indicadores[precision])
+		lineageTag: 35996b6e-8651-521b-a49c-8a918159ce47
+
+	measure 'Orden indicador' = MIN(seg_indicadores[ind_orden])
+		formatString: 0
+		lineageTag: e88b770c-e52a-5a0b-bfe4-ee05870546f6
+
+	measure 'Color celda' = VAR p = AVERAGE(seg_indicadores[pct]) VAR pr = MAX(seg_indicadores[precision]) RETURN IF(pr = "baja", "#ECEAF1", IF(p >= 70, "#8A76B8", IF(p >= 50, "#B09FD3", IF(p >= 30, "#D3C8E8", "#EFEAF7"))))
+		lineageTag: 223c54d9-3541-5c07-96ea-487542a8a090
+
+	measure 'Precio (son caros)' = CALCULATE(AVERAGE(seg_indicadores[pct]), seg_indicadores[clave] = "raz_caros")
+		formatString: 0.0\%
+		lineageTag: 1bbddd51-3031-5014-944a-f38a7b568788
+
+	measure 'Norma familiar' = CALCULATE(AVERAGE(seg_indicadores[pct]), seg_indicadores[clave] = "norma_familia")
+		formatString: 0.0\%
+		lineageTag: 00038f76-24e8-5cdc-b0d0-b1d506dbf8a8
+
+	column seg_id
+		dataType: string
+		isHidden
+		lineageTag: 5562fb0b-ccaf-55bc-aee7-55ac7620f3c5
+		summarizeBy: none
+		sourceColumn: seg_id
+
+		annotation SummarizationSetBy = User
+
+	column dimension
+		dataType: string
+		lineageTag: 6bd68e43-c63d-50b2-9d83-cc7ccb0b36f0
+		summarizeBy: none
+		sourceColumn: dimension
+
+		annotation SummarizationSetBy = User
+
+	column segmento
+		dataType: string
+		lineageTag: e9ebf814-37bb-5de2-86e0-fe3562c4f9a3
+		summarizeBy: none
+		sourceColumn: segmento
+
+		annotation SummarizationSetBy = User
+
+	column clave
+		dataType: string
+		lineageTag: bab99310-db8d-5aa1-9340-a89073582332
+		summarizeBy: none
+		sourceColumn: clave
+
+		annotation SummarizationSetBy = User
+
+	column indicador
+		dataType: string
+		lineageTag: 9aac2328-ba53-53f7-b6a6-7ae4c582d3c1
+		summarizeBy: none
+		sourceColumn: indicador
+
+		annotation SummarizationSetBy = User
+
+	column ind_corto
+		dataType: string
+		lineageTag: 5876ef3a-ff8e-5db6-bf22-33bff1ac00af
+		summarizeBy: none
+		sourceColumn: ind_corto
+
+		annotation SummarizationSetBy = User
+
+	column comparar_en
+		dataType: string
+		lineageTag: 76ef8984-cedc-50d7-9836-f2a8601f484d
+		summarizeBy: none
+		sourceColumn: comparar_en
+
+		annotation SummarizationSetBy = User
+
+	column grupo
+		dataType: string
+		lineageTag: 5bec6927-c7ff-5583-8197-6b9875c8d528
+		summarizeBy: none
+		sourceColumn: grupo
+
+		annotation SummarizationSetBy = User
+
+	column ind_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 6e6c00ed-893b-5624-8296-20b0e501caa1
+		summarizeBy: none
+		sourceColumn: ind_orden
+
+		annotation SummarizationSetBy = User
+
+	column pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: 23c8ba77-572e-52a4-9be4-0743e870182a
+		summarizeBy: none
+		sourceColumn: pct
+
+		annotation SummarizationSetBy = User
+
+	column cv
+		dataType: double
+		formatString: 0.00
+		lineageTag: 2209b8fe-c35b-5d2f-b305-b7ddcc5e3196
+		summarizeBy: none
+		sourceColumn: cv
+
+		annotation SummarizationSetBy = User
+
+	column li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: a0b765e9-b735-5bd8-bcf1-cfa8c600fb22
+		summarizeBy: none
+		sourceColumn: li90
+
+		annotation SummarizationSetBy = User
+
+	column ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 8fe5b8a9-331c-583e-8074-68db63c782f6
+		summarizeBy: none
+		sourceColumn: ls90
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: 466ceea8-0f3d-5038-bb78-7156738f0c7d
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: string
+		lineageTag: c3521226-756a-5cba-bea2-b4749514cb51
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column dif_pp
+		dataType: double
+		formatString: 0.00
+		lineageTag: a73b8182-b099-57a4-8ded-7b675189db19
+		summarizeBy: none
+		sourceColumn: dif_pp
+
+		annotation SummarizationSetBy = User
+
+	column dif_li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 267f6b2b-b850-5cf1-9435-ad939515b31d
+		summarizeBy: none
+		sourceColumn: dif_li90
+
+		annotation SummarizationSetBy = User
+
+	column dif_ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: f4139623-24c1-53be-aa88-e87871797b59
+		summarizeBy: none
+		sourceColumn: dif_ls90
+
+		annotation SummarizationSetBy = User
+
+	column dif_significativa
+		dataType: string
+		lineageTag: e17199e1-0858-5d5c-a115-52b56665148c
+		summarizeBy: none
+		sourceColumn: dif_significativa
+
+		annotation SummarizationSetBy = User
+
+	partition seg_indicadores = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "seg_indicadores.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"seg_id", type text}, {"dimension", type text}, {"segmento", type text}, {"clave", type text}, {"indicador", type text}, {"ind_corto", type text}, {"comparar_en", type text}, {"grupo", type text}, {"ind_orden", Int64.Type}, {"pct", type number}, {"cv", type number}, {"li90", type number}, {"ls90", type number}, {"n", Int64.Type}, {"precision", type text}, {"dif_pp", type number}, {"dif_li90", type number}, {"dif_ls90", type number}, {"dif_significativa", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

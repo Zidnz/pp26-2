@@ -1,0 +1,746 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "perfil_grupo.poblacion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "perfil_grupo",
+			          "ConceptualProperty": "poblacion"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Población": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "seg_indicadores.ind_corto": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "seg_indicadores",
+			          "ConceptualProperty": "ind_corto"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Indicador": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_grupos.grupo_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_grupos",
+			          "ConceptualProperty": "grupo_txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Grupo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_alternativas.puntaje": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_alternativas",
+			          "ConceptualProperty": "puntaje"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Método": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_coeficientes.variable_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_coeficientes",
+			          "ConceptualProperty": "variable_txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Variable": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_importancia.variable_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_importancia",
+			          "ConceptualProperty": "variable_txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Variable": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_importancia.puntaje": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_importancia",
+			          "ConceptualProperty": "puntaje"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Método": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "objetivos.objetivo_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "objetivos",
+			          "ConceptualProperty": "objetivo_txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Objetivo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_curvas.pct_seleccion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_curvas",
+			          "ConceptualProperty": "pct_seleccion"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% de personas seleccionadas": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_curvas.serie": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_curvas",
+			          "ConceptualProperty": "serie"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Método": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_curvas.cobertura_curva": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_curvas",
+			          "ConceptualProperty": "Cobertura curva"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% de personas con daño alcanzadas": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_obj_grupo.grupo_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_obj_grupo",
+			          "ConceptualProperty": "grupo_txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Grupo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_obj_grupo.objetivo_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_obj_grupo",
+			          "ConceptualProperty": "objetivo_txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Objetivo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_decision.criterio": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_decision",
+			          "ConceptualProperty": "criterio"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Criterio": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_decision.tipo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_decision",
+			          "ConceptualProperty": "tipo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tipo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_decision.algun_dano": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_decision",
+			          "ConceptualProperty": "algun_dano"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Algún daño": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_decision.salud_fisica": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_decision",
+			          "ConceptualProperty": "salud_fisica"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Salud física deteriorada": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_decision.favorece": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_decision",
+			          "ConceptualProperty": "favorece"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Favorece": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_por_horas.horas": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_por_horas",
+			          "ConceptualProperty": "horas"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Horas a la semana": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_por_horas.objetivo_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_por_horas",
+			          "ConceptualProperty": "objetivo_txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Objetivo": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_calibracion.decil": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_calibracion",
+			          "ConceptualProperty": "decil"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Decil": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "modelo_calibracion.puntaje": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "modelo_calibracion",
+			          "ConceptualProperty": "puntaje"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Método": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tipologia_tipos.tipo_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "tipologia_tipos",
+			          "ConceptualProperty": "tipo_txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tipo de zona": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tipologia_tipos.n_ageb": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "tipologia_tipos",
+			          "ConceptualProperty": "n_ageb"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "AGEB": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tipologia_tipos.poblacion": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "tipologia_tipos",
+			          "ConceptualProperty": "poblacion"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Población": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tipologia_tipos.n_60": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "tipologia_tipos",
+			          "ConceptualProperty": "n_60"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Personas 60+": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tipologia_tipos.pct_60": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "tipologia_tipos",
+			          "ConceptualProperty": "pct_60"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% 60+": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tipologia_tipos.pct_sinder": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "tipologia_tipos",
+			          "ConceptualProperty": "pct_sinder"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% sin derechohabiencia": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tipologia_tipos.pct_viv_sin_int": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "tipologia_tipos",
+			          "ConceptualProperty": "pct_viv_sin_int"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "% viviendas sin internet": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "alcaldias_indicadores.alcaldia": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "alcaldias_indicadores",
+			          "ConceptualProperty": "alcaldia"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Alcaldía": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ageb_tipologia.cvegeo": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ageb_tipologia",
+			          "ConceptualProperty": "cvegeo"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "AGEB": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "ageb_tipologia.tipo_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "ageb_tipologia",
+			          "ConceptualProperty": "tipo_txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tipo de zona": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tipologia_alcaldia.alcaldia": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "tipologia_alcaldia",
+			          "ConceptualProperty": "alcaldia"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Alcaldía": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "tipologia_alcaldia.tipo_txt": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "tipologia_alcaldia",
+			          "ConceptualProperty": "tipo_txt"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Tipo de zona": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "brecha_alcaldia.alcaldia": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "brecha_alcaldia",
+			          "ConceptualProperty": "alcaldia"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "Alcaldía": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

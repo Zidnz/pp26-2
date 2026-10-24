@@ -1,0 +1,46 @@
+table brecha_alcaldia
+	lineageTag: 6f2e7656-04f0-554b-a8cb-a5bb202e3b79
+
+	measure 'Personas 60+ en AGEB con brecha' = SUM(brecha_alcaldia[n_60_brecha])
+		formatString: #,0
+		lineageTag: a36a8f5f-ed50-5565-a4d4-168a7f6045af
+
+	column alcaldia
+		dataType: string
+		lineageTag: 1fb06f8c-b29c-5039-97bd-022b4b2ef1e8
+		summarizeBy: none
+		sourceColumn: alcaldia
+
+		annotation SummarizationSetBy = User
+
+	column ageb_brecha
+		dataType: int64
+		formatString: 0
+		lineageTag: 1188724d-6cd8-556b-b39b-85b528a6192d
+		summarizeBy: none
+		sourceColumn: ageb_brecha
+
+		annotation SummarizationSetBy = User
+
+	column n_60_brecha
+		dataType: int64
+		formatString: 0
+		lineageTag: 4bc6f6e5-0ca0-539d-a969-8e14eca5d871
+		summarizeBy: none
+		sourceColumn: n_60_brecha
+
+		annotation SummarizationSetBy = User
+
+	partition brecha_alcaldia = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "brecha_alcaldia.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"alcaldia", type text}, {"ageb_brecha", Int64.Type}, {"n_60_brecha", Int64.Type}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

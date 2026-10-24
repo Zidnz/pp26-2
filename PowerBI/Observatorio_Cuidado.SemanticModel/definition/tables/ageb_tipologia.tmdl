@@ -1,0 +1,149 @@
+table ageb_tipologia
+	lineageTag: e0a07ed3-c69e-501e-acfa-326e42f2972b
+
+	measure AGEB = COUNTROWS(ageb_tipologia)
+		formatString: #,0
+		lineageTag: 26773a62-7c65-5495-b6c8-058dd0b035ad
+
+	measure '% 60+' = AVERAGE(ageb_tipologia[pct_60])
+		formatString: 0.0
+		lineageTag: e5b909f8-e579-5501-9ee9-e606a7737261
+
+	measure '% viviendas sin internet' = AVERAGE(ageb_tipologia[pct_sin_int])
+		formatString: 0.0
+		lineageTag: 7e9832f5-0c27-5d99-bcf8-b8ff91dc3d05
+
+	column cvegeo
+		dataType: string
+		lineageTag: 3a9eabc0-d659-5eb9-8570-896f79db016e
+		summarizeBy: none
+		sourceColumn: cvegeo
+
+		annotation SummarizationSetBy = User
+
+	column alcaldia
+		dataType: string
+		lineageTag: ae8545ce-dc93-5caa-917f-0300babf641f
+		summarizeBy: none
+		sourceColumn: alcaldia
+
+		annotation SummarizationSetBy = User
+
+	column tipo
+		dataType: int64
+		formatString: 0
+		lineageTag: 857de51c-e04c-56ee-a687-850ca3b0e6f0
+		summarizeBy: none
+		sourceColumn: tipo
+
+		annotation SummarizationSetBy = User
+
+	column poblacion
+		dataType: int64
+		formatString: 0
+		lineageTag: bb7d8a85-b3ee-5226-bd96-4a397cb5981c
+		summarizeBy: none
+		sourceColumn: poblacion
+
+		annotation SummarizationSetBy = User
+
+	column n_60
+		dataType: int64
+		formatString: 0
+		lineageTag: df33f826-2656-519f-a6de-7a9c305cb534
+		summarizeBy: none
+		sourceColumn: n_60
+
+		annotation SummarizationSetBy = User
+
+	column pct_60
+		dataType: double
+		formatString: 0.00
+		lineageTag: 5f8a86d3-64f8-5ee4-af1e-408c68364159
+		summarizeBy: none
+		sourceColumn: pct_60
+
+		annotation SummarizationSetBy = User
+
+	column pct_disc
+		dataType: double
+		formatString: 0.00
+		lineageTag: 193045b8-5d3c-507f-8b29-0944c82885f3
+		summarizeBy: none
+		sourceColumn: pct_disc
+
+		annotation SummarizationSetBy = User
+
+	column pct_sinder
+		dataType: double
+		formatString: 0.00
+		lineageTag: 76cdfdb6-4c1e-5c5d-9f12-3531dc83037c
+		summarizeBy: none
+		sourceColumn: pct_sinder
+
+		annotation SummarizationSetBy = User
+
+	column graproes
+		dataType: double
+		formatString: 0.00
+		lineageTag: 6edcaa4e-090d-5432-9ef8-b10ed1d1e5f2
+		summarizeBy: none
+		sourceColumn: graproes
+
+		annotation SummarizationSetBy = User
+
+	column pct_sin_int
+		dataType: double
+		formatString: 0.00
+		lineageTag: 1f081927-f740-5bbf-9347-73b6ff93ac1f
+		summarizeBy: none
+		sourceColumn: pct_sin_int
+
+		annotation SummarizationSetBy = User
+
+	column dist_oferta_km
+		dataType: double
+		formatString: 0.00
+		lineageTag: b1606853-880e-5e1d-86b1-c4be2c3f0b1c
+		summarizeBy: none
+		sourceColumn: dist_oferta_km
+
+		annotation SummarizationSetBy = User
+
+	column brecha
+		dataType: string
+		lineageTag: 94f60fed-bd5a-548d-9c4f-a3ffa2a45475
+		summarizeBy: none
+		sourceColumn: brecha
+
+		annotation SummarizationSetBy = User
+
+	column frontera
+		dataType: string
+		lineageTag: 3c8ae5af-4b2f-5b16-9287-4254d1d8c4ac
+		summarizeBy: none
+		sourceColumn: frontera
+
+		annotation SummarizationSetBy = User
+
+	column tipo_txt
+		dataType: string
+		lineageTag: 017ba34b-4150-51b8-a939-630224c9ce03
+		summarizeBy: none
+		sourceColumn: tipo_txt
+
+		annotation SummarizationSetBy = User
+
+	partition ageb_tipologia = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "ageb_tipologia.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"cvegeo", type text}, {"alcaldia", type text}, {"tipo", Int64.Type}, {"poblacion", Int64.Type}, {"n_60", Int64.Type}, {"pct_60", type number}, {"pct_disc", type number}, {"pct_sinder", type number}, {"graproes", type number}, {"pct_sin_int", type number}, {"dist_oferta_km", type number}, {"brecha", type text}, {"frontera", type text}, {"tipo_txt", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

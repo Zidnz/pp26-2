@@ -1,0 +1,16 @@
+﻿variable,variable_txt,coef,sentido
+HORAS,Horas de cuidado a la semana,0.465152,Más probabilidad de declarar daño
+CUIDA_MENORES,También cuida a menores,0.376658,Más probabilidad de declarar daño
+FALTA_FUERZA,Le falta fuerza física,0.33887,Más probabilidad de declarar daño
+REQUIERE_APOYO,La persona requiere apoyo,0.303286,Más probabilidad de declarar daño
+N_CLINICAS,Número de condiciones clínicas,0.288745,Más probabilidad de declarar daño
+MUJER,Es mujer,0.21883,Más probabilidad de declarar daño
+QUINTIL,Quintil de ingreso,-0.205404,Menos probabilidad
+N_ABVD,Actividades básicas con ayuda,0.198861,Más probabilidad de declarar daño
+CAPACITACION,Tiene capacitación,0.163705,Más probabilidad de declarar daño
+EDAD_N,Edad,0.146724,Más probabilidad de declarar daño
+ESCOLARIDAD,Escolaridad,-0.117986,Menos probabilidad
+ANIOS_CUIDANDO,Años cuidando,0.080336,Más probabilidad de declarar daño
+QUINTIL_NA,Ingreso sin dato,-0.060627,Menos probabilidad
+CUIDA_DISC,Cuida a persona con discapacidad,0.048185,Más probabilidad de declarar daño
+APOYO_FAMILIA,Recibe apoyo de la familia,0.017151,Más probabilidad de declarar daño

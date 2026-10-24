@@ -1,0 +1,102 @@
+table modelo_por_horas
+	lineageTag: 88f2d920-2695-5678-a0b9-fcc14f70ec1a
+
+	measure 'Prevalencia (%)' = AVERAGE(modelo_por_horas[prevalencia])
+		formatString: 0.0\%
+		lineageTag: 6fe2f2ed-2783-57b2-92c5-12eb0febaff9
+
+	measure 'Orden horas' = MIN(modelo_por_horas[orden])
+		formatString: 0
+		lineageTag: 352c04f0-d76a-5561-9b70-a08b7ac17947
+
+	column objetivo
+		dataType: string
+		lineageTag: 7f3245a3-af75-56f4-825a-8e4f2cd03130
+		summarizeBy: none
+		sourceColumn: objetivo
+
+		annotation SummarizationSetBy = User
+
+	column objetivo_txt
+		dataType: string
+		lineageTag: bb6651e4-8e6b-53c6-9191-2ba9cc74a9d6
+		summarizeBy: none
+		sourceColumn: objetivo_txt
+
+		annotation SummarizationSetBy = User
+
+	column horas
+		dataType: string
+		lineageTag: 1f4ce79f-c422-5e26-84f9-73e15a91151d
+		summarizeBy: none
+		sourceColumn: horas
+
+		annotation SummarizationSetBy = User
+
+	column orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 0fd268b5-0ed8-5c25-a2bf-b2d482fad5ff
+		summarizeBy: none
+		sourceColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column prevalencia
+		dataType: double
+		formatString: 0.00
+		lineageTag: 004ddeb8-79f6-5ef9-90d9-84e02c5d970f
+		summarizeBy: none
+		sourceColumn: prevalencia
+
+		annotation SummarizationSetBy = User
+
+	column li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: f32f6cb8-2d65-5f87-a0aa-5df6c93f447b
+		summarizeBy: none
+		sourceColumn: li90
+
+		annotation SummarizationSetBy = User
+
+	column ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 8ab28a49-63d1-5260-9136-5097c6621280
+		summarizeBy: none
+		sourceColumn: ls90
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: 6d6ed663-c1d8-522b-b7a5-f5b29061d77f
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	column n_con_dano
+		dataType: int64
+		formatString: 0
+		lineageTag: 14e6c02e-3af3-53fa-904f-668d47bcbff3
+		summarizeBy: none
+		sourceColumn: n_con_dano
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_por_horas = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_por_horas.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"objetivo", type text}, {"objetivo_txt", type text}, {"horas", type text}, {"orden", Int64.Type}, {"prevalencia", type number}, {"li90", type number}, {"ls90", type number}, {"n", Int64.Type}, {"n_con_dano", Int64.Type}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

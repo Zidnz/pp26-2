@@ -1,0 +1,10 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="fig.css"><style>
+.g{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.b{font-size:14.5px}
+.r{display:grid;grid-template-columns:120px 1fr;gap:4px 10px;margin-top:8px;font-size:13.5px}.r i{font-style:normal;color:#77689d;font-weight:700}
+</style><div class="f">
+<div class="k">Mapas · sin biblioteca cartográfica</div><h1>Tres mapas, tres formas de llegar al SVG</h1>
+<div class="g">
+<div class="b"><b>Alcaldías (16)</b> · pestaña ¿Dónde?, parte 1<div class="r"><i>Origen</i><span>Frontend/js/cdmx-alcaldias.js · INEGI, Marco Geoestadístico 2020 (lon/lat)</span><i>Proyección</i><span><b>En el navegador</b> (territorio.js): equirectangular con corrección por coseno de la latitud</span><i>Por qué</i><span>son pocos polígonos; se reutilizan para las siluetas de «más alto / más bajo»</span></div></div>
+<div class="b"><b>Entidades (32)</b> · parte 2<div class="r"><i>Origen</i><span>@svg-maps/mexico 2.0.0 (CC BY 4.0), trazos ya en SVG</span><i>Proyección</i><span><b>Ninguna</b>: dibujo esquemático; build_datos.py enlaza cada trazo a su clave INEGI</span><i>Por qué</i><span>solo sitúa a la CDMX frente al país; no es cartografía oficial</span></div></div>
+<div class="b"><b>AGEB urbanas (2,371)</b> · parte 3<div class="r"><i>Origen</i><span>Marco Geoestadístico 2025, simplificado a 15 m en el notebook D; oferta DENUE 05/2026</span><i>Proyección</i><span><b>En Python</b> (build_datos.py): misma fórmula, coordenadas SVG ya calculadas</span><i>Por qué</i><span>miles de polígonos: proyectar en cada carga haría lenta la página. Se dibuja una vez; al cambiar de capa solo cambian los rellenos</span></div></div>
+</div></div>

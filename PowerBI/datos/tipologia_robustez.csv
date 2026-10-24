@@ -1,0 +1,9 @@
+﻿orden,variante,ari
+1,"Ponderado por población (cada persona pesa igual, no cada AGEB)",0.911475
+2,Escalamiento robusto (mediana y rango intercuartil),0.87641
+3,Sin % de viviendas sin internet,0.874043
+4,Sin el bloque de cuidadoras en el hogar,0.702367
+5,Capacidad medida con indicadores CONEVAL en lugar del Censo,0.927813
+6,Sobre los 4 primeros componentes principales,0.961452
+7,Ward jerárquico (otro algoritmo),0.526439
+8,"Mezcla gaussiana, covarianza completa (otro algoritmo)",0.338462

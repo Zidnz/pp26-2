@@ -1,0 +1,56 @@
+table modelo_coeficientes
+	lineageTag: 2673b2a8-6497-536a-9f84-cfcb8ddbed3c
+
+	measure Coeficiente = SUM(modelo_coeficientes[coef])
+		formatString: +0.00;-0.00;0.00
+		lineageTag: 9f3271d9-a448-5a98-8f51-49184fb1a97a
+
+	measure 'Color coeficiente' = IF(SUM(modelo_coeficientes[coef]) > 0, "#C0435A", "#23806F")
+		lineageTag: 131583fc-8e83-5524-a3a0-737317ae6731
+
+	column variable
+		dataType: string
+		lineageTag: 92b7b6bd-4e45-56f5-9d15-ce87c256b7dd
+		summarizeBy: none
+		sourceColumn: variable
+
+		annotation SummarizationSetBy = User
+
+	column variable_txt
+		dataType: string
+		lineageTag: 6040a0b9-5df8-54f3-ba13-921c6807b34b
+		summarizeBy: none
+		sourceColumn: variable_txt
+
+		annotation SummarizationSetBy = User
+
+	column coef
+		dataType: double
+		formatString: 0.00
+		lineageTag: 431b4d24-7214-59e2-b68f-910e06748779
+		summarizeBy: none
+		sourceColumn: coef
+
+		annotation SummarizationSetBy = User
+
+	column sentido
+		dataType: string
+		lineageTag: 650e7ab4-8e3f-52d5-a041-4d3407fec086
+		summarizeBy: none
+		sourceColumn: sentido
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_coeficientes = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_coeficientes.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"variable", type text}, {"variable_txt", type text}, {"coef", type number}, {"sentido", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

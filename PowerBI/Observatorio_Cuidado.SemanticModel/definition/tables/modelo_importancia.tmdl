@@ -1,0 +1,79 @@
+table modelo_importancia
+	lineageTag: 04d5a494-da1f-500c-84c3-c33e529720fa
+
+	measure 'Caída del AUC (centésimas)' = AVERAGE(modelo_importancia[caida_auc_cent])
+		formatString: 0.00
+		lineageTag: c8e8ef72-67a3-55e4-bf55-4e5e6f3cb786
+
+	column objetivo
+		dataType: string
+		lineageTag: 6da30d3b-ce72-5ae9-9198-2b5c34a0937a
+		summarizeBy: none
+		sourceColumn: objetivo
+
+		annotation SummarizationSetBy = User
+
+	column puntaje
+		dataType: string
+		lineageTag: f7f1ec73-d641-520b-b2e8-d22a79a2143e
+		summarizeBy: none
+		sourceColumn: puntaje
+
+		annotation SummarizationSetBy = User
+
+	column variable
+		dataType: string
+		lineageTag: eb050194-0689-50ab-a7dd-07365fddcec0
+		summarizeBy: none
+		sourceColumn: variable
+
+		annotation SummarizationSetBy = User
+
+	column variable_txt
+		dataType: string
+		lineageTag: 6bf61db5-ea61-5728-9bf1-178ebcce5e68
+		summarizeBy: none
+		sourceColumn: variable_txt
+
+		annotation SummarizationSetBy = User
+
+	column caida_auc
+		dataType: double
+		formatString: 0.00
+		lineageTag: a9ff546b-7024-51c0-b456-957533b81f86
+		summarizeBy: none
+		sourceColumn: caida_auc
+
+		annotation SummarizationSetBy = User
+
+	column caida_auc_cent
+		dataType: double
+		formatString: 0.00
+		lineageTag: 4d9cf45b-a4c5-526c-974a-14906b74578a
+		summarizeBy: none
+		sourceColumn: caida_auc_cent
+
+		annotation SummarizationSetBy = User
+
+	column de
+		dataType: double
+		formatString: 0.00
+		lineageTag: 861a8c9f-5302-55c6-bb69-3ebff786856f
+		summarizeBy: none
+		sourceColumn: de
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_importancia = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_importancia.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"objetivo", type text}, {"puntaje", type text}, {"variable", type text}, {"variable_txt", type text}, {"caida_auc", type number}, {"caida_auc_cent", type number}, {"de", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

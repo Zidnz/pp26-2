@@ -13,7 +13,11 @@
     window.scrollTo(0,0);}
   $$('.tabs button').forEach(function(b,i){b.addEventListener('click',function(){show(b.dataset.t)});
     b.addEventListener('keydown',function(e){var k=(e.key==='ArrowRight'||e.key==='ArrowDown')?1:(e.key==='ArrowLeft'||e.key==='ArrowUp')?-1:0;if(k)e.preventDefault();if(k){var n=$$('.tabs button')[(i+k+TABS.length)%TABS.length];n.focus();show(n.dataset.t)}})});
-  $$('[data-goto]').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.goto)})});
+  // 14 oct 2026: data-ancla lleva, dentro de la pestaña, a la tarjeta que contiene ese id y la resalta un momento.
+  function ir(id){var el=document.getElementById(id);if(!el)return;var c=el.closest('.card')||el;
+    c.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
+    c.classList.remove('ancla-on');void c.offsetWidth;c.classList.add('ancla-on')}
+  $$('[data-goto]').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.goto);if(b.dataset.ancla)ir(b.dataset.ancla)})});
   $('.brand').addEventListener('click',function(e){e.preventDefault();show('inicio')});
   window.addEventListener('hashchange',function(){show(location.hash.slice(1))});
   show(location.hash.slice(1)||'inicio');

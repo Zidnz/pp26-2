@@ -1,0 +1,86 @@
+table dimension_cdmx
+	lineageTag: 340b0484-10ec-5073-97d4-8c5a6a77e120
+
+	measure 'Hogares CDMX con necesidad (cota inferior)' = CALCULATE(SUM(dimension_cdmx[valor]), dimension_cdmx[orden] = 1)
+		formatString: #,0
+		lineageTag: b2fc401e-6e04-55ee-aa04-13ea07d92095
+
+	measure 'Hogares CDMX que contratan cuidadora' = CALCULATE(SUM(dimension_cdmx[valor]), dimension_cdmx[orden] = 2)
+		formatString: #,0
+		lineageTag: 4ad378f5-eebe-520a-b3c0-17f77c118295
+
+	measure 'Hogares CDMX que contratan trabajo doméstico' = CALCULATE(SUM(dimension_cdmx[valor]), dimension_cdmx[orden] = 3)
+		formatString: #,0
+		lineageTag: 0d02fde5-7ae2-56f5-b519-76e4e17e26a8
+
+	column orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 31b9a57c-41b9-524b-8d1d-583d21fc0338
+		summarizeBy: none
+		sourceColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column nivel
+		dataType: string
+		lineageTag: 7a8890ee-8095-5bc8-9757-11c929effa2a
+		summarizeBy: none
+		sourceColumn: nivel
+
+		annotation SummarizationSetBy = User
+
+	column valor
+		dataType: int64
+		formatString: 0
+		lineageTag: 4542ed7e-a5ba-51f9-94ab-25160d061b2f
+		summarizeBy: none
+		sourceColumn: valor
+
+		annotation SummarizationSetBy = User
+
+	column metodo
+		dataType: string
+		lineageTag: 88fac834-4550-5f46-b85b-4e9b78fbcc3a
+		summarizeBy: none
+		sourceColumn: metodo
+
+		annotation SummarizationSetBy = User
+
+	column evidencia
+		dataType: string
+		lineageTag: 55931941-b139-5d45-968d-d556f77e3042
+		summarizeBy: none
+		sourceColumn: evidencia
+
+		annotation SummarizationSetBy = User
+
+	column sesgo
+		dataType: string
+		lineageTag: dc267de0-fee3-5d28-b5b8-973ec4bf23b0
+		summarizeBy: none
+		sourceColumn: sesgo
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: f9aea02a-066e-59f8-83ed-732bfee3cfcb
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	partition dimension_cdmx = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "dimension_cdmx.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"orden", Int64.Type}, {"nivel", type text}, {"valor", Int64.Type}, {"metodo", type text}, {"evidencia", type text}, {"sesgo", type text}, {"fuente", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

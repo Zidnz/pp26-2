@@ -1,0 +1,29 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="fig.css"><style>
+.g{display:grid;grid-template-columns:1fr 30px 1.15fr 30px 1.2fr 30px 1fr;gap:6px;align-items:center}
+pre{margin:6px 0 0;font-family:'DejaVu Sans Mono',monospace;font-size:11.8px;white-space:pre-wrap;line-height:1.45}
+.loop{margin-top:16px;display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+</style><div class="f">
+<div class="k">Gráficas · JavaScript en el navegador, no Python</div><h1>Cómo se dibuja una gráfica: datos → función → texto SVG → tarjeta</h1>
+<div class="g">
+<div class="b"><b>1 · Datos</b><br><span class="s">la vista toma un bloque de D</span><pre>D.razones.obj
+[{etiqueta, pct, li90,
+  ls90, precision, n}…]</pre></div><div class="ar">›</div>
+<div class="b"><b>2 · Componente</b><br><span class="s">js/graficas/componentes.js</span><pre>barrasH(filas, {max:60,
+  nota:'Respuesta múltiple…'})
+→ escala, ejes, IC, rayado
+  si precisión baja</pre></div><div class="ar">›</div>
+<div class="b dk"><b>3 · Cadena SVG</b><br><span class="s">texto, no imagen</span><pre style="color:#fff">'&lt;svg viewBox="0 0 W H"&gt;
+ &lt;rect…/&gt;&lt;line…/&gt;&lt;text…/&gt;
+&lt;/svg&gt;'</pre></div><div class="ar">›</div>
+<div class="b ok"><b>4 · Tarjeta</b><br><span class="s">se inserta en el contenedor</span><pre>$('#ch-raz').innerHTML = …
+$('#src-raz').innerHTML =
+  dl({Pregunta, Muestra,
+      Archivo})</pre></div>
+</div>
+<div class="loop">
+<div class="b"><b>Selectores</b> (botones <span class="m">.seg</span>): <span class="m">seg()</span> marca aria-pressed y vuelve a llamar a la función de dibujo con otro bloque o umbral. No se recarga la página.</div>
+<div class="b"><b>Filtro de segmentación</b>: cambia el estado compartido <span class="m">F</span> y <span class="m">refreshSeg()</span> repinta tarjetas, comparador, <span class="m">renderRaz()</span> y <span class="m">renderPref()</span>.</div>
+<div class="b"><b>Ficha ⓘ</b>: el <span class="m">&lt;details class="src"&gt;</span> oculto es la fuente de verdad; <span class="m">coachmark.js</span> lo lee al abrir el globo de 2 o 3 pasos.</div>
+</div>
+<div class="b am" style="margin-top:12px;font-size:14px"><b>Matplotlib</b> (estilo_graficas.py, generar_figuras.py) solo produce las figuras PNG f1–f20 de los notebooks, que van a Word y PowerPoint. <b>Ninguna imagen PNG de gráfica se muestra en el Observatorio.</b></div>
+</div>

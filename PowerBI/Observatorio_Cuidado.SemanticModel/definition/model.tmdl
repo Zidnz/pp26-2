@@ -1,0 +1,60 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 0
+
+annotation PBI_ProTooling = ["DevMode"]
+
+annotation PBI_QueryOrder = ["RutaDatos", "ageb_tipologia", "alcaldias", "alcaldias_indicadores", "asequibilidad", "brecha_alcaldia", "brecha_sexo", "clave", "contratacion_quintil", "costo_jornada", "dimension_cdmx", "embudo", "escala_subsidio", "estados", "financiamiento", "inventario", "kpis_ficha", "modelo_alternativas", "modelo_calibracion", "modelo_coeficientes", "modelo_cupo", "modelo_curvas", "modelo_decision", "modelo_global", "modelo_grupos", "modelo_importancia", "modelo_obj_grupo", "modelo_por_horas", "modelo_resumen", "necesidad_cdmx", "objetivos", "oferta_declarada", "pago_hora", "perfil_grupo", "razones", "seg_indicadores", "seg_series", "segmentos", "tipologia_alcaldia", "tipologia_comparacion", "tipologia_k", "tipologia_robustez", "tipologia_tipos"]
+
+ref table ageb_tipologia
+ref table alcaldias
+ref table alcaldias_indicadores
+ref table asequibilidad
+ref table brecha_alcaldia
+ref table brecha_sexo
+ref table clave
+ref table contratacion_quintil
+ref table costo_jornada
+ref table dimension_cdmx
+ref table embudo
+ref table escala_subsidio
+ref table estados
+ref table financiamiento
+ref table inventario
+ref table kpis_ficha
+ref table modelo_alternativas
+ref table modelo_calibracion
+ref table modelo_coeficientes
+ref table modelo_cupo
+ref table modelo_curvas
+ref table modelo_decision
+ref table modelo_global
+ref table modelo_grupos
+ref table modelo_importancia
+ref table modelo_obj_grupo
+ref table modelo_por_horas
+ref table modelo_resumen
+ref table necesidad_cdmx
+ref table objetivos
+ref table oferta_declarada
+ref table pago_hora
+ref table perfil_grupo
+ref table razones
+ref table seg_indicadores
+ref table seg_series
+ref table segmentos
+ref table tipologia_alcaldia
+ref table tipologia_comparacion
+ref table tipologia_k
+ref table tipologia_robustez
+ref table tipologia_tipos
+
+ref cultureInfo en-US
+

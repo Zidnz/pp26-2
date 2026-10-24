@@ -1,0 +1,12 @@
+﻿criterio,tipo,algun_dano,salud_fisica,favorece
+1. ¿Lo puede cambiar el relevo por horas?,Juicio,"Sí, directo: cansancio, sueño y jornada dependen del tiempo libre",Parcial: el deterioro físico puede requerir atención médica,Algún daño
+2. ¿Lo mide hoy el piloto?,Juicio (bitácora 8 oct 2026),"Sí, en parte: la app pregunta por cansancio y malas noches",No: habría que agregar una pregunta,Algún daño
+3. Prevalencia ponderada (%),Dato,62.2 (58.8–65.6),23.5 (20.4–26.5),Depende: alcance contra gravedad
+3. Personas estimadas (nacional),Dato,"3,868,691","1,460,258",Depende
+4. Prevalencia con 40 h o más / con menos de 40 h,Dato,77.6 / 51.6 (× 1.50),32.8 / 17.0 (× 1.93),Salud física: crece más con las horas
+4. Precisión de la regla (% de seleccionados con el daño),Dato,77.6,32.8,Algún daño
+5. Casos con el daño en la muestra,Dato,631,222,Algún daño
+5. Grupo más chico (casos con el daño),Dato,98,39,Algún daño
+6. Mayor pérdida de cobertura de un grupo con el modelo (pp),Dato,-29.3 (Solo 60+ sin discapacidad),-23.9 (Solo 60+ sin discapacidad),Ninguno: los dos castigan al mismo grupo
+"Consecuencia: ganancia del modelo sobre la regla (pp, IC 90 %)","Dato, no criterio",+2.2 (-4.1 a 8.5),+12.7 (2.5 a 22.9),"Salud física, pero no decide"
+"Consecuencia: ganancia sin ""le falta fuerza física"" (pp, IC 90 %)","Dato, no criterio",+2.3 (-4.9 a 9.5),+9.1 (-2.6 a 20.9),Ninguno: sin esa variable no es demostrable

@@ -1,0 +1,13 @@
+﻿jornada,horario_lft,horas_max_jornada,salario_diario_2026,hora_ordinaria_2026,dif_vs_diurna_pct,paquete_horas_semana,costo_mensual_2026,incluye_prestaciones,evidencia
+Diurna,06:00 a 20:00,8.0,342.47,42.81,0.0,3,556,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Diurna,06:00 a 20:00,8.0,342.47,42.81,0.0,6,1112,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Diurna,06:00 a 20:00,8.0,342.47,42.81,0.0,9,1668,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Diurna,06:00 a 20:00,8.0,342.47,42.81,0.0,12,2224,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Mixta,"abarca ambos periodos, con menos de 3.5 h nocturnas",7.5,342.47,45.66,6.7,3,593,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Mixta,"abarca ambos periodos, con menos de 3.5 h nocturnas",7.5,342.47,45.66,6.7,6,1186,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Mixta,"abarca ambos periodos, con menos de 3.5 h nocturnas",7.5,342.47,45.66,6.7,9,1779,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Mixta,"abarca ambos periodos, con menos de 3.5 h nocturnas",7.5,342.47,45.66,6.7,12,2373,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Nocturna,20:00 a 06:00,7.0,342.47,48.92,14.3,3,636,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Nocturna,20:00 a 06:00,7.0,342.47,48.92,14.3,6,1271,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Nocturna,20:00 a 06:00,7.0,342.47,48.92,14.3,9,1907,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)
+Nocturna,20:00 a 06:00,7.0,342.47,48.92,14.3,12,2542,no,probable: arts. 60 y 61 LFT pendientes de verificar en el DOF (Daniel)

@@ -1,0 +1,2 @@
+Generado por PowerBI/exportar_datos_pbi.py a partir de Frontend/observatorio/datos_observatorio.json (actualizado: 6 oct 2026).
+No editar a mano: volver a correr el script.

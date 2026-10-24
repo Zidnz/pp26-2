@@ -134,7 +134,8 @@
       s+='<g><title>Dice «no tuve necesidad»: '+fmt(r.nec.pct)+'% (IC 90%: '+fmt(r.nec.li90)+'–'+fmt(r.nec.ls90)+')</title><rect x="'+xN+'" y="'+(cy-12)+'" width="'+wN+'" height="8" rx="4" fill="#ece8f5"/><rect x="'+xN+'" y="'+(cy-12)+'" width="'+(wN*r.nec.pct/100).toFixed(1)+'" height="8" rx="4" fill="#8a76b8"/>';
       s+='<text x="'+xN+'" y="'+(cy+14)+'" '+MONO+' font-size="13" font-weight="700" fill="'+C_INK+'">'+fmt(r.nec.pct)+'%</text></g>';
       s+='<g><title>Declara daño: '+fmt(r.dano.pct)+'% (IC 90%: '+fmt(r.dano.li90)+'–'+fmt(r.dano.ls90)+') · n = '+r.dano.n+'</title>'+filaFiguras(xF,y+12,r.dano.pct,10,C_RED,C_OFF,'cf'+i+'_')+'</g>';
-      s+='<text x="'+(xV)+'" y="'+(cy+2)+'" '+MONO+' font-size="22" font-weight="760" fill="'+C_RED+'">'+fmt(r.dano.pct)+'%</text>';
+      var wk=isWeak(r.dano.precision);   // 14 oct 2026: con filtro de segmento puede salir precisión baja
+      s+='<text x="'+(xV)+'" y="'+(cy+2)+'" '+MONO+' font-size="22" font-weight="760" fill="'+(wk?FAINT:C_RED)+'">'+fmt(r.dano.pct)+'%'+(wk?'<tspan font-size="10" font-weight="400"> precisión baja</tspan>':'')+'</text>';
       s+='<text x="'+(xV)+'" y="'+(cy+18)+'" '+MONO+' font-size="10" fill="'+FAINT+'">IC 90%: '+fmt(r.dano.li90,0)+'–'+fmt(r.dano.ls90,0)+'</text>';
       if(i<rows.length-1)s+='<line x1="0" x2="'+W+'" y1="'+(y+rowH)+'" y2="'+(y+rowH)+'" stroke="rgba(63,71,96,.07)"/>'});
     var lg='<div class="legend"><span><svg width="14" height="22" viewBox="0 0 22 40" style="vertical-align:-6px;margin-right:5px">'+figura(0,0,C_RED,true)+'</svg>Declara daño a su salud o a su trabajo</span><span><svg width="14" height="22" viewBox="0 0 22 40" style="vertical-align:-6px;margin-right:5px">'+figura(0,0,C_OFF,false)+'</svg>No declara daño</span><span>1 figura = 10% · la última se llena en parte</span></div>';

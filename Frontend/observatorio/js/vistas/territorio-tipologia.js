@@ -8,8 +8,11 @@
 (function(){
   var $=OBS.$,$$=OBS.$$,FAINT=OBS.FAINT,MONO=OBS.MONO,dl=OBS.dl,ent=OBS.ent,esc=OBS.esc,fmt=OBS.fmt,seg=OBS.seg,svg=OBS.svg;
   var TP=D.tipologia,CAMPOS=TP.campos_ageb,INK='#2b3045';
-  /* Colores de los tipos: los mismos de las figuras f11–f14 del notebook D (paleta categórica validada, orden fijo). */
-  var TC={1:'#2a78d6',2:'#eb6834',3:'#1baf7a',4:'#eda100'},SEQ=['#efeaf7','#d3c8e8','#b09fd3','#8a76b8','#5d4d8f'],GRIS='#e4e1ea';
+  /* Colores de los tipos: tokens de la paleta del Observatorio (css/base.css: --alert, morado de SEQ, --mint, --amber).
+     Cambio 2026-10-13: antes usaban la paleta de estilo_graficas.py (#2a78d6, #eb6834, #1baf7a, #eda100), igual que las
+     figuras f11–f14 del notebook D; desde este cambio el mapa ya no coincide en color con esas figuras.
+     Combinación elegida por distancia de color mínima ΔE≈33 (normal, deuteranopía y protanopía simuladas). */
+  var TC={1:'#c0435a',2:'#5d4d8f',3:'#7dd1c1',4:'#a9711a'},SEQ=['#efeaf7','#d3c8e8','#b09fd3','#8a76b8','#5d4d8f'],GRIS='#e4e1ea';
   var TIPOS={};TP.tipos.forEach(function(t){TIPOS[t.tipo]=t});
   var DEC={};TP.decision.forEach(function(t){DEC[t.tipo]=t});
   var AG=TP.ageb.map(function(r){var o={};CAMPOS.forEach(function(c,i){o[c]=r[i]});return o});

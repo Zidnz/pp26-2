@@ -34,7 +34,10 @@
   const TIPOS_INCIDENTE = ['No llegó', 'Llegó tarde', 'Se fue antes', 'Trato inadecuado', 'Riesgo en el domicilio', 'Cambio en la salud de la persona cuidada', 'Otro'];
 
   // maxKm: cercanía máxima entre centros de alcaldía. factorPrest: % sobre el costo para prestaciones (0 = sin prestaciones; POR DEFINIR con Daniel).
-  const CONFIG_DEFAULT = { maxKm: 12, factorPrest: 0 };
+  const CONFIG_DEFAULT = { maxKm: 12, factorPrest: 0, bolsaSim: null };
+  // bolsaSim: bolsa de horas SIMULADA para el prototipo (null = usa presupuesto_horas_mes de config.js).
+  // El ejemplo tiene 11 casos; con la bolsa del archivo (2,000 h) todos llegarían al tope y no se verían los niveles.
+  const BOLSA_EJEMPLO = 260;
 
   /** Hogar: cuidadora familiar (s), persona cuidada (c) y hasta N apoyos. `horas` = horas de cuidado por semana. */
   function buildHogar(o) {
@@ -92,11 +95,33 @@
     ];
     relevos[10].legal = { curp: 'VAKK950312MDFLRR08', docId: 'INE/IFE vigente', antecedentesFecha: hace(20), referencia: { nombre: 'Ref. simulada', tel: '5500000000' } };
 
-    const C = (o) => Object.assign({ institucion: 'Institución canalizadora (simulada)', consentimiento: consentido, pagador: 'familia', pctSubsidio: 0, inclusion: null, asignacion: null }, o);
+    /* Casos SIMULADOS. Cada uno trae su entrevista; el puntaje, el nivel y las horas se CALCULAN en la app con
+     * Care.prioridad y config.js (no se guardan). Los canales y puntajes están armados para que el panel muestre
+     * una diferencia entre canales: es una ilustración, no un hallazgo. */
+    const PR = Care.prioridad;
+    const ab = (n) => PR.ABVD.slice(0, n).map((x) => x.id), cl = (n) => PR.CLIN.slice(0, n).map((x) => x.id);
+    const PERFIL_BARTHEL = { // valores por reactivo B01…B10
+      total: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], severa: [5, 0, 5, 0, 5, 5, 0, 5, 5, 0], moderada: [10, 0, 5, 5, 10, 5, 5, 10, 10, 5],
+      leve: [10, 5, 10, 5, 10, 10, 10, 15, 15, 5], indep: [10, 5, 10, 5, 10, 10, 10, 15, 15, 10],
+    };
+    const barthel = (k) => Object.fromEntries(PR.BARTHEL.map((it, i) => [it.id, PERFIL_BARTHEL[k][i]]));
+    const zarit = (vals) => Object.fromEntries(PR.reactivosZarit(Care.CONFIG_PROGRAMA).map((it, i) => [it.id, vals[i % vals.length]]));
+    const ent = (horas, nAbvd, nClin, req, fuerza, perfil, z) => ({ modelo: { horas, abvd: ab(nAbvd), clin: cl(nClin), req, fuerza }, barthel: barthel(perfil), zarit: z ? zarit(z) : null });
+    const REF = (tipo) => ({ canal_origen: 'referencia', referencia: { institucion: tipo, quien: 'Trabajadora social (simulada)', fecha: null } });
+    const AUTO = { canal_origen: 'autorregistro', referencia: null };
+
+    const C = (o) => {
+      const c = Object.assign({ consentimiento: { expreso: true, aviso: 'pendiente revisión legal', fecha: o.fecha }, pagador: 'subsidio', pctSubsidio: 0,
+        asignacion: null, apelaciones: [], revision: null, preferencias: null }, o);
+      c.cuidadora.horas = c.entrevista.modelo.horas;           // compatibilidad con red y KPI
+      c.cuidadora.abvd = c.entrevista.modelo.abvd.length > 0;
+      if (c.referencia) c.referencia.fecha = c.fecha;
+      return c;
+    };
     const casos = [
-      C({ id: 'k1', folio: 'C-0001', fecha: hace(40), alcaldia: 'Cuauhtémoc', estado: 'activo',
-        cuidadora: { alias: 'Marisol', sexo: 'M', horas: 56, abvd: true, danoSalud: true, danoTrabajo: true },
-        persona: { alias: 'Elvira', sexo: 'M', grupo: GRUPOS[0], edad: 82 },
+      C(Object.assign({ id: 'k1', folio: 'C-0001', fecha: hace(40), alcaldia: 'Cuauhtémoc', estado: 'activo',
+        cuidadora: { alias: 'Marisol', sexo: 'M' }, persona: { alias: 'Elvira', sexo: 'M' },
+        entrevista: ent(56, 4, 1, true, true, 'severa', [3, 4, 3, 2]),
         hogar: {
           foco: 'elvira',
           personas: [
@@ -109,48 +134,66 @@
             { de: 'marisol', a: 'nico', horas: 46 }, { de: 'tomas', a: 'nico', horas: 10 },
           ],
         },
-        paquete: { horas: 6, dias: [1, 3], inicio: '09:00', tareas: [T[0], T[2], T[3]] }, pagador: 'mixto', pctSubsidio: 50,
-        asignacion: { relevoId: 'r1', fecha: hace(35), historial: [] } }),
-      C({ id: 'k2', folio: 'C-0002', fecha: hace(26), alcaldia: 'Benito Juárez', estado: 'activo',
-        cuidadora: { alias: 'Ernesto', sexo: 'H', horas: 50, abvd: true, danoSalud: true, danoTrabajo: false },
-        persona: { alias: 'Carmen', sexo: 'M', grupo: GRUPOS[2], edad: 74 },
-        hogar: buildHogar({ cuidadora: { nombre: 'Ernesto', edad: 76, rol: 'esposo', horas: 50 }, cuidada: { nombre: 'Carmen', edad: 74, rol: 'esposa' }, apoyos: [{ nombre: 'Luis', edad: 44, rol: 'hijo', horas: 6 }] }),
-        paquete: { horas: 9, dias: [0, 2, 4], inicio: '15:00', tareas: [T[0], T[1], T[4]] }, pagador: 'subsidio',
-        asignacion: { relevoId: 'r2', fecha: hace(21), historial: [] } }),
-      C({ id: 'k3', folio: 'C-0003', fecha: hace(48), alcaldia: 'Iztapalapa', estado: 'activo',
-        cuidadora: { alias: 'Laura', sexo: 'M', horas: 45, abvd: true, danoSalud: false, danoTrabajo: true },
-        persona: { alias: 'Hermano', sexo: 'H', grupo: GRUPOS[1], edad: 29 },
-        hogar: buildHogar({ cuidadora: { nombre: 'Laura', edad: 34, rol: 'hermana', horas: 45 }, cuidada: { nombre: 'Hermano', edad: 29, rol: 'hermano' }, apoyos: [{ nombre: 'Doña Rosa', edad: 62, rol: 'madre', horas: 10 }] }),
-        paquete: { horas: 6, dias: [5], inicio: '09:00', tareas: [T[2], T[3], T[0]] }, pagador: 'familia',
-        asignacion: { relevoId: 'r5', fecha: hace(42), historial: [] } }),
-      C({ id: 'k4', folio: 'C-0004', fecha: hace(9), alcaldia: 'Cuauhtémoc', estado: 'espera',
-        cuidadora: { alias: 'Sofía', sexo: 'M', horas: 42, abvd: false, danoSalud: true, danoTrabajo: false },
-        persona: { alias: 'Abuelo', sexo: 'H', grupo: GRUPOS[0], edad: 85 },
-        hogar: buildHogar({ cuidadora: { nombre: 'Sofía', edad: 29, rol: 'nieta', horas: 42 }, cuidada: { nombre: 'Abuelo', edad: 85, rol: 'abuelo' } }),
-        paquete: { horas: 6, dias: [4], inicio: '23:00', tareas: [T[0], T[4]] }, pagador: 'mixto', pctSubsidio: 70 }),
-      C({ id: 'k5', folio: 'C-0005', fecha: hace(18), alcaldia: 'Gustavo A. Madero', estado: 'activo',
-        cuidadora: { alias: 'Jorge', sexo: 'H', horas: 40, abvd: true, danoSalud: true, danoTrabajo: true },
-        persona: { alias: 'Papá', sexo: 'H', grupo: GRUPOS[2], edad: 74 },
-        hogar: buildHogar({ cuidadora: { nombre: 'Jorge', edad: 50, rol: 'hijo', horas: 40 }, cuidada: { nombre: 'Papá', edad: 74, rol: 'padre' }, apoyos: [{ nombre: 'Marta', edad: 47, rol: 'hija', horas: 15 }] }),
-        paquete: { horas: 12, dias: [0, 1, 2, 3], inicio: '08:00', tareas: [T[1], T[3], T[2]] }, pagador: 'subsidio',
-        asignacion: { relevoId: 'r8', fecha: hace(14), historial: [] } }),
-      C({ id: 'k6', folio: 'C-0006', fecha: hace(12), alcaldia: 'Tlalpan', estado: 'fuera',
-        cuidadora: { alias: 'Paula', sexo: 'M', horas: 24, abvd: false, danoSalud: false, danoTrabajo: true },
-        persona: { alias: 'Mamá', sexo: 'M', grupo: GRUPOS[0], edad: 68 },
-        hogar: buildHogar({ cuidadora: { nombre: 'Paula', edad: 41, rol: 'hija', horas: 24 }, cuidada: { nombre: 'Mamá', edad: 68, rol: 'madre' }, apoyos: [{ nombre: 'Tío', edad: 66, rol: 'tío', horas: 8 }] }),
-        paquete: { horas: 3, dias: [5], inicio: '10:00', tareas: [T[0]] } }),
-      C({ id: 'k7', folio: 'C-0007', fecha: hace(1), alcaldia: 'Xochimilco', estado: 'espera',
-        cuidadora: { alias: 'Rocío', sexo: 'M', horas: 60, abvd: true, danoSalud: true, danoTrabajo: true },
-        persona: { alias: 'Suegra', sexo: 'M', grupo: GRUPOS[2], edad: 88 },
-        hogar: buildHogar({ cuidadora: { nombre: 'Rocío', edad: 55, rol: 'nuera', horas: 60 }, cuidada: { nombre: 'Suegra', edad: 88, rol: 'suegra' }, apoyos: [{ nombre: 'Raúl', edad: 58, rol: 'hijo', horas: 4 }] }),
-        paquete: { horas: 6, dias: [0, 2], inicio: '10:00', tareas: [T[0], T[1], T[2]] }, pagador: 'subsidio' }),
-      C({ id: 'k8', folio: 'C-0008', fecha: hace(33), alcaldia: 'Coyoacán', estado: 'activo',
-        cuidadora: { alias: 'Andrés', sexo: 'H', horas: 48, abvd: false, danoSalud: true, danoTrabajo: false },
-        persona: { alias: 'Mamá', sexo: 'M', grupo: GRUPOS[0], edad: 79 },
-        hogar: buildHogar({ cuidadora: { nombre: 'Andrés', edad: 52, rol: 'hijo', horas: 48 }, cuidada: { nombre: 'Mamá', edad: 79, rol: 'madre' } }),
-        paquete: { horas: 6, dias: [1, 3], inicio: '16:00', tareas: [T[0], T[1], T[5]] }, pagador: 'familia',
-        asignacion: { relevoId: 'r10', fecha: hace(16), historial: [{ relevoId: 'r1', desde: hace(28), hasta: hace(16), motivo: 'Dos ausencias sin aviso; la familia pidió cambio' }] } }),
+        paquete: { horas: 6, dias: [1, 3], inicio: '09:00', tareas: [T[0], T[2], T[3]] },
+        asignacion: { relevoId: 'r1', fecha: hace(35), historial: [] } }, REF('DIF'))),
+      C(Object.assign({ id: 'k2', folio: 'C-0002', fecha: hace(26), alcaldia: 'Benito Juárez', estado: 'activo',
+        cuidadora: { alias: 'Ernesto', sexo: 'H' }, persona: { alias: 'Carmen', sexo: 'M' },
+        entrevista: ent(50, 3, 2, false, true, 'severa', [2, 3, 2, 3]),
+        hogar: buildHogar({ cuidadora: { nombre: 'Ernesto', rol: 'esposo', horas: 50 }, cuidada: { nombre: 'Carmen', rol: 'esposa' }, apoyos: [{ nombre: 'Luis', rol: 'hijo', horas: 6 }] }),
+        paquete: { horas: 9, dias: [0, 2, 4], inicio: '15:00', tareas: [T[0], T[1], T[4]] },
+        asignacion: { relevoId: 'r2', fecha: hace(21), historial: [] } }, REF('Centro de salud'))),
+      C(Object.assign({ id: 'k3', folio: 'C-0003', fecha: hace(48), alcaldia: 'Iztapalapa', estado: 'activo',
+        cuidadora: { alias: 'Laura', sexo: 'M' }, persona: { alias: 'Hermano', sexo: 'H' },
+        entrevista: ent(45, 2, 0, true, false, 'moderada'),
+        hogar: buildHogar({ cuidadora: { nombre: 'Laura', rol: 'hermana', horas: 45 }, cuidada: { nombre: 'Hermano', rol: 'hermano' }, apoyos: [{ nombre: 'Doña Rosa', rol: 'madre', horas: 10 }] }),
+        paquete: { horas: 6, dias: [5], inicio: '09:00', tareas: [T[2], T[3], T[0]] },
+        asignacion: { relevoId: 'r5', fecha: hace(42), historial: [] } }, REF('Clínica'))),
+      C(Object.assign({ id: 'k4', folio: 'C-0004', fecha: hace(9), alcaldia: 'Cuauhtémoc', estado: 'espera',
+        cuidadora: { alias: 'Sofía', sexo: 'M' }, persona: { alias: 'Abuelo', sexo: 'H' },
+        entrevista: ent(42, 0, 1, false, false, 'leve'),
+        hogar: buildHogar({ cuidadora: { nombre: 'Sofía', rol: 'nieta', horas: 42 }, cuidada: { nombre: 'Abuelo', rol: 'abuelo' } }),
+        preferencias: { dias: [4], inicio: '10:00', tareas: [T[0], T[4]] } }, AUTO)),
+      C(Object.assign({ id: 'k5', folio: 'C-0005', fecha: hace(18), alcaldia: 'Gustavo A. Madero', estado: 'activo',
+        cuidadora: { alias: 'Jorge', sexo: 'H' }, persona: { alias: 'Papá', sexo: 'H' },
+        entrevista: ent(40, 3, 1, true, false, 'severa'),
+        hogar: buildHogar({ cuidadora: { nombre: 'Jorge', rol: 'hijo', horas: 40 }, cuidada: { nombre: 'Papá', rol: 'padre' }, apoyos: [{ nombre: 'Marta', rol: 'hija', horas: 15 }] }),
+        paquete: { horas: 12, dias: [0, 1, 2, 3], inicio: '08:00', tareas: [T[1], T[3], T[2]] },
+        asignacion: { relevoId: 'r8', fecha: hace(14), historial: [] } }, AUTO)),
+      C(Object.assign({ id: 'k6', folio: 'C-0006', fecha: hace(12), alcaldia: 'Tlalpan', estado: 'espera',
+        cuidadora: { alias: 'Paula', sexo: 'M' }, persona: { alias: 'Mamá', sexo: 'M' },
+        entrevista: ent(24, 0, 0, false, false, 'leve'),
+        hogar: buildHogar({ cuidadora: { nombre: 'Paula', rol: 'hija', horas: 24 }, cuidada: { nombre: 'Mamá', rol: 'madre' }, apoyos: [{ nombre: 'Tío', rol: 'tío', horas: 8 }] }),
+        preferencias: { dias: [5], inicio: '10:00', tareas: [T[0]] },
+        apelaciones: [{ id: 'ap1', fecha: hace(5), motivo: 'Mi mamá se cayó la semana pasada y ahora necesita ayuda para bañarse.', estado: 'abierta' }] }, AUTO)),
+      C(Object.assign({ id: 'k7', folio: 'C-0007', fecha: hace(1), alcaldia: 'Xochimilco', estado: 'espera',
+        cuidadora: { alias: 'Rocío', sexo: 'M' }, persona: { alias: 'Suegra', sexo: 'M' },
+        entrevista: ent(60, 5, 2, true, true, 'total'),
+        hogar: buildHogar({ cuidadora: { nombre: 'Rocío', rol: 'nuera', horas: 60 }, cuidada: { nombre: 'Suegra', rol: 'suegra' }, apoyos: [{ nombre: 'Raúl', rol: 'hijo', horas: 4 }] }),
+        preferencias: { dias: [0, 2], inicio: '10:00', tareas: [T[0], T[1], T[2]] } }, REF('Módulo del programa'))),
+      C(Object.assign({ id: 'k8', folio: 'C-0008', fecha: hace(33), alcaldia: 'Coyoacán', estado: 'activo',
+        cuidadora: { alias: 'Andrés', sexo: 'H' }, persona: { alias: 'Mamá', sexo: 'M' },
+        entrevista: ent(48, 0, 1, false, false, 'moderada'),
+        hogar: buildHogar({ cuidadora: { nombre: 'Andrés', rol: 'hijo', horas: 48 }, cuidada: { nombre: 'Mamá', rol: 'madre' } }),
+        paquete: { horas: 6, dias: [1, 3], inicio: '16:00', tareas: [T[0], T[1], T[5]] },
+        asignacion: { relevoId: 'r10', fecha: hace(16), historial: [{ relevoId: 'r1', desde: hace(28), hasta: hace(16), motivo: 'Dos ausencias sin aviso; la familia pidió cambio' }] } }, AUTO)),
+      C(Object.assign({ id: 'k9', folio: 'C-0009', fecha: hace(70), alcaldia: 'Azcapotzalco', estado: 'espera',
+        cuidadora: { alias: 'Lucía', sexo: 'M' }, persona: { alias: 'Papá', sexo: 'H' },
+        entrevista: ent(15, 1, 0, false, false, 'leve'),
+        hogar: buildHogar({ cuidadora: { nombre: 'Lucía', rol: 'hija', horas: 15 }, cuidada: { nombre: 'Papá', rol: 'padre' } }),
+        preferencias: { dias: [5], inicio: '09:00', tareas: [T[0], T[6]] } }, AUTO)),
+      C(Object.assign({ id: 'k10', folio: 'C-0010', fecha: hace(6), alcaldia: 'Coyoacán', estado: 'espera',
+        cuidadora: { alias: 'Teresa', sexo: 'M' }, persona: { alias: 'Tía', sexo: 'M' },
+        entrevista: ent(45, 3, 0, false, false, 'indep'),
+        hogar: buildHogar({ cuidadora: { nombre: 'Teresa', rol: 'sobrina', horas: 45 }, cuidada: { nombre: 'Tía', rol: 'tía' } }),
+        preferencias: { dias: [1, 3], inicio: '10:00', tareas: [T[0], T[1]] } }, AUTO)),
+      C(Object.assign({ id: 'k11', folio: 'C-0011', fecha: hace(35), alcaldia: 'Iztacalco', estado: 'espera',
+        cuidadora: { alias: 'Rafael', sexo: 'H' }, persona: { alias: 'Hijo', sexo: 'H' },
+        entrevista: ent(30, 1, 1, true, false, 'moderada'),
+        hogar: buildHogar({ cuidadora: { nombre: 'Rafael', rol: 'padre', horas: 30 }, cuidada: { nombre: 'Hijo', rol: 'hijo' } }),
+        preferencias: { dias: [0, 2], inicio: '09:00', tareas: [T[0], T[3]] } }, REF('Escuela'))),
     ];
+    // Revisión humana: se marca al guardar la entrevista (aquí, para el ejemplo, igual que lo haría la app).
+    casos.forEach((c) => { const ch = PR.chequeos(c.entrevista, Care.CONFIG_PROGRAMA); if (ch.length) c.revision = { estado: 'pendiente', motivos: ch, fecha: c.fecha }; });
 
     // Visitas pasadas (SIMULADAS) desde el inicio de cada asignación hasta ayer
     const rand = rng(20261008);
@@ -198,7 +241,7 @@
   }
 
   /* ---------- Almacenamiento ---------- */
-  const KEY = 'care-relevo-v2'; // v2: agrega sexo (íconos)
+  const KEY = 'mientras-v3'; // v3 (20 oct 2026): canal de origen, entrevista, revisión y apelaciones
   const listeners = [];
   let state = null;
   const clone = (o) => JSON.parse(JSON.stringify(o));
@@ -209,6 +252,7 @@
     return {
       casos: arr('casos'), relevos: arr('relevos'), visitas: arr('visitas'), incidentes: arr('incidentes'), checkins: arr('checkins'),
       config: Object.assign({}, CONFIG_DEFAULT, (s && s.config) || {}),
+      ultimoCiclo: (s && s.ultimoCiclo) || null,
     };
   }
 
@@ -217,7 +261,7 @@
       const raw = localStorage.getItem(KEY);
       if (raw) { state = normalize(JSON.parse(raw)); return; }
     } catch (e) { /* almacenamiento no disponible: se usa memoria */ }
-    state = normalize(Object.assign(seed(), { config: clone(CONFIG_DEFAULT) }));
+    state = normalize(Object.assign(seed(), { config: Object.assign(clone(CONFIG_DEFAULT), { bolsaSim: BOLSA_EJEMPLO }) }));
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) { /* ignorar */ } }
   function emit() { save(); listeners.forEach((fn) => fn(state)); }
@@ -251,7 +295,7 @@
     subscribe(fn) { listeners.push(fn); },
     update(mutator) { mutator(state); emit(); },
     replace(next) { state = normalize(next); emit(); },
-    resetSeed() { state = normalize(Object.assign(seed(), { config: state.config })); emit(); },
+    resetSeed() { state = normalize(Object.assign(seed(), { config: Object.assign({}, state.config, { bolsaSim: BOLSA_EJEMPLO }) })); emit(); },
     clearAll() { state = normalize({ config: state.config }); emit(); },
     uid, aprobado, programadasEn,
     nextFolio() {
@@ -278,7 +322,14 @@
       emit(); return true;
     },
     cerrarCaso(casoId, motivo) { const c = caso(casoId); if (c) { c.estado = 'cerrado'; c.cierre = { fecha: hoyISO(), motivo }; emit(); } },
-    incluirPorCriterio(casoId, motivo) { const c = caso(casoId); if (c) { c.inclusion = { motivo, fecha: hoyISO() }; c.estado = 'espera'; emit(); } },
+    /** Guarda una solicitud valorada (Registro → Consentimiento → Entrevista). Entra a la cola en estado 'espera'. */
+    addSolicitud(c) { state.casos.unshift(c); emit(); },
+    /** Apelación ("Solicitar revisión"). No cambia el puntaje: queda abierta para una persona del programa. */
+    apelar(casoId, motivo) { const c = caso(casoId); if (!c) return; (c.apelaciones = c.apelaciones || []).push({ id: uid('ap'), fecha: hoyISO(), motivo, estado: 'abierta' }); emit(); },
+    resolverApelacion(casoId, apId, resolucion) { const c = caso(casoId); const a = c && (c.apelaciones || []).find((x) => x.id === apId); if (a) { a.estado = 'resuelta'; a.resolucion = resolucion; a.fechaResolucion = hoyISO(); emit(); } },
+    resolverRevision(casoId, nota) { const c = caso(casoId); if (c && c.revision) { c.revision.estado = 'revisada'; c.revision.nota = nota; c.revision.fechaResolucion = hoyISO(); emit(); } },
+    /** Aplica las horas del ciclo: cada caso activo pasa a su paquete semanal (horas/mes ÷ 4.33, hacia abajo). */
+    aplicarCiclo(horasSemPorCaso) { state.casos.forEach((c) => { const h = horasSemPorCaso[c.id]; if (h != null && c.paquete) c.paquete.horas = h; }); state.ultimoCiclo = hoyISO(); emit(); },
     registrarLlegada(casoId, fecha) { const v = visitaDe(casoId, fecha); if (v) { v.llegada = ahora(); v.estado = 'en_curso'; emit(); } },
     registrarSalida(casoId, fecha) { const v = visitaDe(casoId, fecha); if (v) { v.salida = ahora(); v.estado = 'realizada'; emit(); } },
     marcarVisita(casoId, fecha, estado) { const v = visitaDe(casoId, fecha); if (v) { v.estado = estado; v.llegada = null; v.salida = null; emit(); } },
@@ -301,8 +352,8 @@
     },
   };
 
-  window.Care = { ZONAS, GRUPOS, PARENTESCOS, TIPOS_INCIDENTE, CONFIG_DEFAULT, buildHogar, store,
-    fechas: { iso, hoyISO, sumaDias, diaIdx, lunesDe, desdeISO } };
+  window.Care = Object.assign(window.Care || {}, { ZONAS, GRUPOS, PARENTESCOS, TIPOS_INCIDENTE, CONFIG_DEFAULT, BOLSA_EJEMPLO, buildHogar, store,
+    fechas: { iso, hoyISO, sumaDias, diaIdx, lunesDe, desdeISO } });
   // load() se llama desde app.js, cuando Care.relevo ya existe (el ejemplo usa sus catálogos).
   Care.store.load = load;
 })();

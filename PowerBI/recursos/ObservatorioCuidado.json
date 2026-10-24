@@ -1,0 +1,40 @@
+{
+  "name": "Observatorio del Cuidado",
+  "dataColors": ["#77689D", "#C0435A", "#A9711A", "#23806F", "#AA95D1", "#7DD1C1", "#3F4760", "#D3C8E8", "#5D4D8F", "#E0455F", "#2E8A66", "#8B58C9"],
+  "foreground": "#2B3045",
+  "foregroundNeutralSecondary": "#5E6274",
+  "foregroundNeutralTertiary": "#8A8DA0",
+  "background": "#FFFFFF",
+  "backgroundLight": "#F4F2F9",
+  "backgroundNeutral": "#E2DEEC",
+  "tableAccent": "#77689D",
+  "good": "#23806F",
+  "neutral": "#A9711A",
+  "bad": "#C0435A",
+  "maximum": "#5D4D8F",
+  "center": "#B09FD3",
+  "minimum": "#EFEAF7",
+  "textClasses": {
+    "callout": {"fontSize": 26, "fontFace": "Segoe UI Semibold", "color": "#2B3045"},
+    "title": {"fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#2B3045"},
+    "header": {"fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#2B3045"},
+    "label": {"fontSize": 10, "fontFace": "Segoe UI", "color": "#2B3045"}
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "border": [{"show": true, "width": 1, "radius": 12, "color": {"solid": {"color": "#E2DEEC"}}}],
+        "title": [{"show": true, "fontSize": 13, "titleWrap": true, "fontColor": {"solid": {"color": "#2B3045"}}}],
+        "subTitle": [{"show": true, "fontSize": 10, "fontColor": {"solid": {"color": "#5E6274"}}}],
+        "valueAxis": [{"gridlineShow": false}],
+        "spacing": [{"customizeSpacing": true, "spaceBelowSubTitle": 8, "spaceAbovePlotArea": 8}]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [{"color": {"solid": {"color": "#F4F2F9"}}, "transparency": 0}],
+        "outspace": [{"color": {"solid": {"color": "#F4F2F9"}}, "transparency": 0}]
+      }
+    }
+  }
+}

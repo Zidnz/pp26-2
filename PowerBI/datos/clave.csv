@@ -1,0 +1,12 @@
+﻿clave,pct,cv,li90,ls90,total_expandido,precision,n,fuente
+busco_todas,3.0,10.6,2.5,3.5,954845.0,alta,5677,Analysis/resultados/03_enasic_barreras_estimaciones.csv
+busco_obj,2.5,30.5,1.2,3.7,154125.0,baja,1043,Analysis/resultados/03_enasic_barreras_estimaciones.csv
+grupo_problema,12.5,12.8,9.8,15.1,775546.0,alta,1043,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv
+nucleo_duro,22.0,8.6,18.9,25.1,1367877.0,alta,1043,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv
+pesa_40,40.7,6.9,36.1,45.3,2534547.0,alta,1043,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv
+unas_horas,36.3,6.6,32.4,40.3,2260343.0,alta,1043,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv
+unas_horas_40,32.4,11.8,26.1,38.7,821146.0,alta,369,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv
+familia,82.3,2.8,78.4,86.1,5119042.0,alta,1043,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv
+no_residencia,54.3,5.2,49.7,59.0,3380201.0,alta,1043,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv
+iniciativa,82.0,2.4,78.7,85.2,5100382.0,alta,1043,Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv
+cumplio,69.3,7.1,61.2,77.4,661625.0,alta,185,Analysis/resultados/03_enasic_barreras_estimaciones.csv

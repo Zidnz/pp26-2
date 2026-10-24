@@ -1,0 +1,26 @@
+﻿variante,k,BIC,entropia,ARI_contra_principal,clase,pct_clase,horas,desenlace,dif_pp,dif_li90,dif_ls90,significativa,prueba,nombre,pct_asignacion_maxima,pct_asignacion_suave
+sin fuerza ni requiere apoyo,2,8013.824,0.583,0.296,,,,,,,,,sin_fuerza_ni_apoyo,,,
+sin fuerza ni requiere apoyo,2,,,,mayor necesidad de capacitación,17.094,Menos de 40 h,Algún daño por cuidar,21.41,10.55,32.27,True,sin_fuerza_ni_apoyo,,,
+sin fuerza ni requiere apoyo,2,,,,mayor necesidad de capacitación,17.094,Menos de 40 h,Salud física deteriorada,33.239,21.945,44.532,True,sin_fuerza_ni_apoyo,,,
+sin fuerza ni requiere apoyo,2,,,,mayor necesidad de capacitación,17.094,40 h o más,Algún daño por cuidar,14.495,4.141,24.85,True,sin_fuerza_ni_apoyo,,,
+sin fuerza ni requiere apoyo,2,,,,mayor necesidad de capacitación,17.094,40 h o más,Salud física deteriorada,33.193,19.175,47.211,True,sin_fuerza_ni_apoyo,,,
+sin fuerza ni requiere apoyo,3,8004.797,0.509,0.433,,,,,,,,,sin_fuerza_ni_apoyo,,,
+sin fuerza ni requiere apoyo,3,,,,mayor necesidad de capacitación,14.484,Menos de 40 h,Algún daño por cuidar,18.736,7.511,29.962,True,sin_fuerza_ni_apoyo,,,
+sin fuerza ni requiere apoyo,3,,,,mayor necesidad de capacitación,14.484,Menos de 40 h,Salud física deteriorada,28.373,17.103,39.644,True,sin_fuerza_ni_apoyo,,,
+sin fuerza ni requiere apoyo,3,,,,mayor necesidad de capacitación,14.484,40 h o más,Algún daño por cuidar,24.907,19.037,30.778,True,sin_fuerza_ni_apoyo,,,
+sin fuerza ni requiere apoyo,3,,,,mayor necesidad de capacitación,14.484,40 h o más,Salud física deteriorada,44.682,31.773,57.591,True,sin_fuerza_ni_apoyo,,,
+,2,,,,1,,,Algún daño por cuidar,,,,,asignacion_suave,Dificultad en la tarea,85.224,81.713
+,2,,,,1,,,Salud física deteriorada,,,,,asignacion_suave,Dificultad en la tarea,52.495,47.11
+,2,,,,1,,,"Daño laboral (no puede, dejó o redujo trabajo)",,,,,asignacion_suave,Dificultad en la tarea,57.41,53.254
+,2,,,,2,,,Algún daño por cuidar,,,,,asignacion_suave,Sin dificultad declarada,54.188,54.268
+,2,,,,2,,,Salud física deteriorada,,,,,asignacion_suave,Sin dificultad declarada,13.427,13.917
+,2,,,,2,,,"Daño laboral (no puede, dejó o redujo trabajo)",,,,,asignacion_suave,Sin dificultad declarada,30.498,31.016
+,3,,,,1,,,Algún daño por cuidar,,,,,asignacion_suave,Dificultad en la tarea,85.275,82.451
+,3,,,,1,,,Salud física deteriorada,,,,,asignacion_suave,Dificultad en la tarea,53.043,48.063
+,3,,,,1,,,"Daño laboral (no puede, dejó o redujo trabajo)",,,,,asignacion_suave,Dificultad en la tarea,57.239,54.192
+,3,,,,2,,,Algún daño por cuidar,,,,,asignacion_suave,Alta intensidad sin dificultad,70.73,69.921
+,3,,,,2,,,Salud física deteriorada,,,,,asignacion_suave,Alta intensidad sin dificultad,17.704,18.399
+,3,,,,2,,,"Daño laboral (no puede, dejó o redujo trabajo)",,,,,asignacion_suave,Alta intensidad sin dificultad,38.647,38.227
+,3,,,,3,,,Algún daño por cuidar,,,,,asignacion_suave,Baja intensidad sin dificultad,41.997,44.562
+,3,,,,3,,,Salud física deteriorada,,,,,asignacion_suave,Baja intensidad sin dificultad,9.873,11.198
+,3,,,,3,,,"Daño laboral (no puede, dejó o redujo trabajo)",,,,,asignacion_suave,Baja intensidad sin dificultad,24.581,26.368

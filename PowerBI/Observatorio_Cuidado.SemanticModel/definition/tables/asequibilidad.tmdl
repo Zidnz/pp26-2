@@ -1,0 +1,216 @@
+table asequibilidad
+	lineageTag: 5a861f6a-3d0d-5b1f-99ec-bc6491412dd6
+
+	measure 'Hogares que podrían pagar' = AVERAGE(asequibilidad[pct_hogares])
+		formatString: 0.0\%
+		lineageTag: fb8a7ed1-55ca-5b59-8a4d-6b73bb70fc91
+
+	measure 'IC90 inf hogares' = AVERAGE(asequibilidad[li90])
+		formatString: 0.0
+		lineageTag: 50bd4d14-493e-5db0-bc0b-34c26ea6a619
+
+	measure 'IC90 sup hogares' = AVERAGE(asequibilidad[ls90])
+		formatString: 0.0
+		lineageTag: a5b698bb-5dff-5d5d-9ab5-ba3feca3c839
+
+	measure 'Parte del ingreso mediano' = AVERAGE(asequibilidad[pct_ingreso_mediano])
+		formatString: 0.0\%
+		lineageTag: bf31bb09-759b-54a6-9306-c202328751fd
+
+	measure 'Costo mensual' = AVERAGE(asequibilidad[costo_mensual_2026])
+		formatString: \$#,0
+		lineageTag: dd9a4e92-7158-5e51-a99a-c68eed95a26e
+
+	measure 'Horas paquete' = MIN(asequibilidad[horas])
+		formatString: 0
+		lineageTag: 96ff1840-face-5381-8e6c-520d6f237d05
+
+	measure 'Precisión hogares' = MAX(asequibilidad[precision])
+		lineageTag: 3915273d-b553-590a-9796-d213111d27cc
+
+	measure 'Color tope' = VAR u = MIN(asequibilidad[umbral_orden]) RETURN IF(AVERAGE(asequibilidad[pct_ingreso_mediano]) <= u, "#77689D", "#C0435A")
+		lineageTag: ae421bdb-710f-553f-94f8-fd89fc5a196c
+
+	measure 'Costo 6 h piso legal' = CALCULATE(AVERAGE(asequibilidad[costo_mensual_2026]), REMOVEFILTERS(asequibilidad), asequibilidad[fuente_ingreso] = "ENASIC · nacional", asequibilidad[salario_corto] = "Piso legal", asequibilidad[horas] = 6)
+		formatString: \$#,0
+		lineageTag: 6a9389be-593b-5dbf-9e0a-92690c867027
+
+	measure 'Costo jornada 40 h' = CALCULATE(AVERAGE(asequibilidad[costo_mensual_2026]), REMOVEFILTERS(asequibilidad), asequibilidad[fuente_ingreso] = "ENASIC · nacional", asequibilidad[salario_corto] = "Piso legal", asequibilidad[horas] = 40)
+		formatString: \$#,0
+		lineageTag: c6220b0e-9f19-544e-922f-2bd78d4d43d8
+
+	measure 'Pagarían 6 h (≤20%)' = CALCULATE(AVERAGE(asequibilidad[pct_hogares]), REMOVEFILTERS(asequibilidad), asequibilidad[fuente_ingreso] = "ENASIC · nacional", asequibilidad[salario_corto] = "Piso legal", asequibilidad[horas] = 6, asequibilidad[umbral_orden] = 20)
+		formatString: 0.0\%
+		lineageTag: 5bf5b5b7-cfc4-50df-a109-942177deeb96
+
+	measure 'Piso legal por hora' = CALCULATE(AVERAGE(asequibilidad[salario_hora_2026]), REMOVEFILTERS(asequibilidad), asequibilidad[salario_corto] = "Piso legal")
+		formatString: \$#,0.00
+		lineageTag: 916679a1-799f-538e-ba0f-41069b043c6e
+
+	column fuente_ingreso
+		dataType: string
+		lineageTag: 301efacf-ddda-5f01-bde0-8d9436405461
+		summarizeBy: none
+		sourceColumn: fuente_ingreso
+
+		annotation SummarizationSetBy = User
+
+	column fuente_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 2499cfd9-46a8-5bc9-958b-f282cf28b60f
+		summarizeBy: none
+		sourceColumn: fuente_orden
+
+		annotation SummarizationSetBy = User
+
+	column salario
+		dataType: string
+		lineageTag: 682f368e-4981-5875-aa1f-785cf2afd9d5
+		summarizeBy: none
+		sourceColumn: salario
+
+		annotation SummarizationSetBy = User
+
+	column salario_corto
+		dataType: string
+		lineageTag: 99dd4f72-db34-59d3-a7b5-348842af21c4
+		summarizeBy: none
+		sourceColumn: salario_corto
+
+		annotation SummarizationSetBy = User
+
+	column salario_hora_2026
+		dataType: double
+		formatString: 0.00
+		lineageTag: e3edd6da-4024-5919-be43-37dcb463e336
+		summarizeBy: none
+		sourceColumn: salario_hora_2026
+
+		annotation SummarizationSetBy = User
+
+	column paquete
+		dataType: string
+		lineageTag: e03846ef-dbb4-5c53-9e10-ad56748b3a77
+		summarizeBy: none
+		sourceColumn: paquete
+
+		annotation SummarizationSetBy = User
+
+	column paquete_corto
+		dataType: string
+		lineageTag: 8122c9cf-55a2-5285-b723-2aec03451f9d
+		summarizeBy: none
+		sourceColumn: paquete_corto
+
+		annotation SummarizationSetBy = User
+
+	column horas
+		dataType: int64
+		formatString: 0
+		lineageTag: b0982c53-fefc-5d83-a821-51d80eb8b921
+		summarizeBy: none
+		sourceColumn: horas
+
+		annotation SummarizationSetBy = User
+
+	column costo_mensual_2026
+		dataType: int64
+		formatString: 0
+		lineageTag: 9be09d1f-f4d0-55aa-abd8-dc9631c34bfc
+		summarizeBy: none
+		sourceColumn: costo_mensual_2026
+
+		annotation SummarizationSetBy = User
+
+	column pct_ingreso_mediano
+		dataType: double
+		formatString: 0.00
+		lineageTag: 676f60fc-90e2-53ec-a79a-e5433efc5705
+		summarizeBy: none
+		sourceColumn: pct_ingreso_mediano
+
+		annotation SummarizationSetBy = User
+
+	column umbral
+		dataType: string
+		lineageTag: 85028c2d-8030-55c9-8ede-8dea14437c85
+		summarizeBy: none
+		sourceColumn: umbral
+
+		annotation SummarizationSetBy = User
+
+	column umbral_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: fbc5507c-706d-53f1-92c6-6e7e7e4aedb1
+		summarizeBy: none
+		sourceColumn: umbral_orden
+
+		annotation SummarizationSetBy = User
+
+	column pct_hogares
+		dataType: double
+		formatString: 0.00
+		lineageTag: 9e8f9f37-8690-5d45-bbda-01de271a7843
+		summarizeBy: none
+		sourceColumn: pct_hogares
+
+		annotation SummarizationSetBy = User
+
+	column li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 0d922501-083d-507b-8249-de394ce45e68
+		summarizeBy: none
+		sourceColumn: li90
+
+		annotation SummarizationSetBy = User
+
+	column ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 5bfaa283-e59f-5eb6-9bcd-d6cf91c8a236
+		summarizeBy: none
+		sourceColumn: ls90
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: string
+		lineageTag: b9b2c81d-5e18-5722-b587-d81507d0fe66
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: 9664890e-58db-5ebe-921c-58a752954114
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: 799184b3-d3fe-51b4-a056-bba9780de440
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	partition asequibilidad = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "asequibilidad.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"fuente_ingreso", type text}, {"fuente_orden", Int64.Type}, {"salario", type text}, {"salario_corto", type text}, {"salario_hora_2026", type number}, {"paquete", type text}, {"paquete_corto", type text}, {"horas", Int64.Type}, {"costo_mensual_2026", Int64.Type}, {"pct_ingreso_mediano", type number}, {"umbral", type text}, {"umbral_orden", Int64.Type}, {"pct_hogares", type number}, {"li90", type number}, {"ls90", type number}, {"precision", type text}, {"n", Int64.Type}, {"fuente", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

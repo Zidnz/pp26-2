@@ -1,0 +1,71 @@
+﻿k,clase,nombre,variable,categoria,pct,li90,ls90,cv,precision,n_muestra,n_si,total_expandido,pct_total
+2,1,Dificultad en la tarea,tamano,% de las cuidadoras,25.688,22.105,29.271,8.48,alta,1043,313,1598759.0,
+2,1,Dificultad en la tarea,horas,<20 h,26.738,21.465,32.011,11.99,alta,313,93,,31.622
+2,1,Dificultad en la tarea,horas,20–39 h,26.868,21.424,32.311,12.318,alta,313,83,,27.654
+2,1,Dificultad en la tarea,horas,40–79 h,29.064,23.098,35.029,12.479,alta,313,82,,29.777
+2,1,Dificultad en la tarea,horas,80 h o más,17.33,12.822,21.839,15.815,moderada,313,55,,10.947
+2,1,Dificultad en la tarea,menores,sí,28.327,22.558,34.096,12.381,alta,313,92,,25.151
+2,1,Dificultad en la tarea,fuerza,sí,69.875,64.674,75.076,4.525,alta,310,201,,27.406
+2,1,Dificultad en la tarea,nocoopera,sí,34.585,28.223,40.946,11.183,alta,308,101,,13.658
+2,1,Dificultad en la tarea,capacitacion,sí,58.078,51.84,64.315,6.529,alta,307,178,,17.741
+2,1,Dificultad en la tarea,reqapoyo,sí,86.133,81.851,90.415,3.022,alta,312,268,,28.31
+2,1,Dificultad en la tarea,insatisfecha,sí,34.206,28.248,40.164,10.589,alta,313,107,,21.437
+2,1,Dificultad en la tarea,motivo,Iniciativa propia,68.386,62.646,74.127,5.103,alta,313,216,,81.951
+2,1,Dificultad en la tarea,motivo,Decisión familiar o petición,6.19,2.513,9.867,36.112,baja,313,18,,5.546
+2,1,Dificultad en la tarea,motivo,Obligación o «la única que podía»,25.423,20.209,30.637,12.468,alta,313,79,,12.503
+2,2,Sin dificultad declarada,tamano,% de las cuidadoras,74.312,70.729,77.895,2.931,alta,1043,730,4624925.0,
+2,2,Sin dificultad declarada,horas,<20 h,33.31,28.078,38.542,9.549,alta,730,281,,31.622
+2,2,Sin dificultad declarada,horas,20–39 h,27.926,24.541,31.311,7.37,alta,730,217,,27.654
+2,2,Sin dificultad declarada,horas,40–79 h,30.024,24.732,35.316,10.716,alta,730,176,,29.777
+2,2,Sin dificultad declarada,horas,80 h o más,8.74,6.271,11.209,17.172,moderada,730,56,,10.947
+2,2,Sin dificultad declarada,menores,sí,24.054,20.046,28.061,10.129,alta,730,186,,25.151
+2,2,Sin dificultad declarada,fuerza,sí,12.643,8.506,16.78,19.894,moderada,708,73,,27.406
+2,2,Sin dificultad declarada,nocoopera,sí,6.372,4.4,8.343,18.81,moderada,704,43,,13.658
+2,2,Sin dificultad declarada,capacitacion,sí,3.843,1.98,5.707,29.478,moderada,715,28,,17.741
+2,2,Sin dificultad declarada,reqapoyo,sí,8.275,6.086,10.463,16.079,moderada,725,79,,28.31
+2,2,Sin dificultad declarada,insatisfecha,sí,17.022,12.862,21.183,14.861,alta,730,109,,21.437
+2,2,Sin dificultad declarada,motivo,Iniciativa propia,86.64,83.182,90.098,2.426,alta,730,612,,81.951
+2,2,Sin dificultad declarada,motivo,Decisión familiar o petición,5.324,3.147,7.5,24.86,moderada,730,45,,5.546
+2,2,Sin dificultad declarada,motivo,Obligación o «la única que podía»,8.036,5.537,10.536,18.909,moderada,730,73,,12.503
+3,1,Dificultad en la tarea,tamano,% de las cuidadoras,25.798,22.192,29.405,8.499,alta,1043,312,1605614.0,
+3,1,Dificultad en la tarea,horas,<20 h,27.108,21.675,32.541,12.185,alta,312,94,,31.622
+3,1,Dificultad en la tarea,horas,20–39 h,26.414,21.008,31.821,12.443,alta,312,82,,27.654
+3,1,Dificultad en la tarea,horas,40–79 h,28.897,22.923,34.87,12.568,alta,312,80,,29.777
+3,1,Dificultad en la tarea,horas,80 h o más,17.581,13.097,22.065,15.505,moderada,312,56,,10.947
+3,1,Dificultad en la tarea,menores,sí,28.402,22.667,34.137,12.276,alta,312,93,,25.151
+3,1,Dificultad en la tarea,fuerza,sí,70.758,65.632,75.883,4.404,alta,308,203,,27.406
+3,1,Dificultad en la tarea,nocoopera,sí,35.286,28.755,41.817,11.253,alta,306,102,,13.658
+3,1,Dificultad en la tarea,capacitacion,sí,57.631,51.348,63.913,6.628,alta,305,176,,17.741
+3,1,Dificultad en la tarea,reqapoyo,sí,85.392,80.868,89.916,3.221,alta,310,265,,28.31
+3,1,Dificultad en la tarea,insatisfecha,sí,33.657,27.696,39.619,10.768,alta,312,104,,21.437
+3,1,Dificultad en la tarea,motivo,Iniciativa propia,68.827,63.1,74.555,5.059,alta,312,217,,81.951
+3,1,Dificultad en la tarea,motivo,Decisión familiar o petición,6.709,3.022,10.395,33.409,baja,312,20,,5.546
+3,1,Dificultad en la tarea,motivo,Obligación o «la única que podía»,24.464,19.36,29.568,12.685,alta,312,75,,12.503
+3,2,Alta intensidad sin dificultad,tamano,% de las cuidadoras,31.319,26.256,36.381,9.827,alta,1043,256,1949168.0,
+3,2,Alta intensidad sin dificultad,horas,<20 h,0.0,0.0,0.0,,no estimable,256,0,,31.622
+3,2,Alta intensidad sin dificultad,horas,20–39 h,10.129,5.581,14.677,27.296,moderada,256,32,,27.654
+3,2,Alta intensidad sin dificultad,horas,40–79 h,69.4,63.088,75.713,5.53,alta,256,169,,29.777
+3,2,Alta intensidad sin dificultad,horas,80 h o más,20.471,15.115,25.826,15.906,moderada,256,55,,10.947
+3,2,Alta intensidad sin dificultad,menores,sí,43.759,35.032,52.487,12.125,alta,256,129,,25.151
+3,2,Alta intensidad sin dificultad,fuerza,sí,15.471,9.208,21.734,24.611,moderada,252,26,,27.406
+3,2,Alta intensidad sin dificultad,nocoopera,sí,5.791,3.516,8.067,23.888,moderada,248,17,,13.658
+3,2,Alta intensidad sin dificultad,capacitacion,sí,6.181,2.795,9.566,33.299,baja,251,18,,17.741
+3,2,Alta intensidad sin dificultad,reqapoyo,sí,3.899,1.528,6.27,36.973,baja,254,13,,28.31
+3,2,Alta intensidad sin dificultad,insatisfecha,sí,11.871,5.502,18.24,32.618,baja,256,28,,21.437
+3,2,Alta intensidad sin dificultad,motivo,Iniciativa propia,92.411,88.892,95.931,2.316,alta,256,230,,81.951
+3,2,Alta intensidad sin dificultad,motivo,Decisión familiar o petición,6.01,2.748,9.272,32.993,baja,256,18,,5.546
+3,2,Alta intensidad sin dificultad,motivo,Obligación o «la única que podía»,1.579,0.476,2.681,42.454,baja,256,8,,12.503
+3,3,Baja intensidad sin dificultad,tamano,% de las cuidadoras,42.883,38.992,46.774,5.516,alta,1043,475,2668902.0,
+3,3,Baja intensidad sin dificultad,horas,<20 h,57.431,52.315,62.548,5.416,alta,475,280,,31.622
+3,3,Baja intensidad sin dificultad,horas,20–39 h,41.199,36.052,46.346,7.595,alta,475,186,,27.654
+3,3,Baja intensidad sin dificultad,horas,40–79 h,1.37,0.475,2.265,39.723,baja,475,9,,29.777
+3,3,Baja intensidad sin dificultad,horas,80 h o más,0.0,0.0,0.0,,no estimable,475,0,,10.947
+3,3,Baja intensidad sin dificultad,menores,sí,9.606,6.752,12.46,18.064,moderada,475,56,,25.151
+3,3,Baja intensidad sin dificultad,fuerza,sí,9.988,6.551,13.425,20.919,moderada,458,45,,27.406
+3,3,Baja intensidad sin dificultad,nocoopera,sí,6.354,3.56,9.149,26.738,moderada,458,25,,13.658
+3,3,Baja intensidad sin dificultad,capacitacion,sí,2.37,1.008,3.732,34.941,baja,466,12,,17.741
+3,3,Baja intensidad sin dificultad,reqapoyo,sí,11.849,8.778,14.921,15.759,moderada,473,69,,28.31
+3,3,Baja intensidad sin dificultad,insatisfecha,sí,21.07,16.678,25.463,12.673,alta,475,84,,21.437
+3,3,Baja intensidad sin dificultad,motivo,Iniciativa propia,82.207,78.184,86.23,2.975,alta,475,381,,81.951
+3,3,Baja intensidad sin dificultad,motivo,Decisión familiar o petición,4.508,2.344,6.672,29.184,moderada,475,25,,5.546
+3,3,Baja intensidad sin dificultad,motivo,Obligación o «la única que podía»,13.285,9.675,16.895,16.52,moderada,475,69,,12.503

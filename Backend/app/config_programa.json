@@ -1,0 +1,64 @@
+{
+  "origen": "Frontend/js/config.js",
+  "sha256": "caf606bc996b748eb99155da134f252a4951c8f92377ecaabefa33a0fc8f5e39",
+  "exportado": "2026-10-21T16:42:55.359Z",
+  "config": {
+    "version": "2026-10-20",
+    "presupuesto_horas_mes": 2000,
+    "horas_minimas": 13,
+    "horas_maximas": 52,
+    "semanas_por_mes": 4.33,
+    "umbrales": {
+      "alta": 13,
+      "media": 8
+    },
+    "envejecimiento": {
+      "puntos_por_semana": 0.5,
+      "tope_envejecimiento": 4
+    },
+    "modelo": {
+      "archivo": null
+    },
+    "variante_tarjeta": "completa",
+    "pesos": {
+      "h40": 5,
+      "h80": 0,
+      "abvd1": 1,
+      "abvd3": 2,
+      "clin1": 3,
+      "disc": 0,
+      "req": 3,
+      "fuerza": 4,
+      "mujer": 2,
+      "edad60": 0
+    },
+    "canales": {
+      "autorregistro": "Autorregistro",
+      "referencia": "Referencia institucional"
+    },
+    "instituciones": [
+      "DIF",
+      "Centro de salud",
+      "Escuela",
+      "Clínica",
+      "Módulo del programa"
+    ],
+    "chequeos": {
+      "horas_altas": 40,
+      "barthel_independiente": 90,
+      "abvd_muchas": 3,
+      "barthel_sin_ayuda": 100,
+      "horas_inverosimiles": 140,
+      "zarit_bajo": 20
+    },
+    "zarit": {
+      "n_reactivos": 22,
+      "escala_min": 0,
+      "escala_max": 4
+    },
+    "nombre": "Mientras",
+    "eslogan": "Relevo por horas para quien cuida",
+    "aviso_complementario": "Mientras es un componente complementario del Sistema Público de Cuidados. Las horas dependen del presupuesto del programa.",
+    "aviso_privacidad": "[Aviso de privacidad — pendiente revisión legal, Daniel]"
+  }
+}

@@ -1,0 +1,28 @@
+relationship 32259a2a-ec71-5cfa-9291-244d36b6d645
+	fromColumn: seg_series.seg_id
+	toColumn: segmentos.seg_id
+
+relationship c4d70d1d-4078-58db-bd78-4c860ee56091
+	fromColumn: seg_indicadores.seg_id
+	toColumn: segmentos.seg_id
+
+relationship 744f85d9-4547-5c00-abc6-2f2383f6f6e9
+	fromColumn: modelo_alternativas.objetivo
+	toColumn: objetivos.objetivo
+
+relationship 8be1297d-b3a9-5409-8cf9-229b36eb981c
+	fromColumn: modelo_curvas.objetivo
+	toColumn: objetivos.objetivo
+
+relationship ee905ead-773a-5065-9666-50faaee72680
+	fromColumn: modelo_calibracion.objetivo
+	toColumn: objetivos.objetivo
+
+relationship b5823a8e-2b83-59a3-8a29-5ba2ca4315ab
+	fromColumn: modelo_importancia.objetivo
+	toColumn: objetivos.objetivo
+
+relationship 6731e5ee-b594-5269-9c6a-a773865ff53e
+	fromColumn: modelo_cupo.objetivo
+	toColumn: objetivos.objetivo
+

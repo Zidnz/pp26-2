@@ -3,8 +3,10 @@
 Observatorio del Cuidado (actualizado el 6 oct 2026).
 Ninguna cifra del Observatorio se escribe a mano: todas se leen aquí de Analysis/resultados, Analysis/outputs y
 Analysis/matrices. Si un archivo cambia, se vuelve a correr este script y la página se regenera.
+Desde el 21 oct 2026, territorio (alcaldías y totales) y relevo.filas se leen del almacén DW/observatorio_dw.sqlite:
+el orden es Analysis/ → python -B DW/etl/run_etl.py → este script. Si el almacén falta o está desfasado, se detiene.
 
-Uso (desde la raíz del repo):  python Frontend/observatorio/build_datos.py
+Uso (desde la raíz del repo):  python -B DW/etl/run_etl.py  y después  python Frontend/observatorio/build_datos.py
 Opcional: python Frontend/observatorio/build_datos.py <ruta_raiz_repo>
 
 Archivos que lee (todos deben existir; si falta uno, el script se detiene en lugar de publicar un hueco):
@@ -17,12 +19,17 @@ Archivos que lee (todos deben existir; si falta uno, el script se detiene en lug
   resultados/08_dependencia_severa_alcaldia.csv, 08_brecha_cuidado_sexo.csv, 08_calidad_datos.csv
   resultados/09_pobreza_65mas_alcaldia_cdmx.csv
   resultados/10_asequibilidad_relevo.csv
+  resultados/19_costo_hora_por_jornada.csv (costo de la hora por tipo de jornada, sección 19, 13 oct 2026)
+  resultados/20_sostenibilidad_escenarios.csv (costo con carga laboral, copago, escala CDMX y financiamiento del relevo, script 20, 15 oct 2026)
   resultados/13_rezago_por_alcaldia.csv, 13_calidad_rezago.csv (rezago social por AGEB, CONEVAL 2020)
   resultados/16_perfil_grupo_problema.csv, 16_distribucion_horas.csv (perfil del grupo y horas, script 16)
+  resultados/23_seg_{perfiles,seleccion_k,dano_por_horas,dano_por_bloque_horas,dificultad_fuera_regla,comparacion_pareada}.csv (segmentación por clases latentes, notebook 23, 21 oct 2026)
   matrices/diccionario_observatorio.csv (diccionario de variables y de esta base; el script se detiene si falta un bloque)
   resultados/14_enigh_asequibilidad_cdmx.csv, 14_enigh_resumen.csv (asequibilidad con ingreso ENIGH 2022, nacional y CDMX)
   resultados/12_segmentacion_estimaciones.csv (filtros de segmentación)
+  resultados/12b_segmentacion_series.csv (series completas por segmento: filtro de toda la pestaña, 14 oct 2026)
   resultados/11_modelo_focalizacion_global.csv, _por_grupo.csv, _sensibilidad.csv, 11_modelo_coeficientes_logit.csv
+  resultados/11_modelo_alternativas.csv, _curvas_cobertura.csv, _calibracion.csv, _importancia.csv, _por_cupo.csv y 11_objetivo_*.csv (13 oct 2026)
   outputs/indice_por_tipo_servicio.csv, outputs/oferta_nucleo_vs_pob60_por_alcaldia.csv
   matrices/inventario_fuentes_cuidado.csv, matrices/pares_oferta_necesidad.csv
   Frontend/js/cdmx-alcaldias.js (límites de alcaldías, INEGI Marco Geoestadístico 2020)
@@ -30,6 +37,7 @@ Archivos que lee (todos deben existir; si falta uno, el script se detiene en lug
   resultados/13_rezago_ageb_cdmx.csv (zonas: una fila por AGEB urbana)
   Frontend/vendor/svg-maps-mexico/index.js (contornos esquemáticos de las 32 entidades, CC BY 4.0)
   resultados/18_tipologia_*.csv, 18_tipologia_contornos.geojson, 18_oferta_nucleo_puntos.csv (tipología de AGEB, notebook D, sección 18)
+  resultados/24_prioridad_alcaldia.csv, 24_brecha_ageb.csv (regla de decisión para ordenar alcaldías por brecha, script 24, 24 oct 2026)
 """
 import json, sys
 from pathlib import Path
@@ -65,6 +73,10 @@ def fila(df, texto):
     return out
 
 
+def registros(nombre):
+    return [{k: nn(v) for k, v in r.items()} for r in leer(R / nombre).to_dict('records')]
+
+
 def una(df, **cond):
     m = df
     for k, v in cond.items():
@@ -74,12 +86,76 @@ def una(df, **cond):
     return m.iloc[0]
 
 
+# ---------------------------------------------------------------- Almacén (DW) — 21 oct 2026
+# Ruta única para los bloques que ya pasan por el almacén: Analysis/ → DW/etl/run_etl.py → DW/observatorio_dw.sqlite → aquí.
+# Hoy: territorio.alcaldias, territorio.totales y relevo.filas (los demás bloques siguen leyendo Analysis/ directamente).
+# El script se DETIENE si: no existe el almacén; su última corrida falló; viola la regla de alcance (v_violaciones_alcance);
+# o algún archivo de Analysis/ que alimenta esos bloques cambió desde la corrida (SHA-256 distinto al de etl_archivo).
+# En ese último caso hay que correr primero: python -B DW/etl/run_etl.py
+import hashlib, sqlite3
+DW_SQLITE = RAIZ / 'DW' / 'observatorio_dw.sqlite'
+ARCHIVOS_VIA_DW = {  # nombre_stg del ETL → archivo de Analysis/ que lee
+    'aseq_10': 'Analysis/resultados/10_asequibilidad_relevo.csv',
+    'terr_indice_tipo': 'Analysis/outputs/indice_por_tipo_servicio.csv',
+    'terr_oferta_nucleo': 'Analysis/outputs/oferta_nucleo_vs_pob60_por_alcaldia.csv',
+    'terr_capacidad': 'Analysis/resultados/02_indice_capacidad_residencial.csv',
+    'terr_dependencia': 'Analysis/resultados/08_dependencia_severa_alcaldia.csv',
+    'terr_pobreza65': 'Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv',
+    'terr_rezago': 'Analysis/resultados/13_rezago_por_alcaldia.csv',
+}
+
+
+def abrir_dw():
+    if not DW_SQLITE.exists():
+        raise SystemExit(f'No existe {DW_SQLITE}. Corre primero: python -B DW/etl/run_etl.py')
+    cx = sqlite3.connect(DW_SQLITE.resolve().as_uri() + '?mode=ro', uri=True)
+    cx.row_factory = sqlite3.Row
+    run = cx.execute('SELECT run_id, fin, estado, version_etl FROM etl_run ORDER BY run_id DESC LIMIT 1').fetchone()
+    if run is None or run['estado'] not in ('ok', 'ok con advertencias'):
+        raise SystemExit(f'La última corrida del ETL no terminó bien ({dict(run) if run else "sin corridas"}). Corre: python -B DW/etl/run_etl.py')
+    n = cx.execute('SELECT COUNT(*) FROM v_violaciones_alcance').fetchone()[0]
+    if n:
+        raise SystemExit(f'El almacén tiene {n} cifra(s) fuera de su alcance geográfico (v_violaciones_alcance). No se publica.')
+    huellas = {r['nombre_stg']: (r['ruta'], r['sha256']) for r in
+               cx.execute('SELECT nombre_stg, ruta, sha256 FROM etl_archivo WHERE run_id = ?', [run['run_id']])}
+    desfasados = []
+    for stg, ruta in ARCHIVOS_VIA_DW.items():
+        if stg not in huellas or huellas[stg][0] != ruta:
+            raise SystemExit(f'La corrida {run["run_id"]} del ETL no registra {ruta} como {stg}. ¿Cambió config_mapeo.py?')
+        if hashlib.sha256((RAIZ / ruta).read_bytes()).hexdigest() != huellas[stg][1]:
+            desfasados.append(ruta)
+    if desfasados:
+        raise SystemExit('Estos archivos cambiaron después de la última corrida del ETL; el almacén está desfasado:\n  '
+                         + '\n  '.join(desfasados) + '\nCorre primero: python -B DW/etl/run_etl.py')
+    dq = cx.execute('SELECT codigo FROM etl_dq WHERE run_id = ? AND paso = 0', [run['run_id']]).fetchall()
+    return cx, dict(run), [r['codigo'] for r in dq]
+
+
+DW, DW_RUN, DW_DQ_ABIERTAS = abrir_dw()
+DW_TXT = f'DW/observatorio_dw.sqlite, corrida {DW_RUN["run_id"]} del ETL ({DW_RUN["fin"]})'
+print('ok almacén:', DW_TXT, '· pruebas abiertas:', DW_DQ_ABIERTAS or 'ninguna')
+
+
+def dw_filas(sql, params=()):
+    return [dict(r) for r in DW.execute(sql, params).fetchall()]
+
+
+def entero(v):
+    """El DW guarda REAL; los conteos se publican como entero. None se queda None (desconocido, no cero)."""
+    if v is None:
+        return None
+    if float(v).is_integer():
+        return int(v)
+    raise SystemExit(f'Se esperaba un conteo entero y el almacén tiene {v}')
+
+
 e03 = leer(R / '03_enasic_barreras_estimaciones.csv')
 e07 = leer(R / '07_enasic_necesidad_vs_norma_estimaciones.csv')
 d07 = leer(R / '07_enasic_diferencias.csv')
 F03, F07 = 'Analysis/resultados/03_enasic_barreras_estimaciones.csv', 'Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv'
 
-D = {'actualizado': '6 oct 2026', 'generado_desde': 'Analysis/resultados, Analysis/outputs y Analysis/matrices (ver build_datos.py)'}
+D = {'actualizado': '6 oct 2026',
+     'generado_desde': f'Analysis/resultados, Analysis/outputs y Analysis/matrices; territorio y asequibilidad del relevo vía {DW_TXT} (ver build_datos.py)'}
 
 # ---------------------------------------------------------------- Hallazgo principal (03, 07)
 D['clave'] = {
@@ -125,6 +201,19 @@ D['seg'] = [{k: nn(v) for k, v in r.items()} for r in
                 'precision', 'dif_pp', 'dif_li90', 'dif_ls90', 'dif_significativa']].to_dict('records')]
 D['seg_fuente'] = 'Analysis/resultados/12_segmentacion_estimaciones.csv (script 12)'
 
+# Series completas por segmento (notebook B, sección 12b, 14 oct 2026): cada gráfica de Necesidad y Barreras que sale de
+# TPOB_CUI, re-estimada dentro de cada segmento. Alimenta el filtro de toda la pestaña y las filas de KPI.
+s2 = leer(R / '12b_segmentacion_series.csv')
+for col in ['dimension', 'segmento', 'serie', 'categoria', 'pct', 'precision']:
+    if col not in s2:
+        raise SystemExit(f'12b_segmentacion_series.csv: falta la columna {col}')
+if not ((s2.dimension == 'Total') & (s2.serie == 'kpi') & (s2.categoria == 'horas_total')).any():
+    raise SystemExit('12b_segmentacion_series.csv: falta el KPI de horas del total nacional')
+D['seg2'] = [{k: nn(v) for k, v in r.items()} for r in
+             s2[['dimension', 'segmento', 'serie', 'categoria', 'etiqueta', 'pct', 'cv', 'li90', 'ls90', 'n_muestra_dominio',
+                 'total_expandido', 'precision', 'dif_significativa']].to_dict('records')]
+D['seg2_fuente'] = 'Analysis/resultados/12b_segmentacion_series.csv (notebook B, sección 12b)'
+
 # Perfil del grupo del problema y distribución de horas (script 16)
 pf = leer(R / '16_perfil_grupo_problema.csv')
 D['perfil'] = [{k: nn(v) for k, v in r.items()} for r in
@@ -142,6 +231,33 @@ D['horas_dist'] = {
     'mediana': _h('mediana ponderada (horas)')['pct'],
     'tope98': _h('declara el tope "98 o más" en un bloque'),
     'fuente': 'Analysis/resultados/16_perfil_grupo_problema.csv y 16_distribucion_horas.csv (script 16)',
+}
+
+# Segmentación por clases latentes (notebook 23, 21 oct 2026): dos perfiles de cuidadoras definidos por la dificultad en la tarea,
+# no por las horas. Exploratorio y sin doble revisión: la tarjeta lo dice. Solo agregados; ninguna clase por persona.
+S23 = lambda n: leer(R / f'23_seg_{n}.csv')
+p23, sel23, dh23 = S23('perfiles'), S23('seleccion_k'), S23('dano_por_horas')
+bh23, fu23, pa23 = S23('dano_por_bloque_horas'), S23('dificultad_fuera_regla'), S23('comparacion_pareada')
+p2 = p23[p23.k == 2]
+if sorted(p2.nombre.unique()) != ['Dificultad en la tarea', 'Sin dificultad declarada']:
+    raise SystemExit('23_seg_perfiles.csv: los nombres de las clases de k = 2 cambiaron; revisar el notebook 23 antes de publicar')
+if int(sel23.loc[sel23.ARI_mediana.idxmax(), 'k']) != 2:
+    raise SystemExit('23_seg_seleccion_k.csv: k = 2 ya no es la solución más estable; revisar la tarjeta antes de publicar')
+if len(dh23) != 6 or len(bh23) != 8:
+    raise SystemExit(f'23_seg_dano_por_horas / _por_bloque_horas: {len(dh23)} y {len(bh23)} filas, se esperaban 6 y 8')
+COLS23 = ['nombre', 'variable', 'categoria', 'pct', 'li90', 'ls90', 'precision', 'n_muestra', 'n_si', 'total_expandido', 'pct_total']
+D['seg23'] = {
+    'clases': [{k: nn(v) for k, v in r.items()} for r in p2[p2.variable == 'tamano'][COLS23].to_dict('records')],
+    'perfil': [{k: nn(v) for k, v in r.items()} for r in
+               p2[p2.variable.isin(['fuerza', 'nocoopera', 'capacitacion', 'reqapoyo', 'insatisfecha']) |
+                  ((p2.variable == 'horas') & (p2.categoria == '80 h o más')) |
+                  ((p2.variable == 'motivo') & (p2.categoria == 'Obligación o «la única que podía»'))][COLS23].to_dict('records')],
+    'dano_horas': registros('23_seg_dano_por_horas.csv'),
+    'dano_bloque': registros('23_seg_dano_por_bloque_horas.csv'),
+    'fuera_regla': {k: nn(v) for k, v in fu23.iloc[0].items()},
+    'estabilidad': [{'k': int(r.k), 'ari': nn(r.ARI_mediana), 'bic': nn(r.BIC), 'entropia': nn(r.entropia)} for r in sel23[sel23.k.between(2, 4)].itertuples()],
+    'modelo_vs_regla_max_pp': float(pa23[pa23.comparacion == 'k=2 contra regla de dificultad (2)'].dif_media.abs().max()),
+    'fuente': 'Analysis/resultados/23_seg_*.csv (notebook 23, Analysis/23_segmentacion_cuidadoras.ipynb)',
 }
 
 # ---------------------------------------------------------------- Barreras (03, 04, 07)
@@ -182,16 +298,38 @@ D['contratacion'] = {
 }
 
 # ---------------------------------------------------------------- Programa, opción C (04, 06, 10)
-rel = leer(R / '10_asequibilidad_relevo.csv')
+# 21 oct 2026: relevo.filas se lee del almacén (mart 3, v_mart_asequibilidad), no del CSV del script 10.
+# Una fila por (salario, paquete) con los tres umbrales; mismo orden que el archivo de origen (fila_origen).
+SAL_HORA = {r['nombre']: r['salario_hora_2026'] for r in dw_filas('SELECT nombre, salario_hora_2026 FROM dim_salario_ref')}
+aseq = dw_filas("""SELECT salario_referencia, paquete, horas_semana, costo_mensual_2026, costo_pct_ingreso_mediano,
+                          umbral_pct_ingreso, pct_hogares_asequible, n_muestra_dominio, alcance, fila_origen
+                   FROM v_mart_asequibilidad
+                   WHERE ingreso_referencia = 'Ingreso del hogar (ENASIC 2022)' AND nivel_geografico = 'Nacional'
+                   ORDER BY fila_origen, umbral_pct_ingreso""")
+rel_filas = {}
+for r in aseq:
+    k = (r['salario_referencia'], r['paquete'])
+    f = rel_filas.setdefault(k, {'salario': k[0], 'salario_hora_2026': float(SAL_HORA[k[0]]), 'paquete': k[1],
+                                 'horas': int(r['horas_semana']), 'costo_mensual_2026': entero(r['costo_mensual_2026']),
+                                 'pct_ingreso_mediano': float(r['costo_pct_ingreso_mediano']),
+                                 'n': entero(r['n_muestra_dominio'])})
+    f[f"u{r['umbral_pct_ingreso']}"] = float(r['pct_hogares_asequible'])
+if len(rel_filas) != 10 or any(set(f) != {'salario', 'salario_hora_2026', 'paquete', 'horas', 'costo_mensual_2026',
+                                         'pct_ingreso_mediano', 'n', 'u10', 'u20', 'u30'} for f in rel_filas.values()):
+    raise SystemExit(f'v_mart_asequibilidad: se esperaban 10 combinaciones salario × paquete con 3 umbrales; hay {len(rel_filas)}')
+alcances = {r['alcance'] for r in aseq}
+if len(alcances) != 1:
+    raise SystemExit(f'v_mart_asequibilidad: se esperaba un solo texto de alcance y hay {len(alcances)}')
 D['relevo'] = {
-    'filas': [{'salario': r['salario'], 'salario_hora_2026': float(r['salario_hora_2026']), 'paquete': r['paquete'],
-               'horas': int(r['horas_semana']), 'costo_mensual_2026': int(r['costo_mensual_2026']),
-               'pct_ingreso_mediano': float(r['costo_pct_ingreso_mediano']),
-               'u10': float(r['pct_hogares_costo_<=_10pct_ingreso']), 'u20': float(r['pct_hogares_costo_<=_20pct_ingreso']),
-               'u30': float(r['pct_hogares_costo_<=_30pct_ingreso']), 'n': int(r['n_muestra_hogares'])} for _, r in rel.iterrows()],
-    'alcance': rel['alcance'].iloc[0],
-    'fuente': 'Analysis/resultados/10_asequibilidad_relevo.csv (script 10)',
+    'filas': [{k: f[k] for k in ('salario', 'salario_hora_2026', 'paquete', 'horas', 'costo_mensual_2026',
+                                 'pct_ingreso_mediano', 'u10', 'u20', 'u30', 'n')} for f in rel_filas.values()],
+    'alcance': alcances.pop(),
+    'fuente': f'{DW_TXT} · v_mart_asequibilidad (origen: Analysis/resultados/10_asequibilidad_relevo.csv, script 10)',
 }
+# `rel` con los nombres de columna del CSV del script 10, para el script 14 y la ficha de KPI de más abajo. Sale del almacén.
+rel = pd.DataFrame([{'salario': f['salario'], 'horas_semana': f['horas'], 'salario_hora_2026': f['salario_hora_2026'],
+                     'costo_pct_ingreso_mediano': f['pct_ingreso_mediano'],
+                     **{f'pct_hogares_costo_<=_{u}pct_ingreso': f[f'u{u}'] for u in (10, 20, 30)}} for f in D['relevo']['filas']])
 # ENIGH 2022 (script 14): mismos paquetes con el ingreso monetario de la ENIGH, nacional y CDMX, con IC al 90 %
 e14 = leer(R / '14_enigh_asequibilidad_cdmx.csv')
 e14 = e14[e14.ingreso.str.startswith('Ingreso monetario')]
@@ -257,6 +395,45 @@ D['subsidio'] = [{'paquete': r.paquete, 'base': r.base, 'costo': int(r.costo_men
 anc = leer(R / '06_anclas_presupuestales.csv')
 D['anclas'] = [{'ancla': r.ancla, 'valor': float(r.valor), 'evidencia': r.evidencia} for r in anc.itertuples()]
 D['subsidio_fuente'] = 'Analysis/resultados/06_subsidio_por_paquete.csv y 06_anclas_presupuestales.csv (script 06)'
+# Costo de la hora por tipo de jornada (sección 19, 13 oct 2026): piso legal, sin prestaciones; arts. 60-61 LFT por verificar
+j19 = leer(R / '19_costo_hora_por_jornada.csv')
+D['jornada'] = {
+    'filas': [{'jornada': r.jornada, 'horario': r.horario_lft, 'horas_max': float(r.horas_max_jornada),
+               'hora': float(r.hora_ordinaria_2026), 'dif_pct': float(r.dif_vs_diurna_pct),
+               'horas': int(r.paquete_horas_semana), 'costo_mensual_2026': int(r.costo_mensual_2026)} for r in j19.itertuples()],
+    'salario_diario': float(j19.salario_diario_2026.iloc[0]),
+    'evidencia': j19.evidencia.iloc[0],
+    'fuente': 'Analysis/resultados/19_costo_hora_por_jornada.csv (script 19)',
+}
+
+# Sostenibilidad del relevo por horas (script 20, 15 oct 2026): costo con carga laboral, copago, escala CDMX y financiamiento.
+# Aceptación y costo de operación son ILUSTRATIVOS (sin fuente): se marcan así en la tarjeta. Los hogares elegibles de la CDMX son una inferencia.
+s20 = leer(R / '20_sostenibilidad_escenarios.csv')
+def b20(nombre):
+    g = s20[s20.bloque == nombre]
+    if g.empty:
+        raise SystemExit(f'20_sostenibilidad_escenarios.csv no trae el bloque {nombre!r}')
+    return g
+cu20 = b20('costo_unitario')
+cp20 = b20('copago')
+es20 = b20('escala_cdmx')
+ft20 = b20('financiamiento_total_cdmx')
+sol20 = float(anc[anc.ancla.str.startswith('Solicitud CDMX')].valor.iloc[0])
+D['sostenibilidad'] = {
+    'costo': [{'jornada': r.jornada, 'horas': int(r.horas_semana), 'carga': int(r.carga), 'carga_pct': float(r.carga_pct),
+               'costo_mensual': float(r.costo_mensual)} for r in cu20.itertuples()],
+    'copago': [{'fuente': r.fuente_ingreso, 'hogar': r.hogar, 'ingreso': nn(r.ingreso_2026), 'copago': float(r.copago),
+                'subsidio': float(r.subsidio_laboral)} for r in cp20.itertuples()],
+    'escala': [{'escenario': r.escenario, 'aceptacion': float(r.aceptacion), 'hogares': int(r.hogares),
+                'costo_mdp': float(r.costo_laboral_anual_mdp), 'sub_mdp': float(r.subsidio_laboral_anual_mdp),
+                'pct_solicitud': float(r.pct_solicitud)} for r in es20.itertuples()],
+    'financiamiento': [{'escenario': r.escenario, 'opex': float(r.opex_hogar_mes), 'mdp': float(r.mdp),
+                        'pct_solicitud': float(r.pct_solicitud)} for r in ft20.itertuples()],
+    'elegibles_cdmx': round(float(es20.hogares.iloc[-1]) / float(es20.aceptacion.iloc[-1])),
+    'base': {'horas': 6, 'jornada': 'Diurna', 'carga': 2, 'umbral_pct': 20},
+    'solicitud_mdp': sol20,
+    'fuente': 'Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)',
+}
 
 # ---------------------------------------------------------------- Modelo de focalización (11)
 g11 = leer(R / '11_modelo_focalizacion_global.csv')
@@ -268,46 +445,95 @@ D['modelo'] = {
     'fuente': 'Analysis/resultados/11_modelo_focalizacion_*.csv y 11_modelo_coeficientes_logit.csv (notebook 11)',
 }
 
+# ---------------------------------------------------------------- Modelo de focalización, ampliación del 13 oct 2026 (11, subsecciones 11 a 16)
+D['modelo2'] = {
+    'alternativas': registros('11_modelo_alternativas.csv'),
+    'curvas': registros('11_modelo_curvas_cobertura.csv'),
+    'calibracion': registros('11_modelo_calibracion.csv'),
+    'importancia': registros('11_modelo_importancia.csv'),
+    'cupo': registros('11_modelo_por_cupo.csv'),
+    'por_horas': registros('11_objetivo_por_horas.csv'),
+    'por_grupo': registros('11_objetivo_por_grupo.csv'),
+    'resumen': registros('11_objetivo_resumen.csv'),
+    'decision': registros('11_objetivo_decision.csv'),
+    'sin_fuerza': registros('11_objetivo_sin_fuerza.csv'),
+    'fuente': 'Analysis/resultados/11_modelo_{alternativas,curvas_cobertura,calibracion,importancia,por_cupo}.csv y 11_objetivo_*.csv (notebook B, sección 11)',
+}
+for clave, n_esperado in [('alternativas', 18), ('cupo', 24), ('decision', 11), ('sin_fuerza', 6)]:
+    if len(D['modelo2'][clave]) != n_esperado:
+        raise SystemExit(f'modelo2.{clave}: {len(D["modelo2"][clave])} filas, se esperaban {n_esperado}')
+
 # ---------------------------------------------------------------- Territorio CDMX (01, 02, 05, 08, 09)
-of = leer(A / 'outputs' / 'indice_por_tipo_servicio.csv')
-ofn = leer(A / 'outputs' / 'oferta_nucleo_vs_pob60_por_alcaldia.csv')
-ql = pd.read_csv(R / '02_indice_capacidad_residencial.csv', index_col=0, encoding='utf-8-sig')
-dep = leer(R / '08_dependencia_severa_alcaldia.csv').set_index('alcaldia')
-pob = leer(R / '09_pobreza_65mas_alcaldia_cdmx.csv').set_index('municipio')
-rez = leer(R / '13_rezago_por_alcaldia.csv').set_index('alcaldia')
+# indice_por_tipo_servicio, oferta_nucleo_vs_pob60, 08_dependencia y 13_rezago ya no se leen aquí: llegan por el almacén.
+ql = pd.read_csv(R / '02_indice_capacidad_residencial.csv', index_col=0, encoding='utf-8-sig')  # solo ql_plazas
+pob = leer(R / '09_pobreza_65mas_alcaldia_cdmx.csv').set_index('municipio')                  # solo pob65_prec
 cal13 = leer(R / '13_calidad_rezago.csv').set_index('chequeo')
 ABR = {'Azcapotzalco': 'AZC', 'Coyoacán': 'COY', 'Cuajimalpa de Morelos': 'CUAJ', 'Gustavo A. Madero': 'GAM', 'Iztacalco': 'IZTAC',
        'Iztapalapa': 'IZTAP', 'La Magdalena Contreras': 'MC', 'Milpa Alta': 'MA', 'Álvaro Obregón': 'AO', 'Tláhuac': 'TLAH',
        'Tlalpan': 'TLAL', 'Xochimilco': 'XOCH', 'Benito Juárez': 'BJ', 'Cuauhtémoc': 'CUAU', 'Miguel Hidalgo': 'MH',
        'Venustiano Carranza': 'VC'}
+# 21 oct 2026: las cifras por alcaldía se leen del almacén (v_mart_perfil_alcaldia). Del CSV solo quedan los dos campos
+# que el DW no tiene: ql_plazas (QL_p60_A del notebook 02) y pob65_prec (precisión de la pobreza 65+, notebook 09).
+# Sus archivos también los carga el ETL, y la huella SHA-256 de arriba garantiza que son los de la misma corrida.
+# campo publicado → (columna del mart, conversión). pct_pob60 se publica a 3 decimales, como en indice_por_tipo_servicio.csv;
+# el DW lo guarda completo (medida poblacion_60mas_participacion_p01).
+CAMPOS_DW = {
+    'asilos': ('oferta_nucleo_asilos', entero), 'centros_dia': ('oferta_nucleo_centros_dia', entero),
+    'pct_pob60': ('poblacion_60mas_participacion_p01', lambda v: round(v, 3)),
+    'idx_asilos': ('indice_asilos_vs_60', float), 'idx_centros': ('indice_centros_dia_vs_60', float),
+    'ql_plazas': None,
+    'plazas': ('plazas_residencias_privadas', entero),
+    'dep_total': ('dependencia_severa_personas', entero), 'dep_pct': ('dependencia_severa_pct_cdmx', float),
+    'pob65_pct': ('pobreza_65mas_pct_2020', float), 'pob65_n': ('poblacion_65mas_coneval_2020', entero),
+    'pob65_prec': None,
+    'rez_pct': ('rezago_pct_pob_medio_o_mas', float), 'rez_nageb': ('rezago_n_ageb_medio_o_mas', entero),
+    'sds_pct': ('rezago_pct_sin_derechohabiencia', float), 'sds_p10': ('rezago_sdsalud_p10', float),
+    'sds_p90': ('rezago_sdsalud_p90', float), 'pob_ageb': ('rezago_poblacion_validas', entero),
+}
+OBLIGATORIOS = {'asilos', 'centros_dia', 'pct_pob60', 'idx_asilos', 'idx_centros', 'dep_total', 'dep_pct',
+                'pob65_pct', 'pob65_n', 'rez_pct', 'rez_nageb', 'sds_pct', 'sds_p10', 'sds_p90', 'pob_ageb'}  # plazas puede faltar (P02: 12 de 16)
+perfil = {r['alcaldia']: r for r in dw_filas('SELECT * FROM v_mart_perfil_alcaldia')}
+# Orden de publicación: el del archivo de origen del índice por tipo de servicio (fila_origen en el DW).
+orden = [r['geografia'] for r in dw_filas("""SELECT geografia FROM v_mart_territorio
+                                           WHERE medida_codigo = 'indice_asilos_vs_60' AND nivel_geografico = 'Alcaldía'
+                                           ORDER BY fila_origen""")]
+if sorted(orden) != sorted(perfil) or len(perfil) != 16 or set(perfil) != set(ABR):
+    raise SystemExit(f'El almacén no trae las 16 alcaldías esperadas: {sorted(set(ABR) ^ set(perfil))}')
 terr = {}
-for r in of.itertuples():
-    a = ABR[r.municipio]
-    ofn.loc[ofn.municipio == r.municipio].iloc[0]  # verifica que la alcaldía exista en ambos archivos
+for municipio in orden:
+    a, fila_dw = ABR[municipio], perfil[municipio]
     qa = ql.loc[a, 'QL_p60_A'] if a in ql.index else float('nan')
-    p = pob.loc[r.municipio]
-    terr[r.municipio] = {'abr': a, 'asilos': int(r.asilos), 'centros_dia': int(r.centros_dia), 'pct_pob60': float(r.pct_pob60),
-                         'idx_asilos': float(r.indice_asilos), 'idx_centros': float(r.indice_centros_dia),
-                         'ql_plazas': None if pd.isna(qa) else float(qa),
-                         'plazas': None if pd.isna(ql.loc[a, 'plazas']) else int(ql.loc[a, 'plazas']),
-                         'dep_total': int(dep.loc[a, 'total']), 'dep_pct': float(dep.loc[a, 'pct_cdmx']),
-                         'pob65_pct': float(p.pct_pobreza_2020), 'pob65_n': int(p.poblacion_65mas),
-                         'pob65_prec': p.precision_pct_pobreza_2020,
-                         'rez_pct': float(rez.loc[r.municipio, 'pct_pob_rezago_medio_o_mas']),
-                         'rez_nageb': int(rez.loc[r.municipio, 'n_ageb_rezago_medio_o_mas']),
-                         'sds_pct': float(rez.loc[r.municipio, 'pct_sin_derechohabiencia']),
-                         'sds_p10': float(rez.loc[r.municipio, 'sdsalud_p10_ageb']),
-                         'sds_p90': float(rez.loc[r.municipio, 'sdsalud_p90_ageb']),
-                         'pob_ageb': int(rez.loc[r.municipio, 'poblacion_ageb_validas'])}
-if len(terr) != 16:
-    raise SystemExit(f'Se esperaban 16 alcaldías y hay {len(terr)}')
+    t = {'abr': a}
+    for campo, regla in CAMPOS_DW.items():
+        if campo == 'ql_plazas':
+            t[campo] = None if pd.isna(qa) else float(qa)
+        elif campo == 'pob65_prec':
+            t[campo] = pob.loc[municipio].precision_pct_pobreza_2020
+        else:
+            col, conv = regla
+            v = fila_dw[col]
+            if v is None and campo in OBLIGATORIOS:
+                raise SystemExit(f'El almacén no tiene {col} para {municipio} (desconocido). No se publica un hueco.')
+            t[campo] = None if v is None else conv(v)
+    terr[municipio] = t
+
+
+def suma(campo):
+    vals = [t[campo] for t in terr.values()]
+    if any(v is None for v in vals):
+        raise SystemExit(f'No se puede sumar {campo}: hay alcaldías sin dato')
+    return sum(vals)
+
+
 D['territorio'] = {'alcaldias': terr,
-                   'totales': {'asilos': int(of.asilos.sum()), 'centros_dia': int(of.centros_dia.sum()), 'dep_total': int(dep.total.sum())},
-                   'fuentes': {'idx': 'Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)',
-                               'ql': 'Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)',
-                               'dep': 'Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)',
-                               'pob': 'Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)',
-                               'rez': 'Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)'},
+                   'totales': {'asilos': suma('asilos'), 'centros_dia': suma('centros_dia'), 'dep_total': suma('dep_total')},
+                   'almacen': {'origen': DW_TXT, 'vista': 'v_mart_perfil_alcaldia',
+                               'campos_fuera_del_dw': ['ql_plazas', 'pob65_prec'], 'pruebas_abiertas': DW_DQ_ABIERTAS},
+                   'fuentes': {'idx': 'Analysis/outputs/indice_por_tipo_servicio.csv (notebook 01, DENUE 05/2026)' + ' · vía ' + DW_TXT,
+                               'ql': 'Analysis/resultados/02_indice_capacidad_residencial.csv (notebook 02)' + ' · plazas vía ' + DW_TXT + '; QL directo del archivo',
+                               'dep': 'Analysis/resultados/08_dependencia_severa_alcaldia.csv (script 08)' + ' · vía ' + DW_TXT,
+                               'pob': 'Analysis/resultados/09_pobreza_65mas_alcaldia_cdmx.csv (notebook 09, CONEVAL)' + ' · vía ' + DW_TXT + '; precisión directo del archivo',
+                               'rez': 'Analysis/resultados/13_rezago_por_alcaldia.csv (script 13, CONEVAL IRS 2020 por AGEB)' + ' · vía ' + DW_TXT},
                    'rezago_calidad': {'ageb': int(cal13.loc['AGEB urbanas en la CDMX', 'valor']),
                                       'suprimidas': int(cal13.loc['AGEB con indicadores suprimidos (*)', 'valor']),
                                       'alto_suprimidas': int(cal13.loc['AGEB "Alto" o "Muy alto" con indicadores suprimidos', 'valor']),
@@ -405,6 +631,27 @@ D['tipologia']['brecha_total'] = {'ageb': int(_TA.brecha.sum()), 'n_60': int(_TA
 _vs = sum(r['viviendas_sin_internet'] for r in D['tipologia']['decision']); _vv = sum(r['viviendas'] for r in D['tipologia']['decision'])
 D['tipologia']['sin_internet_total'] = {'viviendas': _vs, 'pct': 100 * _vs / _vv}
 
+# Regla de decisión para ordenar alcaldías por brecha (script 24, 24 oct 2026). Sin modelo: niveles por volumen y concentración,
+# con sensibilidad a tres cortes y tres tamaños de grupo de cabeza. Vive dentro del bloque «tipologia» (ya documentado en el diccionario).
+p24 = leer(R / '24_prioridad_alcaldia.csv')
+a24 = leer(R / '24_brecha_ageb.csv')
+if set(p24.alcaldia) != {r['alcaldia'] for r in D['tipologia']['por_alcaldia']}:
+    raise SystemExit('24_prioridad_alcaldia.csv: las alcaldías no coinciden con 18_tipologia_por_alcaldia.csv; vuelve a correr Analysis/24_prioridad_zonas.py')
+if int(p24.ageb_cuartil.sum()) != D['tipologia']['brecha_total']['ageb'] or int(p24.N_cuartil.sum()) != D['tipologia']['brecha_total']['n_60']:
+    raise SystemExit('24_prioridad_alcaldia.csv no suma lo mismo que la brecha del notebook D (18_tipologia_*); vuelve a correr los dos')
+D['tipologia']['prioridad'] = {
+    'combinaciones': int(p24.combinaciones_total.iloc[0]), 'cortes': ['tercil', 'cuartil', 'quintil'], 'tamanos_cabeza': [4, 5, 6],
+    'alcaldias': [{'alcaldia': r.alcaldia, 'pob_60': int(r.pob_60), 'n_60_brecha': int(r.N_cuartil), 'pct_60_brecha': float(r.P_cuartil),
+                   'n_60_brecha_tercil': int(r.N_tercil), 'n_60_brecha_quintil': int(r.N_quintil),
+                   'nivel_referencia': int(r.nivel_referencia), 'nivel_modal': int(r.nivel_modal), 'etiqueta_modal': r.etiqueta_modal,
+                   'combinaciones_en_modal': int(r.combinaciones_en_modal), 'estable': bool(r.estable),
+                   'nivel_min': int(r.nivel_min), 'nivel_max': int(r.nivel_max), 'pct_brecha_en_5_ageb': nn(r.pct_brecha_en_5_ageb_mayores),
+                   'orden_presentacion': int(r.orden_presentacion)} for r in p24.sort_values('orden_presentacion').itertuples()],
+    'ageb': {'n_tercil': int(len(a24)), 'n_cuartil': int(p24.ageb_cuartil.sum()), 'n_quintil': int(p24.ageb_quintil.sum()),
+             'n_3_cortes': int((a24.robusta == 'en los 3 cortes').sum()), 'cuartil_por_poco': int(a24.pasa_por_poco_cuartil.sum())},
+    'fuente': 'Analysis/resultados/24_prioridad_*.csv y 24_brecha_ageb.csv (script 24, 24 oct 2026; sobre 18_tipologia_ageb.csv)',
+}
+
 # ---------------------------------------------------------------- Ficha de indicadores (KPI)
 K, Cg = D['clave'], D['carga']
 rel40 = una(rel, salario=rel.salario.iloc[0], horas_semana=40)
@@ -475,7 +722,15 @@ D['kpis'] = [
 
 # ---------------------------------------------------------------- Diccionario: cada bloque de la base debe estar documentado
 dic = leer(A / 'matrices' / 'diccionario_observatorio.csv')
-D['diccionario'] = dic[dic.tipo.str.startswith('variable')][['nombre', 'definicion', 'origen']].fillna('').to_dict('records')
+# 21 oct 2026: grupo, depende_de y advertencia alimentan el linaje y la tabla expandible de la pestaña Método.
+CAMPOS_DIC = ['nombre', 'definicion', 'origen', 'grupo', 'depende_de', 'advertencia', 'unidad_o_grano', 'factor_de_expansion', 'archivo']
+D['diccionario'] = dic[dic.tipo.str.startswith('variable')][CAMPOS_DIC].fillna('').to_dict('records')
+for v in D['diccionario']:
+    v['depende_de'] = [x.strip() for x in v['depende_de'].split(';') if x.strip()]
+nombres = {v['nombre'] for v in D['diccionario']}
+huerfanas = sorted({(v['nombre'], d) for v in D['diccionario'] for d in v['depende_de'] if d not in nombres})
+if huerfanas:
+    raise SystemExit(f'diccionario_observatorio.csv: depende_de apunta a variables que no existen: {huerfanas}')
 D['diccionario_fuente'] = 'Analysis/matrices/diccionario_observatorio.csv'
 faltan = sorted(set(D) - set(dic[dic.tipo.str.startswith('bloque')].nombre))
 if faltan:

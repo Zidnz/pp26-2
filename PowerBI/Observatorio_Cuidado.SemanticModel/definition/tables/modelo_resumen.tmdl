@@ -1,0 +1,131 @@
+table modelo_resumen
+	lineageTag: 3ebb92dd-b824-582c-9de0-f9e7a5463be1
+
+	column objetivo
+		dataType: string
+		lineageTag: 23296e6b-8d8e-51e0-8709-1996f3d17e16
+		summarizeBy: none
+		sourceColumn: objetivo
+
+		annotation SummarizationSetBy = User
+
+	column prevalencia
+		dataType: double
+		formatString: 0.00
+		lineageTag: d582a51a-c0c7-54d5-a8b9-f35964f43585
+		summarizeBy: none
+		sourceColumn: prevalencia
+
+		annotation SummarizationSetBy = User
+
+	column prev_li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: fdeca0ed-e958-5615-afea-0d99056e308e
+		summarizeBy: none
+		sourceColumn: prev_li90
+
+		annotation SummarizationSetBy = User
+
+	column prev_ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: da4c39d1-184d-583f-9892-80842307d0e4
+		summarizeBy: none
+		sourceColumn: prev_ls90
+
+		annotation SummarizationSetBy = User
+
+	column personas_estimadas
+		dataType: double
+		formatString: 0.00
+		lineageTag: 913b18cd-a685-5ca8-9c18-9dcb0bc5c645
+		summarizeBy: none
+		sourceColumn: personas_estimadas
+
+		annotation SummarizationSetBy = User
+
+	column n_muestra
+		dataType: int64
+		formatString: 0
+		lineageTag: 05cbbb68-5485-5b41-a334-c79e3dddc3cb
+		summarizeBy: none
+		sourceColumn: n_muestra
+
+		annotation SummarizationSetBy = User
+
+	column prev_40mas
+		dataType: double
+		formatString: 0.00
+		lineageTag: 1f4e3b66-c91f-5b56-94f1-baa36ed2d878
+		summarizeBy: none
+		sourceColumn: prev_40mas
+
+		annotation SummarizationSetBy = User
+
+	column prev_menos40
+		dataType: double
+		formatString: 0.00
+		lineageTag: b060f6dd-4117-5b89-ab33-859adf272eb6
+		summarizeBy: none
+		sourceColumn: prev_menos40
+
+		annotation SummarizationSetBy = User
+
+	column razon_40
+		dataType: double
+		formatString: 0.00
+		lineageTag: e462ad35-f8eb-5dcb-8225-b76a29d0be35
+		summarizeBy: none
+		sourceColumn: razon_40
+
+		annotation SummarizationSetBy = User
+
+	column peor_grupo
+		dataType: string
+		lineageTag: 7e911908-932e-532f-ad12-27f9ee193512
+		summarizeBy: none
+		sourceColumn: peor_grupo
+
+		annotation SummarizationSetBy = User
+
+	column peor_cambio
+		dataType: double
+		formatString: 0.00
+		lineageTag: 08238a12-9a44-5851-ac9b-c1be22bcded3
+		summarizeBy: none
+		sourceColumn: peor_cambio
+
+		annotation SummarizationSetBy = User
+
+	column n_min_grupo
+		dataType: int64
+		formatString: 0
+		lineageTag: 2731575b-b56c-52c7-8459-476f551f8b8f
+		summarizeBy: none
+		sourceColumn: n_min_grupo
+
+		annotation SummarizationSetBy = User
+
+	column cob_regla
+		dataType: double
+		formatString: 0.00
+		lineageTag: 0f57317a-5b23-53bc-92ea-d346c7ed603e
+		summarizeBy: none
+		sourceColumn: cob_regla
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_resumen = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_resumen.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"objetivo", type text}, {"prevalencia", type number}, {"prev_li90", type number}, {"prev_ls90", type number}, {"personas_estimadas", type number}, {"n_muestra", Int64.Type}, {"prev_40mas", type number}, {"prev_menos40", type number}, {"razon_40", type number}, {"peor_grupo", type text}, {"peor_cambio", type number}, {"n_min_grupo", Int64.Type}, {"cob_regla", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

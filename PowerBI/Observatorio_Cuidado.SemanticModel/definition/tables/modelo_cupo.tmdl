@@ -1,0 +1,95 @@
+table modelo_cupo
+	lineageTag: 5e94e7d6-4578-54d9-9d59-c66c77da6feb
+
+	column objetivo
+		dataType: string
+		lineageTag: cea99215-337b-5ba2-af94-3e21dee222b8
+		summarizeBy: none
+		sourceColumn: objetivo
+
+		annotation SummarizationSetBy = User
+
+	column cupo
+		dataType: double
+		formatString: 0.00
+		lineageTag: 8100e92c-f21a-5414-addb-48de6dd2677d
+		summarizeBy: none
+		sourceColumn: cupo
+
+		annotation SummarizationSetBy = User
+
+	column puntaje
+		dataType: string
+		lineageTag: d1f09f8c-5224-5a59-a15d-bf0558e33faf
+		summarizeBy: none
+		sourceColumn: puntaje
+
+		annotation SummarizationSetBy = User
+
+	column cobertura
+		dataType: double
+		formatString: 0.00
+		lineageTag: 1324c5f7-bc80-518a-896f-61f966c87f0c
+		summarizeBy: none
+		sourceColumn: cobertura
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: double
+		formatString: 0.00
+		lineageTag: 94f725d5-335b-5a3b-81f7-84beb54a2afd
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column dif_vs_horas
+		dataType: double
+		formatString: 0.00
+		lineageTag: 1893470a-f237-5fa0-957a-5d2ce5983707
+		summarizeBy: none
+		sourceColumn: dif_vs_horas
+
+		annotation SummarizationSetBy = User
+
+	column dif_li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 7f01a1a4-ff63-5de9-a9dd-7b365cd9d83c
+		summarizeBy: none
+		sourceColumn: dif_li90
+
+		annotation SummarizationSetBy = User
+
+	column dif_ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 25db494e-2a8c-5cbd-b609-2a1de6da0064
+		summarizeBy: none
+		sourceColumn: dif_ls90
+
+		annotation SummarizationSetBy = User
+
+	column horas_corte
+		dataType: double
+		formatString: 0.00
+		lineageTag: d691cf14-ea09-55fb-8bd5-22659527d6c7
+		summarizeBy: none
+		sourceColumn: horas_corte
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_cupo = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_cupo.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"objetivo", type text}, {"cupo", type number}, {"puntaje", type text}, {"cobertura", type number}, {"precision", type number}, {"dif_vs_horas", type number}, {"dif_li90", type number}, {"dif_ls90", type number}, {"horas_corte", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

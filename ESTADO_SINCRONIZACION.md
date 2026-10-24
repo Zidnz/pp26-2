@@ -62,3 +62,32 @@ Los análisis del 5–6 oct existían solo en el proyecto de claude.ai. Se bajar
 1. La bitácora (`Documentos/bitacora-decisiones.md`) no registra la decisión del **5 oct 2026 (programa opción C: relevo por horas)** que citan los análisis 10 y 11. Hay que agregar la entrada con su fecha, sus motivos y quién la tomó.
 2. El notebook 11 termina con "Pendiente de doble revisión": falta asignar quién lo revisa.
 3. `_to_delete/_build_nb11.py` fue un auxiliar para reconstruir el notebook; se puede borrar.
+
+## Actualización del 20 oct 2026 (11:15): inventario de la carpeta contra los documentos
+
+Se listó la carpeta completa y se comparó con los README, la bitácora y el Project de claude.ai. Las secciones anteriores de este archivo se dejan tal cual, por la regla de historia real. Varias rutas que mencionan ya no existen:
+
+| Mencionado arriba | Dónde está hoy |
+|---|---|
+| `Analysis/01_…`, `02_…`, `03_…`, `11_…ipynb` y `10_…py` | Dentro de los notebooks A, B y C (fusión del 7 oct). Los originales están en `_to_delete/notebooks_separados_2026-10-07/` y `_to_delete/scripts_py_convertidos_0710/` |
+| `_to_delete/_build_nb11.py` («se puede borrar») | Sigue ahí |
+| Pendiente «agregar la decisión del 5 oct a la bitácora» | Resuelto: la entrada existe (2026-10-05, 22:31) |
+
+**Sigue igual desde el 22 sept:** no hay `.git` en `Downloads\pp26-2`.
+
+**El Project de claude.ai (PP 26-2) está desfasado respecto a la carpeta:**
+- Sus documentos de texto son copias del 1 al 6 oct: `README.md`, `ESTADO_SINCRONIZACION.md`, `Analysis/README.md`, `ML/README.md`, `Frontend/README.md`, `Frontend/observatorio/README.md`, `index.html`, `build_datos.py`, `datos_observatorio.json` y `bitacora-decisiones.md` (la del 1 oct; la de la carpeta tiene 1,704 líneas y llega al 20 oct).
+- Todavía muestra archivos que en la carpeta ya no existen en esa ruta: `Frontend/js/clasificador.js`, `matching.js`, `Frontend/observatorio/plantilla.html` y los scripts y notebooks sueltos 01 a 14.
+- Al revés: `15_anuncios_pago_implicito.py`, `resultados/15_*.csv`, `matrices/anuncios_cuidado_redes.csv` y `bitacora_pendiente_2026-10-06_anuncios.md` están **solo en el Project**.
+- El 20 oct, entre las 10:31 y las 10:35 h, se subieron al Project resultados, marts del DW y **microdatos y catálogos de la ENASIC** (`conjunto_de_datos_*.csv`). La carga se cortó en `tpob_cui/catalogos/p6_14_09.csv`. Con eso el Project quedó en **2,032,330 de 2,000,000** de conocimiento: por encima del límite. Los microdatos ENASIC son públicos y anónimos, pero la regla del repositorio es no subirlos, y además llenan el Project con catálogos de «1 = Sí / 2 = No» que no aportan contexto.
+
+**Pendientes (los decide el equipo; no se ejecutó nada):**
+1. Quitar del Project los microdatos y catálogos ENASIC para volver a quedar bajo el límite. Quitarlos es irreversible para el Project, aunque los archivos siguen en la carpeta.
+2. ~~Reemplazar en el Project los README y la bitácora por las versiones de la carpeta.~~ **Hecho el 20 oct (11:20)** con 7 documentos: `README.md`, este archivo, `Analysis/README.md`, `ML/README.md`, `Documentos/README.md`, `Frontend/README.md` y `bitacora-decisiones.md`. Faltan `Frontend/observatorio/README.md`, `index.html`, `build_datos.py` y `datos_observatorio.json`, que siguen en su versión del 1 oct. Queda por decidir si los obsoletos (`clasificador.js`, scripts 01–14) siguen en el Project.
+3. Decidir si la sección 15 (anuncios) se baja a la carpeta o se abandona; hoy ningún notebook la reproduce.
+4. Crear el repositorio git nuevo del Observatorio y, antes del primer commit, agregar `_to_delete/` y `*.tgz` al `.gitignore`.
+
+## Actualización del 20 oct 2026 (11:35): limpieza
+
+- **Project de claude.ai:** se borraron 20 documentos obsoletos: `d3.min.js`, los `datos_observatorio.json`, `index.html` y `plantilla.html` viejos del Observatorio, `clasificador.js`, `matching.js`, los scripts y notebooks sueltos 01 a 14 y los 2 metadatos ENASIC. El conocimiento bajó de 2,064,633 a **1,257,738 de 2,000,000**. La sección 15 (anuncios) se conservó. Los catálogos y microdatos ENASIC (archivos subidos) siguen ahí: hay que quitarlos a mano en claude.ai.
+- **Carpeta:** se borraron `_to_delete/` completa (217 MB, con todos los respaldos `backup_pre_*`), las 3 carpetas `__pycache__` y el proyecto C++ de 2015 de `Documentos/`. La tabla de las 11:15 y el pendiente 4 que mencionan `_to_delete/` quedan superados. **No se borró:** `denue_09_0525_csv.zip` (lo usa la reproducción de Colmex), `denue_09_csv.zip`, `_obs_snapshot.tgz`, `app_matching_relevo_frontend.zip`, `Claude outputs/` ni las versiones superadas de Word.

@@ -1,0 +1,27 @@
+<!doctype html><meta charset="utf-8"><link rel="stylesheet" href="fig.css"><style>
+.g{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:12px;margin-bottom:14px}
+.fact{background:#3f4760;color:#fff;border-radius:12px;padding:12px 14px;font-size:14px}
+.fact b{display:block;font-family:'DejaVu Sans Mono',monospace;font-size:13.5px;margin-bottom:4px}
+.fact span{color:#c9c2e0;font-size:12.5px}
+.dims{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 16px}
+.d{background:#f4f2f9;border:1.5px solid #ddd6ee;border-radius:20px;padding:5px 12px;font-family:'DejaVu Sans Mono',monospace;font-size:12.5px}
+.d.c{border-color:#77689d;background:#fff}
+.m3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.ar{color:#aa95d1;text-align:center;font-weight:800;font-size:15px;margin:4px 0 8px}
+</style><div class="f">
+<div class="k">DW/ · UCA de Inteligencia de Negocios · v1.0.0 · 20 oct 2026</div><h1>Almacén de indicadores: 4 hechos, 10 dimensiones, 3 data marts</h1>
+<div class="h">Hechos (una fila = una cifra ya agregada por un notebook)</div>
+<div class="g">
+<div class="fact"><b>fact_estimacion_encuesta</b>indicador × segmento × geografía × periodo<br><span>965 filas · ENASIC con IC 90 %</span></div>
+<div class="fact"><b>fact_indicador_territorial</b>medida × alcaldía o entidad<br><span>878 filas · DENUE, Censo, CONEVAL, ENIGH</span></div>
+<div class="fact"><b>fact_asequibilidad</b>paquete × salario × ingreso × umbral<br><span>150 filas · scripts 10 y 14</span></div>
+<div class="fact"><b>fact_costo_paquete</b>paquete × salario de referencia<br><span>50 filas</span></div></div>
+<div class="h">Dimensiones (contorno morado = conformada, la comparten varios hechos)</div>
+<div class="dims"><span class="d c">dim_tiempo</span><span class="d c">dim_fuente</span><span class="d c">dim_geografia</span><span class="d c">dim_precision</span><span class="d">dim_indicador</span><span class="d">dim_segmento</span><span class="d">dim_medida</span><span class="d">dim_paquete</span><span class="d">dim_salario_ref</span><span class="d">dim_ingreso_ref</span></div>
+<div class="ar">▼ vistas planas, exportadas a DW/marts/*.csv para Excel y Power BI</div>
+<div class="m3">
+<div class="b"><b>Necesidad de cuidado</b><br><span class="s">¿Quién carga y por qué no busca servicios? · solo nacional</span></div>
+<div class="b"><b>Territorio y oferta</b><br><span class="s">¿Dónde hay brecha? · alcaldía (16 filas en el perfil ancho)</span></div>
+<div class="b"><b>Asequibilidad</b><br><span class="s">¿Quién puede pagar un relevo y con qué supuestos? · nacional y CDMX</span></div></div>
+<div class="b al" style="margin-top:14px"><b>Reglas como código:</b> el ETL falla si una cifra de la ENASIC aparece en una alcaldía; una alcaldía sin dato no tiene fila (no se rellena con 0); <span class="m">v_cobertura_temporal</span> dice que ninguna fuente admite series (0 de 12). Primera corrida: 0 rechazos, 18 de 20 pruebas pasan.</div>
+</div>

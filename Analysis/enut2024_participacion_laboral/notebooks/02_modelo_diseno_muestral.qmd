@@ -1,0 +1,112 @@
+---
+title: "02 · Modelo con diseño muestral (ENUT 2024)"
+format:
+  html:
+    toc: true
+    code-fold: false
+    embed-resources: true
+execute:
+  warning: false
+lang: es
+---
+
+## Qué hace este notebook
+
+Reestima el modelo del notebook 01 con el **diseño muestral completo** de la ENUT 2024: estratos (`est_dis`), conglomerados (`upm_dis`) y factor de expansión (`fac_per`). Después compara los errores estándar con los del modelo ingenuo.
+
+**Requisito:** haber corrido `01_preparacion_y_modelo_ingenuo.ipynb`, que genera `data/processed/enut2024_personas_12mas.csv`.
+
+```{r}
+#| label: setup
+library(survey)
+
+# Una UPM sola en su estrato no permite estimar varianza; "adjust" la centra en la media general.
+options(survey.lonely.psu = "adjust")
+
+raiz <- if (basename(getwd()) == "notebooks") ".." else "."
+d <- read.csv(file.path(raiz, "data/processed/enut2024_personas_12mas.csv"),
+              colClasses = c(est_dis = "character", upm_dis = "character",
+                             id_persona = "character", llavehog = "character"))
+d$n_0a5_cat <- factor(pmin(d$n_0a5, 2), labels = c("0", "1", "2+"))
+c(personas = nrow(d), en_dominio = sum(d$en_dominio))
+```
+
+## Diseño muestral
+
+El diseño se declara con **todas** las personas de 12 años y más. Después se restringe al dominio (mujeres de 25 a 54) con `subset()`. Filtrar los datos antes de declarar el diseño haría que se pierdan estratos y UPM, y la varianza saldría mal.
+
+```{r}
+#| label: diseno
+des_total <- svydesign(ids = ~upm_dis, strata = ~est_dis, weights = ~fac_per,
+                       data = d, nest = TRUE)
+des <- subset(des_total, en_dominio == 1)
+des
+```
+
+## Descriptivo con intervalos de confianza
+
+El notebook 01 daba solo la proporción. Con el diseño obtenemos también su incertidumbre.
+
+```{r}
+#| label: descriptivo
+prev <- svyby(~fuera_mercado, ~n_0a5_cat, des, svymean, deff = TRUE)
+ic <- confint(prev)
+data.frame(menores_0a5 = prev$n_0a5_cat,
+           pct = round(100 * coef(prev), 1),
+           ic95_inf = round(100 * ic[, 1], 1),
+           ic95_sup = round(100 * ic[, 2], 1),
+           efecto_diseno = round(prev$DEff.fuera_mercado, 2))
+```
+
+`efecto_diseno` mayor que 1 significa que el diseño por conglomerados aporta menos información que una muestra aleatoria simple del mismo tamaño.
+
+## Modelo logístico: ingenuo frente a diseño
+
+```{r}
+#| label: modelos
+f <- fuera_mercado ~ hay_0a5 + n_6a14 + n_60mas + n_req_cuidado +
+  grupo_edad + escolaridad + rol_hogar + localidad
+
+# Ingenuo: pesos normalizados, errores como si fuera muestreo aleatorio simple
+dd <- d[d$en_dominio == 1, ]
+dd$w_norm <- dd$fac_per / mean(dd$fac_per)
+m_ingenuo <- glm(f, data = dd, family = quasibinomial(), weights = w_norm)
+
+# Correcto: estratos + conglomerados + pesos
+m_diseno <- svyglm(f, design = des, family = quasibinomial())
+
+vars <- c("hay_0a5", "n_6a14", "n_60mas", "n_req_cuidado")
+ee_i <- sqrt(diag(vcov(m_ingenuo)))[vars]
+ee_d <- sqrt(diag(vcov(m_diseno)))[vars]
+comparacion <- data.frame(
+  OR          = round(exp(coef(m_diseno)[vars]), 3),
+  coef_ing    = round(coef(m_ingenuo)[vars], 3),
+  coef_dis    = round(coef(m_diseno)[vars], 3),
+  EE_ingenuo  = round(ee_i, 4),
+  EE_diseno   = round(ee_d, 4),
+  razon_EE    = round(ee_d / ee_i, 2),
+  p_ingenuo   = signif(summary(m_ingenuo)$coefficients[vars, 4], 3),
+  p_diseno    = signif(summary(m_diseno)$coefficients[vars, 4], 3)
+)
+comparacion
+```
+
+```{r}
+#| label: guardar
+dir.create(file.path(raiz, "reports"), showWarnings = FALSE)
+write.csv(cbind(variable = rownames(comparacion), comparacion),
+          file.path(raiz, "reports/comparacion_ee_enut2024.csv"), row.names = FALSE)
+```
+
+## Modelo completo con diseño
+
+```{r}
+#| label: resumen
+summary(m_diseno)
+```
+
+## Lectura
+
+- Los **coeficientes** son iguales en ambos modelos: los pesos son los mismos. Lo que cambia es la **incertidumbre**.
+- `razon_EE` mide cuánto subestima el modelo ingenuo los errores estándar. Compárala con la columna `EE C / EE B` del notebook 01 (Python, solo conglomerados). Si los estratos importan, aquí la razón será un poco menor, porque la estratificación reduce la varianza.
+- La conclusión sustantiva se mantiene: tener menores de 0 a 5 años en el hogar es la variable de demanda de cuidados con la asociación más clara.

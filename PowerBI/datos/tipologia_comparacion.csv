@@ -1,0 +1,4 @@
+﻿particion,grupos,r2_9_variables,ari_promedio,ari_min,cramer_v_rezago_coneval,eta2_pct_limitacion,eta2_log_distancia_oferta,vecinos_mismo_grupo
+Regla 60+ × internet (4 grupos),4,0.414361,0.980615,0.942114,0.491196,0.005824,0.059755,0.637567
+Índice CP1 en 4 grupos,4,0.492642,0.967904,0.899792,0.550634,0.013206,0.054023,0.621126
+"k-means, 4 tipos (modelo)",4,0.528831,0.971299,0.929454,0.566968,0.047494,0.058254,0.656482

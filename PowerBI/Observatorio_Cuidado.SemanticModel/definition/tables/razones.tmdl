@@ -1,0 +1,133 @@
+table razones
+	lineageTag: b66b379e-7edc-5c20-92ec-cd55dc0cc4c9
+
+	measure 'Porcentaje razón' = AVERAGE(razones[pct])
+		formatString: 0.0\%
+		lineageTag: c332097f-2e8a-5a28-987a-db23da57573f
+
+	measure 'IC90 inf razón' = AVERAGE(razones[li90])
+		formatString: 0.0
+		lineageTag: 5ff3c4fc-4971-5fb6-bc81-9a94f89a3a0b
+
+	measure 'IC90 sup razón' = AVERAGE(razones[ls90])
+		formatString: 0.0
+		lineageTag: 7402e592-ca3d-5bb7-929d-4398b1d16670
+
+	measure 'n razón' = MAX(razones[n])
+		formatString: #,0
+		lineageTag: 756e3ba8-51d7-5de0-b119-6481d6a9c7fc
+
+	measure 'Precisión razón' = MAX(razones[precision])
+		lineageTag: dfb60d00-ac54-5b4f-ab36-c6eb5e345195
+
+	measure 'Color razón' = SWITCH(MAX(razones[precision]), "baja", "#D9D4E6", "moderada", "#A99FC9", "sin varianza", "#9A93AD", "#77689D")
+		lineageTag: 0b9d3eba-50db-5195-a1ae-1208eaac0905
+
+	column universo
+		dataType: string
+		lineageTag: d88f20ce-a794-54b3-8b28-2a0826813c22
+		summarizeBy: none
+		sourceColumn: universo
+
+		annotation SummarizationSetBy = User
+
+	column etiqueta
+		dataType: string
+		lineageTag: ab3c765b-fac6-5c29-b016-5f5b95cfa339
+		summarizeBy: none
+		sourceColumn: etiqueta
+
+		annotation SummarizationSetBy = User
+
+	column orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 9d4af767-a757-5fda-a62f-3f5b72a6aec3
+		summarizeBy: none
+		sourceColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: bed28a73-4d8c-51c7-8ac6-819e3ee4a778
+		summarizeBy: none
+		sourceColumn: pct
+
+		annotation SummarizationSetBy = User
+
+	column cv
+		dataType: double
+		formatString: 0.00
+		lineageTag: 789e410e-f5c4-539b-9556-8097ba2fecfd
+		summarizeBy: none
+		sourceColumn: cv
+
+		annotation SummarizationSetBy = User
+
+	column li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 122c485e-865f-5397-9055-0d5f941a3e6d
+		summarizeBy: none
+		sourceColumn: li90
+
+		annotation SummarizationSetBy = User
+
+	column ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: f52bb0df-a326-5bb5-a02d-fed6bbb35b48
+		summarizeBy: none
+		sourceColumn: ls90
+
+		annotation SummarizationSetBy = User
+
+	column total_expandido
+		dataType: double
+		formatString: 0.00
+		lineageTag: c904c398-7532-5e43-82be-2f8c4be07291
+		summarizeBy: none
+		sourceColumn: total_expandido
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: string
+		lineageTag: b545882e-3812-5b91-b096-59d7d9ed37bd
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: cd4cc115-bf2b-570b-9f40-48e539f2eee3
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: 853483e8-1e2a-5272-be77-b2b356b15f5c
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	partition razones = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "razones.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"universo", type text}, {"etiqueta", type text}, {"orden", Int64.Type}, {"pct", type number}, {"cv", type number}, {"li90", type number}, {"ls90", type number}, {"total_expandido", type number}, {"precision", type text}, {"n", Int64.Type}, {"fuente", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

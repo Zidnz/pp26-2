@@ -1,0 +1,116 @@
+table pago_hora
+	lineageTag: 811b6cf8-b41b-5a02-a798-96e353075cab
+
+	measure 'Percentil 25' = AVERAGE(pago_hora[p25])
+		formatString: \$#,0
+		lineageTag: f34ce53a-3c37-5c9a-a3df-c5ba20ae49ba
+
+	measure 'Mediana pagada' = AVERAGE(pago_hora[mediana])
+		formatString: \$#,0
+		lineageTag: 8933b01e-bdef-5aaa-93d7-a1ddfe3aab17
+
+	measure 'Percentil 75' = AVERAGE(pago_hora[p75])
+		formatString: \$#,0
+		lineageTag: d17f7e99-4a41-5f47-ba8c-7010ca2731ce
+
+	measure 'Hogares en muestra' = MAX(pago_hora[n])
+		formatString: #,0
+		lineageTag: 545f8639-a39a-5af1-9859-56a88e791798
+
+	measure 'Orden servicio' = MIN(pago_hora[orden])
+		formatString: 0
+		lineageTag: 9d69d226-cfda-5e74-bc31-f8e629ef6b4a
+
+	column orden
+		dataType: int64
+		formatString: 0
+		lineageTag: bebf562a-fb58-56f5-afd8-cdae91b9021c
+		summarizeBy: none
+		sourceColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column servicio
+		dataType: string
+		lineageTag: 17cf0b21-dde7-52e9-8d5e-909651bab28b
+		summarizeBy: none
+		sourceColumn: servicio
+		sortByColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: d503e892-26d8-5bd2-ab40-a33726512627
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	column p25
+		dataType: double
+		formatString: 0.00
+		lineageTag: 88010b24-cfb0-5e0c-8153-890dbc872404
+		summarizeBy: none
+		sourceColumn: p25
+
+		annotation SummarizationSetBy = User
+
+	column mediana
+		dataType: double
+		formatString: 0.00
+		lineageTag: f6887605-903b-517f-862e-3dc75e05f826
+		summarizeBy: none
+		sourceColumn: mediana
+
+		annotation SummarizationSetBy = User
+
+	column p75
+		dataType: double
+		formatString: 0.00
+		lineageTag: 9d810cf0-f5c7-5152-806d-8655e21c8db8
+		summarizeBy: none
+		sourceColumn: p75
+
+		annotation SummarizationSetBy = User
+
+	column mediana_ponderada
+		dataType: double
+		formatString: 0.00
+		lineageTag: cfefc3fb-f487-53cf-b224-8e4ff9ce28c7
+		summarizeBy: none
+		sourceColumn: mediana_ponderada
+
+		annotation SummarizationSetBy = User
+
+	column horas_sem_mediana
+		dataType: double
+		formatString: 0.00
+		lineageTag: b30afb84-076b-57cb-a572-e342eb1d0e93
+		summarizeBy: none
+		sourceColumn: horas_sem_mediana
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: ef49d2b0-f412-53c5-ab97-561613471fe8
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	partition pago_hora = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "pago_hora.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"orden", Int64.Type}, {"servicio", type text}, {"n", Int64.Type}, {"p25", type number}, {"mediana", type number}, {"p75", type number}, {"mediana_ponderada", type number}, {"horas_sem_mediana", type number}, {"fuente", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

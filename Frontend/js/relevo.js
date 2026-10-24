@@ -1,6 +1,10 @@
 /* Reglas del programa de relevo por horas (opción C). Namespace: Care.relevo
  *
- * 1. Focalización: regla simple de horas (+ ayuda en actividades básicas para ordenar la prioridad).
+ * Cambio 20 oct 2026 (Mientras): la PRIORIDAD ya no sale de aquí. La calculan js/prioridad.js (puntaje de la tarjeta,
+ * niveles, envejecimiento y reparto de la bolsa) y js/config.js (parámetros). `prioridad()` se conserva solo como
+ * regla de referencia (≥ 40 h) que la app muestra junto al puntaje. Paquetes, jornada, costo y asignación siguen aquí.
+ *
+ * 1. Focalización (referencia): regla simple de horas (+ ayuda en actividades básicas para ordenar la prioridad).
  *    - Notebook 11: el modelo no supera de forma demostrable a la regla "≥ 40 h" para "algún daño"
  *      (+2.2 pp de cobertura, IC 90 % de −4.1 a 8.5). Por eso la app usa la regla, no un modelo.
  *    - Notebook 07 (nacional, "sin necesidad" declarada): % con algún daño (salud o trabajo) por grupo.

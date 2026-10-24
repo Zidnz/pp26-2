@@ -1,0 +1,4 @@
+﻿escenario,escenario_orden,aceptacion,hogares,costo_mdp,sub_mdp,pct_solicitud
+bajo (ilustrativo),1,0.05,3528,57.44,7.24,0.11
+medio (ilustrativo),2,0.25,17639,287.21,36.18,0.54
+"máximo (cota: 1 − ""no contrataría"")",3,0.641,45227,736.4,92.77,1.37

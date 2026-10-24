@@ -1,0 +1,82 @@
+table escala_subsidio
+	lineageTag: a338f81c-e3a5-54ec-bbda-4be18bdaa4b3
+
+	measure 'Hogares atendidos' = SUM(escala_subsidio[hogares])
+		formatString: #,0
+		lineageTag: 292af5cf-e9f6-5567-9b22-a204abe86c9a
+
+	column escenario
+		dataType: string
+		lineageTag: 4909e0b0-0bab-5df5-9ba0-0d95bbbe1d4a
+		summarizeBy: none
+		sourceColumn: escenario
+
+		annotation SummarizationSetBy = User
+
+	column escenario_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: b14101dc-4197-559c-8806-f13c0ed7bd51
+		summarizeBy: none
+		sourceColumn: escenario_orden
+
+		annotation SummarizationSetBy = User
+
+	column aceptacion
+		dataType: double
+		formatString: 0.00
+		lineageTag: cbc1c44f-cd96-537d-bbaf-55b2e4c99d81
+		summarizeBy: none
+		sourceColumn: aceptacion
+
+		annotation SummarizationSetBy = User
+
+	column hogares
+		dataType: int64
+		formatString: 0
+		lineageTag: 6369908f-909f-5cb7-8aea-4f932f210e08
+		summarizeBy: none
+		sourceColumn: hogares
+
+		annotation SummarizationSetBy = User
+
+	column costo_mdp
+		dataType: double
+		formatString: 0.00
+		lineageTag: 9ffca6d6-eb25-5da2-9684-8da4daf71a67
+		summarizeBy: none
+		sourceColumn: costo_mdp
+
+		annotation SummarizationSetBy = User
+
+	column sub_mdp
+		dataType: double
+		formatString: 0.00
+		lineageTag: b0565157-3dc3-5059-993b-5ab1c3575833
+		summarizeBy: none
+		sourceColumn: sub_mdp
+
+		annotation SummarizationSetBy = User
+
+	column pct_solicitud
+		dataType: double
+		formatString: 0.00
+		lineageTag: dcb4d8a1-6446-52a2-a9db-1b2f610dab90
+		summarizeBy: none
+		sourceColumn: pct_solicitud
+
+		annotation SummarizationSetBy = User
+
+	partition escala_subsidio = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "escala_subsidio.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"escenario", type text}, {"escenario_orden", Int64.Type}, {"aceptacion", type number}, {"hogares", Int64.Type}, {"costo_mdp", type number}, {"sub_mdp", type number}, {"pct_solicitud", type number}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

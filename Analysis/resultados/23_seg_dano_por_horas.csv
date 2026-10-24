@@ -1,0 +1,7 @@
+﻿horas,desenlace,con_dificultad,n_con,prec_con,sin_dificultad,n_sin,prec_sin,dif_pp,dif_li90,dif_ls90,significativa
+Menos de 40 h,Algún daño por cuidar,79.761,176,alta,43.054,498,alta,36.707,29.341,44.073,True
+Menos de 40 h,Salud física deteriorada,41.039,176,alta,9.759,498,moderada,31.28,22.491,40.069,True
+Menos de 40 h,"Daño laboral (no puede, dejó o redujo trabajo)",52.008,176,alta,24.507,498,alta,27.501,18.689,36.312,True
+40 h o más,Algún daño por cuidar,91.536,137,alta,71.776,232,alta,19.76,11.561,27.959,True
+40 h o más,Salud física deteriorada,65.732,137,alta,19.221,232,moderada,46.511,34.679,58.342,True
+40 h o más,"Daño laboral (no puede, dejó o redujo trabajo)",63.652,137,alta,39.962,232,alta,23.69,13.263,34.118,True

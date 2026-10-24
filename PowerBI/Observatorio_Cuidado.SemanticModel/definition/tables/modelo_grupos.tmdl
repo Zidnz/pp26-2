@@ -1,0 +1,163 @@
+table modelo_grupos
+	lineageTag: f751ae9a-6fe1-50c9-85af-ce8a3371a729
+
+	measure 'Cobertura grupo' = AVERAGE(modelo_grupos[cobertura])
+		formatString: 0.0\%
+		lineageTag: 9f30b015-10bc-5c2d-9d5b-9b19e200b0ac
+
+	measure 'Casos con daño' = MAX(modelo_grupos[n_con_dano])
+		formatString: #,0
+		lineageTag: d035a4f5-9d05-5887-b358-acbdfac97d27
+
+	measure 'Orden grupo' = MIN(modelo_grupos[grupo_orden])
+		formatString: 0
+		lineageTag: 16e06bf5-f011-5e42-a72c-08dd087563e4
+
+	column objetivo
+		dataType: string
+		lineageTag: 39ed5163-eefd-5906-94ed-69390657567f
+		summarizeBy: none
+		sourceColumn: objetivo
+
+		annotation SummarizationSetBy = User
+
+	column modelo
+		dataType: string
+		lineageTag: e95e1c1a-90b9-5d19-ab9e-a76c44e7c3cd
+		summarizeBy: none
+		sourceColumn: modelo
+
+		annotation SummarizationSetBy = User
+
+	column dimension
+		dataType: string
+		lineageTag: 76360520-ca27-5a5d-8126-320fa0b12bfd
+		summarizeBy: none
+		sourceColumn: dimension
+
+		annotation SummarizationSetBy = User
+
+	column dimension_txt
+		dataType: string
+		lineageTag: 42f609da-f078-524c-82e1-e0a2fc647a9b
+		summarizeBy: none
+		sourceColumn: dimension_txt
+
+		annotation SummarizationSetBy = User
+
+	column grupo
+		dataType: string
+		lineageTag: aceef59e-ade8-54a3-86ca-a6805e911b11
+		summarizeBy: none
+		sourceColumn: grupo
+
+		annotation SummarizationSetBy = User
+
+	column grupo_txt
+		dataType: string
+		lineageTag: 71c75324-b5c3-5e5c-933b-7edca282133d
+		summarizeBy: none
+		sourceColumn: grupo_txt
+
+		annotation SummarizationSetBy = User
+
+	column grupo_orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 8ae92353-51fa-5619-bc2a-4e8a0e5bd10e
+		summarizeBy: none
+		sourceColumn: grupo_orden
+
+		annotation SummarizationSetBy = User
+
+	column puntaje
+		dataType: string
+		lineageTag: 9b8760d1-046d-5893-8eac-7e7952d189b2
+		summarizeBy: none
+		sourceColumn: puntaje
+
+		annotation SummarizationSetBy = User
+
+	column metodo
+		dataType: string
+		lineageTag: 04cf3efa-5651-5297-966a-5d174a70c0f7
+		summarizeBy: none
+		sourceColumn: metodo
+
+		annotation SummarizationSetBy = User
+
+	column cobertura
+		dataType: double
+		formatString: 0.00
+		lineageTag: ff590c59-080b-5d2d-a51e-5ab2bd0787ef
+		summarizeBy: none
+		sourceColumn: cobertura
+
+		annotation SummarizationSetBy = User
+
+	column cob_li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 40daefb8-a2ee-5a87-94d3-b0b17a0bd59a
+		summarizeBy: none
+		sourceColumn: cob_li90
+
+		annotation SummarizationSetBy = User
+
+	column cob_ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 3fe76699-2d6d-5572-a0da-a561c6f77db7
+		summarizeBy: none
+		sourceColumn: cob_ls90
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: double
+		formatString: 0.00
+		lineageTag: 22a82d93-07f1-5b03-9757-36269aca69e3
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column n_grupo
+		dataType: int64
+		formatString: 0
+		lineageTag: 2118bbbc-1975-579f-b5ea-4298c6954135
+		summarizeBy: none
+		sourceColumn: n_grupo
+
+		annotation SummarizationSetBy = User
+
+	column n_con_dano
+		dataType: int64
+		formatString: 0
+		lineageTag: 4f524413-b853-58ee-b604-97a347626631
+		summarizeBy: none
+		sourceColumn: n_con_dano
+
+		annotation SummarizationSetBy = User
+
+	column pocos_casos
+		dataType: string
+		lineageTag: d4861199-6f46-5b3a-89a6-a06ef9119520
+		summarizeBy: none
+		sourceColumn: pocos_casos
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_grupos = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_grupos.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"objetivo", type text}, {"modelo", type text}, {"dimension", type text}, {"dimension_txt", type text}, {"grupo", type text}, {"grupo_txt", type text}, {"grupo_orden", Int64.Type}, {"puntaje", type text}, {"metodo", type text}, {"cobertura", type number}, {"cob_li90", type number}, {"cob_ls90", type number}, {"precision", type number}, {"n_grupo", Int64.Type}, {"n_con_dano", Int64.Type}, {"pocos_casos", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

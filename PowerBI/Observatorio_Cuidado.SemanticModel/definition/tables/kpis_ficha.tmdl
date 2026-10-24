@@ -1,0 +1,102 @@
+table kpis_ficha
+	lineageTag: c46c9e79-e45c-5722-b6e7-dc5f764bc236
+
+	measure 'Indicadores con ficha' = COUNTROWS(kpis_ficha)
+		formatString: #,0
+		lineageTag: 440854a9-ef1e-5e31-a602-38a7ec1d7179
+
+	column orden
+		dataType: int64
+		formatString: 0
+		lineageTag: 6bb71783-7e16-5e11-bb89-b3f46b5ac1d9
+		summarizeBy: none
+		sourceColumn: orden
+
+		annotation SummarizationSetBy = User
+
+	column dimension
+		dataType: string
+		lineageTag: 296e3253-68e0-529a-b28a-2d86c2cb74e7
+		summarizeBy: none
+		sourceColumn: dimension
+
+		annotation SummarizationSetBy = User
+
+	column nombre
+		dataType: string
+		lineageTag: ccdc6b44-a43a-5d30-a581-b2eced409942
+		summarizeBy: none
+		sourceColumn: nombre
+
+		annotation SummarizationSetBy = User
+
+	column definicion
+		dataType: string
+		lineageTag: a9bdfa4e-4ac6-5825-95a1-d84456ad8211
+		summarizeBy: none
+		sourceColumn: definicion
+
+		annotation SummarizationSetBy = User
+
+	column valor
+		dataType: double
+		formatString: 0.00
+		lineageTag: 59a53664-3e67-536f-9d5d-f6e05b90899f
+		summarizeBy: none
+		sourceColumn: valor
+
+		annotation SummarizationSetBy = User
+
+	column unidad
+		dataType: string
+		lineageTag: bd1102b7-6caf-51e4-8d24-38725118922d
+		summarizeBy: none
+		sourceColumn: unidad
+
+		annotation SummarizationSetBy = User
+
+	column universo
+		dataType: string
+		lineageTag: 772cd02d-2c6d-57ac-8565-3617484fc422
+		summarizeBy: none
+		sourceColumn: universo
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: string
+		lineageTag: a97612ca-1571-55a0-b19e-ee05740db1f0
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column evidencia
+		dataType: string
+		lineageTag: 7e1b3777-1c9a-5f57-8343-7ce68bb5c540
+		summarizeBy: none
+		sourceColumn: evidencia
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: 35913845-0f36-5cf2-9738-87ab64a0916f
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	partition kpis_ficha = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "kpis_ficha.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"orden", Int64.Type}, {"dimension", type text}, {"nombre", type text}, {"definicion", type text}, {"valor", type number}, {"unidad", type text}, {"universo", type text}, {"precision", type text}, {"evidencia", type text}, {"fuente", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,17 @@
+﻿alcaldia,ageb,pob_60,N_tercil,ageb_tercil,P_tercil,N_cuartil,ageb_cuartil,P_cuartil,N_quintil,ageb_quintil,P_quintil,nivel_referencia,razon_referencia,etiqueta_referencia,nivel_modal,etiqueta_modal,combinaciones_en_modal,combinaciones_total,estable,nivel_min,nivel_max,combinaciones_nivel_1,pct_brecha_en_5_ageb_mayores,contexto_indice_oferta_vs_60,contexto_establecimientos_nucleo,orden_presentacion
+Azcapotzalco,102,78649.0,34488.0,34,43.85,25358.0,23,32.24,19112.0,17,24.3,1,,1,1,1,9,9,True,1,1,9,27.2,0.48,6,1
+Cuauhtémoc,152,93807.0,25386.0,22,27.06,16439.0,13,17.52,11779.0,9,12.56,1,,1,1,1,8,9,False,1,2,8,45.4,0.47,7,2
+Iztacalco,107,70906.0,19708.0,20,27.79,15539.0,15,21.91,9904.0,9,13.97,1,,1,1,1,6,9,False,1,2,6,40.1,0.54,6,3
+Cuajimalpa de Morelos,31,25458.0,10665.0,9,41.89,9897.0,8,38.88,9897.0,8,38.88,2,concentración,2 (concentración),2,2 (concentración),7,9,False,1,2,2,68.7,1.23,5,4
+Iztapalapa,452,262054.0,36546.0,39,13.95,21789.0,22,8.31,11687.0,11,4.46,2,volumen,2 (volumen),2,2 (volumen),9,9,True,2,2,0,27.5,0.9,37,5
+Venustiano Carranza,145,78957.0,15912.0,16,20.15,12437.0,12,15.75,9090.0,8,11.51,2,volumen,2 (volumen),3,3,5,9,False,1,3,2,49.8,0.8,10,6
+Tlalpan,200,107520.0,25225.0,26,23.46,12353.0,13,11.49,7189.0,7,6.69,3,,3,3,3,5,9,False,1,3,1,43.6,1.22,21,7
+Coyoacán,155,126589.0,20703.0,17,16.35,10893.0,8,8.61,4144.0,3,3.27,3,,3,3,3,8,9,False,2,3,0,70.4,1.15,23,8
+Álvaro Obregón,196,122305.0,17002.0,17,13.9,10257.0,9,8.39,7262.0,6,5.94,3,,3,3,3,9,9,True,3,3,0,61.8,1.14,22,9
+Gustavo A. Madero,299,203228.0,24499.0,27,12.05,8559.0,9,4.21,3257.0,3,1.6,3,,3,3,3,7,9,False,2,3,0,59.6,0.78,25,10
+Xochimilco,118,60000.0,9266.0,9,15.44,7451.0,7,12.42,3170.0,3,5.28,3,,3,3,3,9,9,True,3,3,0,77.5,1.98,19,11
+Miguel Hidalgo,113,71015.0,5303.0,4,7.47,4347.0,3,6.12,4347.0,3,6.12,3,,3,3,3,9,9,True,3,3,0,100.0,0.98,11,12
+La Magdalena Contreras,52,37979.0,9237.0,9,24.32,4239.0,4,11.16,3199.0,3,8.42,3,,3,3,3,6,9,False,2,3,0,100.0,1.5,9,13
+Milpa Alta,41,14736.0,2896.0,3,19.65,2896.0,3,19.65,1160.0,1,7.87,2,concentración,2 (concentración),3,3,6,9,False,2,3,0,100.0,2.32,6,14
+Tláhuac,106,45670.0,1900.0,2,4.16,1900.0,2,4.16,981.0,1,2.15,3,,3,3,3,9,9,True,3,3,0,100.0,1.37,10,15
+Benito Juárez,102,87344.0,2893.0,3,3.31,0.0,0,0.0,0.0,0,0.0,4,,4,4,4,6,9,False,3,4,0,,1.31,18,16

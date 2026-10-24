@@ -1,0 +1,13 @@
+﻿escenario,escenario_orden,opex,opex_txt,mdp,pct_solicitud,solicitud_mdp,fuente
+bajo (ilustrativo),1,0.0,Operación $0,7.24,0.11,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+bajo (ilustrativo),1,250.0,Operación $250 por hogar-mes,17.82,0.26,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+bajo (ilustrativo),1,500.0,Operación $500 por hogar-mes,28.4,0.42,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+bajo (ilustrativo),1,1000.0,"Operación $1,000 por hogar-mes",49.57,0.73,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+medio (ilustrativo),2,0.0,Operación $0,36.18,0.54,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+medio (ilustrativo),2,250.0,Operación $250 por hogar-mes,89.1,1.32,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+medio (ilustrativo),2,500.0,Operación $500 por hogar-mes,142.02,2.1,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+medio (ilustrativo),2,1000.0,"Operación $1,000 por hogar-mes",247.85,3.67,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+"máximo (cota: 1 − ""no contrataría"")",3,0.0,Operación $0,92.77,1.37,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+"máximo (cota: 1 − ""no contrataría"")",3,250.0,Operación $250 por hogar-mes,228.45,3.39,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+"máximo (cota: 1 − ""no contrataría"")",3,500.0,Operación $500 por hogar-mes,364.14,5.4,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)
+"máximo (cota: 1 − ""no contrataría"")",3,1000.0,"Operación $1,000 por hogar-mes",635.5,9.42,6747.7,Analysis/resultados/20_sostenibilidad_escenarios.csv (script 20; supuestos en 20_modelo_sostenibilidad.xlsx)

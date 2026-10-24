@@ -1,0 +1,193 @@
+﻿cve_ent,entidad,indicador_clave,indicador,indicador_orden,valor,li90,ls90,cv,n,precision,nacional,es_cdmx,marginacion_grado
+1,Aguascalientes,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,18.54,15.76,21.31,9.09,1221,alta,30.27,No,Muy bajo
+1,Aguascalientes,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,16.49,13.86,19.12,9.7,1221,alta,26.56,No,Muy bajo
+1,Aguascalientes,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,16.74,14.16,19.32,9.38,1221,alta,29.78,No,Muy bajo
+1,Aguascalientes,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,13.22,11.48,14.97,8.03,1221,alta,12.64,No,Muy bajo
+1,Aguascalientes,hog60,Hogares con al menos una persona de 60 y más,5,31.71,29.57,33.86,4.11,2669,alta,35.32,No,Muy bajo
+1,Aguascalientes,pct_pob60,"Personas de 60 años y más, % de la población",6,12.42,11.39,13.45,5.04,9864,alta,14.19,No,Muy bajo
+2,Baja California,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,12.67,10.32,15.02,11.26,1686,alta,30.27,No,Bajo
+2,Baja California,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,19.28,16.97,21.59,7.3,1687,alta,26.56,No,Bajo
+2,Baja California,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,21.97,19.17,24.78,7.76,1687,alta,29.78,No,Bajo
+2,Baja California,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,15.22,13.2,17.23,8.06,1687,alta,12.64,No,Bajo
+2,Baja California,hog60,Hogares con al menos una persona de 60 y más,5,29.23,27.13,31.34,4.38,4141,alta,35.32,No,Bajo
+2,Baja California,pct_pob60,"Personas de 60 años y más, % de la población",6,12.35,11.34,13.36,4.95,13504,alta,14.19,No,Bajo
+3,Baja California Sur,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,13.28,11.03,15.52,10.28,1123,alta,30.27,No,Bajo
+3,Baja California Sur,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,15.51,13.27,17.76,8.8,1123,alta,26.56,No,Bajo
+3,Baja California Sur,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,11.79,9.75,13.83,10.52,1123,alta,29.78,No,Bajo
+3,Baja California Sur,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,15.84,13.83,17.84,7.71,1123,alta,12.64,No,Bajo
+3,Baja California Sur,hog60,Hogares con al menos una persona de 60 y más,5,26.69,24.61,28.76,4.72,2776,alta,35.32,No,Bajo
+3,Baja California Sur,pct_pob60,"Personas de 60 años y más, % de la población",6,11.73,10.72,12.73,5.2,8441,alta,14.19,No,Bajo
+4,Campeche,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,37.58,34.06,41.1,5.7,974,alta,30.27,No,Alto
+4,Campeche,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,28.16,25.22,31.09,6.33,974,alta,26.56,No,Alto
+4,Campeche,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,28.8,25.46,32.15,7.06,974,alta,29.78,No,Alto
+4,Campeche,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,11.49,9.83,13.14,8.78,974,alta,12.64,No,Alto
+4,Campeche,hog60,Hogares con al menos una persona de 60 y más,5,31.68,29.78,33.58,3.65,2204,alta,35.32,No,Alto
+4,Campeche,pct_pob60,"Personas de 60 años y más, % de la población",6,12.37,11.51,13.23,4.24,7649,alta,14.19,No,Alto
+5,Coahuila de Zaragoza,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,16.0,14.24,17.75,6.67,1899,alta,30.27,No,Muy bajo
+5,Coahuila de Zaragoza,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,9.78,8.4,11.16,8.6,1899,alta,26.56,No,Muy bajo
+5,Coahuila de Zaragoza,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,10.56,9.17,11.94,7.99,1899,alta,29.78,No,Muy bajo
+5,Coahuila de Zaragoza,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,13.58,12.15,15.01,6.4,1899,alta,12.64,No,Muy bajo
+5,Coahuila de Zaragoza,hog60,Hogares con al menos una persona de 60 y más,5,30.87,29.26,32.47,3.16,4125,alta,35.32,No,Muy bajo
+5,Coahuila de Zaragoza,pct_pob60,"Personas de 60 años y más, % de la población",6,12.44,11.68,13.19,3.71,14033,alta,14.19,No,Muy bajo
+6,Colima,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,18.82,16.22,21.43,8.41,1489,alta,30.27,No,Bajo
+6,Colima,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,17.71,15.61,19.82,7.22,1489,alta,26.56,No,Bajo
+6,Colima,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,16.09,13.99,18.2,7.94,1489,alta,29.78,No,Bajo
+6,Colima,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,14.82,12.75,16.88,8.47,1489,alta,12.64,No,Bajo
+6,Colima,hog60,Hogares con al menos una persona de 60 y más,5,31.75,29.49,34.0,4.32,3031,alta,35.32,No,Bajo
+6,Colima,pct_pob60,"Personas de 60 años y más, % de la población",6,13.71,12.62,14.8,4.82,9512,alta,14.19,No,Bajo
+7,Chiapas,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,54.88,51.19,58.57,4.09,962,alta,30.27,No,Muy alto
+7,Chiapas,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,45.72,41.94,49.51,5.03,962,alta,26.56,No,Muy alto
+7,Chiapas,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,58.57,55.16,61.98,3.54,962,alta,29.78,No,Muy alto
+7,Chiapas,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,9.5,7.57,11.44,12.4,962,alta,12.64,No,Muy alto
+7,Chiapas,hog60,Hogares con al menos una persona de 60 y más,5,32.03,30.19,33.88,3.5,2112,alta,35.32,No,Muy alto
+7,Chiapas,pct_pob60,"Personas de 60 años y más, % de la población",6,11.27,10.46,12.08,4.36,8218,alta,14.19,No,Muy alto
+8,Chihuahua,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,17.21,15.24,19.19,6.99,2122,alta,30.27,No,Medio
+8,Chihuahua,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,17.3,15.58,19.03,6.06,2122,alta,26.56,No,Medio
+8,Chihuahua,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,14.51,12.9,16.12,6.73,2122,alta,29.78,No,Medio
+8,Chihuahua,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,18.04,16.45,19.63,5.37,2122,alta,12.64,No,Medio
+8,Chihuahua,hog60,Hogares con al menos una persona de 60 y más,5,32.23,30.72,33.74,2.85,4555,alta,35.32,No,Medio
+8,Chihuahua,pct_pob60,"Personas de 60 años y más, % de la población",6,13.64,12.85,14.42,3.49,14375,alta,14.19,No,Medio
+9,Ciudad de México,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,16.0,13.76,18.23,8.5,1387,alta,30.27,Sí,Muy bajo
+9,Ciudad de México,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,13.51,11.77,15.25,7.83,1387,alta,26.56,Sí,Muy bajo
+9,Ciudad de México,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,15.97,13.98,17.96,7.57,1387,alta,29.78,Sí,Muy bajo
+9,Ciudad de México,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,13.18,11.51,14.85,7.7,1387,alta,12.64,Sí,Muy bajo
+9,Ciudad de México,hog60,Hogares con al menos una persona de 60 y más,5,42.27,40.32,44.21,2.8,2585,alta,35.32,Sí,Muy bajo
+9,Ciudad de México,pct_pob60,"Personas de 60 años y más, % de la población",6,18.82,17.74,19.89,3.47,8396,alta,14.19,Sí,Muy bajo
+10,Durango,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,27.36,24.57,30.16,6.2,1266,alta,30.27,No,Alto
+10,Durango,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,20.42,17.84,23.0,7.67,1266,alta,26.56,No,Alto
+10,Durango,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,19.17,16.53,21.82,8.4,1266,alta,29.78,No,Alto
+10,Durango,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,13.22,11.54,14.91,7.74,1266,alta,12.64,No,Alto
+10,Durango,hog60,Hogares con al menos una persona de 60 y más,5,34.12,32.28,35.96,3.28,2713,alta,35.32,No,Alto
+10,Durango,pct_pob60,"Personas de 60 años y más, % de la población",6,12.86,11.99,13.74,4.15,9846,alta,14.19,No,Alto
+11,Guanajuato,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,29.0,25.76,32.25,6.8,1454,alta,30.27,No,Medio
+11,Guanajuato,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,28.75,26.22,31.28,5.36,1454,alta,26.56,No,Medio
+11,Guanajuato,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,24.48,22.11,26.85,5.88,1454,alta,29.78,No,Medio
+11,Guanajuato,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,8.1,6.78,9.41,9.89,1454,alta,12.64,No,Medio
+11,Guanajuato,hog60,Hogares con al menos una persona de 60 y más,5,32.61,30.59,34.64,3.77,3076,alta,35.32,No,Medio
+11,Guanajuato,pct_pob60,"Personas de 60 años y más, % de la población",6,12.86,11.94,13.77,4.32,11451,alta,14.19,No,Medio
+12,Guerrero,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,53.52,49.98,57.06,4.02,1352,alta,30.27,No,Muy alto
+12,Guerrero,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,45.8,42.82,48.79,3.96,1352,alta,26.56,No,Muy alto
+12,Guerrero,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,44.22,40.85,47.58,4.63,1352,alta,29.78,No,Muy alto
+12,Guerrero,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,14.26,12.61,15.9,7.01,1352,alta,12.64,No,Muy alto
+12,Guerrero,hog60,Hogares con al menos una persona de 60 y más,5,38.32,36.36,40.27,3.1,2538,alta,35.32,No,Muy alto
+12,Guerrero,pct_pob60,"Personas de 60 años y más, % de la población",6,14.87,13.93,15.81,3.85,8949,alta,14.19,No,Muy alto
+13,Hidalgo,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,39.08,35.28,42.87,5.9,1080,alta,30.27,No,Alto
+13,Hidalgo,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,40.17,36.71,43.64,5.24,1080,alta,26.56,No,Alto
+13,Hidalgo,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,41.52,37.98,45.05,5.17,1080,alta,29.78,No,Alto
+13,Hidalgo,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,12.09,10.08,14.1,10.12,1080,alta,12.64,No,Alto
+13,Hidalgo,hog60,Hogares con al menos una persona de 60 y más,5,35.83,33.45,38.21,4.04,2135,alta,35.32,No,Alto
+13,Hidalgo,pct_pob60,"Personas de 60 años y más, % de la población",6,14.2,12.99,15.41,5.19,7468,alta,14.19,No,Alto
+14,Jalisco,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,18.63,16.45,20.81,7.11,1355,alta,30.27,No,Bajo
+14,Jalisco,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,21.37,19.01,23.74,6.73,1355,alta,26.56,No,Bajo
+14,Jalisco,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,29.82,27.09,32.55,5.57,1355,alta,29.78,No,Bajo
+14,Jalisco,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,11.71,10.23,13.19,7.69,1355,alta,12.64,No,Bajo
+14,Jalisco,hog60,Hogares con al menos una persona de 60 y más,5,34.63,32.41,36.84,3.89,2625,alta,35.32,No,Bajo
+14,Jalisco,pct_pob60,"Personas de 60 años y más, % de la población",6,14.2,13.11,15.3,4.69,9231,alta,14.19,No,Bajo
+15,México,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,32.11,29.26,34.96,5.4,1696,alta,30.27,No,Bajo
+15,México,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,26.7,24.07,29.33,6.0,1696,alta,26.56,No,Bajo
+15,México,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,30.71,28.19,33.22,4.98,1696,alta,29.78,No,Bajo
+15,México,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,10.37,8.83,11.91,9.03,1696,alta,12.64,No,Bajo
+15,México,hog60,Hogares con al menos una persona de 60 y más,5,36.29,34.37,38.22,3.23,3527,alta,35.32,No,Bajo
+15,México,pct_pob60,"Personas de 60 años y más, % de la población",6,13.8,12.93,14.67,3.84,12815,alta,14.19,No,Bajo
+16,Michoacán de Ocampo,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,36.43,32.86,40.0,5.96,1191,alta,30.27,No,Alto
+16,Michoacán de Ocampo,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,32.1,29.12,35.09,5.65,1191,alta,26.56,No,Alto
+16,Michoacán de Ocampo,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,41.92,38.41,45.43,5.08,1191,alta,29.78,No,Alto
+16,Michoacán de Ocampo,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,12.21,10.54,13.88,8.32,1191,alta,12.64,No,Alto
+16,Michoacán de Ocampo,hog60,Hogares con al menos una persona de 60 y más,5,36.99,34.95,39.02,3.35,2215,alta,35.32,No,Alto
+16,Michoacán de Ocampo,pct_pob60,"Personas de 60 años y más, % de la población",6,15.09,13.99,16.2,4.44,7622,alta,14.19,No,Alto
+17,Morelos,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,33.52,30.75,36.3,5.03,1273,alta,30.27,No,Medio
+17,Morelos,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,28.15,25.42,30.89,5.91,1273,alta,26.56,No,Medio
+17,Morelos,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,34.26,31.31,37.21,5.23,1273,alta,29.78,No,Medio
+17,Morelos,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,15.17,13.45,16.89,6.89,1273,alta,12.64,No,Medio
+17,Morelos,hog60,Hogares con al menos una persona de 60 y más,5,38.58,36.33,40.83,3.54,2461,alta,35.32,No,Medio
+17,Morelos,pct_pob60,"Personas de 60 años y más, % de la población",6,15.5,14.41,16.59,4.28,8163,alta,14.19,No,Medio
+18,Nayarit,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,22.15,18.79,25.51,9.22,1040,alta,30.27,No,Alto
+18,Nayarit,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,25.23,21.86,28.61,8.13,1040,alta,26.56,No,Alto
+18,Nayarit,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,22.05,18.79,25.3,8.98,1040,alta,29.78,No,Alto
+18,Nayarit,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,15.63,13.66,17.6,7.67,1040,alta,12.64,No,Alto
+18,Nayarit,hog60,Hogares con al menos una persona de 60 y más,5,34.6,32.29,36.9,4.06,2130,alta,35.32,No,Alto
+18,Nayarit,pct_pob60,"Personas de 60 años y más, % de la población",6,14.62,13.44,15.8,4.92,6910,alta,14.19,No,Alto
+19,Nuevo León,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,12.37,10.51,14.22,9.13,1875,alta,30.27,No,Muy bajo
+19,Nuevo León,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,10.21,8.59,11.83,9.63,1875,alta,26.56,No,Muy bajo
+19,Nuevo León,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,12.15,10.39,13.92,8.82,1875,alta,29.78,No,Muy bajo
+19,Nuevo León,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,12.67,10.78,14.55,9.04,1875,alta,12.64,No,Muy bajo
+19,Nuevo León,hog60,Hogares con al menos una persona de 60 y más,5,34.87,32.67,37.06,3.83,3612,alta,35.32,No,Muy bajo
+19,Nuevo León,pct_pob60,"Personas de 60 años y más, % de la población",6,14.66,13.62,15.69,4.31,12017,alta,14.19,No,Muy bajo
+20,Oaxaca,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,55.45,52.26,58.63,3.49,1486,alta,30.27,No,Muy alto
+20,Oaxaca,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,50.08,46.88,53.29,3.89,1486,alta,26.56,No,Muy alto
+20,Oaxaca,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,62.13,59.05,65.2,3.01,1486,alta,29.78,No,Muy alto
+20,Oaxaca,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,12.04,10.54,13.55,7.61,1486,alta,12.64,No,Muy alto
+20,Oaxaca,hog60,Hogares con al menos una persona de 60 y más,5,38.93,36.75,41.1,3.4,2620,alta,35.32,No,Muy alto
+20,Oaxaca,pct_pob60,"Personas de 60 años y más, % de la población",6,15.6,14.51,16.7,4.27,9163,alta,14.19,No,Muy alto
+21,Puebla,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,47.66,44.38,50.94,4.19,1010,alta,30.27,No,Alto
+21,Puebla,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,43.55,39.97,47.13,5.0,1010,alta,26.56,No,Alto
+21,Puebla,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,39.9,36.78,43.02,4.75,1010,alta,29.78,No,Alto
+21,Puebla,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,11.0,9.13,12.87,10.33,1010,alta,12.64,No,Alto
+21,Puebla,hog60,Hogares con al menos una persona de 60 y más,5,32.74,30.76,34.73,3.69,2175,alta,35.32,No,Alto
+21,Puebla,pct_pob60,"Personas de 60 años y más, % de la población",6,11.88,11.01,12.75,4.45,8135,alta,14.19,No,Alto
+22,Querétaro,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,21.49,18.74,24.24,7.78,1643,alta,30.27,No,Bajo
+22,Querétaro,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,22.74,20.33,25.15,6.45,1643,alta,26.56,No,Bajo
+22,Querétaro,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,24.53,22.17,26.89,5.84,1643,alta,29.78,No,Bajo
+22,Querétaro,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,12.37,10.81,13.93,7.66,1643,alta,12.64,No,Bajo
+22,Querétaro,hog60,Hogares con al menos una persona de 60 y más,5,31.1,29.41,32.8,3.32,3822,alta,35.32,No,Bajo
+22,Querétaro,pct_pob60,"Personas de 60 años y más, % de la población",6,12.44,11.69,13.2,3.69,13508,alta,14.19,No,Bajo
+23,Quintana Roo,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,26.22,23.16,29.29,7.1,863,alta,30.27,No,Medio
+23,Quintana Roo,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,26.93,23.68,30.18,7.33,863,alta,26.56,No,Medio
+23,Quintana Roo,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,26.29,23.19,29.39,7.17,863,alta,29.78,No,Medio
+23,Quintana Roo,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,11.4,9.41,13.38,10.59,863,alta,12.64,No,Medio
+23,Quintana Roo,hog60,Hogares con al menos una persona de 60 y más,5,25.36,23.72,27.0,3.94,2418,alta,35.32,No,Medio
+23,Quintana Roo,pct_pob60,"Personas de 60 años y más, % de la población",6,10.5,9.75,11.25,4.35,7972,alta,14.19,No,Medio
+24,San Luis Potosí,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,34.19,31.23,37.16,5.27,1418,alta,30.27,No,Medio
+24,San Luis Potosí,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,29.74,26.99,32.49,5.62,1418,alta,26.56,No,Medio
+24,San Luis Potosí,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,32.28,29.32,35.24,5.57,1418,alta,29.78,No,Medio
+24,San Luis Potosí,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,11.35,9.69,13.0,8.86,1418,alta,12.64,No,Medio
+24,San Luis Potosí,hog60,Hogares con al menos una persona de 60 y más,5,37.24,35.29,39.19,3.18,2630,alta,35.32,No,Medio
+24,San Luis Potosí,pct_pob60,"Personas de 60 años y más, % de la población",6,14.62,13.67,15.58,3.96,9479,alta,14.19,No,Medio
+25,Sinaloa,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,18.04,16.21,19.86,6.16,1904,alta,30.27,No,Medio
+25,Sinaloa,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,15.48,13.31,17.66,8.53,1904,alta,26.56,No,Medio
+25,Sinaloa,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,16.88,14.68,19.07,7.9,1904,alta,29.78,No,Medio
+25,Sinaloa,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,11.78,10.35,13.2,7.35,1904,alta,12.64,No,Medio
+25,Sinaloa,hog60,Hogares con al menos una persona de 60 y más,5,37.63,35.93,39.34,2.75,3479,alta,35.32,No,Medio
+25,Sinaloa,pct_pob60,"Personas de 60 años y más, % de la población",6,15.52,14.65,16.38,3.39,11908,alta,14.19,No,Medio
+26,Sonora,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,20.24,17.35,23.13,8.68,1258,alta,30.27,No,Bajo
+26,Sonora,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,16.32,13.98,18.67,8.73,1258,alta,26.56,No,Bajo
+26,Sonora,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,16.11,13.85,18.37,8.52,1258,alta,29.78,No,Bajo
+26,Sonora,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,15.34,13.3,17.38,8.09,1258,alta,12.64,No,Bajo
+26,Sonora,hog60,Hogares con al menos una persona de 60 y más,5,34.25,32.29,36.22,3.48,2548,alta,35.32,No,Bajo
+26,Sonora,pct_pob60,"Personas de 60 años y más, % de la población",6,14.65,13.66,15.64,4.11,8309,alta,14.19,No,Bajo
+27,Tabasco,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,40.34,36.52,44.16,5.76,923,alta,30.27,No,Alto
+27,Tabasco,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,35.22,31.89,38.55,5.74,923,alta,26.56,No,Alto
+27,Tabasco,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,39.18,35.84,42.51,5.18,923,alta,29.78,No,Alto
+27,Tabasco,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,11.79,9.78,13.79,10.34,923,alta,12.64,No,Alto
+27,Tabasco,hog60,Hogares con al menos una persona de 60 y más,5,31.64,29.88,33.4,3.38,2167,alta,35.32,No,Alto
+27,Tabasco,pct_pob60,"Personas de 60 años y más, % de la población",6,12.18,11.36,13.0,4.08,7500,alta,14.19,No,Alto
+28,Tamaulipas,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,24.86,22.08,27.64,6.79,1157,alta,30.27,No,Bajo
+28,Tamaulipas,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,22.96,20.36,25.57,6.89,1157,alta,26.56,No,Bajo
+28,Tamaulipas,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,21.76,19.02,24.51,7.67,1157,alta,29.78,No,Bajo
+28,Tamaulipas,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,15.76,13.86,17.66,7.33,1157,alta,12.64,No,Bajo
+28,Tamaulipas,hog60,Hogares con al menos una persona de 60 y más,5,35.53,33.64,37.42,3.24,2322,alta,35.32,No,Bajo
+28,Tamaulipas,pct_pob60,"Personas de 60 años y más, % de la población",6,14.87,13.94,15.81,3.82,7508,alta,14.19,No,Bajo
+29,Tlaxcala,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,45.6,42.19,49.01,4.55,1091,alta,30.27,No,Medio
+29,Tlaxcala,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,35.49,32.31,38.66,5.44,1091,alta,26.56,No,Medio
+29,Tlaxcala,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,34.99,31.89,38.09,5.38,1091,alta,29.78,No,Medio
+29,Tlaxcala,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,10.38,8.8,11.95,9.25,1091,alta,12.64,No,Medio
+29,Tlaxcala,hog60,Hogares con al menos una persona de 60 y más,5,33.85,32.05,35.66,3.23,2307,alta,35.32,No,Medio
+29,Tlaxcala,pct_pob60,"Personas de 60 años y más, % de la población",6,12.28,11.51,13.04,3.77,8723,alta,14.19,No,Medio
+30,Veracruz de Ignacio de la Llave,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,43.27,40.02,46.51,4.56,1538,alta,30.27,No,Alto
+30,Veracruz de Ignacio de la Llave,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,32.51,29.65,35.37,5.34,1538,alta,26.56,No,Alto
+30,Veracruz de Ignacio de la Llave,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,41.1,38.11,44.09,4.43,1538,alta,29.78,No,Alto
+30,Veracruz de Ignacio de la Llave,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,16.54,14.9,18.17,6.01,1538,alta,12.64,No,Alto
+30,Veracruz de Ignacio de la Llave,hog60,Hogares con al menos una persona de 60 y más,5,39.47,37.67,41.28,2.78,2915,alta,35.32,No,Alto
+30,Veracruz de Ignacio de la Llave,pct_pob60,"Personas de 60 años y más, % de la población",6,16.45,15.47,17.42,3.59,9382,alta,14.19,No,Alto
+31,Yucatán,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,32.44,29.75,35.12,5.04,1501,alta,30.27,No,Alto
+31,Yucatán,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,19.24,16.99,21.49,7.12,1501,alta,26.56,No,Alto
+31,Yucatán,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,24.2,21.33,27.06,7.2,1501,alta,29.78,No,Alto
+31,Yucatán,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,11.93,10.35,13.51,8.03,1501,alta,12.64,No,Alto
+31,Yucatán,hog60,Hogares con al menos una persona de 60 y más,5,35.38,33.37,37.38,3.45,2947,alta,35.32,No,Alto
+31,Yucatán,pct_pob60,"Personas de 60 años y más, % de la población",6,14.87,13.88,15.86,4.06,10478,alta,14.19,No,Alto
+32,Zacatecas,pobreza60,Personas de 60+ en situación de pobreza (CONEVAL),1,37.49,34.07,40.91,5.55,1221,alta,30.27,No,Medio
+32,Zacatecas,segsoc60,Personas de 60+ con carencia por acceso a la seguridad social,2,33.09,29.63,36.55,6.35,1221,alta,26.56,No,Medio
+32,Zacatecas,salud60,Personas de 60+ con carencia por acceso a los servicios de salud,3,31.03,27.29,34.76,7.32,1221,alta,29.78,No,Medio
+32,Zacatecas,sola60,Personas de 60+ que viven solas (hogar unipersonal),4,14.13,12.17,16.09,8.43,1221,alta,12.64,No,Medio
+32,Zacatecas,hog60,Hogares con al menos una persona de 60 y más,5,33.61,31.55,35.66,3.72,2522,alta,35.32,No,Medio
+32,Zacatecas,pct_pob60,"Personas de 60 años y más, % de la población",6,13.15,12.17,14.14,4.55,9005,alta,14.19,No,Medio

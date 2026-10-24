@@ -1,0 +1,45 @@
+﻿objetivo,modelo,dimension,dimension_txt,grupo,grupo_txt,grupo_orden,puntaje,metodo,cobertura,cob_li90,cob_ls90,precision,n_grupo,n_con_dano,pocos_casos
+DANO_ALGUNO,Regresión logística,SEXO,Sexo,Hombre,Hombres,2,Regla >= 40 h,Regla 40 h o más,45.82343,36.854315,54.792544,69.002805,333,156,Sí
+DANO_ALGUNO,Gradient boosting,SEXO,Sexo,Hombre,Hombres,2,Regla >= 40 h,Regla 40 h o más,45.82343,36.854315,54.792544,69.002805,333,156,Sí
+DANO_ALGUNO,Regresión logística,SEXO,Sexo,Hombre,Hombres,2,Regresión logística,Modelo,32.946054,24.690416,41.201692,78.068049,333,156,Sí
+DANO_ALGUNO,Gradient boosting,SEXO,Sexo,Hombre,Hombres,2,Gradient boosting,Modelo,39.096987,29.58247,48.611504,78.89898,333,156,Sí
+DANO_ALGUNO,Regresión logística,SEXO,Sexo,Mujer,Mujeres,1,Regla >= 40 h,Regla 40 h o más,52.483166,46.582902,58.38343,80.477138,710,475,No
+DANO_ALGUNO,Gradient boosting,SEXO,Sexo,Mujer,Mujeres,1,Regla >= 40 h,Regla 40 h o más,52.483166,46.582902,58.38343,80.477138,710,475,No
+DANO_ALGUNO,Regresión logística,SEXO,Sexo,Mujer,Mujeres,1,Regresión logística,Modelo,59.743713,55.509525,63.9779,81.697011,710,475,No
+DANO_ALGUNO,Gradient boosting,SEXO,Sexo,Mujer,Mujeres,1,Gradient boosting,Modelo,59.333061,54.682549,63.983572,83.830126,710,475,No
+DANO_ALGUNO,Regresión logística,EDAD,Edad,15-39,15 a 39 años,3,Regla >= 40 h,Regla 40 h o más,60.844586,53.809184,67.879988,76.248415,310,182,Sí
+DANO_ALGUNO,Gradient boosting,EDAD,Edad,15-39,15 a 39 años,3,Regla >= 40 h,Regla 40 h o más,60.844586,53.809184,67.879988,76.248415,310,182,Sí
+DANO_ALGUNO,Regresión logística,EDAD,Edad,15-39,15 a 39 años,3,Regresión logística,Modelo,52.437387,44.056827,60.817946,78.903593,310,182,Sí
+DANO_ALGUNO,Gradient boosting,EDAD,Edad,15-39,15 a 39 años,3,Gradient boosting,Modelo,54.129782,46.866558,61.393005,83.344017,310,182,Sí
+DANO_ALGUNO,Regresión logística,EDAD,Edad,40-59,40 a 59 años,4,Regla >= 40 h,Regla 40 h o más,35.565949,28.726198,42.405699,76.275513,385,250,No
+DANO_ALGUNO,Gradient boosting,EDAD,Edad,40-59,40 a 59 años,4,Regla >= 40 h,Regla 40 h o más,35.565949,28.726198,42.405699,76.275513,385,250,No
+DANO_ALGUNO,Regresión logística,EDAD,Edad,40-59,40 a 59 años,4,Regresión logística,Modelo,52.561377,46.049376,59.073378,77.1898,385,250,No
+DANO_ALGUNO,Gradient boosting,EDAD,Edad,40-59,40 a 59 años,4,Gradient boosting,Modelo,54.248591,47.188122,61.309061,79.739679,385,250,No
+DANO_ALGUNO,Regresión logística,EDAD,Edad,60+,60 y más,5,Regla >= 40 h,Regla 40 h o más,57.191851,47.59124,66.792461,79.285032,348,199,Sí
+DANO_ALGUNO,Gradient boosting,EDAD,Edad,60+,60 y más,5,Regla >= 40 h,Regla 40 h o más,57.191851,47.59124,66.792461,79.285032,348,199,Sí
+DANO_ALGUNO,Regresión logística,EDAD,Edad,60+,60 y más,5,Regresión logística,Modelo,53.823999,46.023307,61.624691,86.479781,348,199,Sí
+DANO_ALGUNO,Gradient boosting,EDAD,Edad,60+,60 y más,5,Gradient boosting,Modelo,54.349731,42.358806,66.340655,85.522868,348,199,Sí
+DANO_ALGUNO,Regresión logística,TIPO,A quién cuida,Cuida discapacidad,Cuida discapacidad,6,Regla >= 40 h,Regla 40 h o más,51.152994,45.867027,56.438961,82.813526,636,449,No
+DANO_ALGUNO,Gradient boosting,TIPO,A quién cuida,Cuida discapacidad,Cuida discapacidad,6,Regla >= 40 h,Regla 40 h o más,51.152994,45.867027,56.438961,82.813526,636,449,No
+DANO_ALGUNO,Regresión logística,TIPO,A quién cuida,Cuida discapacidad,Cuida discapacidad,6,Regresión logística,Modelo,69.650797,64.790288,74.511306,82.506666,636,449,No
+DANO_ALGUNO,Gradient boosting,TIPO,A quién cuida,Cuida discapacidad,Cuida discapacidad,6,Gradient boosting,Modelo,66.742687,61.665994,71.81938,83.894145,636,449,No
+DANO_ALGUNO,Regresión logística,TIPO,A quién cuida,Solo 60+ sin discapacidad,Solo 60+ sin discap.,7,Regla >= 40 h,Regla 40 h o más,50.154013,39.866238,60.441787,68.93894,407,182,Sí
+DANO_ALGUNO,Gradient boosting,TIPO,A quién cuida,Solo 60+ sin discapacidad,Solo 60+ sin discap.,7,Regla >= 40 h,Regla 40 h o más,50.154013,39.866238,60.441787,68.93894,407,182,Sí
+DANO_ALGUNO,Regresión logística,TIPO,A quién cuida,Solo 60+ sin discapacidad,Solo 60+ sin discap.,7,Regresión logística,Modelo,20.886907,16.591162,25.182652,73.128506,407,182,Sí
+DANO_ALGUNO,Gradient boosting,TIPO,A quién cuida,Solo 60+ sin discapacidad,Solo 60+ sin discap.,7,Gradient boosting,Modelo,30.129031,19.2947,40.963362,78.866974,407,182,Sí
+DANO_ALGUNO,Regresión logística,ING,Ingreso,Q1-Q2,Ingreso Q1–Q2,8,Regla >= 40 h,Regla 40 h o más,45.480151,36.081211,54.879091,81.59813,321,218,No
+DANO_ALGUNO,Gradient boosting,ING,Ingreso,Q1-Q2,Ingreso Q1–Q2,8,Regla >= 40 h,Regla 40 h o más,45.480151,36.081211,54.879091,81.59813,321,218,No
+DANO_ALGUNO,Regresión logística,ING,Ingreso,Q1-Q2,Ingreso Q1–Q2,8,Regresión logística,Modelo,58.384523,50.863097,65.905949,79.148513,321,218,No
+DANO_ALGUNO,Gradient boosting,ING,Ingreso,Q1-Q2,Ingreso Q1–Q2,8,Gradient boosting,Modelo,59.179314,52.396945,65.961683,82.265823,321,218,No
+DANO_ALGUNO,Regresión logística,ING,Ingreso,Q3,Ingreso Q3,9,Regla >= 40 h,Regla 40 h o más,41.223721,32.414422,50.03302,74.090038,179,116,Sí
+DANO_ALGUNO,Gradient boosting,ING,Ingreso,Q3,Ingreso Q3,9,Regla >= 40 h,Regla 40 h o más,41.223721,32.414422,50.03302,74.090038,179,116,Sí
+DANO_ALGUNO,Regresión logística,ING,Ingreso,Q3,Ingreso Q3,9,Regresión logística,Modelo,65.429735,56.488031,74.371439,79.657161,179,116,Sí
+DANO_ALGUNO,Gradient boosting,ING,Ingreso,Q3,Ingreso Q3,9,Gradient boosting,Modelo,65.970794,57.274492,74.667096,86.306505,179,116,Sí
+DANO_ALGUNO,Regresión logística,ING,Ingreso,Q4-Q5,Ingreso Q4–Q5,10,Regla >= 40 h,Regla 40 h o más,61.394611,53.669183,69.120039,76.804648,359,199,Sí
+DANO_ALGUNO,Gradient boosting,ING,Ingreso,Q4-Q5,Ingreso Q4–Q5,10,Regla >= 40 h,Regla 40 h o más,61.394611,53.669183,69.120039,76.804648,359,199,Sí
+DANO_ALGUNO,Regresión logística,ING,Ingreso,Q4-Q5,Ingreso Q4–Q5,10,Regresión logística,Modelo,46.658634,40.356951,52.960317,81.456557,359,199,Sí
+DANO_ALGUNO,Gradient boosting,ING,Ingreso,Q4-Q5,Ingreso Q4–Q5,10,Gradient boosting,Modelo,48.26653,39.474699,57.058361,78.462084,359,199,Sí
+DANO_ALGUNO,Regresión logística,ING,Ingreso,Sin dato,Ingreso sin dato,11,Regla >= 40 h,Regla 40 h o más,46.544189,33.894584,59.193793,75.918167,184,98,Sí
+DANO_ALGUNO,Gradient boosting,ING,Ingreso,Sin dato,Ingreso sin dato,11,Regla >= 40 h,Regla 40 h o más,46.544189,33.894584,59.193793,75.918167,184,98,Sí
+DANO_ALGUNO,Regresión logística,ING,Ingreso,Sin dato,Ingreso sin dato,11,Regresión logística,Modelo,45.312036,32.705777,57.918295,87.610379,184,98,Sí
+DANO_ALGUNO,Gradient boosting,ING,Ingreso,Sin dato,Ingreso sin dato,11,Gradient boosting,Modelo,47.202873,34.660227,59.745519,91.278576,184,98,Sí

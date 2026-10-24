@@ -1,0 +1,11 @@
+﻿quintil,quintil_txt,servicio,pct,cv,n_si,precision
+1,Q1,enfermería o cuidadora,0.96,52.78,4,baja
+1,Q1,doméstico entrada por salida,3.22,39.07,13,baja
+2,Q2,enfermería o cuidadora,0.36,70.83,2,baja
+2,Q2,doméstico entrada por salida,3.15,40.4,16,baja
+3,Q3,enfermería o cuidadora,0.51,90.37,2,baja
+3,Q3,doméstico entrada por salida,3.91,25.91,20,moderada
+4,Q4,enfermería o cuidadora,0.68,52.78,4,baja
+4,Q4,doméstico entrada por salida,5.96,22.59,32,moderada
+5,Q5,enfermería o cuidadora,2.61,46.1,7,baja
+5,Q5,doméstico entrada por salida,24.33,15.46,72,moderada

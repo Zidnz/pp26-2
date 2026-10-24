@@ -1,0 +1,23 @@
+﻿dimension,segmento,poblacion,orden,pct,cv,li90,ls90,n,precision,dif_pp,dif_li90,dif_ls90,dif_significativa
+Sexo,Mujer,Grupo del problema,1,77.79,5.99,70.13,85.45,132,alta,10.29,2.01,18.57,Sí
+Sexo,Mujer,Todas las cuidadoras,2,68.78,2.42,66.04,71.51,1043,alta,,,,
+Sexo,Hombre,Grupo del problema,3,22.21,20.96,14.55,29.87,132,moderada,-10.29,-18.57,-2.01,Sí
+Sexo,Hombre,Todas las cuidadoras,4,31.22,5.32,28.49,33.96,1043,alta,,,,
+Edad,15-39,Grupo del problema,5,34.12,13.68,26.44,41.79,132,alta,7.27,-1.16,15.69,No
+Edad,15-39,Todas las cuidadoras,6,27.75,6.79,24.65,30.85,1043,alta,,,,
+Edad,40-59,Grupo del problema,7,32.68,15.56,24.31,41.04,132,moderada,-0.69,-9.69,8.31,No
+Edad,40-59,Todas las cuidadoras,8,33.28,6.71,29.6,36.95,1043,alta,,,,
+Edad,60+,Grupo del problema,9,33.21,18.63,23.03,43.38,132,moderada,-6.58,-17.83,4.67,No
+Edad,60+,Todas las cuidadoras,10,38.97,7.77,33.99,43.95,1043,alta,,,,
+Ingreso,Q1-Q2,Grupo del problema,11,29.86,18.14,20.95,38.77,132,moderada,3.38,-6.54,13.3,No
+Ingreso,Q1-Q2,Todas las cuidadoras,12,26.9,7.56,23.56,30.25,1043,alta,,,,
+Ingreso,Q3,Grupo del problema,13,14.56,25.95,8.35,20.78,132,moderada,-1.43,-8.15,5.28,No
+Ingreso,Q3,Todas las cuidadoras,14,15.82,10.71,13.03,18.6,1043,alta,,,,
+Ingreso,Q4-Q5,Grupo del problema,15,31.25,18.61,21.69,40.82,132,moderada,-9.76,-20.82,1.31,No
+Ingreso,Q4-Q5,Todas las cuidadoras,16,39.79,7.65,34.79,44.8,1043,alta,,,,
+Ingreso,Sin dato,Grupo del problema,17,24.32,24.66,14.46,34.19,132,moderada,7.81,-2.49,18.1,No
+Ingreso,Sin dato,Todas las cuidadoras,18,17.49,12.27,13.96,21.02,1043,alta,,,,
+A quién cuida,Cuida discapacidad,Grupo del problema,19,72.96,6.86,64.73,81.18,132,alta,18.86,8.91,28.8,Sí
+A quién cuida,Cuida discapacidad,Todas las cuidadoras,20,56.45,5.68,51.18,61.72,1043,alta,,,,
+A quién cuida,Solo 60+ sin discapacidad,Grupo del problema,21,27.04,18.49,18.82,35.27,132,moderada,-18.86,-28.8,-8.91,Sí
+A quién cuida,Solo 60+ sin discapacidad,Todas las cuidadoras,22,43.55,7.36,38.28,48.82,1043,alta,,,,

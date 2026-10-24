@@ -1,0 +1,134 @@
+table tipologia_k
+	lineageTag: e22eed4c-d198-523c-ab9b-103ad7eeef83
+
+	measure 'Silueta del modelo' = AVERAGE(tipologia_k[silueta])
+		formatString: 0.000
+		lineageTag: 6d6b9b41-b054-5269-966d-95fdb2868d02
+
+	measure 'Silueta al azar (p95)' = AVERAGE(tipologia_k[silueta_nula_p95])
+		formatString: 0.000
+		lineageTag: 5f74f160-54fb-5af5-9b56-d020b6dac132
+
+	measure 'Estabilidad (ARI mínimo)' = AVERAGE(tipologia_k[ari_min])
+		formatString: 0.000
+		lineageTag: a9537a6e-8af7-56ce-8c4d-de12cf221b12
+
+	column k
+		dataType: int64
+		formatString: 0
+		lineageTag: 425044fd-86a7-5cf9-88da-e3913853ef8d
+		summarizeBy: none
+		sourceColumn: k
+
+		annotation SummarizationSetBy = User
+
+	column inercia
+		dataType: double
+		formatString: 0.00
+		lineageTag: a7fcdcd5-5c41-5d3a-8aea-06add16de7e0
+		summarizeBy: none
+		sourceColumn: inercia
+
+		annotation SummarizationSetBy = User
+
+	column silueta
+		dataType: double
+		formatString: 0.00
+		lineageTag: cb2f02ea-3c06-521c-b5e6-0023736ee3f5
+		summarizeBy: none
+		sourceColumn: silueta
+
+		annotation SummarizationSetBy = User
+
+	column silueta_nula_media
+		dataType: double
+		formatString: 0.00
+		lineageTag: 0e694ab3-423f-56a3-bfa7-8597a3cbde5f
+		summarizeBy: none
+		sourceColumn: silueta_nula_media
+
+		annotation SummarizationSetBy = User
+
+	column silueta_nula_p95
+		dataType: double
+		formatString: 0.00
+		lineageTag: c36fbed4-33d2-5978-85a8-5c86809cdbef
+		summarizeBy: none
+		sourceColumn: silueta_nula_p95
+
+		annotation SummarizationSetBy = User
+
+	column calinski_harabasz
+		dataType: double
+		formatString: 0.00
+		lineageTag: 0aca4895-1ea7-59b7-9236-1fae70adc331
+		summarizeBy: none
+		sourceColumn: calinski_harabasz
+
+		annotation SummarizationSetBy = User
+
+	column davies_bouldin
+		dataType: double
+		formatString: 0.00
+		lineageTag: 837f904d-755a-532b-827b-c44d8c86ab4c
+		summarizeBy: none
+		sourceColumn: davies_bouldin
+
+		annotation SummarizationSetBy = User
+
+	column ari_promedio
+		dataType: double
+		formatString: 0.00
+		lineageTag: 796cc946-1349-5fa6-a759-fa08ce882851
+		summarizeBy: none
+		sourceColumn: ari_promedio
+
+		annotation SummarizationSetBy = User
+
+	column ari_min
+		dataType: double
+		formatString: 0.00
+		lineageTag: 8756dc8b-495b-5bd7-8d81-b7a85f66907d
+		summarizeBy: none
+		sourceColumn: ari_min
+
+		annotation SummarizationSetBy = User
+
+	column tamano_menor
+		dataType: int64
+		formatString: 0
+		lineageTag: d9463132-ff45-5165-98de-d418b61ead89
+		summarizeBy: none
+		sourceColumn: tamano_menor
+
+		annotation SummarizationSetBy = User
+
+	column estable
+		dataType: string
+		lineageTag: a4a9ecfb-0dcf-5d87-9af6-b49b87a1a4ef
+		summarizeBy: none
+		sourceColumn: estable
+
+		annotation SummarizationSetBy = User
+
+	column supera_nula
+		dataType: string
+		lineageTag: ab16b281-044b-5263-b1d3-fae6a9a89f75
+		summarizeBy: none
+		sourceColumn: supera_nula
+
+		annotation SummarizationSetBy = User
+
+	partition tipologia_k = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "tipologia_k.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"k", Int64.Type}, {"inercia", type number}, {"silueta", type number}, {"silueta_nula_media", type number}, {"silueta_nula_p95", type number}, {"calinski_harabasz", type number}, {"davies_bouldin", type number}, {"ari_promedio", type number}, {"ari_min", type number}, {"tamano_menor", Int64.Type}, {"estable", type text}, {"supera_nula", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

@@ -1,0 +1,94 @@
+table modelo_calibracion
+	lineageTag: 8e76e895-bea2-516c-8693-7585419620c7
+
+	measure 'Observado (%)' = AVERAGE(modelo_calibracion[observado])
+		formatString: 0.0\%
+		lineageTag: baac451b-de5c-5271-8fcf-4fcb48df04fe
+
+	measure 'Predicho (%)' = AVERAGE(modelo_calibracion[predicho])
+		formatString: 0.0\%
+		lineageTag: 662e0883-a59d-5436-aa88-239b311b959b
+
+	column objetivo
+		dataType: string
+		lineageTag: 1eb30303-2353-5db4-b43f-af49905c01b7
+		summarizeBy: none
+		sourceColumn: objetivo
+
+		annotation SummarizationSetBy = User
+
+	column puntaje
+		dataType: string
+		lineageTag: b4b6770b-6569-5e43-b76e-6decd885e053
+		summarizeBy: none
+		sourceColumn: puntaje
+
+		annotation SummarizationSetBy = User
+
+	column decil
+		dataType: int64
+		formatString: 0
+		lineageTag: 2e6ab681-0088-53f5-8367-6e16efbd1cef
+		summarizeBy: none
+		sourceColumn: decil
+
+		annotation SummarizationSetBy = User
+
+	column predicho
+		dataType: double
+		formatString: 0.00
+		lineageTag: de7ece7b-f237-556f-b95c-a9e6e115c43f
+		summarizeBy: none
+		sourceColumn: predicho
+
+		annotation SummarizationSetBy = User
+
+	column observado
+		dataType: double
+		formatString: 0.00
+		lineageTag: fafc134f-f21c-5482-b853-e322f605b74f
+		summarizeBy: none
+		sourceColumn: observado
+
+		annotation SummarizationSetBy = User
+
+	column obs_li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 5ece3e3c-00be-5bec-ae48-c89e440d7b1a
+		summarizeBy: none
+		sourceColumn: obs_li90
+
+		annotation SummarizationSetBy = User
+
+	column obs_ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: 2b8afd5c-a0fa-521f-a54f-b97338895a99
+		summarizeBy: none
+		sourceColumn: obs_ls90
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: d593f905-7c42-514a-8e65-6da8d35ca128
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	partition modelo_calibracion = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "modelo_calibracion.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"objetivo", type text}, {"puntaje", type text}, {"decil", Int64.Type}, {"predicho", type number}, {"observado", type number}, {"obs_li90", type number}, {"obs_ls90", type number}, {"n", Int64.Type}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+

@@ -5,8 +5,11 @@ Sitio de una sola página con formato de observatorio de datos y navegación en 
 **Datos reales agregados. Sin datos simulados ni personales.** Ninguna cifra está escrita a mano: `build_datos.py` lee los archivos de `Analysis/resultados`, `Analysis/outputs` y `Analysis/matrices`, genera `datos_observatorio.json` y los dos scripts de datos de la página (`js/datos/datos.js` y `js/datos/geo.js`). Los límites de las alcaldías vienen de `Frontend/js/cdmx-alcaldias.js` (INEGI, Marco Geoestadístico 2020). Si falta un archivo o una fila esperada, el script se detiene en vez de publicar un hueco.
 
 ```bash
-python Frontend/observatorio/build_datos.py   # desde la raíz del repo; correr de nuevo después de los notebooks
+python -B DW/etl/run_etl.py                   # 1. desde la raíz: reconstruye el almacén con los resultados de Analysis/
+python Frontend/observatorio/build_datos.py   # 2. después del ETL; correr de nuevo después de los notebooks
 ```
+
+**Desde el 21 oct 2026, una parte de los datos pasa por el almacén:** `Analysis/ → ETL → DW/observatorio_dw.sqlite → build_datos.py → página`. Hoy pasan por ahí `territorio.alcaldias`, `territorio.totales` (sumas de esos valores) y `relevo.filas`. Se quedan del archivo `ql_plazas` y `pob65_prec`, porque el DW no los tiene, y todos los demás bloques. `build_datos.py` se detiene si el almacén no existe, si su última corrida falló, si viola la regla de alcance (`v_violaciones_alcance`) o si algún archivo de `Analysis/` que alimenta esos bloques cambió desde la corrida (compara su SHA-256 con `etl_archivo`). La página **sigue abriéndose con doble clic**: no necesita servidor. Al cambiar la ruta, ninguna cifra cambió (comparación valor por valor contra la construcción anterior); solo los textos de «Archivo», que ahora citan la corrida del ETL, y el bloque nuevo `territorio.almacen`.
 
 ## Estructura de archivos
 ```
@@ -145,3 +148,87 @@ Pictograma con figuras «con daño» para necesidad y daño por horas; barras ho
 
 ## Cambios del 7 oct 2026 (21:55): ficha de cada tarjeta como recorrido guiado
 La ficha «Lectura, fuente y precisión» de las tarjetas ya no es un plegable: `js/app/coachmark.js` la convierte en un globo de 2 o 3 pasos anclado al botón ⓘ (estilos `.cm-*` en `css/componentes.css`). El `<details class="src">` sigue en el DOM, oculto, y es la fuente de verdad: las vistas lo siguen escribiendo y el globo lo lee al abrirse. Detalle en la bitácora.
+
+## Cambio del 13 oct 2026: modelo de focalización ampliado en ¿A quién primero?
+- Bloque nuevo debajo de las gráficas existentes, con selector de objetivo («algún daño» o «salud física deteriorada»):
+  - ocho formas de elegir contra la regla de 40 h;
+  - cobertura según el cupo;
+  - importancia de variables;
+  - calibración.
+- Tarjeta «¿Qué objetivo conviene?»: tiles, prevalencia por horas, cambio de cobertura por grupo y tabla de criterios.
+- Código: `js/vistas/focalizacion-ampliado.js` (va después de `focalizacion.js`). Datos: bloque `modelo2` de `build_datos.py`, que lee `Analysis/resultados/11_modelo_*` y `11_objetivo_*` (notebook B, sección 11, subsecciones 11 a 16) y se detiene si faltan filas. Documentado en `Analysis/matrices/diccionario_observatorio.csv`.
+- Probado en Chromium sin interfaz: sin errores de JavaScript, el selector cambia las cuatro gráficas y no hay barra horizontal a 390 px. Respaldo en `_to_delete/backup_pre_modelo11_ampliado_2026-10-13/observatorio/`.
+- Pendiente de doble revisión.
+
+## Cambio del 14 oct 2026: tarjeta «Cada modelo responde a una decisión» en Método
+- Al inicio de la pestaña Método, visible (no plegada): tres tarjetas, una por decisión. **¿Dónde hacer el piloto?** (tipología de AGEB, notebook D, sección 18), **¿A quién ofrecer primero el relevo?** (focalización, notebook B, sección 11) y **¿En qué orden atender las zonas?** (sin modelo: hoy se responde con conteos descriptivos). Cada tarjeta dice la decisión, el modelo, la alternativa simple, qué mostró la comparación y qué no permite afirmar, y enlaza a su pestaña.
+- Las cifras se calculan en `js/vistas/metodo.js` a partir de `D.tipologia` (comparacion, robustez, brecha_total) y `D.modelo2.resumen`. No hay bloques nuevos en `build_datos.py` ni en el diccionario, y no cambió ninguna cifra existente. Los veredictos («no se distingue de la regla», «la ventaja depende de esa variable») salen del signo de los IC al 90 %, no de un texto fijo.
+- Estilos `.mdec*` en `css/vistas.css`; contenedor `#modDec` en `index.html`.
+- Probado en Chromium sin interfaz a 1440 y 390 px: sin errores de JavaScript ni scroll horizontal, y los botones «Ver la pestaña» funcionan. Respaldo en `_to_delete/backup_pre_tarjeta_modelos_2026-10-14/`.
+- Pendiente de doble revisión.
+
+## Cambio del 14 oct 2026: colores de ¿Cuánto cuesta? alineados con el resto del Observatorio
+- `js/vistas/relevo.js`: el verde (#23806f) y el ámbar (#a9711a) de las series pasan a la paleta lila del sitio. «Cabe en el tope», la línea de asequibilidad, la tarjeta del 66.2 % y el piso legal van en morado (#77689d). La jornada diurna, mixta y nocturna va de lila claro a azul tinta (#aa95d1, #77689d, #2b3045). El CACEH y la solicitud CDMX van en tinta (#2b3045). El rojo (#c0435a) sigue marcando lo que rebasa el tope o el presupuesto. La leyenda dice «Morado» en lugar de «Verde».
+- Sin cambios en cifras ni en `css/`. El verde se queda solo donde significa estado (chip «alta») y el ámbar en la nota «Poder pagar no es querer contratar», que es un componente compartido.
+- Probado en Chromium a 1440 px, sin errores de JavaScript. Respaldo en `_to_delete/backup_pre_colores_relevo_2026-10-14/`.
+
+## Cambio del 15 oct 2026: rediseño de «Cada modelo responde a una decisión» (pestaña Método)
+- Cada tarjeta pasó de cinco bloques de texto a: ilustración, decisión en una línea, **una gráfica con la cifra clave**, recuadro «No permite afirmar» (siempre visible) y un desplegable «Cómo se hizo» con modelo, alternativa simple, robustez y pendientes.
+- Gráficas (todas calculadas desde `D.tipologia` y `D.modelo2`; ninguna cifra escrita a mano): barras de R² en escala 0–1 sin cortar el eje (¿Dónde?); intervalos de confianza 90 % de la diferencia de cobertura contra la regla de 40 h, con marcador de la variante sin «le falta fuerza física» (¿A quién?); cifra de 60+ en AGEB con brecha, con conteo animado (¿En qué orden?).
+- Movimiento: entrada escalonada al hacer scroll, barras que crecen y giro suave de la ilustración hacia el cursor. Con `prefers-reduced-motion`, sin `IntersectionObserver` o en pantallas sin hover, todo aparece terminado y sin giro.
+- Ilustraciones: `ilustraciones/metodo_piloto|relevo|zonas.webp`, con fondo transparente (recorte del fondo casi blanco del original); originales en `metodo_*_original.png`. No pasan por `build_ilustraciones.py`. No son datos ni personas reales.
+- Código: `js/vistas/metodo.js` (bloque de tarjetas) y final de `css/vistas.css` (`.mdec-*`). Copia previa en `_to_delete/backup_pre_mdec_rediseno_2026-10-15/`.
+- Pendiente de decisión del equipo: las figuras muestran expresiones de preocupación; confirmar el tono para población vulnerable.
+- Texto recortado: se acortó la redacción, no el contenido de los límites. Revisar que «No permite afirmar» siga diciendo lo mismo que antes antes de la doble revisión.
+
+## Cambio del 15 oct 2026 (noche): dos presentaciones de «Cada modelo responde a una decisión»
+- Por defecto (`index.html#metodo`) se ve el **selector**: una decisión a la vez, con pestañas (también ← → Inicio Fin), ilustración grande que cambia con transición, gráfica, «No permite afirmar» siempre visible y «Cómo se hizo» plegado. Tema claro del sitio. Las tres decisiones comparten altura para que la página no salte.
+- Con `index.html?mdec=juego#metodo` se ve la versión de **tarjetas estilo videojuego** (tema oscuro, misiones, HUD). Es decoración: no hay puntajes ni niveles.
+- Las dos usan los mismos textos y gráficas, calculados desde `D.tipologia` y `D.modelo2`. Código: `js/vistas/metodo.js` (`tarjeta`, `selector`) y final de `css/vistas.css`. Respaldos en `_to_delete/backup_pre_mdec_*`.
+- Decisión pendiente del equipo: elegir una y borrar la otra, y confirmar el tono de las ilustraciones (expresiones de preocupación).
+- 15 oct 2026 (noche, más tarde): tercera presentación, `index.html?mdec=trio#metodo`: tres tarjetas con una piel distinta cada una (radar de rastreo en azul nocturno, alerta de contención en negro y verde ácido, arcade en verde y naranja). Solo estilo visual: sin nombres, logos ni personajes de marcas. Las pieles se asignan en el arreglo `SK` de `js/vistas/metodo.js` y se definen al final de `css/vistas.css` (`.sk-radar`, `.sk-alerta`, `.sk-arcade`). La insignia dice «Decisión 0N», no «Misión».
+- 15 oct 2026 (noche, después): en el selector, las tres decisiones comparten filas (`subgrid` en `.mdec-pw`/`.mdec-pn`), así título, estado, gráfica, límites y botón miden y se ubican igual en cada pestaña; las tres ilustraciones comparten recuadro y base. El panel pasó de llamarse `mdec-p` a `mdec-pn` porque `mdec-p` ya era el párrafo introductorio de la sección. Medido en 1850, 1400, 1000 y 390 px de ancho: todas las cajas coinciden.
+
+## Cambio del 15 oct 2026 (noche): pestaña Indicadores dinámica
+- **HUD** con el conteo vivo de indicadores a la vista y el conteo por clase de evidencia (confirmado, probable, desconocido; se calcula desde `D.kpis`, no está escrito a mano), que también filtra. Debajo, un **minimapa** de 21 bloques, uno por indicador, coloreado por clase de evidencia (no es un puntaje).
+- **Filtros** por dimensión (pestañas con indicador deslizante) y por evidencia; al cambiar, las fichas se reacomodan con animación.
+- **Fichas**: anillo solo en los indicadores que son porcentaje (escala 0–100, la única que tiene sentido); personas, establecimientos, pesos por hora y «veces» llevan un ícono, sin barra, porque no tienen una escala comparable. La clase de evidencia manda en el aspecto: confirmado = franja teal sólida, probable = franja ámbar rayada, desconocido = borde punteado y candado.
+- **Inspector** (a la derecha; arriba en pantallas angostas) con la ficha completa del indicador elegido: definición, universo, evidencia, precisión y archivo. Se navega con clic, con los botones ‹ › o con Tab + Enter.
+- Colores solo del observatorio (`--shell`, `--accent`, `--lav`, `--mint`, `--teal`, `--amber`, `--alert`). Se agregaron dos tintes claros de ámbar y rojo (`--amber-l`, `--alert-l`) solo para que se lean sobre fondo oscuro.
+- Con `?ind=clasico` se ve la cuadrícula anterior. Con `prefers-reduced-motion`: sin conteo, sin trazado de anillos y sin reacomodo animado.
+- Código: `js/vistas/indicadores.js` y final de `css/vistas.css` (`.ind-*`). Respaldo en `_to_delete/backup_pre_indicadores_2026-10-15/`.
+
+## Cambio del 15 oct 2026 (noche): las cuatro «razones» de la portada pasan a ser tarjetas descriptivas
+- Decisión del equipo: en «Los datos que cuidan» (Inicio) las cuatro tarjetas con gráfica se sustituyen por cuatro tarjetas de texto: 01 Qué es, 02 Qué mide y qué no, 03 De dónde sale cada dato, 04 Qué tan firme es. La franja de contadores, el medallón y las gráficas de las demás pestañas no cambian.
+- Los conteos de la tarjeta 04 se calculan de `D.inventario` (clasificados por la primera palabra de `estado_evidencia`); el nivel geográfico de la tarjeta 03 sale de las filas F04, F09 y F20 del inventario. Los textos de 01 y 02 son redacción del equipo (pendiente de revisión por quien no los escribió).
+- Pendiente de definir por el equipo: la frase «sirve para decidir X» de la tarjeta 01.
+- Respaldo de `inicio.js` y `vistas.css` previos: `_to_delete/backup_pre_descripcion_2026-10-15/`. Estilos nuevos al final de `css/vistas.css` (`.rz-desc`, `.rz-lista`, `.rz-src`, `.rz-seg`, `.rz-ley`).
+
+## Cambio del 15 oct 2026 (noche, más tarde): las cuatro tarjetas descriptivas pasan a carrusel
+- La ilustración queda a la izquierda y las cuatro tarjetas (mismo diseño y colores) se muestran una por una a la derecha, con flechas ‹ ›, botones numerados (el activo muestra su título), autoavance cada 9 s, teclado (← →) y deslizar en pantallas táctiles. `index.html`: `#reasons-a` y `#reasons-b` se reemplazaron por `#carrusel`.
+- El autoavance se detiene al pasar el cursor o enfocar el carrusel, cuando no está a la vista y, de forma definitiva, en cuanto la persona lo usa a mano. Con «reducir movimiento» no avanza solo y no hay transiciones.
+- La tarjeta 01 trae accesos a las demás pestañas, leídos de la barra lateral (`.tabs`), no escritos a mano.
+- Respaldo previo: `_to_delete/backup_pre_carrusel_2026-10-15/` (index.html, inicio.js, vistas.css). Estilos nuevos al final de `css/vistas.css` (`.carrusel`, `.car-*`).
+
+## Cambio del 20 oct 2026: se quitan las vistas «Videojuego» y «Trío»; las tres decisiones quedan en TBC
+- Decisión del equipo: en «Cada modelo responde a una decisión» (pestaña Método) se eliminan las vistas «Videojuego» (`?mdec=juego`) y «Trío» (`?mdec=trio`) y el interruptor «Vista». Queda solo el selector, con sus tres pestañas (¿Dónde?, ¿A quién?, ¿En qué orden?) y sus ilustraciones.
+- El contenido de las tres decisiones (estado, descripción, gráfica, «No permite afirmar», «Cómo se hizo» y botón «Ver la pestaña») se sustituye por **TBC**. Se conserva solo el título de cada pregunta. Ya no se renderiza ninguna cifra de `D.tipologia` ni `D.modelo2` en este bloque.
+- Código: `js/vistas/metodo.js` (bloque reescrito) y `css/vistas.css` (se borraron los estilos de tarjetas, `.sk-*` e interruptor). Las vistas anteriores y su texto se pueden recuperar de `_to_delete/backup_pre_quitar_vistas_2026-10-20/`.
+- Los cambios anteriores de este README sobre las vistas juego/trío y sobre el contenido de las decisiones describen el estado previo y no se reescriben.
+- Verificado: sintaxis de `metodo.js` y render simulado en Node (3 pestañas, 3 «TBC», sin restos de las vistas). **No** se probó en un navegador real: el panel del navegador no alcanzó el servidor local. Pendiente: abrir `index.html#metodo` y revisar altura del panel y alineación.
+
+## Cambio del 20 oct 2026: «¿Cuánto cuesta?» se actualiza con el modelo de sostenibilidad (script 20)
+- **Qué estaba desactualizado.** Desde el 15 oct existe `resultados/20_sostenibilidad_escenarios.csv`, pero la pestaña no lo leía: decía que los paquetes de 3 a 12 h «todavía no tienen este cálculo» y su tarjeta de subsidio seguía en 20 h y 40 h (script 06, otro producto) con 1,099,461 hogares (cota inferior del script 05) en lugar de los 1,407,522 de la ENIGH 2022.
+- `build_datos.py`: bloque nuevo `sostenibilidad` (costo con carga laboral, copago, escala CDMX y financiamiento). Se documenta en `matrices/diccionario_observatorio.csv`. Antes de editar se comprobó que `datos_observatorio.json` y `js/datos/datos.js` se regeneraban idénticos desde los CSV: ninguna otra cifra de la pestaña estaba desfasada.
+- Tarjeta «¿Cambia el costo si el relevo es de noche o con carga laboral?»: selector nuevo de carga (sin carga, +IMSS e Infonavit 22 %, +aguinaldo y vacaciones 30.2 %). Por defecto «sin carga», para que coincida con el resto de la pestaña. Las cuatro gráficas de asequibilidad (script 10) **siguen sin carga laboral**.
+- Tarjeta de subsidio: ahora muestra el financiamiento anual del relevo de 6 h/semana en la CDMX por escenario de aceptación (5 %, 25 %, cota de 64.1 %) y costo de operación ($0 a $1,000 por hogar-mes), contra la solicitud de 6,747.7 mdp. Aceptación y operación son **ilustrativas**; los hogares elegibles (≈70,557) son una inferencia con tasas nacionales.
+- Se conserva `D.subsidio` (script 06) en los datos, pero la pestaña ya no lo dibuja.
+- Respaldo previo: `_to_delete/bak_cuesta_2026-10-20/`.
+- Verificado: sintaxis, render en Chromium sin errores propios (las únicas fallas de carga fueron las ilustraciones, que no se copiaron a la prueba) y cifras de pantalla contra el CSV (36.2 mdp, 0.5 %, $171 y $0, $2,714 y $3,101). **No** se probó en 390 px. Pendiente: doble revisión.
+
+## Cambio del 21 oct 2026: segmentación por clases latentes en «¿Quién lo carga?»
+- Tarjeta nueva «A las mismas horas, ¿quién declara más daño?», después de «¿Cuánto cambia con más horas de cuidado?». Sale del notebook 23 (`Analysis/23_segmentacion_cuidadoras.ipynb`): dos clases estables de cuidadoras, «Dificultad en la tarea» (25.7 %) y «Sin dificultad declarada». Muestra el daño por clase a igual horas, con selector de desenlace y de bloque del cuestionario; dos tiles (tamaño de la clase y 13.8 % con dificultad y menos de 40 h) y el perfil que la define.
+- **No la recorta el filtro de la pestaña** (las clases se estimaron con todo el universo) y la tarjeta lo dice. Exploratoria y sin doble revisión: lleva esos chips.
+- Datos: bloque `seg23` de `build_datos.py`, que lee `Analysis/resultados/23_seg_*.csv` y se detiene si cambian los nombres de las clases, si k = 2 deja de ser la más estable o si cambia el número de filas. Documentado en `matrices/diccionario_observatorio.csv`.
+- Código: `index.html` (tarjeta `.s23`), `js/vistas/necesidad.js` (bloque al final, se redibuja al cambiar el ancho para que el texto no se encoja en teléfono) y final de `css/vistas.css`.
+- Verificado en Chromium sin interfaz a 1440 y 390 px, sin errores de JavaScript ni desborde. Respaldo en `_to_delete/backup_pre_seg23_observatorio_2026-10-21/`. **Pendiente de doble revisión.**

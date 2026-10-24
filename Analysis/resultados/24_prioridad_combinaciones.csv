@@ -1,0 +1,145 @@
+﻿alcaldia,corte,K,N,P_pct,nivel,razon,etiqueta
+Azcapotzalco,tercil,4,34488,43.9,1,,1
+Benito Juárez,tercil,4,2893,3.3,3,,3
+Coyoacán,tercil,4,20703,16.4,3,,3
+Cuajimalpa de Morelos,tercil,4,10665,41.9,2,concentración,2 (concentración)
+Cuauhtémoc,tercil,4,25386,27.1,1,,1
+Gustavo A. Madero,tercil,4,24499,12.1,3,,3
+Iztacalco,tercil,4,19708,27.8,2,concentración,2 (concentración)
+Iztapalapa,tercil,4,36546,13.9,2,volumen,2 (volumen)
+La Magdalena Contreras,tercil,4,9237,24.3,3,,3
+Miguel Hidalgo,tercil,4,5303,7.5,3,,3
+Milpa Alta,tercil,4,2896,19.7,3,,3
+Tlalpan,tercil,4,25225,23.5,2,volumen,2 (volumen)
+Tláhuac,tercil,4,1900,4.2,3,,3
+Venustiano Carranza,tercil,4,15912,20.2,3,,3
+Xochimilco,tercil,4,9266,15.4,3,,3
+Álvaro Obregón,tercil,4,17002,13.9,3,,3
+Azcapotzalco,tercil,5,34488,43.9,1,,1
+Benito Juárez,tercil,5,2893,3.3,3,,3
+Coyoacán,tercil,5,20703,16.4,3,,3
+Cuajimalpa de Morelos,tercil,5,10665,41.9,2,concentración,2 (concentración)
+Cuauhtémoc,tercil,5,25386,27.1,1,,1
+Gustavo A. Madero,tercil,5,24499,12.1,2,volumen,2 (volumen)
+Iztacalco,tercil,5,19708,27.8,2,concentración,2 (concentración)
+Iztapalapa,tercil,5,36546,13.9,2,volumen,2 (volumen)
+La Magdalena Contreras,tercil,5,9237,24.3,2,concentración,2 (concentración)
+Miguel Hidalgo,tercil,5,5303,7.5,3,,3
+Milpa Alta,tercil,5,2896,19.7,3,,3
+Tlalpan,tercil,5,25225,23.5,2,volumen,2 (volumen)
+Tláhuac,tercil,5,1900,4.2,3,,3
+Venustiano Carranza,tercil,5,15912,20.2,3,,3
+Xochimilco,tercil,5,9266,15.4,3,,3
+Álvaro Obregón,tercil,5,17002,13.9,3,,3
+Azcapotzalco,tercil,6,34488,43.9,1,,1
+Benito Juárez,tercil,6,2893,3.3,3,,3
+Coyoacán,tercil,6,20703,16.4,2,volumen,2 (volumen)
+Cuajimalpa de Morelos,tercil,6,10665,41.9,2,concentración,2 (concentración)
+Cuauhtémoc,tercil,6,25386,27.1,1,,1
+Gustavo A. Madero,tercil,6,24499,12.1,2,volumen,2 (volumen)
+Iztacalco,tercil,6,19708,27.8,2,concentración,2 (concentración)
+Iztapalapa,tercil,6,36546,13.9,2,volumen,2 (volumen)
+La Magdalena Contreras,tercil,6,9237,24.3,2,concentración,2 (concentración)
+Miguel Hidalgo,tercil,6,5303,7.5,3,,3
+Milpa Alta,tercil,6,2896,19.7,3,,3
+Tlalpan,tercil,6,25225,23.5,1,,1
+Tláhuac,tercil,6,1900,4.2,3,,3
+Venustiano Carranza,tercil,6,15912,20.2,3,,3
+Xochimilco,tercil,6,9266,15.4,3,,3
+Álvaro Obregón,tercil,6,17002,13.9,3,,3
+Azcapotzalco,cuartil,4,25358,32.2,1,,1
+Benito Juárez,cuartil,4,0,0.0,4,,4
+Coyoacán,cuartil,4,10893,8.6,3,,3
+Cuajimalpa de Morelos,cuartil,4,9897,38.9,2,concentración,2 (concentración)
+Cuauhtémoc,cuartil,4,16439,17.5,2,volumen,2 (volumen)
+Gustavo A. Madero,cuartil,4,8559,4.2,3,,3
+Iztacalco,cuartil,4,15539,21.9,1,,1
+Iztapalapa,cuartil,4,21789,8.3,2,volumen,2 (volumen)
+La Magdalena Contreras,cuartil,4,4239,11.2,3,,3
+Miguel Hidalgo,cuartil,4,4347,6.1,3,,3
+Milpa Alta,cuartil,4,2896,19.7,2,concentración,2 (concentración)
+Tlalpan,cuartil,4,12353,11.5,3,,3
+Tláhuac,cuartil,4,1900,4.2,3,,3
+Venustiano Carranza,cuartil,4,12437,15.8,3,,3
+Xochimilco,cuartil,4,7451,12.4,3,,3
+Álvaro Obregón,cuartil,4,10257,8.4,3,,3
+Azcapotzalco,cuartil,5,25358,32.2,1,,1
+Benito Juárez,cuartil,5,0,0.0,4,,4
+Coyoacán,cuartil,5,10893,8.6,3,,3
+Cuajimalpa de Morelos,cuartil,5,9897,38.9,2,concentración,2 (concentración)
+Cuauhtémoc,cuartil,5,16439,17.5,1,,1
+Gustavo A. Madero,cuartil,5,8559,4.2,3,,3
+Iztacalco,cuartil,5,15539,21.9,1,,1
+Iztapalapa,cuartil,5,21789,8.3,2,volumen,2 (volumen)
+La Magdalena Contreras,cuartil,5,4239,11.2,3,,3
+Miguel Hidalgo,cuartil,5,4347,6.1,3,,3
+Milpa Alta,cuartil,5,2896,19.7,2,concentración,2 (concentración)
+Tlalpan,cuartil,5,12353,11.5,3,,3
+Tláhuac,cuartil,5,1900,4.2,3,,3
+Venustiano Carranza,cuartil,5,12437,15.8,2,volumen,2 (volumen)
+Xochimilco,cuartil,5,7451,12.4,3,,3
+Álvaro Obregón,cuartil,5,10257,8.4,3,,3
+Azcapotzalco,cuartil,6,25358,32.2,1,,1
+Benito Juárez,cuartil,6,0,0.0,4,,4
+Coyoacán,cuartil,6,10893,8.6,3,,3
+Cuajimalpa de Morelos,cuartil,6,9897,38.9,2,concentración,2 (concentración)
+Cuauhtémoc,cuartil,6,16439,17.5,1,,1
+Gustavo A. Madero,cuartil,6,8559,4.2,3,,3
+Iztacalco,cuartil,6,15539,21.9,1,,1
+Iztapalapa,cuartil,6,21789,8.3,2,volumen,2 (volumen)
+La Magdalena Contreras,cuartil,6,4239,11.2,3,,3
+Miguel Hidalgo,cuartil,6,4347,6.1,3,,3
+Milpa Alta,cuartil,6,2896,19.7,2,concentración,2 (concentración)
+Tlalpan,cuartil,6,12353,11.5,2,volumen,2 (volumen)
+Tláhuac,cuartil,6,1900,4.2,3,,3
+Venustiano Carranza,cuartil,6,12437,15.8,1,,1
+Xochimilco,cuartil,6,7451,12.4,3,,3
+Álvaro Obregón,cuartil,6,10257,8.4,3,,3
+Azcapotzalco,quintil,4,19112,24.3,1,,1
+Benito Juárez,quintil,4,0,0.0,4,,4
+Coyoacán,quintil,4,4144,3.3,3,,3
+Cuajimalpa de Morelos,quintil,4,9897,38.9,2,concentración,2 (concentración)
+Cuauhtémoc,quintil,4,11779,12.6,1,,1
+Gustavo A. Madero,quintil,4,3257,1.6,3,,3
+Iztacalco,quintil,4,9904,14.0,1,,1
+Iztapalapa,quintil,4,11687,4.5,2,volumen,2 (volumen)
+La Magdalena Contreras,quintil,4,3199,8.4,3,,3
+Miguel Hidalgo,quintil,4,4347,6.1,3,,3
+Milpa Alta,quintil,4,1160,7.9,3,,3
+Tlalpan,quintil,4,7189,6.7,3,,3
+Tláhuac,quintil,4,981,2.1,3,,3
+Venustiano Carranza,quintil,4,9090,11.5,3,,3
+Xochimilco,quintil,4,3170,5.3,3,,3
+Álvaro Obregón,quintil,4,7262,5.9,3,,3
+Azcapotzalco,quintil,5,19112,24.3,1,,1
+Benito Juárez,quintil,5,0,0.0,4,,4
+Coyoacán,quintil,5,4144,3.3,3,,3
+Cuajimalpa de Morelos,quintil,5,9897,38.9,1,,1
+Cuauhtémoc,quintil,5,11779,12.6,1,,1
+Gustavo A. Madero,quintil,5,3257,1.6,3,,3
+Iztacalco,quintil,5,9904,14.0,1,,1
+Iztapalapa,quintil,5,11687,4.5,2,volumen,2 (volumen)
+La Magdalena Contreras,quintil,5,3199,8.4,3,,3
+Miguel Hidalgo,quintil,5,4347,6.1,3,,3
+Milpa Alta,quintil,5,1160,7.9,3,,3
+Tlalpan,quintil,5,7189,6.7,3,,3
+Tláhuac,quintil,5,981,2.1,3,,3
+Venustiano Carranza,quintil,5,9090,11.5,2,concentración,2 (concentración)
+Xochimilco,quintil,5,3170,5.3,3,,3
+Álvaro Obregón,quintil,5,7262,5.9,3,,3
+Azcapotzalco,quintil,6,19112,24.3,1,,1
+Benito Juárez,quintil,6,0,0.0,4,,4
+Coyoacán,quintil,6,4144,3.3,3,,3
+Cuajimalpa de Morelos,quintil,6,9897,38.9,1,,1
+Cuauhtémoc,quintil,6,11779,12.6,1,,1
+Gustavo A. Madero,quintil,6,3257,1.6,3,,3
+Iztacalco,quintil,6,9904,14.0,1,,1
+Iztapalapa,quintil,6,11687,4.5,2,volumen,2 (volumen)
+La Magdalena Contreras,quintil,6,3199,8.4,2,concentración,2 (concentración)
+Miguel Hidalgo,quintil,6,4347,6.1,3,,3
+Milpa Alta,quintil,6,1160,7.9,3,,3
+Tlalpan,quintil,6,7189,6.7,3,,3
+Tláhuac,quintil,6,981,2.1,3,,3
+Venustiano Carranza,quintil,6,9090,11.5,1,,1
+Xochimilco,quintil,6,3170,5.3,3,,3
+Álvaro Obregón,quintil,6,7262,5.9,3,,3

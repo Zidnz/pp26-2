@@ -1,0 +1,94 @@
+table clave
+	lineageTag: 63743952-106a-5fad-9c83-2c81d082acde
+
+	column clave
+		dataType: string
+		lineageTag: 1f6d2b30-4549-5c24-a339-4aebf6d27ad8
+		summarizeBy: none
+		sourceColumn: clave
+
+		annotation SummarizationSetBy = User
+
+	column pct
+		dataType: double
+		formatString: 0.00
+		lineageTag: c33f0072-25b1-5468-9f72-139cb4f75211
+		summarizeBy: none
+		sourceColumn: pct
+
+		annotation SummarizationSetBy = User
+
+	column cv
+		dataType: double
+		formatString: 0.00
+		lineageTag: 9d79b962-493e-5ce0-8376-60f0f2ee7047
+		summarizeBy: none
+		sourceColumn: cv
+
+		annotation SummarizationSetBy = User
+
+	column li90
+		dataType: double
+		formatString: 0.00
+		lineageTag: c3ae130b-f987-5127-88bb-f9ad560163d0
+		summarizeBy: none
+		sourceColumn: li90
+
+		annotation SummarizationSetBy = User
+
+	column ls90
+		dataType: double
+		formatString: 0.00
+		lineageTag: ca3b1986-1e70-512f-ba08-54edf020884e
+		summarizeBy: none
+		sourceColumn: ls90
+
+		annotation SummarizationSetBy = User
+
+	column total_expandido
+		dataType: double
+		formatString: 0.00
+		lineageTag: 46b1e63c-6d42-5b11-912d-b3b7a4acc20e
+		summarizeBy: none
+		sourceColumn: total_expandido
+
+		annotation SummarizationSetBy = User
+
+	column precision
+		dataType: string
+		lineageTag: ee018ad1-d209-5575-aadc-698d2e835716
+		summarizeBy: none
+		sourceColumn: precision
+
+		annotation SummarizationSetBy = User
+
+	column n
+		dataType: int64
+		formatString: 0
+		lineageTag: 2152ede6-1df7-53a2-b820-491a77e6abb8
+		summarizeBy: none
+		sourceColumn: n
+
+		annotation SummarizationSetBy = User
+
+	column fuente
+		dataType: string
+		lineageTag: 35266ed3-76b8-5383-9416-6a2e9001077b
+		summarizeBy: none
+		sourceColumn: fuente
+
+		annotation SummarizationSetBy = User
+
+	partition clave = m
+		mode: import
+		source =
+				let
+				    Origen = Csv.Document(File.Contents(RutaDatos & "clave.csv"), [Delimiter = ",", Encoding = 65001, QuoteStyle = QuoteStyle.Csv]),
+				    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars = true]),
+				    Vacios = Table.TransformColumns(Encabezados, {}, each if _ = "" then null else _),
+				    Tipos = Table.TransformColumnTypes(Vacios, {{"clave", type text}, {"pct", type number}, {"cv", type number}, {"li90", type number}, {"ls90", type number}, {"total_expandido", type number}, {"precision", type text}, {"n", Int64.Type}, {"fuente", type text}}, "en-US")
+				in
+				    Tipos
+
+	annotation PBI_ResultType = Table
+
