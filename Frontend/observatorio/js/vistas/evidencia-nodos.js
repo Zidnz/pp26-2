@@ -11,7 +11,7 @@
   var host=document.getElementById('evNodos');
   if(!host||typeof D==='undefined'||!D.modelo_v2||!D.diagnostico_v2||typeof OBS==='undefined') return;
   var V=D.modelo_v2, DG=D.diagnostico_v2, fmt=OBS.fmt, esc=OBS.esc;
-  var C={obj:'#4fe3c8',regla:'#e6e9ff',log:'#ffb84d',tar:'#a99bff',azar:'#ff5d7a',gris:'#8b90ad',sube:'#ff5d7a',baja:'#4fe3c8',neu:'#7fa6ff'};
+  var C={obj:'#0b8a79',regla:'#3d4570',log:'#c46f00',tar:'#6d5bd0',azar:'#d6335a',gris:'#7b819c',sube:'#d6335a',baja:'#0b8a79',neu:'#3f6fd1'};
   var PRIM='PRIMARIO: DANO_SALUD3, predictores primarios';
   var COLP={'Regla >= 40 h':C.regla,'Logística':C.log,'Tarjeta de puntos':C.tar,'R2 a priori (>=40 h + >=2 ABVD)':C.gris,'Horas (continuo)':C.regla};
   var W=920,H=470,CX=460,CY=235;
