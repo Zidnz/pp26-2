@@ -1,4 +1,4 @@
-/* Interfaz de Mientras: casos (con solicitud, entrevista y resultado), personas de relevo, seguimiento
+/* Interfaz de RedCare: casos (con solicitud, entrevista y resultado), personas de relevo, seguimiento
  * (programa, visitas, red, mapa, KPI) y ajustes. Listas de una mirada; el detalle se abre al tocar cada tarjeta.
  * Cambio 20 oct 2026: la canalización con 3 preguntas y la regla de 40 h se sustituyen por solicitud con dos vías
  * de entrada, entrevista de valoración, puntaje provisional, tres niveles y reparto de una bolsa de horas. */
@@ -22,7 +22,7 @@
   const hhmm = (s) => String(s).replace(/:00/g, '');
   let rolGuardado = 'cuidadora';
   try { rolGuardado = localStorage.getItem('mientras-rol') || 'cuidadora'; } catch (e) { /* sin almacenamiento */ }
-  const ui = { rol: rolGuardado, estilo: 'lista', view: 'casos', casoFiltro: 'todos', relFiltro: 'aprobada', segSub: 'prog', dia: F.hoyISO(), scCaso: '', apagado: false, objetivo: null };
+  const ui = { rol: rolGuardado, estilo: 'pop', view: 'casos', casoFiltro: 'todos', relFiltro: 'aprobada', segSub: 'caso', dia: F.hoyISO(), scCaso: '', apagado: false, objetivo: null };
 
   /* ---------- Íconos de persona (mujer / hombre) ---------- */
   const SX = {
@@ -76,26 +76,26 @@
   /* ---------- Modelo derivado ---------- */
   // Puntaje, nivel y horas NO se guardan: se calculan con config.js en cada render, así un cambio de pesos o de bolsa
   // se refleja en todos los casos.
-  const NV_CSS = { alta: 'p1', media: 'p2', baja: 'np' }; // reutiliza los estilos de prioridad
+  const NV_CSS = { dentro: 'p1', fuera: 'np' }; // reutiliza los estilos de prioridad
   const primeraAsignacion = (c) => (c.asignacion ? ((c.asignacion.historial || [])[0] || {}).desde || c.asignacion.fecha : null);
   const bolsa = () => (cfg().bolsaSim != null ? cfg().bolsaSim : CP.presupuesto_horas_mes);
   function valorar(entrevista, sexo, fecha, hasta) {
     const v = PR.puntuar(Object.assign({}, entrevista.modelo, { sexo }), CP);
-    const ef = PR.puntajeEfectivo(v.base, PR.semanasEnCola(fecha, hasta || F.hoyISO()), CP);
-    return Object.assign(v, ef, { nivel: PR.nivel(ef.efectivo, CP), barthel: PR.totalBarthel(entrevista.barthel), zarit: PR.totalZarit(entrevista.zarit, CP), regla: PR.reglaHoras(entrevista.modelo.horas) });
+    const ef = PR.puntajeEfectivo(v.base, v.dentro ? PR.semanasEnCola(fecha, hasta || F.hoyISO()) : 0, CP); // fuera de la regla no hay cola ni espera
+    return Object.assign(v, ef, { nivel: PR.nivel(v.base, CP), barthel: PR.totalBarthel(entrevista.barthel), zarit: PR.totalZarit(entrevista.zarit, CP), regla: PR.reglaHoras(entrevista.modelo.horas) });
   }
   const valDe = (c) => valorar(c.entrevista, c.cuidadora.sexo, c.fecha, primeraAsignacion(c));
   const enPlan = (c) => c.estado !== 'cerrado' && c.entrevista;
   /** Reparto de la bolsa entre todos los casos valorados que no están cerrados. `extra`: caso aún no guardado. */
   function calcularPlan(extra) {
-    const cs = store.state.casos.filter(enPlan).map((c) => ({ id: c.id, efectivo: valDe(c).efectivo }));
+    const cs = store.state.casos.filter(enPlan).map((c) => ({ c, v: valDe(c) })).filter((x) => x.v.nivel === 'dentro').map((x) => ({ id: x.c.id, efectivo: x.v.efectivo }));
     if (extra) cs.push(extra);
     const r = PR.asignarHoras(cs, CP, bolsa());
     r.sem = {}; Object.keys(r.horas).forEach((id) => { r.sem[id] = PR.horasSemana(r.horas[id], CP); });
     return r;
   }
   let plan = calcularPlan();
-  const horasDe = (c) => ({ mes: plan.horas[c.id] || 0, sem: plan.sem[c.id] || 0, cola: plan.en_cola.includes(c.id) });
+  const horasDe = (c) => ({ mes: plan.horas[c.id] || 0, sem: plan.sem[c.id] || 0, cola: plan.en_cola.includes(c.id), fuera: valDe(c).nivel === 'fuera' });
   const enRevision = (c) => !!(c.revision && c.revision.estado === 'pendiente');
   const apelAbiertas = (c) => (c.apelaciones || []).filter((a) => a.estado === 'abierta');
   const evalDe = (c) => RV.evaluarPaquete(c.paquete, cfg().factorPrest);
@@ -112,20 +112,22 @@
   const pts = (n) => (Math.round(n * 10) / 10).toLocaleString('es-MX');
   const canalTxt = (c) => (c.canal_origen === 'referencia' ? `Referencia · ${c.referencia ? c.referencia.institucion : ''}` : 'Autorregistro');
 
-  /* Personajes (ilustraciones del Observatorio, sin copiarlas). Ver README: cuáles conviene reemplazar. */
+  /* Personajes propios de la app (26 oct 2026; generados con build_personajes_app.py). Los tres resultados muestran
+   * relevo ocurriendo: cambian quién cuida y a quién se cuida, no cuánto sufre la cuidadora, para que la imagen no
+   * funcione como semáforo de necesidad. Son ilustración: no son datos ni personas reales. */
   const ILU = 'observatorio/ilustraciones/';
   const PERSONAJE = {
-    bienvenida: ILU + 'logo_personajes.webp', alta: ILU + 'agotada.png', media: ILU + 'cuidadoraSilla.png',
-    baja: ILU + 'familia.png',
+    bienvenida: ILU + 'bienvenida_relevo.webp', alta: ILU + 'resultado_alta.webp', media: ILU + 'resultado_media.webp',
+    baja: ILU + 'resultado_baja.webp', dentro: ILU + 'resultado_alta.webp', fuera: ILU + 'resultado_baja.webp', relevo: ILU + 'relevo_equipo.webp',
   };
   const personaje = (k, cls) => `<img class="personaje ${cls || ''}" src="${PERSONAJE[k]}" alt="" loading="lazy">`;
 
   /* ================= Navegación ================= */
   /* Cada rol ve solo lo suyo (24 oct 2026). La cuidadora no ve casos de otras familias; la persona de relevo
    * no ve a las demás personas de relevo; el programa ve todo. En el piloto, cada rol entraría con su cuenta. */
-  const VISTAS_ROL = { cuidadora: ['mia'], relevo: ['yo'], programa: ['casos', 'relevos', 'seguimiento', 'ajustes'] };
+  const VISTAS_ROL = { cuidadora: ['mia'], relevo: ['yo'], programa: ['seguimiento', 'casos', 'relevos', 'ajustes'] };
   const VIEWS = VISTAS_ROL.programa;
-  const TITULOS = { mia: 'Necesito relevo', yo: 'Puedo cuidar', casos: 'Casos', relevos: 'Personas de relevo', seguimiento: 'Seguimiento', ajustes: 'Ajustes' };
+  const TITULOS = { mia: 'Necesito relevo', yo: 'Puedo cuidar', casos: 'Casos', relevos: 'Personas de relevo', seguimiento: 'Red de cuidado', ajustes: 'Ajustes' };
   const leerId = (k) => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
   const guardarId = (k, v) => { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) { /* sin almacenamiento */ } };
   function cambiarRol(rol) {
@@ -166,11 +168,12 @@
   const ORDEN = { espera: 0, activo: 1, cerrado: 2 };
   function renderCasos() {
     const { casos } = store.state;
-    const filtro = (c) => ui.casoFiltro === 'todos' ? c.estado !== 'cerrado' : ui.casoFiltro === 'revision' ? enRevision(c) || apelAbiertas(c).length > 0 : c.estado === ui.casoFiltro;
+    const filtro = (c) => ui.casoFiltro === 'todos' ? c.estado !== 'cerrado' : c.estado === ui.casoFiltro;
     const lista = casos.filter(filtro).slice().sort((a, b) => ORDEN[a.estado] - ORDEN[b.estado] || valDe(b).efectivo - valDe(a).efectivo || a.fecha.localeCompare(b.fecha));
     const n = (e) => casos.filter((c) => c.estado === e).length;
     const rev = casos.filter((c) => enRevision(c) || apelAbiertas(c).length).length;
     $('#caso-count').innerHTML = `<b>${n('espera')}</b> en cola · <b>${n('activo')}</b> con relevo${rev ? ` · <b>${rev}</b> por revisar` : ''}`;
+    $$('#caso-list .ccard').forEach((el, i) => el.style.setProperty('--i', Math.min(i, 12)));
     $('#caso-list').innerHTML = lista.length ? lista.map(casoCard).join('') : '<div class="empty">Sin casos.</div>';
   }
 
@@ -178,7 +181,7 @@
     const v = valDe(c), hz = horasDe(c), nv = NV_CSS[v.nivel];
     const r = c.asignacion && c.estado === 'activo' && relById(c.asignacion.relevoId);
     const inc = store.state.incidentes.filter((i) => i.casoId === c.id && i.estado === 'abierto').length;
-    const marcas = (enRevision(c) ? '<span class="badge alta">revisión</span>' : '') + (apelAbiertas(c).length ? '<span class="badge pendiente">apelación</span>' : '');
+    const marcas = '';
     let pie;
     if (c.estado === 'espera') pie = `<span class="wait${!hz.cola && !v.semanas ? ' nueva' : ''}">${hz.cola ? 'sin horas este ciclo' : v.semanas ? v.semanas + ' sem en cola' : 'Nueva'}</span>${marcas}<button type="button" class="btn-primary sm" data-action="proponer" data-id="${esc(c.id)}"${hz.cola ? ' disabled' : ''}>Asignar</button>`;
     else if (r) pie = `<span class="relv"><small>relevo</small>${quien(r.sexo, r.nombre)}</span>${marcas}${inc ? `<span class="badge alta">${inc} incidente${inc > 1 ? 's' : ''}</span>` : ''}`;
@@ -190,7 +193,7 @@
         ${quien(c.cuidadora.sexo, c.cuidadora.alias)}<span class="arrow" aria-hidden="true">→</span>${quien(c.persona.sexo, c.persona.alias)}
         <span class="badge pr ${nv}" title="Nivel ${PR.NIVEL[v.nivel]}">${pts(v.efectivo)}</span>
       </div>
-      <div class="facts f-cuida"><span><b>${pts(v.efectivo)}</b> pts${v.extra ? ` (${pts(v.base)} + ${pts(v.extra)} espera)` : ''}</span><span>${esc(canalTxt(c))}</span><span>${esc(c.alcaldia)}</span></div>
+      <div class="facts f-cuida"><span><b>${pts(v.efectivo)}</b> h/sem${v.extra ? ` (${pts(v.base)} + ${pts(v.extra)} espera)` : ''}</span><span>${esc(canalTxt(c))}</span><span>${esc(c.alcaldia)}</span></div>
       <div class="cfoot">${pie}</div>
     </article>`;
   }
@@ -209,12 +212,9 @@
     return `<div class="dots10">${Array.from({ length: 10 }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('')}</div>`;
   }
 
-  /* Bloque de explicación: los 3 factores que más pesaron, en lenguaje simple. Lo usan el detalle y el resultado. */
+  /* Bloque de explicación: horas declaradas y regla de entrada. Lo usan el detalle y el resultado. */
   function factoresHTML(v) {
-    const top = v.top3.length ? v.top3.map((d) => `<li><b class="mono">+${d.puntos}</b><span>${esc(d.etiqueta)}</span></li>`).join('') : '<li><span>Ninguna respuesta sumó puntos.</span></li>';
-    return `<ol class="factores">${top}</ol>
-      ${v.extra ? `<p class="wk-n">Más ${pts(v.extra)} por ${v.semanas} semana${v.semanas === 1 ? '' : 's'} en cola (tope ${CP.envejecimiento.tope_envejecimiento}).</p>` : ''}
-      ${v.provisional ? '<p class="provisional">Puntaje provisional — modelo en validación</p>' : ''}`;
+    return `<div class="regla ${v.dentro ? 'ok' : 'no'}"><b class="mono">${pts(v.horas)} h</b><span>${v.dentro ? 'Cumple' : 'No cumple'} la regla de ${CP.regla_horas} h por semana</span></div>`;
   }
 
   function abrirCaso(id) {
@@ -233,20 +233,13 @@
         <div class="hero-tags"><span class="pill-p">Nivel ${PR.NIVEL[v.nivel]}</span><span class="pill-s">${esc(canalTxt(c))}</span></div>
       </div>
       <div class="tiles">
-        ${tile(pts(v.efectivo) + `<small>/${v.max}</small>`, 'puntaje efectivo', '', v.extra ? `<em>${pts(v.base)} + ${pts(v.extra)} espera</em>` : '<em>sin espera</em>')}
-        ${tile(hz.mes + '<small>h</small>', 'al mes', '', `<em>${hz.cola ? 'en cola: bolsa agotada' : '≈ ' + hz.sem + ' h/sem'}</em>`)}
+        ${tile(pts(v.efectivo) + '<small> h</small>', 'horas efectivas por semana', '', v.extra ? `<em>${pts(v.base)} + ${pts(v.extra)} espera</em>` : '<em>sin espera</em>')}
+        ${tile(hz.mes + '<small>h</small>', 'al mes', '', `<em>${hz.fuera ? 'fuera de la regla: sin horas' : hz.cola ? 'en cola: bolsa agotada' : '≈ ' + hz.sem + ' h/sem'}</em>`)}
         ${tile(v.barthel == null ? '—' : String(v.barthel), 'Barthel', '', `<em>${esc(PR.nivelBarthel(v.barthel))}</em>`)}
       </div>
 
-      ${enRevision(c) ? `<section class="blk revbox"><h5>Revisión humana pendiente</h5>
-        <ul class="motivos">${c.revision.motivos.map((m) => `<li>${esc(m.txt)}</li>`).join('')}</ul>
-        <p class="wk-n">El puntaje no se cambia de forma automática: una persona del programa revisa el caso.</p></section>` : ''}
+      ${enRevision(c) ? `<p class="wk-n">En revisión: ${c.revision.motivos.map((m) => esc(m.txt.replace(/[.\s]+$/, ''))).join('; ')}.</p>` : ''}
       ${c.revision && c.revision.estado === 'revisada' ? `<p class="wk-n">Revisado ${esc(c.revision.fechaResolucion)}: ${esc(c.revision.nota)}</p>` : ''}
-
-      <section class="blk"><h5>Por qué este puntaje</h5>${factoresHTML(v)}
-        <p class="wk-n">Regla de referencia (≥ 40 h/sem): <b>${v.regla === 'dentro' ? 'dentro' : 'fuera'}</b>. La tarjeta no la supera de forma demostrable (script 22).</p>
-        <p class="wk-n">Sobrecarga (Zarit): ${v.zarit == null ? 'sin capturar · reactivos pendientes de licencia' : v.zarit + ' / ' + CP.zarit.n_reactivos * CP.zarit.escala_max} · se usa para seguimiento, no para el puntaje.</p>
-      </section>
 
       ${apelAbiertas(c).length || (c.apelaciones || []).length ? `<section class="blk"><h5>Solicitudes de revisión</h5>
         ${(c.apelaciones || []).map((a) => `<div class="inc"><span class="badge ${a.estado === 'abierta' ? 'pendiente' : 'aprobada'}">${a.estado === 'abierta' ? 'Abierta' : 'Resuelta'}</span><span>${esc(a.motivo)}<small>${esc(a.fecha)}${a.resolucion ? ' · ' + esc(a.resolucion) : ''}</small></span>${a.estado === 'abierta' ? `<button type="button" class="btn-ghost sm" data-action="resolver-ap" data-id="${esc(c.id)}" data-ap="${esc(a.id)}">Resolver</button>` : ''}</div>`).join('')}
@@ -255,7 +248,7 @@
       ${pref ? `<section class="blk"><h5>${c.paquete ? 'Paquete · ' + c.paquete.horas + ' h/sem' : 'Preferencias para el relevo'}</h5>
         ${semana(pref.dias, ev ? `<b>${esc(ev.horario)}</b> · jornada ${esc(ev.tipo)} · $${ev.hora.toFixed(2)}/h` : `desde las ${esc(pref.inicio)}`)}
         <div class="tags">${tags(pref.tareas, 'alt')}</div>
-        ${c.paquete && hz.sem && hz.sem !== c.paquete.horas ? `<p class="wk-n">El ciclo actual le da ${hz.sem} h/sem. Se aplica desde Seguimiento › Programa.</p>` : ''}
+        ${c.paquete && hz.sem && hz.sem !== c.paquete.horas ? `<p class="wk-n">El ciclo actual le da ${hz.sem} h/sem.</p>` : ''}
       </section>` : ''}
 
       ${ev ? `<section class="blk"><h5>Quién paga · ${esc(RV.PAGADORES[c.pagador])}</h5>
@@ -338,6 +331,7 @@
     delete c.paqueteTemporal;
     if (ui.asig.reasignar) store.reasignar(c.id, r.id, d.motivo, formal); else store.asignar(c.id, r.id, formal);
     $('#dlg-asig').close();
+    if (window.Interaccion) Interaccion.confeti();
     toast(`${r.nombre} asignada · fragilidad ${f2(antes)} → ${f2(analisisHogar(casoById(c.id)).fragilidad)}`);
   });
 
@@ -400,56 +394,43 @@
     if (ui.segSub === 'prog') renderPrograma();
     else if (ui.segSub === 'hoy') renderDia();
     else if (ui.segSub === 'caso') renderSegCaso();
-    else if (ui.segSub === 'mapa') drawTerritorio();
-    else renderKPI();
+    else drawTerritorio();
   }
   segmento('#seg-sub', 'segSub', () => render());
 
   /* ---------- Programa: bolsa, niveles, puntajes por canal, revisión y apelaciones ---------- */
-  function franjaPuntajes(vals, max) {
-    // Un punto por caso sobre la escala 0-max; la línea marca la mediana.
-    const W = 280, H = 40, x = (v) => 10 + ((W - 20) * v) / max;
-    const cuenta = {};
-    const puntos = vals.slice().sort((a, b) => a - b).map((v) => { const k = Math.round(v * 2) / 2; cuenta[k] = (cuenta[k] || 0) + 1; return `<circle cx="${x(v).toFixed(1)}" cy="${(30 - (cuenta[k] - 1) * 7).toFixed(1)}" r="3.4"/>`; }).join('');
-    const med = vals.length ? vals.slice().sort((a, b) => a - b)[Math.floor((vals.length - 1) / 2)] : null;
-    const cortes = [CP.umbrales.media, CP.umbrales.alta].map((u) => `<line class="corte" x1="${x(u)}" x2="${x(u)}" y1="2" y2="36"/>`).join('');
-    return `<svg class="franja" viewBox="0 0 ${W} ${H}" role="img" aria-label="Puntajes">${cortes}<line class="eje" x1="10" x2="${W - 10}" y1="36" y2="36"/>${med != null ? `<line class="med" x1="${x(med)}" x2="${x(med)}" y1="4" y2="36"/>` : ''}${puntos}</svg>`;
-  }
   function renderPrograma() {
     const s = store.state, cs = s.casos.filter(enPlan);
     const vals = cs.map((c) => ({ c, v: valDe(c), h: horasDe(c) }));
-    const B = plan.presupuesto, minimos = cs.length * CP.horas_minimas;
-    const porNivel = ['alta', 'media', 'baja'].map((nv) => { const g = vals.filter((x) => x.v.nivel === nv); return { nv, n: g.length, h: g.length ? Math.round(g.reduce((t, x) => t + x.h.mes, 0) / g.length) : 0 }; });
-    const max = Object.values(CP.pesos).reduce((t, v) => t + Math.max(0, v), 0);
-    const canales = Object.keys(CP.canales).map((k) => {
-      const g = vals.filter((x) => x.c.canal_origen === k).map((x) => x.v.base);
-      const prom = g.length ? g.reduce((t, v) => t + v, 0) / g.length : null;
-      return `<div class="canal"><div class="row-between"><b>${esc(CP.canales[k])}</b><span class="mono sub">n = ${g.length}${prom != null ? ` · promedio ${pts(prom)} · baja ${g.filter((v) => v < CP.umbrales.media).length}` : ''}</span></div>${franjaPuntajes(g, max)}</div>`;
-    }).join('');
+    const B = plan.presupuesto, minimos = vals.filter((x) => x.v.nivel === 'dentro').length * CP.horas_minimas;
+    const dentro = vals.filter((x) => x.v.nivel === 'dentro').length, fuera = vals.length - dentro;
+    const mM = Math.min(100, pct(Math.min(minimos, B), B)), mR = Math.max(0, Math.min(100 - mM, pct(plan.usado - Math.min(minimos, plan.usado), B)));
+    // Una barra por canal: cuántas cuidadoras entran por la regla de 40 h y cuántas no (cuenta, no promedio).
+    const filas = Object.keys(CP.canales).map((k) => {
+      const g = vals.filter((x) => x.c.canal_origen === k);
+      const d = g.filter((x) => x.v.base >= CP.regla_horas).length, f = g.length - d;
+      return { k, n: g.length, d, f };
+    }).filter((x) => x.n);
+    const mx = Math.max(1, ...filas.map((x) => x.n));
+    const canales = filas.map((x) => `<div class="cn"><span class="cn-t">${esc(CP.canales[x.k])}</span><span class="cn-bar" role="img" aria-label="${x.d} dentro de la regla, ${x.f} fuera"><i class="d" style="flex:${x.d}"></i><i class="f" style="flex:${x.f}"></i></span><b class="mono">${x.n}</b></div>`.replace('class="cn-bar"', `class="cn-bar" style="width:${Math.round((x.n / mx) * 100)}%"`)).join('');
     const rev = s.casos.filter(enRevision), aps = s.casos.filter((c) => apelAbiertas(c).length);
     const lnk = (c, txt) => `<button type="button" class="linkrow" data-action="ver-caso" data-id="${esc(c.id)}"><span class="mono">${esc(c.folio)}</span><span>${esc(txt)}</span></button>`;
     $('#prog-body').innerHTML = `
       <div class="card panel">
-        <div class="eyebrow">Bolsa del mes${cfg().bolsaSim != null ? ' · simulada' : ''}</div>
-        <div class="bolsa"><b class="mono">${plan.usado}</b><span>de ${B} h asignadas</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:${Math.min(100, pct(minimos, B))}%"></div><div class="bar-fill b2" style="width:${Math.max(0, Math.min(100, pct(plan.usado - Math.min(minimos, plan.usado), B)))}%"></div></div>
-        <p class="sub">${Math.min(minimos, B)} h son mínimos garantizados (${cs.length} × ${CP.horas_minimas} h) · el resto se reparte por puntaje · sobran ${plan.sobrante} h${plan.sobrante && !plan.en_cola.length ? ' (todos en el tope de ' + CP.horas_maximas + ' h)' : ''}.</p>
-        ${plan.capacidad_ok ? '' : `<div class="warnbox"><b>La bolsa no alcanza para los mínimos.</b> ${plan.en_cola.length} caso(s) quedan en cola sin horas este mes; su puntaje sigue subiendo por la espera.</div>`}
-      </div>
-      <div class="kpigrid">${porNivel.map((x) => `<div class="kpi nv-${x.nv}"><b class="mono">${x.n}</b><span>nivel ${PR.NIVEL[x.nv].toLowerCase()}</span><small>${x.h} h/mes en promedio</small></div>`).join('')}</div>
-      <div class="card panel">
-        <div class="eyebrow">Puntaje base por canal de origen</div>
-        <p class="sub">¿El autorregistro capta a cuidadoras de menor intensidad? Cada punto es un caso; líneas punteadas: cortes Media (${CP.umbrales.media}) y Alta (${CP.umbrales.alta}); línea sólida: mediana. Con pocos casos no se concluye nada.</p>
-        ${canales}
+        <div class="eyebrow">Bolsa del mes · simulada</div>
+        <div class="bolsa"><b class="mono">${plan.usado}</b><span>de ${B} h repartidas</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:${mM}%"></div><div class="bar-fill b2" style="width:${mR}%"></div></div>
+        <div class="bkey"><span><i class="k1"></i>mínimo garantizado ${Math.min(minimos, B)} h</span><span><i class="k2"></i>reparto extra</span></div>
+        ${plan.capacidad_ok ? '' : `<div class="warnbox"><b>No alcanza para los mínimos.</b> ${plan.en_cola.length} caso(s) esperan.</div>`}
       </div>
       <div class="card panel">
-        <div class="eyebrow">Revisión humana · ${rev.length}</div>
-        ${rev.map((c) => lnk(c, c.revision.motivos[0].txt)).join('') || '<p class="sub">Ninguna.</p>'}
-        <div class="eyebrow sep">Solicitudes de revisión abiertas · ${aps.length}</div>
-        ${aps.map((c) => lnk(c, apelAbiertas(c)[0].motivo)).join('') || '<p class="sub">Ninguna.</p>'}
+        <div class="eyebrow">Cuidadoras por origen</div>
+        <div class="cn-leg"><span><i class="d"></i>cuidan ${CP.regla_horas} h o más (${dentro})</span><span><i class="f"></i>menos de ${CP.regla_horas} h (${fuera})</span></div>
+        ${canales || '<p class="sub">Sin casos.</p>'}
       </div>
-      <button class="btn-ghost wide" data-action="aplicar-ciclo">Aplicar horas del ciclo a los casos con relevo</button>
-      <p class="sub foot">${s.ultimoCiclo ? 'Último ciclo aplicado: ' + esc(s.ultimoCiclo) + '. ' : ''}Puntajes de la tarjeta «${esc(CP.variante_tarjeta)}» (script 22), provisionales. Datos simulados.</p>`;
+      ${rev.length || aps.length ? `<div class="pend"><div class="eyebrow">Por revisar</div>${rev.map((c) => lnk(c, c.revision.motivos[0].txt)).join('')}${aps.map((c) => lnk(c, apelAbiertas(c)[0].motivo)).join('')}</div>` : ''}
+      <button class="btn-ghost wide" data-action="aplicar-ciclo">Aplicar horas del ciclo</button>
+      <p class="sub foot">${s.ultimoCiclo ? 'Último ciclo: ' + esc(s.ultimoCiclo) + '. ' : ''}Datos simulados.</p>`;
   }
 
   function renderDia() {
@@ -530,31 +511,75 @@
   function drawRed() {
     const c = casoById(ui.scCaso);
     const svg = $('#graphSvg');
-    if (!c) { svg.innerHTML = ''; $('#fragScore').textContent = '—'; $('#noteBox').textContent = ''; $('#nodeBtn').hidden = true; return; }
-    $('#nodeBtn').hidden = false;
+    const vacio = () => { svg.innerHTML = ''; ['#fragScore', '#cobPct', '#horasSinCubrir'].forEach((q) => { $(q).textContent = '—'; }); $('#noteBox').textContent = ''; $('#nodeInfo').innerHTML = ''; $('#depList').innerHTML = ''; $('#redHead').innerHTML = ''; };
+    if (!c) { vacio(); return; }
     const base = analisisHogar(c, null);
     if (!ui.objetivo || !base.porId[ui.objetivo] || !(base.out[ui.objetivo] > 0)) ui.objetivo = base.principal;
-    const X = ui.objetivo, off = ui.apagado && X;
+    const X = ui.objetivo, off = !!(ui.apagado && X);
     const a = analisisHogar(c, off ? X : null);
-    red.dibujar(svg, a, X, !!off);
-    $('#graphWrap').classList.toggle('off', !!off);
+    red.dibujar(svg, a, X, off);
+    $('#graphWrap').classList.toggle('off', off);
     const nom = X ? a.porId[X].nombre : '';
-    const btn = $('#nodeBtn');
-    btn.textContent = off ? 'Restaurar' : 'Apagar ' + nom;
-    btn.className = off ? 'btn-dark sm' : 'btn-alert sm';
+    const cl = fragClase(base.fragilidad);
+    // Cuánto del cuidado que necesita el hogar llega hoy (o llegaría sin la persona apagada)
+    const rec = (id) => a.rel.filter((r) => r.a === id && !(off && r.de === X)).reduce((t, r) => t + r.horas, 0);
+    const deps = a.personas.filter((p) => p.id !== (off ? X : null) && a.need(p) > 0);
+    const nec = deps.reduce((t, p) => t + a.need(p), 0), cub = deps.reduce((t, p) => t + Math.min(rec(p.id), a.need(p)), 0);
+    const cob = nec ? Math.round((cub / nec) * 100) : 100;
+    const ETQ = { r: 'Un solo sostén', a: 'Sostén parcial', n: 'Cuidado repartido' };
+    $('#redHead').innerHTML = `<span class="gh-n"><b>${a.personas.length}</b> personas</span><span class="gh-n"><b>${base.sostenes.length}</b> cuidan</span><span class="gh-n"><b>${Math.round(base.total)}</b> h/sem</span><span class="gh-t t-${cl}">${ETQ[cl]}</span>`;
     $('#fragScore').textContent = off ? `${a.sinCuidado.length}/${a.dependientes}` : f2(a.fragilidad);
     $('#fragScore').className = 'mono ' + (off ? 'r' : fragClase(a.fragilidad));
     $('#fragLabel').textContent = off ? 'sin cuidado' : 'fragilidad';
+    $('#cobPct').textContent = cob + '%';
+    $('#cobPct').className = 'mono ' + (cob >= 100 ? 'n' : cob >= 60 ? 'a' : 'r');
     $('#horasSinCubrir').textContent = a.horasSinCubrir + ' h';
+
+    // Ficha de la persona elegida
+    const lista = (rs, k) => rs.map((r) => `<span class="pill"><span>${esc(a.porId[r[k]].nombre)}</span><b>${r.horas} h</b></span>`).join('');
+    const da = a.rel.filter((r) => r.de === X), rb = a.rel.filter((r) => r.a === X && !(off && r.de === X));
+    const P = X ? a.porId[X] : null;
+    if (P) {
+      const nP = a.need(P), rP = rec(X);
+      const tag = off ? ['off', 'Apagada · simulación'] : P.pro ? ['pro', 'Relevo del programa'] : X === a.principal ? ['hub', 'Sostén principal'] : ['', 'Cuida'];
+      $('#nodeInfo').innerHTML = `
+        <div class="ni-top"><span class="ni-av ${P.pro ? 'pro' : X === a.principal ? 'hub' : ''}">${esc(P.nombre.charAt(0).toUpperCase())}</span>
+          <div class="ni-id"><b>${esc(P.nombre)}</b><small>${esc((P.edad ? P.edad + ' años · ' : '') + P.rol)}</small></div><span class="ni-tag ${tag[0]}">${tag[1]}</span></div>
+        <div class="ni-rows">
+          <div><i>Cuida a</i><span class="pills">${lista(da, 'a') || '<em>a nadie</em>'}</span></div>
+          <div><i>Recibe de</i><span class="pills">${lista(rb, 'de') || '<em>de nadie</em>'}</span></div>
+          ${nP > 0 ? `<div><i>Necesita</i><span class="ni-cov"><span class="cbar"><i style="width:${Math.min(100, Math.round((rP / nP) * 100))}%"></i></span><b class="mono">${rP} de ${nP} h</b></span></div>` : ''}
+        </div>
+        <button type="button" class="${off ? 'btn-dark' : 'btn-alert'}" data-action="apagar">${off ? 'Restaurar' : 'Apagar a ' + esc(nom)}</button>`;
+    } else $('#nodeInfo').innerHTML = '<p class="sub">Sin personas con horas de cuidado.</p>';
+
+    // Quién necesita cuidado y cuánto recibe
+    $('#depList').innerHTML = deps.length ? deps.map((p) => {
+      const n = a.need(p), r = rec(p.id), pc = Math.min(100, Math.round((r / n) * 100)), k = r === 0 ? 'r' : r < n ? 'a' : 'n';
+      return `<div class="dep"><span class="dn">${esc(p.nombre)}<small>${esc((p.edad ? p.edad + ' · ' : '') + p.rol)}</small></span><span class="cbar ${k}"><i style="width:${pc}%"></i></span><b class="mono">${r}/${n} h</b></div>`;
+    }).join('') : '<p class="sub">Nadie necesita cuidado en este hogar.</p>';
+
     const note = $('#noteBox');
-    note.classList.toggle('off', !!off);
+    note.classList.toggle('off', off);
     if (!X) note.textContent = '';
-    else if (off) note.textContent = a.relevosSinX === 0 ? `Si falta ${nom}, nadie la cubre.` : a.horasSinCubrir === 0 ? `Si falta ${nom}, la red la cubre.` : `Si falta ${nom}, quedan ${a.horasSinCubrir} h sin cubrir.`;
-    else note.textContent = proDe(c) ? 'Toca un nodo y apágalo para simular una semana sin esa persona.' : 'Sin relevo del programa todavía.';
+    else if (off) note.textContent = a.relevosSinX === 0 ? `Si falta ${nom}, nadie la cubre.` : a.horasSinCubrir === 0 ? `Si falta ${nom}, la red la cubre.` : `Si falta ${nom}, quedan ${a.horasSinCubrir} h sin cubrir (hoy: ${base.horasSinCubrir} h).`;
+    else note.textContent = proDe(c) ? 'Toca a una persona para ver su ficha y apágala para simular una semana sin ella.' : 'Sin relevo del programa todavía. Toca a una persona para ver su ficha.';
   }
-  $('#nodeBtn').addEventListener('click', () => { ui.apagado = !ui.apagado; drawRed(); });
-  function elegirNodo(g) { if (!g || !g.classList.contains('act')) return; ui.objetivo = g.dataset.id; drawRed(); }
+  $('#nodeInfo').addEventListener('click', (e) => { if (e.target.closest('[data-action="apagar"]')) { ui.apagado = !ui.apagado; drawRed(); } });
+  function elegirNodo(g) { if (!g || !g.classList.contains('act')) return; ui.objetivo = g.dataset.id; drawRed(); try { $('#nodeInfo').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } catch (e) { /* sin soporte */ } }
   $('#graphSvg').addEventListener('click', (e) => elegirNodo(e.target.closest('.g-node')));
+  // Al pasar sobre una persona se resaltan sus conexiones y se atenúa el resto.
+  const gs = $('#graphSvg');
+  function resalta(g) {
+    gs.querySelectorAll('.on').forEach((x) => x.classList.remove('on'));
+    if (!g) { gs.classList.remove('hl'); return; }
+    const id = g.dataset.id; gs.classList.add('hl'); g.classList.add('on');
+    gs.querySelectorAll('[data-de]').forEach((x) => { if (x.dataset.de === id || x.dataset.a === id) { x.classList.add('on'); [x.dataset.de, x.dataset.a].forEach((o) => { const n = gs.querySelector(`.g-node[data-id="${CSS.escape(o)}"]`); if (n) n.classList.add('on'); }); } });
+  }
+  gs.addEventListener('pointerover', (e) => resalta(e.target.closest('.g-node')));
+  gs.addEventListener('pointerleave', () => resalta(null));
+  gs.addEventListener('focusin', (e) => resalta(e.target.closest('.g-node')));
+  gs.addEventListener('focusout', () => resalta(null));
   $('#graphSvg').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegirNodo(e.target.closest('.g-node')); } });
 
   /* ---------- Mapa (Seguimiento › Mapa) ---------- */
@@ -629,87 +654,6 @@
   }
   $('#mapReset').addEventListener('click', () => { if (mapa) mapa.svg.transition().duration(300).call(mapa.zoom.transform, d3.zoomIdentity); });
 
-  /* ---------- Indicadores (solo agregados) ---------- */
-  const mediana = (a) => { if (!a.length) return null; const s = a.slice().sort((x, y) => x - y); const m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
-  const minutos = (t) => { const [h, m] = String(t).split(':').map(Number); return h * 60 + (m || 0); };
-  const durH = (v) => { let d = minutos(v.fin) - minutos(v.ini); if (d <= 0) d += 1440; return d / 60; };
-
-  function calcularKPI() {
-    const s = store.state, hoy = F.hoyISO(), desde = F.sumaDias(hoy, -28);
-    const casos = s.casos;
-    const asignados = casos.filter((c) => c.asignacion);
-    const enEspera = casos.filter((c) => c.estado === 'espera');
-    const v28 = s.visitas.filter((v) => v.fecha >= desde && v.fecha < hoy && v.estado !== 'pendiente');
-    const progH = v28.reduce((t, v) => t + durH(v), 0);
-    const real = v28.filter((v) => v.estado === 'realizada');
-    const entH = real.reduce((t, v) => t + durH(v), 0);
-    const horasTot = s.visitas.filter((v) => v.estado === 'realizada').reduce((t, v) => t + durH(v), 0);
-    const elegCont = asignados.filter((c) => diasEntre(primeraAsignacion(c), hoy) >= 28);
-    const continuos = elegCont.filter((c) => c.estado === 'activo' && !(c.asignacion.historial || []).some((h) => diasEntre(primeraAsignacion(c), h.hasta) <= 28));
-    const activos = casos.filter((c) => c.estado === 'activo');
-    const semPrev = F.sumaDias(F.lunesDe(hoy), -7);
-    const qPrev = s.checkins.filter((q) => q.semana === semPrev && activos.some((c) => c.id === q.casoId));
-    const aprob = s.relevos.filter(store.aprobado);
-    const cert = aprob.filter((r) => r.certificacion === 'certificada');
-    const conSexo = casos.filter((c) => c.cuidadora.sexo);
-    return {
-      casos_canalizados: casos.length,
-      pct_dentro_de_la_regla_40h: pct(casos.filter((c) => c.entrevista && PR.reglaHoras(c.entrevista.modelo.horas) === 'dentro').length, casos.length),
-      casos_nivel_alta: casos.filter((c) => enPlan(c) && valDe(c).nivel === 'alta').length,
-      casos_nivel_media: casos.filter((c) => enPlan(c) && valDe(c).nivel === 'media').length,
-      casos_nivel_baja: casos.filter((c) => enPlan(c) && valDe(c).nivel === 'baja').length,
-      casos_autorregistro: casos.filter((c) => c.canal_origen === 'autorregistro').length,
-      casos_referencia: casos.filter((c) => c.canal_origen === 'referencia').length,
-      casos_en_revision_humana: casos.filter(enRevision).length,
-      apelaciones_abiertas: casos.reduce((t, c) => t + apelAbiertas(c).length, 0),
-      bolsa_horas_mes: plan.presupuesto,
-      horas_asignadas_mes: plan.usado,
-      pct_cuidadoras_mujeres: pct(conSexo.filter((c) => c.cuidadora.sexo === 'M').length, conSexo.length),
-      mediana_dias_canalizacion_a_asignacion: mediana(asignados.map((c) => diasEntre(c.fecha, primeraAsignacion(c)))),
-      casos_en_espera: enEspera.length,
-      max_dias_en_espera: enEspera.length ? Math.max(...enEspera.map((c) => diasEntre(c.fecha, hoy))) : 0,
-      horas_programadas_28d: Math.round(progH),
-      horas_entregadas_28d: Math.round(entH),
-      pct_cumplimiento_28d: pct(entH, progH),
-      pct_puntualidad_28d: pct(real.filter((v) => v.llegada && minutos(v.llegada) <= minutos(v.ini) + 10).length, real.length),
-      pct_ausencias_28d: pct(v28.filter((v) => v.estado === 'no_llego').length, v28.length),
-      incidentes_por_100h: horasTot ? Math.round((1000 * s.incidentes.length) / horasTot) / 10 : null,
-      incidentes_abiertos: s.incidentes.filter((i) => i.estado === 'abierto').length,
-      casos_evaluables_continuidad_4sem: elegCont.length,
-      pct_continuidad_4sem: pct(continuos.length, elegCont.length),
-      pct_respuesta_semanal: pct(qPrev.length, activos.length),
-      cansancio_promedio_semana_previa: qPrev.length ? Math.round((10 * qPrev.reduce((t, q) => t + q.cansancio, 0)) / qPrev.length) / 10 : null,
-      relevos_aprobados: aprob.length,
-      relevos_certificados: cert.length,
-      horas_cupo_libre_semana: cert.reduce((t, r) => t + Math.max(0, r.horasMax - RV.cargaDe(r.id, s)), 0),
-    };
-  }
-
-  function renderKPI() {
-    const k = calcularKPI();
-    const t = (titulo, val, nota, warn) => `<div class="kpi${warn ? ' warn' : ''}"><b class="mono">${val == null ? '—' : esc(val)}</b><span>${esc(titulo)}</span>${nota ? `<small>${esc(nota)}</small>` : ''}</div>`;
-    $('#kpi-body').innerHTML = `<div class="kpigrid">
-      ${t('casos', k.casos_canalizados, `${k.pct_dentro_de_la_regla_40h} % con ≥ 40 h`)}
-      ${t('niveles', `${k.casos_nivel_alta}·${k.casos_nivel_media}·${k.casos_nivel_baja}`, 'alta · media · baja')}
-      ${t('revisión', k.casos_en_revision_humana + k.apelaciones_abiertas, `${k.casos_en_revision_humana} chequeos · ${k.apelaciones_abiertas} apelaciones`, k.casos_en_revision_humana + k.apelaciones_abiertas > 0)}
-      ${t('cuidadoras mujeres', k.pct_cuidadoras_mujeres + ' %')}
-      ${t('en espera', k.casos_en_espera, `máx. ${k.max_dias_en_espera} d`, k.casos_en_espera > 0)}
-      ${t('días a asignar', k.mediana_dias_canalizacion_a_asignacion, 'mediana, de la valoración al relevo')}
-      ${t('horas entregadas', `${k.pct_cumplimiento_28d} %`, `${k.horas_entregadas_28d}/${k.horas_programadas_28d} h · 28 d`)}
-      ${t('puntualidad', k.pct_puntualidad_28d + ' %', '≤ 10 min')}
-      ${t('ausencias', k.pct_ausencias_28d + ' %', '28 d', k.pct_ausencias_28d >= 10)}
-      ${t('incidentes / 100 h', k.incidentes_por_100h, `${k.incidentes_abiertos} abiertos`, k.incidentes_abiertos > 0)}
-      ${t('continuidad 4 sem', k.casos_evaluables_continuidad_4sem ? k.pct_continuidad_4sem + ' %' : null, `${k.casos_evaluables_continuidad_4sem} casos`)}
-      ${t('cansancio prom.', k.cansancio_promedio_semana_previa, `0-4 · ${k.pct_respuesta_semanal} % respondió`)}
-      ${t('relevos asignables', `${k.relevos_certificados}/${k.relevos_aprobados}`, 'certificadas', k.relevos_certificados < k.relevos_aprobados)}
-      ${t('cupo libre', k.horas_cupo_libre_semana + ' h', 'por semana')}
-    </div>`;
-  }
-  $('#kpi-export').addEventListener('click', () => descargar({
-    simulado: true, generado: new Date().toISOString(), fuente: 'Frontend/ (prototipo de relevo por horas)',
-    advertencia: 'Datos SIMULADOS. Prueban el circuito app -> Observatorio; no son resultados del programa.', indicadores: calcularKPI(),
-  }, 'operacion_agregados_SIMULADO.json'));
-
   function descargar(obj, nombre) {
     const txt = JSON.stringify(obj, null, 2);
     $('#json-nombre').textContent = nombre;
@@ -743,19 +687,17 @@
       ['Hora mixta (÷ 7.5)', '$' + legal.HORA.mixta.toFixed(2), '< 3.5 h nocturnas'],
       ['Hora nocturna (÷ 7)', '$' + legal.HORA.nocturna.toFixed(2), '20:00-06:00 o ≥ 3.5 h nocturnas'],
       ['Semanas por mes', RV.SEMANAS_MES, 'como el script 10'],
-      ['Regla de referencia', `≥ ${RV.UMBRAL_HORAS} h/sem`, 'notebook 11 · se muestra junto al puntaje'],
+      ['Regla de referencia', `≥ ${RV.UMBRAL_HORAS} h/sem`, ''],
     ].map(([a, b, n]) => `<li><span>${esc(a)}<small>${esc(n)}</small></span><b class="mono">${esc(b)}</b></li>`).join('');
     if (document.activeElement !== $('#cfg-bolsa')) $('#cfg-bolsa').value = bolsa();
     $('#cfg-bolsa-val').textContent = bolsa().toLocaleString('es-MX') + ' h';
-    $('#cfg-bolsa-nota').textContent = `El archivo js/config.js fija ${CP.presupuesto_horas_mes.toLocaleString('es-MX')} h (ilustrativo). Este control solo simula: no cambia el archivo.`;
+    $('#cfg-bolsa-nota').textContent = 'Solo simula; no cambia la bolsa real.';
     $('#cfg-prio').innerHTML = [
       ['Bolsa (presupuesto_horas_mes)', CP.presupuesto_horas_mes + ' h', 'ilustrativo'],
       ['Mínimo garantizado', CP.horas_minimas + ' h/mes', '≈ 3 h/sem'],
       ['Tope por hogar', CP.horas_maximas + ' h/mes', '≈ 12 h/sem'],
-      ['Niveles', `Alta ≥ ${CP.umbrales.alta} · Media ≥ ${CP.umbrales.media}`, 'Media = umbral del script 22; Alta provisional'],
-      ['Envejecimiento', `+${CP.envejecimiento.puntos_por_semana}/sem · tope ${CP.envejecimiento.tope_envejecimiento}`, 'provisional'],
-      ['Tarjeta', CP.variante_tarjeta, 'script 22 · ENASIC 2022 nacional'],
-      ...Object.keys(CP.pesos).map((k) => [PR.ETIQUETA[k], CP.pesos[k] + ' pts', k]),
+      ['Regla de entrada', `${CP.regla_horas} h o más a la semana`, ''],
+      ['Envejecimiento', `+${CP.envejecimiento.horas_por_semana} h/sem · tope ${CP.envejecimiento.tope_envejecimiento} h`, 'provisional, solo ordena el reparto'],
     ].map(([a, b, n]) => `<li><span>${esc(a)}<small>${esc(n)}</small></span><b class="mono">${esc(b)}</b></li>`).join('');
     const el = $('#cfg-marco');
     if (!el.childElementCount) el.innerHTML = Object.values(legal.MARCO).map((m) => `<li><b>${esc(m.norma)}</b>${esc(m.tema)}</li>`).join('');
@@ -810,14 +752,14 @@
   ];
   const nuevaSol = () => ({
     canal: '', institucion: '', quien: '', presente: false, alias: '', sexo: '', palias: '', psexo: '', alcaldia: '',
-    aviso: false, expreso: false, modelo: { horas: '', abvd: [], clin: [], req: null, fuerza: null }, zarit: {}, barthel: {},
+    aviso: false, expreso: false, modelo: { horas: '', abvd: [], clin: [] }, zarit: {}, barthel: {},
     pref: { dias: [], inicio: '09:00', tareas: [] }, apelacion: null,
   });
   const radio = (name, val, lab, on) => `<label class="chip"><input type="radio" name="${name}" value="${esc(val)}"${on ? ' checked' : ''}><span>${lab}</span></label>`;
   const check = (name, val, lab, on) => `<label class="chip"><input type="checkbox" name="${name}" value="${esc(val)}"${on ? ' checked' : ''}><span>${esc(lab)}</span></label>`;
   const sinoChips = (name, v) => radio(name, 'si', 'Sí', v === true) + radio(name, 'no', 'No', v === false);
-  const codigo = (txt) => (ui.rol === 'programa' ? `<span class="cod mono">${esc(txt)}</span>` : '');
-  const entrevistaDe = (d) => ({ modelo: { horas: +d.modelo.horas, abvd: d.modelo.abvd.slice(), clin: d.modelo.clin.slice(), req: !!d.modelo.req, fuerza: !!d.modelo.fuerza },
+  const codigo = () => '';
+  const entrevistaDe = (d) => ({ modelo: { horas: +d.modelo.horas, abvd: d.modelo.abvd.slice(), clin: d.modelo.clin.slice() },
     zarit: PR.totalZarit(d.zarit, CP) == null ? null : Object.assign({}, d.zarit), barthel: Object.assign({}, d.barthel) });
 
   function pintaPaso() {
@@ -825,7 +767,7 @@
     $('#sol-paso').textContent = `${ui.sol.paso + 1}/${PASOS.length} · ${paso.t}`;
     $('#sol-bar').style.width = Math.round(((ui.sol.paso + 1) / PASOS.length) * 100) + '%';
     $('#sol-atras').textContent = ui.sol.paso ? 'Atrás' : 'Cancelar';
-    $('#sol-sig').textContent = paso.id === 'resultado' ? 'Entrar a la cola' : paso.id === 'consentimiento' ? 'Acepto y sigo' : 'Siguiente';
+    $('#sol-sig').textContent = paso.id === 'resultado' ? 'Enviar solicitud' : paso.id === 'consentimiento' ? 'Acepto y sigo' : 'Siguiente';
     $('#sol-err').textContent = '';
     let h = '';
     if (paso.id === 'entrada') {
@@ -844,70 +786,58 @@
           <label class="check"><input type="checkbox" name="presente"${d.presente ? ' checked' : ''}><span>La persona referida está presente y quiere continuar</span></label>
         </div>`;
     } else if (paso.id === 'registro') {
-      h = `<h3>Registro</h3><p class="sub">Solo pedimos lo que usan el puntaje o la asignación. No pedimos CURP, diagnósticos ni domicilio.</p>
+      h = `<h3>Registro</h3><p class="sub">Solo lo necesario. Sin CURP, diagnósticos ni domicilio.</p>
         <div class="eyebrow sep">Quien cuida</div>
         <div class="row-sx"><div class="chips radio">${['M', 'H'].map((v) => `<label class="chip ico"><input type="radio" name="sexo" value="${v}"${d.sexo === v ? ' checked' : ''}><span>${SX[v]}${SEXO_TXT[v]}</span></label>`).join('')}</div>
           <input name="alias" maxlength="24" autocomplete="off" placeholder="Alias" aria-label="Alias de quien cuida" value="${esc(d.alias)}"></div>
-        ${ui.rol === 'programa' ? '<p class="wk-n">El sexo de quien cuida entra al puntaje (variable SEXO de la ENASIC).</p>' : ''}
         <div class="eyebrow sep">Persona cuidada</div>
         <div class="row-sx"><div class="chips radio">${['M', 'H'].map((v) => `<label class="chip ico"><input type="radio" name="psexo" value="${v}"${d.psexo === v ? ' checked' : ''}><span>${SX[v]}${SEXO_TXT[v]}</span></label>`).join('')}</div>
           <input name="palias" maxlength="24" autocomplete="off" placeholder="Alias" aria-label="Alias de la persona cuidada" value="${esc(d.palias)}"></div>
         <label class="fld">Alcaldía (para asignar relevo cerca)<select name="alcaldia"><option value="">Elige…</option>${options(Object.keys(ZONAS), d.alcaldia)}</select></label>`;
     } else if (paso.id === 'consentimiento') {
       h = `<h3>Consentimiento</h3>
-        <p class="sub">Para valorar tu solicitud te preguntaremos cuántas horas cuidas, en qué actividades ayudas, qué tareas de salud haces, qué tan dependiente es la persona que cuidas y cómo te sientes con el cuidado.</p>
-        <p class="sub">Son <b>datos sensibles</b>. Se usan solo para calcular tu prioridad, tus horas y asignar relevo. Puedes retirar tu consentimiento cuando quieras.</p>
+        <p class="sub">Te preguntaremos cuánto cuidas y cómo está la persona que cuidas. Son <b>datos sensibles</b>: se usan solo para tu prioridad y para asignar relevo. Puedes retirar tu consentimiento cuando quieras.</p>
         <button type="button" class="link" data-action="ver-aviso">Leer el aviso de privacidad</button>
         <label class="check"><input type="checkbox" name="aviso"${d.aviso ? ' checked' : ''}><span>Leí el aviso de privacidad</span></label>
         <label class="check"><input type="checkbox" name="expreso"${d.expreso ? ' checked' : ''}><span>Acepto de forma expresa que se registren datos sobre mi salud, mi carga de cuidado y la dependencia de la persona que cuido</span></label>`;
     } else if (paso.id === 'modelo') {
       const m = d.modelo;
-      h = `<h3>Tu cuidado</h3><p class="sub">Bloque 1 de 3. Mismas preguntas y categorías que la ENASIC 2022: con ellas se calcula el puntaje.</p>
-        <label class="fld">${esc(PR.PREGUNTAS_MODELO[0].txt)} ${codigo('P6_7 + P6_26')}<input name="horas" type="number" min="0" max="168" inputmode="numeric" value="${esc(m.horas)}"></label>
+      h = `<h3>Tu cuidado</h3>        <label class="fld">${esc(PR.PREGUNTAS_MODELO[0].txt)} ${codigo('P6_7 + P6_26')}<input name="horas" type="number" min="0" max="168" inputmode="numeric" value="${esc(m.horas)}"></label>
         <div class="fld">${esc(PR.PREGUNTAS_MODELO[1].txt)} ${codigo('P6_2 · ABVD')}<div class="chips">${PR.ABVD.map((o) => check('abvd', o.id, o.txt, m.abvd.includes(o.id))).join('')}</div></div>
-        <div class="fld">${esc(PR.PREGUNTAS_MODELO[2].txt)} ${codigo('P6_2 · clínicas')}<div class="chips">${PR.CLIN.map((o) => check('clin', o.id, o.txt, m.clin.includes(o.id))).join('')}</div></div>
-        <div class="fld">${esc(PR.PREGUNTAS_MODELO[3].txt)} ${codigo('P6_9_4 / P6_28_4')}<div class="chips radio">${sinoChips('req', m.req)}</div></div>
-        <div class="fld">${esc(PR.PREGUNTAS_MODELO[4].txt)} ${codigo('P6_9_1 / P6_28_1')}<div class="chips radio">${sinoChips('fuerza', m.fuerza)}</div></div>`;
+        <div class="fld">${esc(PR.PREGUNTAS_MODELO[2].txt)} ${codigo('P6_2 · clínicas')}<div class="chips">${PR.CLIN.map((o) => check('clin', o.id, o.txt, m.clin.includes(o.id))).join('')}</div></div>`;
     } else if (paso.id === 'zarit') {
-      // Los textos del Zarit requieren licencia: mientras no la haya, el bloque no se pregunta (antes mostraba 22 marcadores).
-      h = `<h3>Cómo te sientes</h3>
-        <div class="card panel pendiente-lic"><b>Este bloque todavía no está activo.</b>
-          <p class="sub">Aquí irán preguntas sobre tu cansancio y tu carga de cuidado (escala tipo Zarit). Se activan cuando el programa tenga la licencia del cuestionario. No cambian tu prioridad.</p></div>
-        <p class="sub">Puedes seguir al siguiente bloque.</p>`;
+      h = `<h3>Cómo te has sentido</h3>
+        <p class="sub">Pensando en el último mes. Es opcional y no cambia tu prioridad.</p>
+        ${PR.reactivosZarit(CP).map((it) => `<div class="fld zq">${esc(it.txt)}<div class="chips radio">${PR.ESCALA_ZARIT.map((t, n) => radio(it.id, n, esc(t), String(d.zarit[it.id]) === String(n))).join('')}</div></div>`).join('')}
+        <p class="sub" id="zarit-total"></p>`;
     } else if (paso.id === 'barthel') {
-      h = `<h3>La persona que cuidas</h3><p class="sub">Bloque 3 de 3 · actividades básicas de la vida diaria (índice de Barthel).</p>
-        ${PR.BARTHEL.map((it) => `<div class="fld">${esc(it.txt)}<div class="chips radio">${it.niveles.map(([p, t]) => radio(it.id, p, esc(t), String(d.barthel[it.id]) === String(p))).join('')}</div></div>`).join('')}
+      h = `<h3>La persona que cuidas</h3>        ${PR.BARTHEL.map((it) => `<div class="fld">${esc(it.txt)}<div class="chips radio">${it.niveles.map(([p, t]) => radio(it.id, p, esc(t), String(d.barthel[it.id]) === String(p))).join('')}</div></div>`).join('')}
         <p class="sub" id="barthel-total"></p>`;
     } else {
       const ent = entrevistaDe(d);
       const v = valorar(ent, d.sexo, F.hoyISO());
-      const est = calcularPlan({ id: '__nuevo', efectivo: v.efectivo });
+      const est = calcularPlan(v.nivel === 'dentro' ? { id: '__nuevo', efectivo: v.efectivo } : null);
       const hMes = est.horas.__nuevo || 0;
       const ch = PR.chequeos(ent, CP);
       h = `${personaje(v.nivel, 'hero-img')}
         ${ui.rol === 'programa'
-          ? `<div class="resnivel nv-${v.nivel}"><span>Nivel</span><b>${PR.NIVEL[v.nivel]}</b><small class="mono">${pts(v.base)} de ${v.max} puntos</small></div>`
+          ? `<div class="resnivel nv-${v.nivel}"><span>Nivel</span><b>${PR.NIVEL[v.nivel]}</b><small class="mono">${pts(v.base)} h/semana</small></div>`
           : `<div class="resnivel neutro"><span>Prioridad</span><b>${PR.NIVEL[v.nivel]}</b></div>`}
-        <p class="provisional">Puntaje provisional — modelo en validación</p>
-        <section class="blk"><h5>Lo que más pesó</h5>${factoresHTML(Object.assign({}, v, { provisional: false }))}</section>
         <section class="blk"><h5>Horas asignadas</h5>
           <div class="bolsa"><b class="mono">${hMes}</b><span>h al mes · ≈ ${PR.horasSemana(hMes, CP)} h por semana</span></div>
-          <p class="wk-n">${hMes ? `Estimado con la bolsa actual (${est.presupuesto} h) y los casos en cola. Se confirma en el ciclo del mes.` : 'La bolsa de este mes no alcanza: entras a la cola y tu puntaje sube cada semana de espera.'} Mínimo garantizado: ${CP.horas_minimas} h/mes si la bolsa alcanza.</p>
-          <p class="complementario">${esc(CP.aviso_complementario)}</p>
+          <p class="wk-n">${hMes ? 'Estimado con la bolsa actual. Se confirma en el ciclo del mes.' : (v.nivel === 'fuera' ? 'Este mes las horas son para quien cuida 40 h o más. Tu solicitud queda registrada.' : 'Entras a la cola: tu lugar sube cada semana.')}</p>
         </section>
-        ${v.nivel === 'baja' ? `<section class="blk alterno"><h5>Además de tus horas</h5>
-          <p class="sub">Mientras llega tu relevo, estos apoyos pueden ayudarte. [Directorio pendiente: se llenará con servicios reales de tu alcaldía.]</p>
+        ${v.nivel === 'fuera' ? `<section class="blk alterno"><h5>Además de tus horas</h5>
           <ul class="motivos"><li>Redes de apoyo para personas cuidadoras cerca de ${esc(d.alcaldia || 'tu alcaldía')}</li><li>Centros de día públicos para personas mayores o con discapacidad</li><li>Módulo del Sistema Público de Cuidados más cercano</li></ul></section>` : ''}
-        ${ch.length ? `<section class="blk revbox"><h5>Una persona revisará tu caso</h5><ul class="motivos">${ch.map((x) => `<li>${esc(x.txt)}</li>`).join('')}</ul><p class="wk-n">Algunas respuestas no coinciden entre sí. Tu puntaje no cambia; una persona del programa lo revisa.</p></section>` : ''}
+        ${ch.length ? `<section class="blk nota-humana"><h5>Una persona revisará tu caso</h5><ul class="motivos">${ch.map((x) => `<li>${esc(x.txt)}</li>`).join('')}</ul></section>` : ''}
         <section class="blk"><h5>¿No estás de acuerdo?</h5>
-          ${d.apelacion ? `<p class="sub">Solicitud de revisión registrada: «${esc(d.apelacion)}». Se guarda con tu caso.</p>` : '<p class="sub">Puedes pedir que una persona revise tu valoración.</p>'}
+          ${d.apelacion ? `<p class="sub">Registrada: «${esc(d.apelacion)}».</p>` : ''}
           <button type="button" class="btn-ghost sm" data-action="sol-apelar">${d.apelacion ? 'Cambiar motivo' : 'Solicitar revisión'}</button>
         </section>
         <div class="eyebrow sep">¿Cuándo te sirve el relevo?</div>
         <div class="chips">${RV.DIAS.map((t, i) => check('pdias', i, t, d.pref.dias.includes(i))).join('')}</div>
         <label class="fld">Desde las<input name="pinicio" type="time" step="1800" value="${esc(d.pref.inicio)}"></label>
-        <div class="fld">¿Con qué te ayudaría la persona de relevo?<div class="chips">${RV.TAREAS.map((t) => check('ptareas', t, t, d.pref.tareas.includes(t))).join('')}</div></div>
-        <p class="wk-n">El programa asigna a la persona de relevo según la prioridad; no se elige de un catálogo.</p>`;
+        <div class="fld">¿Con qué te ayudaría la persona de relevo?<div class="chips">${RV.TAREAS.map((t) => check('ptareas', t, t, d.pref.tareas.includes(t))).join('')}</div></div>`;
     }
     $('#sol-body').innerHTML = h;
     totalesSol();
@@ -916,7 +846,7 @@
   function totalesSol() {
     const d = ui.sol.d;
     const z = $('#zarit-total'), b = $('#barthel-total');
-    if (z) { const n = Object.keys(d.zarit).length, t = PR.totalZarit(d.zarit, CP); z.textContent = t == null ? `${n} de ${CP.zarit.n_reactivos} respondidos` : `Total: ${t} de ${CP.zarit.n_reactivos * CP.zarit.escala_max}`; }
+    if (z) { const n = Object.keys(d.zarit).length, t = PR.totalZarit(d.zarit, CP); z.textContent = n ? `${n} de ${CP.zarit.n_reactivos} respondidas` : ''; }
     if (b) { const t = PR.totalBarthel(d.barthel); b.textContent = t == null ? '' : `Total: ${t}/100 · ${PR.nivelBarthel(t)}`; }
   }
   function leerPaso() {
@@ -928,7 +858,6 @@
     else if (id === 'consentimiento') { d.aviso = e.aviso.checked; d.expreso = e.expreso.checked; }
     else if (id === 'modelo') {
       d.modelo.horas = val('horas'); d.modelo.abvd = marcados('abvd'); d.modelo.clin = marcados('clin');
-      d.modelo.req = val('req') ? val('req') === 'si' : null; d.modelo.fuerza = val('fuerza') ? val('fuerza') === 'si' : null;
     } else if (id === 'zarit') { PR.reactivosZarit(CP).forEach((it) => { const v = val(it.id); if (v !== '') d.zarit[it.id] = +v; }); }
     else if (id === 'barthel') { PR.BARTHEL.forEach((it) => { const v = val(it.id); if (v === '') delete d.barthel[it.id]; else d.barthel[it.id] = +v; }); }
     else { d.pref.dias = marcados('pdias').map(Number); d.pref.inicio = val('pinicio') || '09:00'; d.pref.tareas = marcados('ptareas'); }
@@ -946,10 +875,9 @@
     } else if (id === 'modelo') {
       const h = d.modelo.horas;
       if (h === '' || isNaN(+h) || +h < 0 || +h > 168) return 'Escribe las horas a la semana (0 a 168).';
-      if (d.modelo.req == null || d.modelo.fuerza == null) return 'Responde las dos preguntas de sí o no.';
     } else if (id === 'zarit') {
       const n = Object.keys(d.zarit).length;
-      if (n && n < CP.zarit.n_reactivos) return `Responde los ${CP.zarit.n_reactivos} reactivos o deja el bloque vacío.`;
+      if (n && n < CP.zarit.n_reactivos) return `Responde las ${CP.zarit.n_reactivos} preguntas o deja el bloque vacío.`;
     } else if (id === 'barthel') {
       if (PR.totalBarthel(d.barthel) == null) return 'Responde las 10 actividades.';
     } else {
@@ -980,11 +908,12 @@
     };
     store.addSolicitud(caso);
     $('#dlg-sol').close();
-    if (ui.rol === 'cuidadora') { guardarId('mientras-mi-caso', caso.id); show('mia'); toast(`Solicitud ${caso.folio} enviada`); return; }
+    if (ui.rol === 'cuidadora') { guardarId('mientras-mi-caso', caso.id); show('mia'); toast(`Solicitud ${caso.folio} enviada`); if (window.Interaccion) Interaccion.confeti(); return; }
     ui.casoFiltro = 'espera';
     $$('#caso-filter button').forEach((x) => x.classList.toggle('on', x.dataset.val === 'espera'));
     show('casos');
     const v = valDe(caso);
+    if (window.Interaccion) Interaccion.confeti();
     toast(`${caso.folio} · nivel ${PR.NIVEL[v.nivel]}${ch.length ? ' · a revisión humana' : ''}`);
   }
   ['input', 'change'].forEach((ev) => $('#form-sol').addEventListener(ev, leerPaso));
@@ -1055,7 +984,7 @@
       case 'ver-caso': abrirCaso(id); break;
       case 'ver-relevo': abrirRelevo(id); break;
       case 'new-sol': openSol(); break;
-      case 'ver-aviso': await pedir(CP.aviso_privacidad + ' Datos que se recogen: horas de cuidado, actividades y tareas de salud, dependencia de la persona cuidada (Barthel) y sobrecarga. Sin CURP ni diagnósticos.', { ok: 'Entendido' }); break;
+      case 'ver-aviso': await pedir(CP.aviso_privacidad + ' Datos que se recogen: horas de cuidado, actividades y tareas de salud, dependencia de la persona cuidada (Barthel) y cómo te has sentido (cansancio, sueño, ánimo). Sin CURP ni diagnósticos.', { ok: 'Entendido' }); break;
       case 'sol-apelar': { const m = await pedir('¿Por qué crees que tu valoración no refleja tu situación?', { input: true, min: 5, ok: 'Registrar' }); if (m) { ui.sol.d.apelacion = m; pintaPaso(); } break; }
       case 'revisado': { cerrarDet(); const m = await pedir('Nota de la revisión (qué se verificó):', { input: true, min: 5, ok: 'Marcar revisado' }); if (m) { store.resolverRevision(id, m); toast('Revisión registrada; el puntaje no cambia'); } break; }
       case 'resolver-ap': { cerrarDet(); const apId = b.dataset.ap; const m = await pedir('Resolución (si cambia una respuesta, se vuelve a entrevistar):', { input: true, min: 5, ok: 'Resolver' }); if (m) { store.resolverApelacion(id, apId, m); toast('Solicitud de revisión resuelta'); } break; }
@@ -1087,14 +1016,14 @@
   });
 
   /* ================= Vistas propias de la cuidadora y de la persona de relevo ================= */
-  const NIVEL_TXT = { alta: 'Prioridad alta', media: 'Prioridad media', baja: 'Prioridad baja' };
+  const NIVEL_TXT = { dentro: 'Dentro de la regla de entrada', fuera: 'Fuera de la regla de entrada' };
   const dato = (val, lab) => `<div class="tl"><b class="mono">${val}</b><span>${esc(lab)}</span></div>`;
   function renderMia() {
     const c = casoById(leerId('mientras-mi-caso'));
     if (!c) {
       $('#mia-body').innerHTML = `<div class="hero-rol">${personaje('bienvenida', 'hero-img')}
         <h2>¿Cuidas a alguien muchas horas a la semana?</h2>
-        <p>Mientras te da horas de relevo: una persona capacitada cuida a tu familiar mientras tú descansas o resuelves tus pendientes.</p>
+        <p>Una persona capacitada cuida a tu familiar mientras tú descansas.</p>
         <button type="button" class="btn-primary wide" data-action="new-sol">Solicitar relevo</button>
         <p class="complementario">${esc(CP.aviso_complementario)}</p></div>`;
       return;
@@ -1107,17 +1036,16 @@
         <h2>${NIVEL_TXT[v.nivel]}</h2>
         <p class="sub">${estado}</p>
         <div class="tiles dos">${dato(hz.mes + '<small>h</small>', 'de relevo al mes')}${dato('≈ ' + hz.sem + '<small>h</small>', 'a la semana')}</div>
-        ${enRevision(c) ? '<p class="sub">Una persona del programa revisará algunas respuestas. Tu lugar en la fila no cambia.</p>' : ''}
+        ${enRevision(c) ? '<p class="sub">Una persona revisará algunas respuestas. Tu lugar no cambia.</p>' : ''}
       </div>
-      <p class="complementario">${esc(CP.aviso_complementario)}</p>
       <button type="button" class="btn-ghost wide" data-action="mia-nueva">Hacer otra solicitud (demostración)</button>`;
   }
   function renderYo() {
     const r = relById(leerId('mientras-mi-relevo'));
     if (!r) {
-      $('#yo-body').innerHTML = `<div class="hero-rol">${personaje('media', 'hero-img')}
+      $('#yo-body').innerHTML = `<div class="hero-rol">${personaje('relevo', 'hero-img')}
         <h2>¿Quieres trabajar dando relevo?</h2>
-        <p>Registras tus días, horario y zona. El programa te asigna casos según su prioridad: no eliges familia ni la familia te elige. Trabajo con contrato, IMSS y pago al piso legal.</p>
+        <p>Registra tus días, horario y zona. El programa te asigna casos. Con contrato, IMSS y pago justo.</p>
         <button type="button" class="btn-primary wide" data-action="new-relevo">Registrarme</button></div>`;
       return;
     }
@@ -1135,7 +1063,7 @@
   }
 
   /* ================= Bienvenida (primera vez que se abre la app) =================
-   * Pantalla de carga con el logo y, después, «¿Cómo vas a usar Mientras?» para elegir el rol.
+   * Pantalla de carga con el logo y, después, «¿Cómo vas a usar RedCare?» para elegir el rol.
    * Se muestra una sola vez (localStorage «mientras-intro»); se puede repetir con ?intro o desde Ajustes. */
   const INTRO_K = 'mientras-intro';
   function abrirIntro() {
@@ -1162,7 +1090,7 @@
     $('.tabbar').hidden = ui.rol !== 'programa';
     $$('.tabbtn').forEach((t) => { const on = t.dataset.view === ui.view; t.classList.toggle('on', on); t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
     $('#topTitle').textContent = TITULOS[ui.view];
-    $('#topTag').textContent = ui.view === 'seguimiento' ? { prog: 'programa', hoy: 'visitas', caso: 'red y semana', mapa: 'territorio', kpi: 'simulado' }[ui.segSub] : '';
+    $('#topTag').textContent = ui.view === 'seguimiento' ? { prog: 'programa · simulado', hoy: 'visitas', caso: 'datos simulados', mapa: 'territorio' }[ui.segSub] : '';
     renderAjustes();
     if (ui.view === 'mia') renderMia();
     else if (ui.view === 'yo') renderYo();
@@ -1170,11 +1098,9 @@
     else if (ui.view === 'relevos') renderRelevos();
     else if (ui.view === 'seguimiento') renderSeguimiento();
   }
-  function tick() { const d = new Date(); $('#clock').textContent = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); }
 
   store.subscribe(render);
   initForms();
-  tick(); setInterval(tick, 30000);
   show(location.hash.slice(1));
   let introVista = '';
   try { introVista = localStorage.getItem(INTRO_K) || ''; } catch (e) { /* sin almacenamiento */ }

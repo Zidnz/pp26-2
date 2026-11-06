@@ -49,7 +49,7 @@ function tile(i){
   return (i?'<span class="flujo" aria-hidden="true"><b class="num">'+fmt(pa(i),0)+'%</b></span>':'')+
   '<button type="button" role="tab" class="tile" id="sel-t'+i+'" aria-controls="sel-p'+i+'" aria-selected="false" tabindex="-1" data-i="'+i+'" style="--op:'+POS[i]+'">'+
     '<span class="t-in"><img src="'+IL[FIG[i]].src+'" alt="" draggable="false"><span class="t-n mono">'+Z(i+1)+'</span>'+
-    '<span class="t-txt"><span class="t-h">'+EH[i]+'</span><span class="t-v num">'+mill(E[i].total)+'</span></span>'+
+    '<span class="t-txt"><span class="t-h">'+EH[i]+'</span></span>'   /* 3 nov 2026: sin la cifra; ya está en la ficha de la etapa */+
     '<span class="t-m"><i style="--w:'+Math.max(2,pct(i)).toFixed(1)+'%"></i></span></span></button>';
 }
 
@@ -101,7 +101,7 @@ function pinta(){ cx.setTransform(DPR,0,0,DPR,0,0); cx.clearRect(0,0,W,H); if(!W
   cx.restore();
   cx.lineWidth=.7; cx.strokeStyle='rgba(255,255,255,.7)'; cx.lineJoin='round'; PATHS.forEach(function(p){ cx.stroke(p); });  // límites de entidad
   cx.restore();
-  if(act>=0){ var ty=Math.max(13,FIT.oy+yA*FIT.s-5); cx.font='700 11px "JetBrains Mono",monospace'; cx.textAlign='right';
+  if(false&&act>=0){ var ty=Math.max(13,FIT.oy+yA*FIT.s-5);   // 3 nov 2026: el % ya está en la ficha («Del total de personas que cuidan») cx.font='700 11px "Archivo",system-ui,sans-serif'; cx.textAlign='right';
     cx.fillStyle='rgb('+col+')'; cx.fillText(fmt(pct(act),act?1:0)+'%',W-2,ty); } }
 function anima(){ var vivo=false;
   [['a','t'],['p','tp'],['c','tc']].forEach(function(k){ var d=LV[k[1]]-LV[k[0]]; if(Math.abs(d)>.002){ LV[k[0]]+=d*.16; vivo=true; } else LV[k[0]]=LV[k[1]]; });
@@ -121,7 +121,7 @@ function elige(i,enfoca){ i=(i+N)%N; if(i===act) return; var ant=act; act=i;
   fichas.forEach(function(f,k){ f.hidden=k!==i; });
   figs.forEach(function(f,k){ f.style.setProperty('--d',k-i); f.classList.toggle('on',k===i); });
   arena.dataset.etapa=i; arena.classList.toggle('alto',i===N-1);
-  ghost.textContent=mill(E[i].total);
+  ghost.textContent='';   // 3 nov 2026: el número grande repetía la ficha de la etapa
   var n=fichas[i].querySelector('.f-n'); cuenta(n,ant<0?E[i].total:E[ant].total,E[i].total);
   fichas[i].querySelectorAll('.bt i').forEach(function(b){ b.style.animation='none'; void b.offsetWidth; b.style.animation=''; });
   fijaMapa(i,ant);

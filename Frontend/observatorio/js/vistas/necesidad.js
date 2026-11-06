@@ -18,23 +18,19 @@
   /* ---- KPI de la pestaña (14 oct 2026): reaccionan al filtro. Fuente: sección 12b y script 12 ---- */
   function kpis(){
     var P=S2('kpi','personas'),Ht=S2('kpi','horas_total'),Hm=S2('kpi','horas_media'),tot=F.dim==='Total',
-        h40=F.dim==='Intensidad'?null:SG('horas40'),dt=S2('dif','dano_todos'),dA=S2('dano_horas','>=40 h'),dB=S2('dano_horas','<20 h');
+        h40=F.dim==='Intensidad'?null:SG('horas40');
     function ic(a,b,u){return '<span class="chip">IC 90% '+a+'–'+b+(u||'')+'</span>'}
     var T=[
-      {k:'Personas que cuidan',v:mill(P.total_expandido),l:tot?'cuidan a una persona con discapacidad o de 60 años y más':fmt(P.pct)+'% de quienes cuidan a una persona con discapacidad o de 60+',p:P.precision,c:tot?'':ic(fmt(P.li90),fmt(P.ls90),'%')},
-      {k:'Horas de cuidado no pagado',v:fmt(Ht.pct/1e6,0)+' M h',l:'a la semana: equivalen a <b>'+mill(Ht.pct/40)+'</b> jornadas de 40 h. Promedio: '+fmt(Hm.pct,0)+' h por persona.',p:Ht.precision,c:ic(fmt(Ht.li90/1e6,0),fmt(Ht.ls90/1e6,0),' M h')},
-      h40?{k:'Cuidan 40 h o más',v:fmt(h40.pct)+'%',l:'una jornada de tiempo completo, sin pago',p:h40.precision,c:ic(fmt(h40.li90),fmt(h40.ls90),'%')}
-         :{k:'Cuidan 40 h o más',v:'—',l:'No aplica: el filtro ya es por horas de cuidado.',na:true},
-      dt?{k:'Brecha de daño por horas',v:(dt.pct>0?'+':'')+fmt(dt.pct)+' pp',l:'declara daño a su salud o trabajo con 40 h o más ('+fmt(dA.pct,0)+'%) frente a menos de 20 h ('+fmt(dB.pct,0)+'%)',
-          c:'<span class="chip '+(sigOk(dt.dif_significativa)?'p-alta">IC excluye 0':'p-noest">IC incluye 0')+'</span>'+ic(fmt(dt.li90),fmt(dt.ls90),' pp'),alerta:sigOk(dt.dif_significativa)}
-        :{k:'Brecha de daño por horas',v:'—',l:'No aplica: el filtro ya es por horas de cuidado.',na:true}];
-    $('#kpi-nec').innerHTML=T.map(function(t){var weak=t.p&&isWeak(t.p);
-      return '<div class="card tile"'+(weak||t.na?' style="border-style:dashed"':'')+'><div class="kicker" style="margin:0">'+t.k+'</div>'+
-        '<div class="big num" style="font-size:30px;'+(t.na||weak?'color:var(--ink-faint)':t.alerta?'color:var(--alert)':'')+'">'+t.v+'</div><div class="lbl">'+t.l+'</div>'+
-        (t.na?'':'<div class="chips">'+(t.p?prec(t.p):'')+(t.c||'')+'</div>')+'</div>'}).join('');
+      {k:'Personas que cuidan a alguien con discapacidad o 60+',v:mill(P.total_expandido),l:tot?'cuidan a una persona con discapacidad o de 60 años y más':fmt(P.pct)+'% de quienes cuidan a una persona con discapacidad o de 60+',p:P.precision,c:tot?'':ic(fmt(P.li90),fmt(P.ls90),'%')},
+      {k:'Horas semanales de cuidado no pagado',v:fmt(Ht.pct/1e6,0)+' M h',l:'a la semana: equivalen a <b>'+mill(Ht.pct/40)+'</b> jornadas de 40 h. Promedio: '+fmt(Hm.pct,0)+' h por persona.',p:Ht.precision,c:ic(fmt(Ht.li90/1e6,0),fmt(Ht.ls90/1e6,0),' M h')},
+      h40?{k:'% de quienes cuidan que dedica 40 h o más a la semana',v:fmt(h40.pct)+'%',l:'una jornada de tiempo completo, sin pago',p:h40.precision,c:ic(fmt(h40.li90),fmt(h40.ls90),'%')}
+         :{k:'% de quienes cuidan que dedica 40 h o más a la semana',v:'—',l:'No aplica: el filtro ya es por horas de cuidado.',na:true}];
+    $('#kpi-nec').innerHTML=T.map(function(t){
+      return OBS.tile({k:t.k,v:t.v,fs:30,est:!t.na&&!!t.c,na:t.na,weak:t.p&&isWeak(t.p),color:t.alerta?'var(--alert)':'',
+        det:'<div class="lbl">'+t.l+'</div>'+(t.na?'':'<div class="chips">'+(t.p?prec(t.p):'')+(t.c||'')+'</div>'),
+        fuente:t.na?'':'ENASIC 2022 · nacional'+(tot?'':' · segmento: '+esc(segName()))})}).join('');
     $('#src-kpi-nec').innerHTML=dl({Universo:'Personas cuidadoras de persona con discapacidad o 60+, nacional (ENASIC 2022, TPOB_CUI, FAC_CUI)',Segmento:esc(segName())+' · n = '+P.n_muestra_dominio+' en la muestra',
       Horas:'Σ FAC_CUI × (P6.7 + P6.26), tope de 168. Aproximado: cada bloque topa en "98 o más" y P6.26 puede incluir cuidado a menores. Jornadas = horas ÷ 40.',
-      Brecha:'Algún daño (salud o trabajo) con 40 h o más menos con menos de 20 h, en todo el universo; diferencia con varianza de diseño.',
       Archivos:esc(D.seg2_fuente)+' · '+esc(D.seg_fuente)});
   }
 
@@ -42,64 +38,69 @@
     var on=aplica('horas'),LB=['Menos de 20 h','20 a 39 h','40 h o más'],nec,dan;
     if(on){nec=S2L('carga_sinnec').map(nS);dan=S2L('carga_dano').map(nS)}else{nec=C.sin_necesidad;dan=C.dano}
     $('#cargaFind').innerHTML=(on?pre():'')+'Con 40 h o más, <b>'+fmt(dan[2].pct)+'%</b> de quienes dicen "no tuve necesidad" declara daño; con menos de 20 h, '+fmt(dan[0].pct)+'%. Decir "no tuve necesidad" '+(nec[2].pct<nec[0].pct?'baja de ':'pasa de ')+fmt(nec[0].pct)+'% a '+fmt(nec[2].pct)+'%.';
-    $('#ch-carga').innerHTML=iconosDano(LB.map(function(l,i){return {lbl:l,nec:nec[i],dano:dan[i]}}));
-    $('#src-carga').innerHTML=dl({Fuente:'INEGI, ENASIC 2022, microdatos (TPOB_CUI, FAC_CUI)',Cobertura:'Nacional',Preguntas:'P6.7, P6.26, P6.42, P6.45, P6.11–P6.12, P6.30–P6.31',Advertencia:'P6.45 pregunta por lugares. El INEGI rotula la opción "NO HA TENIDO NECESIDAD (NO HAY PERSONAS EN SU HOGAR QUE REQUIERAN CUIDADOS)": puede leerse como "no necesito un lugar" o como que la persona cuidada vive en otro hogar. Daños autodeclarados.',Archivo:esc(on?D.seg2_fuente:C.fuente)});
+    var cw0=document.getElementById('ch-carga').clientWidth;
+    $('#ch-carga').innerHTML=iconosDano(LB.map(function(l,i){return {lbl:l,nec:nec[i],dano:dan[i]}}),cw0>0?Math.max(660,Math.min(980,cw0)):980);
+    /* 3 nov 2026: la prueba 40 h vs. menos de 20 h vivía en su propia tarjeta («¿Cuánto cambia…?»), que repetía estas cifras. Queda aquí, para el equipo. */
+    function pr(nm,d,li,ls,ok){return nm+': '+(d>0?'+':'')+fmt(d)+' puntos (IC 90 % '+fmt(li)+' a '+fmt(ls)+')'+(ok?'':', no se distingue de 0')}
+    var cmpTxt;
+    if(on){cmpTxt=['sinnec','hogar','dano'].map(function(k){var r=S2('dif',k);return r?pr(esc(r.etiqueta),r.pct,r.li90,r.ls90,sigOk(r.dif_significativa)):''}).filter(Boolean).join(' · ')}
+    else{cmpTxt=C.diferencias.map(function(d){var inv=/<20 h menos >=40 h|Q1 menos Q4/.test(d.comparacion);
+      return pr(esc(d.comparacion.split(':')[0])+(/Q[14]/.test(d.comparacion)?' (cuartil de horas más alto frente al más bajo)':''),inv?-d.dif_pp:d.dif_pp,inv?-d.ls90:d.li90,inv?-d.li90:d.ls90,d.excluye_cero===true||d.excluye_cero==='True')}).join(' · ')}
+    $('#src-carga').innerHTML=dl({Fuente:'INEGI, ENASIC 2022, microdatos (TPOB_CUI, FAC_CUI)',Cobertura:'Nacional',Preguntas:'P6.7, P6.26, P6.42, P6.45, P6.11–P6.12, P6.30–P6.31',Advertencia:'P6.45 pregunta por lugares. El INEGI rotula la opción "NO HA TENIDO NECESIDAD (NO HAY PERSONAS EN SU HOGAR QUE REQUIERAN CUIDADOS)": puede leerse como "no necesito un lugar" o como que la persona cuidada vive en otro hogar. Daños autodeclarados.',Comparación:'40 h o más frente a menos de 20 h, en puntos porcentuales: '+cmpTxt+'. Varias comparaciones al 90 % sin corrección por comparaciones múltiples.',Archivo:esc(on?D.seg2_fuente:C.fuente)+(on?'':' · Analysis/resultados/07_enasic_diferencias.csv')});
   }
-  var difSel='h';
-  function dif(){
-    var on=aplica('horas');
-    $('#ctrlDif').style.display=on?'none':'';
-    var CI=OBS.C_INK,NOM=[['"No tuvo necesidad"','Dice «no tuve necesidad»'],['"El propio hogar cuida"','Dice «el propio hogar cuida»'],['Algún daño entre "sin necesidad"','Declara algún daño*'],['Salud física deteriorada entre "sin necesidad"','Salud física deteriorada*']];
-    /* todas las diferencias se expresan como «más horas menos menos horas»: positivo = sube con la carga */
-    function norm(d){var c=d.comparacion,inv=/<20 h menos >=40 h|Q1 menos Q4/.test(c),nm=c;
-      NOM.forEach(function(p){if(c.indexOf(p[0])===0)nm=p[1]});
-      return {nm:nm,q:/Q[14]/.test(c),dif:inv?-d.dif_pp:d.dif_pp,li:inv?-d.ls90:d.li90,ls:inv?-d.li90:d.ls90,ok:d.excluye_cero===true||d.excluye_cero==='True'}}
-    var L=on?S2L('dif').filter(function(r){return r.categoria!=='dano_todos'}).map(function(r){return {nm:r.etiqueta,q:false,dif:r.pct,li:r.li90,ls:r.ls90,ok:sigOk(r.dif_significativa)}}):C.diferencias.map(norm);
-    /* 23 oct 2026: columnas agrupadas (proporción con menos horas y con más horas) con la diferencia anotada arriba. Solo con datos nacionales: con un filtro de segmento solo existen las diferencias y se mantiene la tabla. */
-    var NM_CI={'Dice «no tuve necesidad»':C.sin_necesidad,'Declara algún daño*':C.dano,'Salud física deteriorada*':C.salud_fisica};
-    function par(d){var c=d.comparacion,inv=/<20 h menos >=40 h|Q1 menos Q4/.test(c),n=norm(d),ci=NM_CI[n.nm],lo={pct:inv?d.p1:d.p2},hi={pct:inv?d.p2:d.p1};
-      if(ci&&!n.q){lo=ci[0];hi=ci[2]}
-      return {nm:n.nm,q:n.q,lo:lo,hi:hi,dif:n.dif,li:n.li,ls:n.ls,ok:n.ok}}
-    function partirT(t,n){var w=String(t).split(' '),Ls=[],c='';w.forEach(function(x){if((c+' '+x).trim().length>n&&c){Ls.push(c);c=x}else c=(c+' '+x).trim()});if(c)Ls.push(c);return Ls}
-    function cols(rows,nl,nh){
-      var W=520,pl=34,pr=6,pt=54,pb=68,H=310,gw=(W-pl-pr)/rows.length,bw=Math.min(40,gw*.3),gap=5,cLo='#b8b3c9',cHi='#77689d';
-      function Y(v){return pt+(H-pt-pb)*(1-v/100)}
-      var sv=svg(W,H,'Porcentaje con menos y con más horas de cuidado');
-      [0,25,50,75,100].forEach(function(t){sv+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,'+(t?'.08':'.3')+')"/><text x="'+(pl-6)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="10" fill="'+FAINT+'">'+t+'%</text>'});
-      rows.forEach(function(r,i){var cx=pl+gw*(i+.5),x0=cx-bw-gap/2;
-        [[r.lo,cLo,nl],[r.hi,cHi,nh]].forEach(function(q,k){var e=q[0],x=x0+k*(bw+gap),bx=x+bw/2,ci=e.li90!=null,ty=Y(ci?e.ls90:e.pct)-6;
-          sv+='<g><title>'+esc(q[2])+' · '+esc(r.nm)+': '+fmt(e.pct)+'%'+(ci?' (IC 90%: '+fmt(e.li90)+'–'+fmt(e.ls90)+')':'')+'</title><rect x="'+x.toFixed(1)+'" y="'+Y(e.pct).toFixed(1)+'" width="'+bw.toFixed(1)+'" height="'+Math.max(1.5,Y(0)-Y(e.pct)).toFixed(1)+'" rx="3" fill="'+q[1]+'"/>';
-          if(ci)sv+='<g stroke="'+CI+'" stroke-width="1.2" opacity=".55"><line x1="'+bx+'" x2="'+bx+'" y1="'+Y(e.ls90)+'" y2="'+Y(e.li90)+'"/><line x1="'+(bx-4)+'" x2="'+(bx+4)+'" y1="'+Y(e.ls90)+'" y2="'+Y(e.ls90)+'"/><line x1="'+(bx-4)+'" x2="'+(bx+4)+'" y1="'+Y(e.li90)+'" y2="'+Y(e.li90)+'"/></g>';
-          sv+='<text x="'+bx+'" y="'+ty+'" text-anchor="middle" '+MONO+' font-size="11.5" font-weight="700" fill="'+CI+'">'+fmt(e.pct,0)+'</text></g>'});
-        sv+='<g><title>'+esc(r.nm)+': '+(r.dif>0?'+':'')+fmt(r.dif)+' pp (IC 90%: '+fmt(r.li)+' a '+fmt(r.ls)+')'+(r.ok?'':' · el intervalo cruza el cero')+'</title><text x="'+cx+'" y="16" text-anchor="middle" font-size="14" font-weight="760" fill="'+(r.ok?'#c0435a':FAINT)+'">'+(r.dif>0?'+':'')+fmt(r.dif)+' pp</text><text x="'+cx+'" y="30" text-anchor="middle" '+MONO+' font-size="10" fill="'+FAINT+'">IC '+fmt(r.li,0)+' a '+fmt(r.ls,0)+'</text>'+(r.ok?'':'<text x="'+cx+'" y="42" text-anchor="middle" font-size="9.5" fill="'+FAINT+'">no se distingue de 0</text>')+'</g>';
-        partirT(r.nm,15).forEach(function(l,li){sv+='<text x="'+cx+'" y="'+(Y(0)+17+li*15)+'" text-anchor="middle" font-size="12" font-weight="650" fill="'+(r.ok?CI:FAINT)+'">'+esc(l)+'</text>'})});
-      return sv+'</svg><div class="legend"><span><i style="background:'+cLo+'"></i>'+esc(nl)+'</span><span><i style="background:'+cHi+'"></i>'+esc(nh)+'</span></div>'}
-    if(!on){
-      var PA=C.diferencias.map(par),A=PA.filter(function(r){return !r.q}),Qs=PA.filter(function(r){return r.q});
-      $('#ch-dif').innerHTML=(difSel==='h'?cols(A,'Menos de 20 h','40 h o más'):cols(Qs,'Cuartil más bajo de horas','Cuartil más alto de horas'));
-    }else{
-    var h='<div class="scroll-x"><table><thead><tr><th>Comparación</th><th class="n">Diferencia</th><th class="n">IC 90 %</th><th>¿Distinto de 0?</th></tr></thead><tbody>';
-    function grupo(t,arr){h+='<tr><td colspan="4" style="padding-top:14px"><span class="kicker" style="margin:0">'+t+'</span></td></tr>';
-      arr.forEach(function(d){h+='<tr><td'+(d.ok?'':' style="color:'+FAINT+'"')+'>'+esc(d.nm)+'</td><td class="n" style="font-weight:700'+(d.ok?'':';color:'+FAINT)+'">'+(d.dif>0?'+':'')+fmt(d.dif)+' pp</td><td class="n"'+(d.ok?'':' style="color:'+FAINT+'"')+'>'+fmt(d.li)+' a '+fmt(d.ls)+'</td><td>'+(d.ok?'<b>Sí</b>':'<span style="color:'+FAINT+'">No</span>')+'</td></tr>'})}
-    grupo('40 h o más frente a menos de 20 h'+(on?' · '+segName():''),L.filter(function(d){return !d.q}));
-    if(!on)grupo('Comprobación: cuartil de horas más alto frente al más bajo',L.filter(function(d){return d.q}));
-    h+='</tbody></table></div>';
-    if(on)h+='<p class="muted" style="font-size:12px;margin:10px 0 0">La comprobación por cuartiles de horas solo está calculada para el total nacional.</p>';
-    $('#ch-dif').innerHTML=h+'<div class="legend"><span class="muted">Positivo: sube con más horas · negativo: baja. «No»: el intervalo cruza el cero. * Daño y salud física: entre quienes dicen «no tuve necesidad».</span></div>';
-    }
-    $('#src-dif').innerHTML=dl({Lectura:'Arriba de cada par: diferencia en puntos porcentuales e IC 90 %. En gris: el intervalo cruza el cero. Línea sobre la columna: IC 90 % (solo donde existe). * Entre quienes dicen «no tuve necesidad».',Método:'Diferencia entre proporciones con varianza de diseño, IC al 90%. Todas se expresan como «más horas menos menos horas» (el CSV guarda algunas con el signo contrario).',Advertencia:'Son varias comparaciones al 90% sin corrección por comparaciones múltiples; dentro de un segmento la muestra es menor y los intervalos se abren.',Archivo:on?esc(D.seg2_fuente):'Analysis/resultados/07_enasic_diferencias.csv'});
+  /* ---- 3 nov 2026: afectaciones por horas de cuidado (notebook 31, D.afect_horas). Reemplaza «¿Cuánto cambia con más horas?».
+     Responde al filtro de segmento; con Intensidad muestra el total (la gráfica ya está cortada por horas). Nada escrito a mano. ---- */
+  var AF_ORD=['salud3','cansado','sueno','salud','deprimido','irritado','terapia','enfermedad'];
+  var AF_NOM={salud3:'Al menos una: salud física, cansancio o sueño',cansado:'Se siente cansado/a',sueno:'Duerme menos',salud:'Su salud física se deterioró',deprimido:'Se siente deprimido/a',irritado:'Se siente irritado/a',terapia:'Recibió terapia por ansiedad o depresión',enfermedad:'Desarrolló una enfermedad o se le agravó'};
+  var AF_CORTO={cansado:'cansancio',sueno:'dormir menos',salud:'salud física',deprimido:'depresión',irritado:'irritabilidad',terapia:'terapia',enfermedad:'enfermedad'};
+  var AF_H=[['<20 h','Menos de 20 h','#d9d3e8'],['20-39 h','20 a 39 h','#a99bcb'],['>=40 h','40 h o más','#5d4d8f']];
+  function afh(){
+    var A=D.afect_horas,on=aplica('horas'),dim=on?F.dim:'Total',sg=on?F.seg:'Total';
+    function r(k,h){return A.filas.filter(function(x){return x.dimension===dim&&x.segmento===sg&&x.clave===k&&x.horas===h})[0]}
+    function lista(a){return a.length>1?a.slice(0,-1).join(', ')+' y '+a[a.length-1]:a.join('')}
+    var s40=r('salud3','>=40 h'),s20=r('salud3','<20 h'),
+        poco=function(k){return isWeak(r(k,'>=40 h').precision)||isWeak(r(k,'<20 h').precision)},
+        sube=AF_ORD.filter(function(k){return k!=='salud3'&&!poco(k)&&sigOk(r(k,'>=40 h').dif_significativa)}),
+        igual=AF_ORD.filter(function(k){return k!=='salud3'&&!poco(k)&&!sigOk(r(k,'>=40 h').dif_significativa)}),
+        pocos=AF_ORD.filter(function(k){return k!=='salud3'&&poco(k)});
+    $('#afhFind').innerHTML=(on?pre():F.dim==='Intensidad'?'<b>Total nacional</b> (esta gráfica ya está cortada por horas): ':'')+
+      'Con 40 h o más a la semana, <b>'+fmt(s40.pct,0)+' de cada 100</b> declaran al menos una afectación de salud por cuidar (salud física, cansancio o sueño); con menos de 20 h, '+fmt(s20.pct,0)+' de cada 100. '+
+      (sube.length?'Suben claramente con las horas: '+lista(sube.map(function(k){return AF_CORTO[k]}))+'. ':'')+
+      (igual.length?'En '+lista(igual.map(function(k){return AF_CORTO[k]}))+' no se ve un cambio claro'+(on?' en este segmento':'')+'. ':'')+
+      (pocos.length?'En '+lista(pocos.map(function(k){return AF_CORTO[k]}))+' hay muy pocos casos para saberlo.':'');
+    var vals=[];A.filas.forEach(function(x){if(x.dimension===dim&&x.segmento===sg&&!isWeak(x.precision))vals.push(x.ls90)});
+    var mx=Math.min(100,Math.ceil(Math.max.apply(null,vals)/20)*20),W=480;
+    /* 5 nov 2026 (diseño): mancuerna en lugar de barras agrupadas. Una fila por afectación con los extremos (menos de 20 h y 40 h o más), punto intermedio (20 a 39 h) y la diferencia al lado; se ordena por diferencia y se separa en «suben con claridad / sin cambio claro / muy pocos casos». Mismas cifras de D.afect_horas.
+       Antes: barras agrupadas en dos columnas con OBS.barrasGrupo (3 nov 2026). */
+    function fila(k){var lo=r(k,'<20 h'),mi=r(k,'20-39 h'),hi=r(k,'>=40 h'),w=poco(k);
+      return {nombre:AF_NOM[k],resumen:k==='salud3',lo:lo,mid:mi,hi:hi,dif:hi.dif_pp,difLi:hi.dif_li90,difLs:hi.dif_ls90,poco:w,clara:!w&&sigOk(hi.dif_significativa)}}
+    function porDif(a,b){return b.dif-a.dif}
+    var FS=AF_ORD.filter(function(k){return k!=='salud3'}).map(fila),
+        okc=FS.filter(function(f){return f.clara}).sort(porDif).map(function(f){f.grupo='Suben con claridad';return f}),
+        nsc=FS.filter(function(f){return !f.clara&&!f.poco}).sort(porDif).map(function(f){f.grupo='Sin cambio claro';return f}),
+        pcs=FS.filter(function(f){return f.poco}).sort(porDif).map(function(f){f.grupo='Muy pocos casos';return f}),
+        res=fila('salud3');res.grupo='En resumen';
+    $('#ch-afh').innerHTML='<div class="legend mc-leg"><span><i class="mc-ld lo"></i>Menos de 20 h</span><span><i class="mc-ld mid"></i>20 a 39 h</span><span><i class="mc-ld hi"></i>40 h o más</span><span>Línea tenue: intervalo de confianza al 90 % de 40 h o más</span></div>'+
+      OBS.mancuerna([res].concat(okc,nsc,pcs),{max:mx,nombres:['menos de 20 h','20 a 39 h','40 h o más'],aria:'Afectaciones declaradas por cuidar: de menos de 20 horas a 40 horas o más'});
+    var EQ=AF_ORD.map(function(k){var x=r(k,'>=40 h');return esc(AF_CORTO[k]||'al menos una de salud')+' '+(x.dif_pp>0?'+':'')+fmt(x.dif_pp)+' ('+fmt(x.dif_li90)+' a '+fmt(x.dif_ls90)+')'}).join(' · ');
+    var AT=D.afectaciones.filas,ua=function(sx){return AT.filter(function(x){return x.universo.charAt(0)==='A'&&x.sexo===sx&&x.clave==='salud3'})[0]};
+    $('#src-afh').innerHTML=dl({Universo:(on?esc(segName())+' · ':'')+'Personas cuidadoras de persona con discapacidad o 60+, nacional (ENASIC 2022, TPOB_CUI, FAC_CUI; n = '+AF_H.reduce(function(a,h){return a+r('salud3',h[0]).n_muestra_dominio},0)+')',
+      Preguntas:'«Por el cuidado que usted otorga, ¿…?»: P6.11.1 a P6.11.7 y P6.30.1 a P6.30.7; cuenta «sí» en cualquiera de los dos bloques. Horas: P6.7 + P6.26, tope de 168.',
+      Comparación:'Diferencia entre 40 h o más y menos de 20 h, en puntos porcentuales e IC 90 %: '+EQ+'.',
+      INEGI:'La presentación de resultados de INEGI usa a todas las personas cuidadoras y no corta por horas: ahí, al menos una afectación de salud la declaran '+fmt(ua('Mujeres').pct)+'% de las mujeres y '+fmt(ua('Hombres').pct)+'% de los hombres (se reproducen sus 14 cifras al decimal; notebook 31).',
+      Advertencia:'<b>Sin doble revisión.</b> Lo que las personas declaran, no un diagnóstico. Horas y afectaciones se miden en la misma entrevista: no prueba que más horas causen más afectación. Cada bloque de horas topa en «98 o más».',
+      Archivo:esc(A.fuente)});
   }
-  OBS.seg('#segDif','d',function(v){difSel=v;dif()});
   /* 7 oct 2026 (noche): KPI del grupo del problema con jerarquía de portada: título y cifra grandes a la izquierda, 79.6% arriba a la derecha */
   function grupo(){
-    var tot=F.dim==='Total',g=tot?G:S2('kpi','grupo'),na=F.dim==='Intensidad'&&F.seg!=='>=40 h';
+    var tot=F.dim==='Total',g=tot?(K.grupo_problema_salud3||G):S2('kpi','grupo'),na=F.dim==='Intensidad'&&F.seg!=='>=40 h',s3=tot&&!!K.grupo_problema_salud3;
     if(na){$('#grupo').innerHTML='<div class="gp"><h3 class="gp-tit">El grupo del problema</h3><div class="gp-big num">—</div>'+
-      '<p class="gp-desc">No aplica a '+esc(segName())+': el grupo exige cuidar 40 h o más. En el total nacional son ≈ '+mill(G.total_expandido)+' personas.</p></div>';return}
+      '<p class="gp-desc">No aplica a '+esc(segName())+': el grupo exige cuidar 40 h o más. En el total nacional son ≈ '+mill((K.grupo_problema_salud3||G).total_expandido)+' personas.</p></div>';return}
     $('#grupo').innerHTML='<div class="gp">'+
       '<h3 class="gp-tit">El grupo del problema</h3><div class="gp-big num">≈ '+mill(g.total_expandido)+'</div>'+
-      (tot?'<div class="gp-side"><div class="gp-pct num">'+fmt(C.nucleo_dano.pct)+'%</div><div class="lbl">declara daño entre quienes además bañan, visten o dan de comer</div></div>'
+      (s3?'<div class="gp-side"><div class="gp-pct num">'+fmt(g.li90)+'–'+fmt(g.ls90)+'%</div><div class="lbl">rango probable de ese porcentaje</div></div>':tot?'<div class="gp-side"><div class="gp-pct num">'+fmt(C.nucleo_dano.pct)+'%</div><div class="lbl">declara algún daño (a su salud o a su trabajo) entre quienes además bañan, visten o dan de comer</div></div>'
           :'<div class="gp-side"><div class="gp-pct num">'+mill(G.total_expandido)+'</div><div class="lbl">en el total nacional, como referencia</div></div>')+
-      '<p class="gp-desc">personas cuidadoras: cuidan 40 h o más, dicen "no tuve necesidad" y declaran daño. Son el <b>'+fmt(g.pct)+'%</b> de quienes cuidan a una persona con discapacidad o 60+'+(tot?'':' en este segmento (IC 90% '+fmt(g.li90)+'–'+fmt(g.ls90)+'%)')+'.</p>'+
+      '<p class="gp-desc">personas cuidadoras: cuidan 40 h o más, dicen "no tuve necesidad" y declaran '+(s3?'daño a su salud (salud física, cansancio o sueño)':'algún daño (a su salud o a su trabajo)')+'. Son el <b>'+fmt(g.pct)+'%</b> de quienes cuidan a una persona con discapacidad o 60+'+(tot?'':' en este segmento (IC 90% '+fmt(g.li90)+'–'+fmt(g.ls90)+'%)')+'.</p>'+
       '<div class="chips gp-chips">'+prec(g.precision)+'<span class="chip ev">probable</span><span class="chip geo">nacional</span></div></div>';
   }
   (function(){
@@ -117,7 +118,7 @@
     var LBLP={'Mujer':'Mujeres','Hombre':'Hombres','15-39':'15 a 39 años','40-59':'40 a 59 años','60+':'60 años y más','Q1-Q2':'Ingreso Q1–Q2','Q3':'Ingreso Q3','Q4-Q5':'Ingreso Q4–Q5','Sin dato':'Ingreso sin dato','Cuida discapacidad':'Cuida discapacidad','Solo 60+ sin discapacidad':'Solo a 60+ sin discapacidad'};
     var sig=PF.filter(function(r){return r.poblacion==='Grupo del problema'&&r.dif_significativa===true&&r.dif_pp>0});
     var nosig=DIMP.filter(function(d){return !PF.some(function(r){return r.dimension===d&&r.dif_significativa===true})});
-    $('#perfFind').innerHTML=sig.map(function(r){return '<b>'+fmt(r.pct)+'%</b> '+(r.segmento==='Mujer'?'son mujeres':r.segmento==='Cuida discapacidad'?'cuida a una persona con discapacidad':esc(LBLP[r.segmento]))+' (en el universo, '+fmt(pr(r.dimension,r.segmento,'Universo').pct)+'%)'}).join('; ')+'. '+(nosig.length?'Por '+nosig.map(function(d){return d.toLowerCase()}).join(' e ')+', el grupo no se distingue del resto.':'');
+    $('#perfFind').innerHTML=sig.map(function(r){return '<b>'+fmt(r.pct)+'%</b> '+(r.segmento==='Mujer'?'son mujeres':r.segmento==='Cuida discapacidad'?'cuida a una persona con discapacidad':esc(LBLP[r.segmento]))+' (en el universo, '+fmt(pr(r.dimension,r.segmento,'Universo').pct)+'%)'}).join('; ')+'. '+(nosig.length?'Por '+nosig.map(function(d){return d.toLowerCase()}).join(' e ')+', el grupo no se distingue del resto.':'')+' <i>Perfil con el objetivo preregistrado DANO_SALUD3 (script 30).'+(function(){var a=(D.perfil_v1||[]).filter(function(r){return r.dimension==='Sexo'&&r.segmento==='Mujer'}),g=a.filter(function(r){return r.poblacion==='Grupo del problema'})[0],u=a.filter(function(r){return r.poblacion==='Universo'})[0];return g&&u&&g.dif_significativa?' Con «algún daño» (versión 1) las mujeres sí salían sobrerrepresentadas ('+fmt(g.pct)+'% contra '+fmt(u.pct)+'%).':''})()+'</i>';
 var NQ={'Q1-Q2':'2 quintiles','Q3':'1 quintil','Q4-Q5':'2 quintiles'},CI=OBS.C_INK;
     var LBLC={'Mujer':'Mujeres','Hombre':'Hombres','15-39':'15 a 39','40-59':'40 a 59','60+':'60 y más','Q1-Q2':'Q1–Q2','Q3':'Q3','Q4-Q5':'Q4–Q5','Sin dato':'Sin dato','Cuida discapacidad':'Con discapacidad','Solo 60+ sin discapacidad':'Solo 60+'};
     var SUBC={'15-39':'años','40-59':'años','60+':'años','Solo 60+ sin discapacidad':'sin discapacidad'};
@@ -156,7 +157,7 @@ var NQ={'Q1-Q2':'2 quintiles','Q3':'1 quintil','Q4-Q5':'2 quintiles'},CI=OBS.C_I
     if(on){RG=S2L('horas').filter(function(r){return r.categoria!=='mediana'}).map(function(r){return Object.assign({},r,{etiqueta:r.categoria,desde:parseInt(r.categoria,10)})});med=S2('horas','mediana').pct}
     else{RG=HD.rangos.filter(function(r){return r.desde>=1}).sort(function(a,b){return a.desde-b.desde});med=HD.mediana}
     var p40=RG.filter(function(r){return r.desde>=40}).reduce(function(a,r){return a+r.pct},0);
-    $('#horFind').innerHTML=(on?pre():'')+'La mitad cuida <b>'+fmt(med,0)+' h</b> a la semana o menos; <b>'+fmt(p40)+'%</b> cuida 40 h o más'+(on?'.':', y '+fmt(HD.tope98.pct)+'% llega al tope del cuestionario (98 h en un bloque).');
+    $('#horFind').innerHTML=(on?pre():'')+'La mitad cuida <b>'+fmt(med,0)+' h</b> a la semana o menos'+(on?'.':'; '+fmt(HD.tope98.pct)+'% llega al tope del cuestionario (98 h en un bloque).');
     var W=560,H=230,pl=34,pb=34,pt=14,gw=(W-pl)/RG.length,bw=gw-10,mx=Math.ceil(Math.max.apply(null,RG.map(function(r){return r.ls90}))/5)*5+5;
     function Y(v){return pt+(H-pt-pb)*(1-v/mx)}
     var s=svg(W,H,'Distribución de horas de cuidado')+'<defs><pattern id="hh" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#e59aa8"/><line x1="0" y1="0" x2="0" y2="5" stroke="#fff" stroke-width="2"/></pattern></defs>';
@@ -189,7 +190,7 @@ var NQ={'Q1-Q2':'2 quintiles','Q3':'1 quintil','Q4-Q5':'2 quintiles'},CI=OBS.C_I
               int:r.interpretable===undefined?true:sig(r.interpretable)}})}
     var r0=dh('Menos de 40 h','Algún daño por cuidar'),r0s=dh('Menos de 40 h','Salud física deteriorada');
     $('#s23Find').innerHTML='Hay un perfil que no se define por las horas sino por la <b>dificultad con la tarea</b>: '+fmt(dif.pct)+'% de quienes cuidan (≈ '+mill(dif.total_expandido)+'). '+
-      'Con menos de 40 h a la semana, <b>'+fmt(r0.con_dificultad,0)+'%</b> de ese perfil declara algún daño, contra '+fmt(r0.sin_dificultad,0)+'% del resto; en salud física, '+fmt(r0s.con_dificultad,0)+'% contra '+fmt(r0s.sin_dificultad,0)+'%.';
+      'Con menos de 40 h a la semana, <b>'+fmt(r0.con_dificultad,0)+'%</b> de ese perfil declara algún daño (versión 1), contra '+fmt(r0.sin_dificultad,0)+'% del resto; en salud física, '+fmt(r0s.con_dificultad,0)+'% contra '+fmt(r0s.sin_dificultad,0)+'%.';
     function draw(){
       var cw=document.getElementById('ch-s23').clientWidth||520,W=Math.max(320,Math.min(560,cw)),L=filas(),H=290,pl=34,pr=8,pt=40,pb=40,gw=(W-pl-pr)/2,bw=Math.min(58,gw*.32);
       if(L.every(function(r){return r.na})){$('#ch-s23').innerHTML='<p class="find">El daño laboral no se calculó por bloque del cuestionario. Elige «Todas».</p>';return}
@@ -205,7 +206,7 @@ var NQ={'Q1-Q2':'2 quintiles','Q3':'1 quintil','Q4-Q5':'2 quintiles'},CI=OBS.C_I
           s+='<text x="'+(b[3]+bw/2)+'" y="'+(Y(b[0])-6)+'" text-anchor="middle" '+MONO+' font-size="12" font-weight="700" fill="'+(weak?FAINT:CI)+'">'+fmt(b[0],0)+'</text>'});
         var top=Y(Math.max(r.c,r.s))-26,txt;
         if(!r.int)txt='n = '+Math.min(r.nc,r.ns)+': no se compara';
-        else txt=(r.d>0?'+':'')+fmt(r.d,0)+' pp · IC '+fmt(r.li,0)+' a '+fmt(r.ls,0)+(r.ok?'':' (cruza 0)');
+        else txt=r.ok?(r.d>0?'más alto':'más bajo')+' con dificultad':'sin diferencia clara';
         s+='<text x="'+cx+'" y="'+Math.max(14,top)+'" text-anchor="middle" '+MONO+' font-size="11" font-weight="700" fill="'+(r.int&&r.ok?ROSA:FAINT)+'">'+txt+'</text>'});
       $('#ch-s23').innerHTML=s+'</svg>';
     }
@@ -217,21 +218,23 @@ var NQ={'Q1-Q2':'2 quintiles','Q3':'1 quintil','Q4-Q5':'2 quintiles'},CI=OBS.C_I
     if(window.ResizeObserver){var w0=0;new ResizeObserver(function(e){var w=Math.round(e[0].contentRect.width);if(w&&Math.abs(w-w0)>8){w0=w;draw()}}).observe(document.getElementById('ch-s23'))}
     var fu=S.fuera_regla;
     $('#s23Tiles').innerHTML='<div class="s23-tiles">'+
-      '<div class="tile"><div class="kicker" style="margin:0">Dificultad en la tarea</div><div class="big num" style="color:'+ROSA+'">'+fmt(dif.pct)+'%</div><div class="lbl">≈ '+mill(dif.total_expandido)+' personas cuidadoras</div><div class="chips">'+prec(dif.precision)+'<span class="chip">IC 90% '+fmt(dif.li90)+'–'+fmt(dif.ls90)+'%</span></div></div>'+
-      '<div class="tile"><div class="kicker" style="margin:0">Y cuidan menos de 40 h</div><div class="big num">'+fmt(fu.pct)+'%</div><div class="lbl">≈ '+mill(fu.total_expandido)+': la regla de 40 h no las ve</div><div class="chips">'+prec(fu.precision)+'<span class="chip">IC 90% '+fmt(fu.li90)+'–'+fmt(fu.ls90)+'%</span></div></div></div>';
+      OBS.tile({plano:true,est:true,k:'% de quienes cuidan que declara dificultad en la tarea',v:fmt(dif.pct)+'%',color:ROSA,
+        det:'<div class="lbl">≈ '+mill(dif.total_expandido)+' personas cuidadoras</div><div class="chips">'+prec(dif.precision)+'<span class="chip">IC 90% '+fmt(dif.li90)+'–'+fmt(dif.ls90)+'%</span></div>',fuente:'ENASIC 2022 · nacional'})+
+      OBS.tile({plano:true,est:true,k:'% de quienes cuidan que declara dificultad y cuida menos de 40 h',v:fmt(fu.pct)+'%',
+        det:'<div class="lbl">≈ '+mill(fu.total_expandido)+' personas: la regla de 40 h no las ve</div><div class="chips">'+prec(fu.precision)+'<span class="chip">IC 90% '+fmt(fu.li90)+'–'+fmt(fu.ls90)+'%</span></div>',fuente:'ENASIC 2022 · nacional'})+'</div>';
     var LBL={reqapoyo:'Requiere que otra persona le apoye',fuerza:'Le falta fuerza física',capacitacion:'Necesitaría capacitación',nocoopera:'La persona no coopera',insatisfecha:'Insatisfecha con la ayuda que recibe',horas:'Cuida 80 h o más',motivo:'Cuida por obligación o «la única que podía»'};
     var ORD=['reqapoyo','fuerza','capacitacion','nocoopera','insatisfecha','motivo','horas'];
     var pv=function(nom){return ORD.map(function(v){var r=S.perfil.filter(function(r){return r.variable===v&&r.nombre===nom})[0];return r?{pct:r.pct,li90:r.li90,ls90:r.ls90,precision:r.precision}:null})};
     $('#ch-s23p').innerHTML=OBS.barrasGrupo(ORD.map(function(v){return LBL[v]}),[{nombre:'Dificultad en la tarea',col:ROSA,vals:pv('Dificultad en la tarea')},{nombre:'Sin dificultad declarada',col:GRISL,vals:pv('Sin dificultad declarada')}],{W:360,max:100,aria:'Perfil de las dos clases'});
     var k2=S.estabilidad.filter(function(e){return e.k===2})[0],k3=S.estabilidad.filter(function(e){return e.k===3})[0];
-    $('#s23Note').innerHTML='<span><b>Informa qué ofrecer, no a quién atender primero.</b> Para priorizar, la regla de 40 h sigue igual de buena (notebooks 21 y 22). '+
-      'Este perfil necesitaría algo distinto al relevo por horas (capacitación o una segunda persona), y eso solo lo puede probar el piloto. '+
-      'Un modelo no hace falta: contar «2 o más de 4 dificultades» separa igual (diferencia máxima '+fmt(S.modelo_vs_regla_max_pp,1)+' puntos).</span>';
+    $('#s23Note').innerHTML='<span><b>Describe quién declara dificultad; no está probado que sirva para decidir a quién atender primero.</b> '+
+      'Contar «2 o más de 4 dificultades» separa casi igual que el modelo (diferencia máxima '+fmt(S.modelo_vs_regla_max_pp,1)+' puntos), así que no hace falta un modelo. '+
+      'Qué ayuda necesita este perfil no se puede deducir de aquí: dos de las variables que definen la clase son «necesitaría capacitación» y «requiere apoyo». Eso solo lo puede probar el piloto.</span>';
     $('#src-s23').innerHTML=dl({Universo:'Personas cuidadoras de persona con discapacidad o 60+, nacional (ENASIC 2022, TPOB_CUI, FAC_CUI, n = 1,043)',
       Método:'Modelo de clases latentes ponderado. Entran horas, cuida menores, cuatro dificultades (P6.9 / P6.28), insatisfacción con la ayuda (P6.39.3) y motivo (P6.38). El daño no entra al modelo: solo se usa para describir las clases. Clase asignada por probabilidad máxima; daño con IC al 90% por diseño.',
       Estabilidad:'Dos clases: índice de Rand ajustado mediano de '+fmt(k2.ari,2)+' en 100 réplicas bootstrap de UPM. Con tres clases cae a '+fmt(k3.ari,2)+': no hay más «tipos» estables.',
       Advertencia:'Exploratorio y <b>sin doble revisión</b>. Encuesta transversal: no demuestra que la dificultad cause el daño, y ambas se reportan en la misma entrevista. «Le falta fuerza» se parece a «salud física deteriorada». La clase de una persona es incierta (entropía '+fmt(k2.entropia,2)+'): no sirve para negar o asignar apoyos individuales. Nada de esto es de la CDMX.',
       Archivo:esc(S.fuente)});
   })();
-  OBS.alSeg.push(function(){kpis();carga();dif();grupo();horas();if(OBS.perfSeg)OBS.perfSeg()});
+  OBS.alSeg.push(function(){kpis();carga();afh();grupo();horas();if(OBS.perfSeg)OBS.perfSeg()});
 })();

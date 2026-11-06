@@ -13,9 +13,13 @@ Análisis reproducible del Observatorio: notebooks A–D, scripts 19–21, resul
 | `C_programa_asequibilidad_y_costo.ipynb` | Secciones 04, 05, 06, 10, 14 | `resultados/04–06, 10, 14_*` | Sin doble revisión |
 | `D_tipologia_territorial_ageb.ipynb` | Sección 18 (tipología de AGEB, modelo 2) | `resultados/18_*`, `figuras/f11–f14` | Sin doble revisión |
 | `24_prioridad_zonas.py` | Regla sin pesos para ordenar alcaldías por brecha: volumen y concentración, 3 cortes × 3 tamaños de grupo de cabeza; detalle por AGEB | `resultados/24_*` | Sin doble revisión (24 oct 2026) |
+| `25_prueba_indice_con_pesos.py` | Prueba de un índice con pesos (volumen y concentración) contra la regla del 24: 60 configuraciones de peso, normalización y corte | `resultados/25_*` | Sin doble revisión (26 oct 2026) |
 | `19_costo_hora_por_jornada.py` | Costo de la hora por tipo de jornada | `resultados/19_*` | Sin doble revisión |
 | `20_modelo_sostenibilidad.py` y `.ipynb` | Modelo de sostenibilidad de la opción C (no es ML) | `resultados/20_*` (incluye `.xlsx` con fórmulas), `figuras/f21–f25` | Sin doble revisión |
 | `21_priorizacion_cuidadoras.py` | Escalera de métodos de priorización (exploratorio) | `resultados/21_*` | Sin doble revisión. Ver la nota del 20 oct más abajo |
+| `26_diagnostico_previo_focalizacion.py` | Diagnóstico que debió preceder al modelo de focalización: potencia, medición por bloque, forma horas → daño, información condicional, escalera de información. Memo: `../Documentos/diagnostico_focalizacion_2026-11-01.md` | `resultados/26_diag_*` | Sin doble revisión (1 nov 2026) |
+| `27_focalizacion_v2.py` | Focalización v2 según el preregistro del 1 nov (objetivo `DANO_SALUD3`, cuota fija, Δ = 5, δ = 10). Veredicto: no concluyente; se queda la regla ≥ 40 h | `resultados/27_v2_*` | Sin doble revisión (1 nov 2026) |
+| `28_figuras_diagnostico_v2.py` | Figuras del diagnóstico (script 26) y de la v2 (script 27) para la presentación: `f32` (horas → daño), `f33` (reasignación del cupo entre bloques), `f34` (v2 contra la regla). No recalcula: lee `resultados/26_diag_*` y `27_v2_*` | `figuras/f32–f34` | Sin doble revisión (1 nov 2026). Registrado en la bitácora el 2 nov |
 | `eda_fuentes.py` | EDA del 18 sept sobre los CSV de `../Data/investigacion/` | `resultados/` sin prefijo numérico (`ayuda_avd_cdmx.csv`, `oferta_por_alcaldia.csv`, etc.) | Versión del 18 sept |
 | `generar_figuras.py`, `estilo_graficas.py` | Figuras f1–f8 y estilo común | `figuras/` | — |
 | `enut2024_participacion_laboral/` | Subproyecto ENUT 2024 (ver su README) | `reports/` | **No está en la bitácora** |

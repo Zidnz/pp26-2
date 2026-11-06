@@ -1,0 +1,10 @@
+﻿chequeo,valor,nota
+horas: P6_7 y P6_26 tienen rango 01-98 (tope),37.0,personas con 98 en algún bloque
+horas: suma de dos bloques supera 98,33.0,posible traslape de horas «exclusivas»
+personas que cuidan en ambos bloques,204.0,sus predictores de dificultad se combinan con O: dos oportunidades de decir sí
+horas: amontonamiento en múltiplos de 7,0.38617931116039955,proporción ponderada
+ABVD/tareas clínicas preguntadas en bloque solo 60+,23.0,de 407: el resto vale 0 porque no se preguntó (P6_22 depende de P6_21)
+P6_28_1: código 8 («No aplica») recodificado como «no»,42.0,código 8 = «No aplica» (catálogo); no existe en P6_9_x
+P6_28_2: código 8 («No aplica») recodificado como «no»,50.0,código 8 = «No aplica» (catálogo); no existe en P6_9_x
+P6_28_3: código 8 («No aplica») recodificado como «no»,31.0,código 8 = «No aplica» (catálogo); no existe en P6_9_x
+P6_28_4: código 8 («No aplica») recodificado como «no»,13.0,código 8 = «No aplica» (catálogo); no existe en P6_9_x

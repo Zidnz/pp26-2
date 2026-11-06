@@ -1,0 +1,13 @@
+﻿indicador,valor,nota
+n_muestra_universo,1043.0,personas cuidadoras en la muestra
+n_upm,445.0,unidades primarias de muestreo
+n_estratos,139.0,
+prevalencia_dano_alguno,0.6216078772636914,ponderada
+efecto_diseno_prevalencia,1.8832094850106798,deff
+n_efectivo,553.8417304615929,n / deff
+cupo_regla_40h,0.4072422378771159,proporción ponderada seleccionada por la regla
+cobertura_regla_40h,0.5081230317955091,
+techo_cobertura_al_cupo,0.655143302993183,cupo / prevalencia: lo máximo que cualquier puntaje puede cubrir
+margen_max_sobre_regla_pp,14.702027119767392,ganancia máxima posible sobre la regla
+se_diferencia_cobertura_pp,3.816060036781457,de 11_modelo_alternativas.csv (logística vs regla)
+dif_minima_detectable_pp,9.488633281457094,"potencia 80 %, alfa 0.10 bilateral"

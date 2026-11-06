@@ -1,4 +1,4 @@
-# Frontend — Mientras: relevo por horas para quien cuida (prototipo móvil)
+# Frontend — RedCare: relevo por horas para quien cuida (prototipo móvil)
 
 App en HTML/CSS/JS puro, sin build ni dependencias. Se presenta como app móvil (en escritorio, dentro de un marco de teléfono).
 
@@ -10,7 +10,7 @@ python -m http.server 8000   # desde Frontend/, o abrir index.html con doble cli
 
 ## Qué cambió (2026-10-24): una vista por rol y bienvenida
 
-- **Bienvenida** la primera vez: logo con barra de carga y «¿Cómo vas a usar Mientras?» (cuidadora · relevo · programa). Se repite con `index.html?intro` o desde Ajustes.
+- **Bienvenida** la primera vez: logo con barra de carga y «¿Cómo vas a usar RedCare?» (cuidadora · relevo · programa). Se repite con `index.html?intro` o desde Ajustes.
 - **Barra «Ver como»** bajo el encabezado (solo para la demostración; en un piloto real cada rol entraría con su cuenta):
   - **Cuidadora:** una pantalla; pide relevo y después ve **solo su caso** (prioridad en texto, horas, estado). No ve otras familias ni códigos ENASIC.
   - **Relevo:** una pantalla; se registra y ve **solo su registro**.
@@ -20,14 +20,14 @@ python -m http.server 8000   # desde Frontend/, o abrir index.html con doble cli
 
 ## Qué cambió (2026-10-20): Mientras, priorización con bolsa de horas
 
-Nombre y eslogan **provisionales** («Mientras · Relevo por horas para quien cuida»): los propuso Claude a pedido de Omar; se cambian en `js/config.js`.
+Nombre y eslogan **provisionales** («Mientras · Relevo por horas para quien cuida»): los propuso Claude a pedido de Omar; se cambian en `js/config.js`. **Reemplazados el 26 oct 2026** por «RedCare · Una red que cuida a quienes cuidan» (ver abajo).
 
 Flujo: **Entrada → Registro → Consentimiento → Entrevista (3 bloques) → Puntaje y nivel → Horas asignadas → Asignación de relevo por el programa.**
 
 | Antes (8 oct) | Ahora (20 oct) |
 |---|---|
 | La institución canalizaba con 3 preguntas | Dos vías: **autorregistro** o **referencia institucional** (DIF, centro de salud, escuela, clínica, módulo). `canal_origen` obligatorio |
-| Prioridad 1/2 por la regla ≥ 40 h | Puntaje de la **tarjeta «completa» del script 22** (0-20) + envejecimiento en cola → niveles **Alta / Media / Baja**. La regla de 40 h se sigue mostrando como referencia |
+| Prioridad 1/2 por la regla ≥ 40 h | Desde el 2 nov 2026: **regla de entrada de 40 h o más a la semana** (dos niveles: dentro / fuera). La tarjeta de puntos del script 22 se retiró (ver bitácora, 2 nov noche). Las horas efectivas más la espera solo ordenan el reparto de la bolsa. No está probado que la regla sea mejor que un modelo |
 | Paquete de 3-12 h elegido al canalizar | **Bolsa mensual** (`presupuesto_horas_mes`): mínimo garantizado a todas y el resto proporcional al puntaje, con tope por hogar. El paquete semanal sale de esas horas |
 | Daño a la salud y al trabajo, red de apoyos y parentesco al canalizar | **Minimización**: solo lo que usa el puntaje o la asignación. Sin CURP, diagnósticos, edad ni domicilio de la familia |
 | Sin explicación del resultado | Los 3 factores que más pesaron, «Puntaje provisional — modelo en validación» y botón **Solicitar revisión** (apelación) |
@@ -47,7 +47,7 @@ Flujo: **Entrada → Registro → Consentimiento → Entrevista (3 bloques) → 
 - La bolsa del ejemplo es **simulada** (260 h para 11 casos; control en Ajustes). La del archivo (2,000 h) es ilustrativa.
 
 ### Personajes
-Se reutilizan las ilustraciones del Observatorio **por ruta** (`observatorio/ilustraciones/…`), sin copiarlas: `logo_personajes.webp` (bienvenida), `agotada.png` (resultado Alta), `cuidadoraSilla.png` (resultado Media y «Puedo cuidar»), `familia.png` (resultado Baja). Los PNG pesan ≈ 1.3 MB cada uno. Reemplazos sugeridos en la bitácora (20 oct 2026, 23:10).
+Desde el 26 oct 2026 la app usa personajes propios, en `observatorio/ilustraciones/` (WebP de 720 px, 38–117 KB): `bienvenida_relevo.webp` (bienvenida de la solicitud y «Necesito relevo»), `resultado_alta.webp`, `resultado_media.webp`, `resultado_baja.webp` y `puedo_cuidar.webp` («Puedo cuidar», diálogo de registro y tarjeta de Relevos). Los tres resultados muestran relevo ocurriendo y cambian quién cuida y a quién se cuida, no el ánimo de la cuidadora. Se regeneran con `python ilustraciones/build_personajes_app.py` (desde `Frontend/observatorio`), que reutiliza el recorte de `build_ilustraciones.py`. Son ilustraciones generadas: no son datos ni personas reales. Antes (20–25 oct) se usaban `logo_personajes.webp`, `agotada.png`, `cuidadoraSilla.png` y `familia.png` del Observatorio; esos archivos siguen ahí porque el Observatorio los usa.
 
 ## Qué cambió (2026-10-08, opción C)
 
@@ -107,3 +107,14 @@ El JSON exportado (`operacion_agregados_SIMULADO.json`) trae solo totales: sin f
 `index.html` · `css/app.css` · `js/config.js` (parámetros de priorización) · `js/prioridad.js` (puntaje, niveles, reparto, instrumentos, chequeos) · `js/data.js` (catálogos, datos simulados, almacenamiento) · `js/legal.js` (parámetros legales y requisitos) · `js/relevo.js` (focalización, paquetes, jornada, costo, asignación) · `js/red.js` (red del hogar) · `js/app.js` (interfaz) · `js/cdmx-alcaldias.js` (límites de alcaldías) · `vendor/d3.min.js` (d3 7.9.0) · `tests/prueba_asignacion.js`.
 
 **Fuente de los límites:** INEGI, Marco Geoestadístico 2020, publicado en el Portal de Datos Abiertos de la CDMX (https://datos.cdmx.gob.mx/dataset/alcaldias). Simplificados para visualización.
+
+## Qué cambió (2026-10-26, tarde): nombre RedCare
+
+- Nombre «RedCare» y eslogan «Una red que cuida a quienes cuidan» en `js/config.js` (de ahí salen la bienvenida y la línea bajo el título), `index.html` y textos visibles.
+- Se quitó la franja superior («RedCare · prototipo · datos simulados» con reloj). La aclaración de datos simulados sigue en la pantalla de bienvenida, en el pie de Seguimiento y en el JSON exportado.
+- Las claves de `localStorage` siguen con prefijo `mientras-` (renombrarlas borraría los datos guardados en cada navegador).
+
+## Interfaz (5 nov 2026)
+- `css/redcare.css` (identidad visual, mapa claro) y `js/interaccion.js` (lista propia dentro de la hoja, conteo, confeti) se cargan después de `app.css` / `app.js`.
+- Se quitó la pestaña KPI de Seguimiento, el filtro y las insignias de «Revisión» en la lista y el banner «SIMULADO»; el aviso de datos simulados queda en la etiqueta de la cabecera y en el pie del panel. La revisión humana y las apelaciones siguen existiendo (texto en el detalle del caso y lista «Por revisar» en Programa).
+- Respaldo de la versión anterior: `_to_delete/backup_pre_redcare_ui_2026-11-05/`.

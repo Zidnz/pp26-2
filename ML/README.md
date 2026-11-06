@@ -11,10 +11,17 @@ Esta carpeta **no contiene código**. Es el índice de los modelos del proyecto.
 | Focalización de personas cuidadoras: regresión logística y gradient boosting (ENASIC 2022, **nacional**) | `Analysis/B_enasic_cuidadoras.ipynb` | Sección 11, encabezado `# 11 — Modelo de focalización`. Es el **último bloque** del notebook. Resultados globales en la subsección 4 y por grupo en la 5. Desde el 13 oct 2026: por qué estos modelos contra otras cinco familias (11), diagnóstico (12), cupo (13), elección del objetivo con la verificación sin «le falta fuerza física» (14) y lectura (16) | A quién ofrecer primero el relevo | Regla "40 horas o más" |
 | Tipología de AGEB urbanas: k-means sobre 9 indicadores del Censo 2020 (**CDMX**) | `Analysis/D_tipologia_territorial_ageb.ipynb` | Sección 18. Ocupa **todo el notebook**. Modelo final en la subsección 5, comparación contra alternativas simples en la 6 y robustez en la 7 | En qué tipo de zona hacer el piloto, a dónde se pueden extrapolar sus resultados, canal de la app y brechas de oferta | Regla de dos cortes (60+ × internet) e índice de una dimensión (CP1) |
 | Escalera de priorización de cuidadoras: R0–R5 (azar, regla ≥ 40 h, regla compuesta, tarjeta de puntos, logística, gradient boosting) con validación por UPM (ENASIC 2022, **nacional**). **Exploratorio** | `Analysis/21_priorizacion_cuidadoras.py` (script, no notebook) | Todo el script. Salidas `resultados/21_*` | A quién ofrecer primero el relevo (extiende el modelo de focalización sin modificar la sección 11) | R1 regla ≥ 40 h y R2 regla compuesta, fijada a priori |
+| Focalización **v2 preregistrada**: logística y tarjeta con objetivo `DANO_SALUD3`, cuota fija entre bloques y predictores medidos igual en ambos bloques (ENASIC 2022, **nacional**) | `Analysis/27_focalizacion_v2.py` (script) | Todo el script. Salidas `resultados/27_v2_*.csv`. Preregistro: `Documentos/preregistro_focalizacion_2026-11-01.md` | A quién ofrecer primero el relevo | Regla ≥ 40 h: veredicto **no concluyente, se queda la regla** |
 | Tarjeta de puntos con objetivo «algún daño»: L1 con puntos enteros, 3 variantes (completa / sin «falta fuerza» / sin fuerza ni «requiere apoyo»), validación por UPM y umbral operativo (ENASIC 2022, **nacional**). **Exploratorio** | `Analysis/22_tarjeta_puntos.py` (script) | Todo el script; la sección 5 evalúa solo el bloque de discapacidad. Salidas `resultados/22_tarjeta_*.csv`, `figuras/f26_tarjeta_puntos.png` | A quién ofrecer primero el relevo (candidato de la escalera del script 21) | Regla ≥ 40 h: ninguna variante la supera (bitácora, 20 oct, 21:45) |
 | Participación laboral de mujeres de 25 a 54 años: logística explicativa con diseño muestral (ENUT 2024, **nacional**) | `Analysis/enut2024_participacion_laboral/` (`01_…ipynb` en Python, `02_…qmd` en R) | Ver su README | A qué hogares dirigir un programa de cuidados (según su README). **Sin entrada en la bitácora** | Su README no declara una alternativa simple: **pendiente** |
 
-## Objetivo del modelo de focalización (vigente desde el 20 oct 2026, 11:05)
+## Objetivo del modelo de focalización — versión 2 (vigente desde el 1 nov 2026, 10:30)
+
+- **Primario:** `DANO_SALUD3` (salud física, cansancio o sueño). Cupo 40.7 % con la cuota de la regla (62.1 / 37.9), Δ = 5 pp, δ = 10 pp. Preregistro: `Documentos/preregistro_focalizacion_2026-11-01.md` (DEC-OBJ-002). **Resultado (1 nov, 10:55, script 27): no concluyente; se queda la regla ≥ 40 h.** Logística −0.3 pp (IC 90 −5.1 a 4.4); además falla equidad (hombres −33 pp). Ver bitácora.
+- **Conflicto abierto (bitácora, 2 nov 2026):** el 1 nov, en otro chat y sin conocer DEC-OBJ-002, Omar dijo «algún daño, será el principal». No se registró como reversión (sin motivo ni mención de DEC-OBJ-002). **Vigente: DEC-OBJ-002.** Omar debe confirmar o revertir con fecha y motivo.
+- Diagnóstico que lo motiva: `Analysis/26_diagnostico_previo_focalizacion.py` y `Documentos/diagnostico_focalizacion_2026-11-01.md`. Según ese diagnóstico, la conclusión «la regla basta» de abajo es **no concluyente** (diferencia mínima detectable 9.5 pp).
+
+## Objetivo del modelo de focalización — versión 1 (vigente del 20 oct al 1 nov 2026; se conserva por historia)
 
 - **Primario:** `DANO_ALGUNO`. **Sensibilidad exploratoria:** `DANO_SALUD_FISICA` (DEC-OBJ-001, bitácora del 20 oct).
 - Se registró después de ver los resultados de la sección 11 y del script 21, así que no es un preregistro.
@@ -41,6 +48,9 @@ Esta carpeta **no contiene código**. Es el índice de los modelos del proyecto.
 - La copia anterior del modelo de focalización que estaba en `_to_delete/` se borró el 20 oct 2026. La única versión es la sección 11 de `B_enasic_cuidadoras.ipynb`.
 
 ## Historial de este archivo
+
+- 1 nov 2026 (10:55): fila del script 27 y resultado de la v2.
+- 1 nov 2026 (10:30): objetivo v2 (DEC-OBJ-002) y diagnóstico del script 26. La sección v1 no se reescribe.
 
 - 20 oct 2026 (21:45): se agrega el script 22 (tarjeta de puntos con «algún daño») y la limitación de medición de `P6_2_*` / `P6_22_*`.
 

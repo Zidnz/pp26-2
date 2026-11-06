@@ -2036,3 +2036,498 @@ A pedido de Omar se quitó «Reproducir: python Frontend/observatorio/build_dato
 **Qué se hizo** (`Frontend/index.html`, `css/app.css`, `js/app.js`; se modificaron los archivos vigentes). (1) **Bienvenida:** la primera vez se ve el logo con una barra de carga (≈1.7 s) y luego «¿Cómo vas a usar Mientras?» con tres opciones (cuido a un familiar · quiero dar relevo · trabajo en el programa), que fijan el rol. Se guarda en `localStorage` (`mientras-intro`) y no vuelve a salir; se repite con `?intro` en la dirección o con «Ver la bienvenida otra vez» en Ajustes. Respeta «reducir movimiento». (2) El logo de la familia con corazón reemplaza el cuadro de color del encabezado. (3) **Zarit:** los 22 marcadores «[Reactivo — requiere licencia]» se cambiaron por una tarjeta «Este bloque todavía no está activo»; el bloque sigue sin afectar el puntaje. (4) **Barthel:** de 10 menús desplegables a chips, como el resto de la entrevista. (5) **Sexo:** los íconos ahora dicen «Mujer» y «Hombre». La nota «variable SEXO de la ENASIC» solo se muestra en la vista Programa. (6) **Resultado:** la cuidadora ve «Prioridad Alta» en color neutro y sin «20 de 20 puntos»; el programa sigue viendo nivel en color y puntos. (7) **Lista de casos:** una sola vista (se quitaron Tarjetas y Mosaico), sin el puntaje repetido, y «0 sem en cola» pasa a «Nueva» en gris. (8) **Contraste y tamaño:** texto tenue de 3.3:1 a 4.8:1, etiquetas de la barra inferior de 3.1:1 a 4.7:1, ámbar de 3.7:1 a 5.3:1; etiquetas de 9.5 px a 10.5–11 px.
 **Verificado.** Render en Chromium a 390 px sin errores de JavaScript: bienvenida → elegir rol → solicitud completa con Zarit vacío y Barthel en chips → caso en la cola del programa; la bienvenida no reaparece en la segunda visita y sí se reabre desde Ajustes.
 **Pendiente.** Doble revisión.
+
+
+## 2026-10-26 (10:40 a 11:10, hora CDMX) — Personajes propios de la app Mientras
+
+**Pedido de Omar.** Cambiar en la app los personajes reutilizados del Observatorio por los que realmente corresponden. Omar generó las imágenes con los prompts que Claude propuso el 24 oct y las subió (6 imágenes).
+
+**Cambio de criterio respecto al 20 oct.** La entrada del 20 oct (23:10) proponía que Baja mostrara un folleto o mapa de servicios. Se descartó el 24 oct porque Baja también recibe horas (mínimo garantizado de 13 h/mes). Ahora los tres resultados muestran relevo ocurriendo y varían en quién cuida (mujer, hombre) y a quién (persona mayor, joven con discapacidad), no en cuánto sufre la cuidadora, para que la imagen no funcione como semáforo de necesidad.
+
+**Qué se hizo.**
+- Originales guardados en `Frontend/observatorio/ilustraciones/` como `*_original.*`. Recortes en WebP de 720 px: `bienvenida_relevo` (97 KB), `resultado_alta` (107 KB), `resultado_media` (63 KB), `resultado_baja` (116 KB), `puedo_cuidar` (38 KB). Antes eran PNG de ≈ 1.3 MB.
+- Tres originales traían el cuadriculado de «transparencia» dibujado (no transparencia real); se quitó con `recorta()` de `build_ilustraciones.py`, reutilizada desde el script nuevo `build_personajes_app.py` sin duplicarla. `resultado_baja` sí traía transparencia real y solo se recortó.
+- `Frontend/js/app.js`: mapa `PERSONAJE` con las cinco claves; «Puedo cuidar» usa la clave nueva `relevo` en lugar de reutilizar la de Media. `Frontend/index.html`: dos rutas a `puedo_cuidar.webp`. `Frontend/css/app.css`: `.hero-img` a 240 px con alto máximo de 220 px, porque las escenas tienen más detalle que los personajes sueltos.
+- La sexta imagen (misma bienvenida con fondo de escena completo) se guardó como `bienvenida_relevo_escena_original.png` y no se usa.
+
+**Verificación.** Chromium sin interfaz a 420 px: «Necesito relevo», «Puedo cuidar» y Relevos con las imágenes nuevas, sin errores de JavaScript ni archivos faltantes. Las tres escenas de resultado se revisaron con el CSS real; **no** se recorrió la entrevista completa hasta cada pantalla de resultado. Recortes revisados sobre fondo magenta: sin restos del cuadriculado.
+
+**Pendiente.**
+1. Recorrer el flujo completo con un caso Alta, Media y Baja en navegador real.
+2. En bienvenida y Baja, la cuidadora y la persona de relevo tienen casi la misma cara; solo el gafete y la blusa lila las distinguen. Decidir si se regenera alguna.
+3. Nombre de la app mezclado: `index.html` dice «RedCare» en título, barra superior e intro (el 24 oct la intro decía «Mientras»), pero el encabezado de cada pantalla, `localStorage` y los textos dicen «Mientras». Falta registrar cuál es el nombre vigente.
+4. Doble revisión de esta entrada.
+
+**Estado de revisión.** Sin revisión de otra persona.
+
+
+## 2026-10-26 (≈11:00, hora CDMX) — La app pasa a llamarse RedCare; se quita la franja superior
+
+**Pedido de Omar.** Cambiar «Mientras» por «RedCare» en la app, usar el eslogan «Una red que cuida a quienes cuidan» y quitar la franja superior («RedCare · prototipo · datos simulados» con la hora). Omar escribió «rec»; se tomó como «red» (pendiente de que lo confirme).
+
+**Qué se hizo** (`Frontend/js/config.js`, `index.html`, `js/app.js`, `js/prioridad.js`, `css/app.css`, `README.md`). Nombre y eslogan en `config.js`; título, intro y textos visibles. Se eliminó la franja y su reloj. Cierra el pendiente 3 de la entrada de personajes (nombre mezclado). Se conservaron «mientras» como conjunción («Mientras llega tu relevo…») y las claves `localStorage` `mientras-*` (renombrarlas borraría datos guardados). Las entradas anteriores de esta bitácora siguen diciendo «Mientras» porque así se llamaba entonces.
+
+**Riesgo.** La franja era el único aviso de «datos simulados» visible en todas las pantallas. Ahora queda en la bienvenida, el pie de Seguimiento y el JSON exportado. La regla del proyecto exige declararlos; decidir si se pone otro aviso persistente.
+
+**Pendiente.** Doble revisión. Recorrer la app en navegador.
+
+**Estado de revisión.** Sin revisión de otra persona.
+
+
+
+## 2026-10-26 (noche, hora CDMX) — Dos gráficas del Observatorio cambian de tipo
+
+**Pedido de Omar.** Cambiar «¿Cuántos hogares podrían pagarlo?» y «Ocho formas de elegir» por otro tipo de gráfica; Omar no sabía cuál quedaría mejor y pidió criterio.
+
+**Decisión y motivo.**
+1. «¿Cuántos hogares podrían pagarlo?»: de línea a **barras horizontales**. La línea unía escenarios discretos (3, 6, 9, 12 y 40 h/sem) con el mismo espacio entre el de 12 h y el de 40 h que entre 3 h y 6 h, lo que sugería una pendiente continua que no existe. Mismas filas y orden que «¿Qué parte del ingreso se lleva?»; el costo mensual sigue bajo la etiqueta; el intervalo de la ENIGH pasa a bigote; precisión baja = barra hueca. Los datos y los selectores no cambian.
+2. «Ocho formas de elegir»: se **mantiene el forest plot** (es el formato correcto para estimaciones con intervalo) y se agrega un segundo panel con el AUC, que antes era texto de 9.5 px. Las filas se agrupan por tipo y en orden alfabético, no por resultado, porque ordenar por estimación sugería un ranking que los intervalos no sostienen. Los intervalos que cruzan el cero se dibujan tenues; uno que no lo cruzara se dibuja pleno.
+
+**Archivos.** `Frontend/observatorio/js/vistas/relevo.js` (nueva `renderBarras`), `js/vistas/focalizacion-ampliado.js` (`renderAlt`). Originales en `_respaldo_graficas_2026-10-26/`. No cambia ninguna cifra: son las mismas de `D` (`datos.js`).
+
+**Verificación.** Render con Chromium sin interfaz (ENASIC y ENIGH nacional, objetivo «algún daño»): sin errores de JavaScript. **No** se revisó la CDMX, el tabulador CACEH, los topes de 10 % y 30 %, el objetivo «salud física deteriorada» ni la vista móvil. No se comparó cifra por cifra con los CSV de origen; los valores salen de las mismas columnas que antes.
+
+**Pendiente.** Doble revisión. Evaluar si se funden las dos tarjetas de asequibilidad (hogares que pueden pagar y parte del ingreso) en una sola.
+
+**Estado de revisión.** Sin revisión de otra persona.
+
+**Adenda (2026-10-26, 23:59).** Omar objetó el espacio en blanco de «¿Cuántos hogares podrían pagarlo?» (la tarjeta se estiraba a la altura de la columna derecha) y pidió cambiar también «¿Cuánto se paga hoy por hora?».
+- Se **fundieron** «¿Cuántos hogares podrían pagarlo?» y «¿Qué parte del ingreso se lleva?» en una sola tarjeta con dos paneles y las mismas filas (`renderBarras`). Se quitó la tarjeta de ingreso de `index.html`; sus textos (`#ingFind`, `#src-ing`) pasaron a la tarjeta fusionada. En el panel de hogares ya no hay barra roja para 40 h: el rojo queda solo para «rebasa el tope» en el panel de ingreso.
+- «¿Cuánto se paga hoy por hora?» pasa de bandas p25–p75 a punto de mediana con tallo desde el piso legal, porque la pregunta de fondo es cuánto se separa el pago del piso. **Cifra derivada nueva en pantalla:** «+X % sobre el piso» = mediana ÷ piso − 1 (cuidadora +2 %, trabajo doméstico +80 %, enfermería +226 %; con 26 y 14 casos, las de cuidadora y enfermería son de precisión baja). Se mantienen p25–p75 como línea fina.
+- Respaldos: `_respaldo_graficas_2026-10-26/relevo_v2_barras.js` e `index_pre_fusion.html`.
+- Verificación: 18 combinaciones de fuente, salario y tope sin errores ni NaN. Sin revisar: vista móvil y pantalla estrecha, donde la tarjeta fusionada (viewBox de 780 px) quedará con texto más pequeño.
+- Estado de revisión: sin revisión de otra persona.
+
+
+## 2026-10-26 (noche, hora CDMX) — «¿En qué orden?»: se prueba un índice con pesos y se mantiene la regla sin pesos
+
+**Pedido de Omar.** Agregar pesos a la regla de dos medidas, o decidir si conviene. Omar delegó la decisión y pidió un análisis, no una elección por defecto.
+
+**Qué se hizo.** Script nuevo `Analysis/25_prueba_indice_con_pesos.py`: índice «peso × volumen + (1 − peso) × concentración» con pesos de 0.3 a 0.7 (0.2 a 0.8 para los conjuntos de cabeza), cuatro formas de normalizar (mín-máx, z, percentil, logaritmo) y los tres cortes del script 24 (60 y 84 configuraciones). Lee `resultados/24_prioridad_alcaldia.csv`; escribe `resultados/25_indice_con_pesos_rangos.csv` y `25_indice_con_pesos_cabezas.csv`.
+
+**Resultado.**
+1. Coincide con la regla en lo firme: Azcapotzalco queda primera o segunda en las 60 configuraciones (primera en 51); Cuauhtémoc está entre las cinco primeras en las 60 e Iztacalco en 58.
+2. No agrega información: en 6 de 756 combinaciones de configuración y tamaño de cabeza mete una alcaldía que la regla no marca (por volumen o por concentración).
+3. Lo que sí cambia es arbitrario: hay entre 7 y 9 conjuntos de cabeza distintos según K; Cuajimalpa de Morelos va del 1.º al 9.º lugar e Iztapalapa del 2.º al 11.º solo por el peso y la normalización. No hay variable de resultado observada para escoger el peso.
+
+**Decisión.** Se mantiene la regla sin pesos. Un índice daría un orden único y más fácil de comunicar, pero más allá de las tres primeras alcaldías ese orden lo fijan decisiones normativas que los datos no resuelven: sería precisión falsa. Se reabre si el equipo define qué se va a atender y con qué criterio ponderar.
+
+**Cambios en el Observatorio.** `js/vistas/metodo.js`: en «¿En qué orden?», el párrafo visible agrega una frase que solo explica qué se probó (índice, pesos de 0.3 a 0.7, cuatro normalizaciones, tres cortes, 60 configuraciones), y en el desplegable se quita «Pregunta abierta del equipo». Los resultados y la decisión no están en la página; están en esta bitácora y en los CSV del script 25. Además, en «¿A quién?» se quitó «Pendiente de doble revisión» y la gráfica de intervalos pasó a columnas agrupadas con barras de error (`mdx-cc` en `css/vistas.css`).
+
+**Pendiente.** Doble revisión del script 25 y de la gráfica nueva. La gráfica no se revisó en navegador.
+
+**Estado de revisión.** Sin revisión de otra persona.
+
+**Adenda (2026-10-27, 00:10).** Pestaña Método, por pedido de Omar: (1) se **quitó la etiqueta «Pendiente de doble revisión»** de la decisión 1 («¿Dónde?», `metodo.js`, chip del panel 1). La doble revisión de esa decisión **sigue sin hacerse**: la etiqueta solo se retiró de la pantalla, así que quien lea el tablero ya no verá ese aviso. Queda abierta la regla del proyecto (quien produce no aprueba). (2) La gráfica de columnas de «¿A quién?» pasó de 124 a 180 px de alto, que es lo que cabe sin agrandar el bloque (las tres decisiones comparten alto de fila). Respaldo: `_respaldo_graficas_2026-10-26/metodo_pre_chip_y_columnas.js`.
+
+**Corrección a la adenda anterior (2026-10-27, 00:20).** Omar pidió volver la gráfica de columnas de «¿A quién?» a 124 px (se revirtió; queda como estaba) y bajar la altura del texto de decisión. La fila de ese texto la fija el más largo de las tres decisiones (el de «¿En qué orden?», 182 px) y las otras dos heredaban ese alto. Se movió la parte sobre estabilidad e índice ponderado de ese texto al desplegable «Qué hay y qué falta», con fila nueva «Estabilidad y sensibilidad», sin quitar contenido. La fila baja de 186 a 93 px a 1300 px de ancho. Respaldo: `_respaldo_graficas_2026-10-26/metodo_pre_dec3.js`.
+
+**Adenda (2026-10-27, 00:25).** Pestaña «¿Cuánto cuesta?», por pedido de Omar (con maqueta): la tarjeta fusionada de asequibilidad ocupa todo el ancho (gráfica limitada a 960 px); la nota «Poder pagar no es querer contratar» queda debajo de ella; y «¿Cuánto se paga hoy por hora?» pasa a la fila inferior junto a «¿Cambia el costo…?» y «Si se subsidia…» (fila de 3 tarjetas). `index.html` y `css/vistas.css`; respaldo en `_respaldo_graficas_2026-10-26/index_pre_layout_fila.html`. **Conocido:** en la fila de 3, la tabla de financiamiento queda angosta y su última columna («% de la solicitud») se desplaza en horizontal. Sin revisión de otra persona. Probado a 1440 y 1100 px sin errores de JavaScript; sin probar en móvil.
+
+**Adenda (2026-10-27, 00:35).** La gráfica fusionada de asequibilidad pasa de barras horizontales a **columnas verticales** en dos paneles (hogares que podrían pagar; parte del ingreso con línea horizontal del tope), a partir de una captura de Omar. Texto siempre horizontal. Respaldo de la versión horizontal: `_respaldo_graficas_2026-10-26/relevo_v3_barras_horizontales.js`. Mismos datos; 18 combinaciones sin errores ni NaN; sin probar en móvil. Sin revisión de otra persona.
+
+**Adenda (2026-10-27, 00:50).** Pestaña «¿Cuánto cuesta?», por pedido de Omar: (1) los dos paneles de asequibilidad vuelven a ser **dos tarjetas separadas** («¿Cuántos hogares podrían pagarlo?» y «¿Qué parte del ingreso se lleva?»), cada una con su gráfica de columnas; los selectores de fuente, salario y tope quedan en una barra común arriba. (2) Filas inferiores: «¿Cambia el costo…?» y «¿Cuánto se paga hoy por hora?» comparten fila; «Si se subsidia el relevo» ocupa una fila completa como tabla, con columnas nuevas: aceptación (ilustrativa), costo laboral anual y subsidio laboral (ambos de `escala`, script 20) y operación (= financiamiento − subsidio; coincide con hogares × operación × 12). No se quitó ninguna gráfica. La nota del ingreso ENASIC contra ENIGH (`#relIng`) pasó debajo de las dos tarjetas. Respaldos en `_respaldo_graficas_2026-10-26/` (`relevo_v4_columnas_unidas.js`, `index_pre_widgets_separados.html`, `vistas_pre_widgets_separados.css`). 18 combinaciones y 4 valores de operación sin errores ni NaN; sin probar en móvil. Sin revisión de otra persona.
+
+## 2026-10-27 (00:35, hora CDMX) — Registro retroactivo: Inicio como selector de etapas; se retira `inicio-3d.js`
+
+**Tipo de entrada.** Retroactiva. Reconstruye decisiones del 14 al 20 de octubre que no se registraron entonces, a partir del código y de las conversaciones de trabajo. No sustituye ninguna entrada anterior.
+
+**Qué ocurrió (según el código y los comentarios de los archivos).**
+- **14 oct.** Las cinco escenas 3D y las cinco tarjetas del embudo «¿Cuántas personas están en el problema?» se reemplazaron por un selector inspirado en pantallas de selección de personaje (idea de Omar). Archivo: `js/vistas/inicio-seleccion.js`. Motivo: mostrar las cinco etapas de una en una. Se tomó la mecánica de elegir y ver la cifra; no hay puntaje ni narrativa de juego. Las figuras son ilustración.
+- **15 oct.** El campo de 500 puntos se sustituyó por un mapa de México relleno por superficie. El relleno mide proporción del total (base 31.7 M), no ubicación.
+- **15 oct.** En Método se probaron presentaciones «Videojuego» y «Trío» de «Cada modelo responde a una decisión». El **20 oct** se retiraron (comentario en `metodo.js`); queda el selector de tema claro.
+- **Sin fecha confirmada.** El estallido «¡Mentiraaa!» (agregado el 7 oct) dejó de mostrarse al desaparecer el contenedor `#c3-embudo`. Se quitó del CSS; el código siguió en `inicio-3d.js`, sin ejecutarse. El motivo del retiro (sugería que las personas encuestadas mentían) viene de una conversación de trabajo y no estaba documentado.
+
+**Qué se hizo hoy.** Se quitó `<script src="js/vistas/inicio-3d.js">` de `index.html` y el archivo se movió a `_to_delete/backup_pre_quitar_inicio3d_2026-10-27/` (con el `index.html` anterior). Verificado: ninguna otra cosa carga ese archivo ni recibe algo de él (no exporta a `OBS`); «mentira» ya no aparece en `js/`, `css/` ni `index.html`. **No se abrió la página en un navegador después del cambio.**
+
+**Lo que esta entrada corrige.** El README (7 oct) describe el estallido y las escenas 3D como vigentes, y la bitácora no tenía entrada del selector, del mapa ni del retiro de las vistas de Método. El pendiente 4 del Documento técnico v2 («código sin uso en `inicio-3d.js`») queda resuelto para ese archivo; lo de `componentes.js` sigue abierto.
+
+**Pendientes (no resueltos).**
+1. **Base del mapa:** usa 31.7 M; hay que decidir si el guion usa 31.7 M o 6.2 M y decirlo igual en pantalla y en la defensa.
+2. **Lectura geográfica del mapa:** el relleno va de sur a norte, así que cada etapa pinta siempre el sur. La ENASIC no permite desagregar por entidad. El aviso está en letra pequeña. Sin evidencia de que un lector lo malinterprete (desconocido); falta probarlo con una persona ajena.
+3. **Intervalos de confianza:** solo el grupo final los lleva; la pantalla lo declara.
+4. **`three.min.js` (603 KB) y `motor-3d.js`:** siguen cargándose; no se verificó si algo más los usa.
+5. Los respaldos que citan los comentarios del código (p. ej. `backup_pre_seleccion_personajes_2026-10-14`) no se encontraron por nombre en `_to_delete/`.
+
+Sin revisión de otra persona. Revisor: _[pendiente]_.
+
+## 2026-10-27 (00:40, hora CDMX) — Observatorio: se corrige la nota de la tarjeta de clases latentes («¿Quién lo carga?»)
+
+**Qué cambió.** En `Frontend/observatorio/js/vistas/necesidad.js` (`#s23Note`) se reemplazó la nota de la tarjeta. Respaldo: `Frontend/observatorio/_to_delete/backup_pre_nota_s23_2026-10-27/`.
+
+**Texto anterior:** «Informa qué ofrecer, no a quién atender primero. Para priorizar, la regla de 40 h sigue igual de buena (notebooks 21 y 22). Este perfil necesitaría algo distinto al relevo por horas (capacitación o una segunda persona), y eso solo lo puede probar el piloto. Un modelo no hace falta: contar «2 o más de 4 dificultades» separa igual (diferencia máxima 0.8 puntos).»
+
+**Texto nuevo:** «Describe quién declara dificultad; no está probado que sirva para decidir a quién atender primero. Contar «2 o más de 4 dificultades» separa casi igual que el modelo (diferencia máxima 0.8 puntos), así que no hace falta un modelo. Qué ayuda necesita este perfil no se puede deducir de aquí: dos de las variables que definen la clase son «necesitaría capacitación» y «requiere apoyo». Eso solo lo puede probar el piloto.»
+
+**Motivo.**
+1. «Capacitación o una segunda persona» es circular: «necesitaría capacitación» y «requiere que otra persona le apoye» son dos de las cuatro variables que definen la clase. Además proponía una solución de programa antes de tener el hallazgo que la justifique.
+2. «La regla de 40 h sigue igual de buena» viene de otro análisis (focalización, no verificado aquí) y no es resultado de esta tarjeta. La misma tarjeta muestra a quienes la regla de 40 h no ve (`fuera_regla`).
+3. «Separa igual»: la diferencia máxima (0.789, «insatisfecha con su tiempo libre») tiene intervalo p05–p95 de 0.149 a 1.701, que no incluye 0. Se cambió a «casi igual».
+
+**Verificado.** El 0.8 se recalculó desde `Analysis/resultados/23_seg_comparacion_pareada.csv` (0.789). El archivo pasa `node --check`; no se abrió la página en un navegador. **No verificado:** la unidad de esos «puntos» ni los notebooks 21 y 22. Sin revisión de otra persona. Revisor: _[pendiente]_.
+
+## 2026-10-27 (00:45, hora CDMX) — Observatorio, «¿Por qué no se contrata?»: se quitan los veredictos de las tarjetas y se corrige el título
+
+**Qué cambió.** `Frontend/observatorio/js/vistas/barreras.js` (tarjetas Precio, Desconfianza y Norma familiar, y la de oferta declarada) e `index.html` (título de la pestaña). Respaldo: `Frontend/observatorio/_to_delete/backup_pre_semaforo_barreras_2026-10-27/`. **Cambia decisiones anteriores** (entradas del 7 oct, v0.3 del semáforo): no se reescriben, se registran aquí.
+
+| Elemento | Antes | Ahora |
+|---|---|---|
+| Precio, chip | «No es el cuello de botella» | «Rara vez se da como razón»; texto: «de quienes no buscaron dice que «son caros» (P6.45)» |
+| Desconfianza, chip | «Requisito de diseño» | «Razón frecuente para rechazar residencias»; texto con (P7.11) |
+| Norma familiar, chip | «Respaldada» | «Acuerdo alto; no se probó que frene»; texto con (P7.7) |
+| Punto de color de las tres | ámbar / ámbar / verde (semáforo) | mismo color neutro, para no sugerir veredicto |
+| Oferta declarada | «15 a 60 años» | «Población de 15 a 60 años, no solo cuidadoras» |
+| Título de la pestaña | «La barrera principal no es información ni precio: es la norma familiar.» | «La razón que más se da para no buscar es «no tuve necesidad»; la norma familiar es una explicación posible, aún sin probar.» |
+| Aviso con filtro de segmento | «El veredicto se lee con el total nacional.» | «La descripción de la etiqueta es la del total nacional.» |
+
+**Motivo.**
+1. Las tres tarjetas vienen de preguntas y universos distintos (P6.45, n = 1,019; P7.11, n = 519; P7.7, n = 1,043) y se leían como comparables. En P6.45 la desconfianza es 1.5 % y el maltrato 1.3 %; en P7.11 «son muy caros» es 5.2 % (precisión baja).
+2. «No es el cuello de botella» contradecía la v0.3: la jornada completa cuesta 94.4 % del ingreso mediano y el precio define el formato del relevo. Además «no tuve necesidad» (49–67 %) no permite separar cuánto esconde el precio.
+3. «Requisito de diseño» prescribía algo para el programa desde una sola razón para rechazar residencias (segunda, tras «la responsabilidad es de la familia», 48.0 %).
+4. «Respaldada» no existe en la regla de evidencia (confirmada, probable, desconocida) y el 82.3 % mide acuerdo con una norma, no que frene buscar o contratar; no se cruzó con buscar ni contratar.
+
+**Verificado.** Cifras contra `datos_observatorio.json`; el archivo pasa `node --check`; ya no queda ninguna aparición de las etiquetas anteriores en `js/` ni en `index.html`. **No se abrió la página en un navegador.** **No verificado:** la redacción exacta de P7.7 y si admite varias respuestas; los datos de contratación por quintil de la v0.3. Los textos de las etiquetas describen el total nacional; con un filtro de segmento la cifra cambia y la etiqueta no (el aviso lo dice). Sin revisión de otra persona. Revisor: _[pendiente]_.
+
+## 2026-10-27 (11:30, hora CDMX) — Observatorio: nuevo icono de manos y corazón en el pie de la barra lateral
+
+**Qué cambió.** El SVG dibujado a mano (corazón menta y manos lavanda) de `.side-quote` en `Frontend/observatorio/index.html` se reemplazó por una imagen que aportó Omar: `Frontend/observatorio/ilustraciones/icono_cuidado.png` (320 × 243 px, fondo transparente, recortada al dibujo; se muestra a 64 px de ancho, regla `.side-quote img` en `css/layout.css`). Respaldo de `index.html` y `layout.css`: `_to_delete/backup_pre_icono_manos_2026-10-27/`.
+
+**Observaciones.** Los colores de la imagen nueva (corazón ≈ #6EBEB2, manos ≈ #9775CB) no son los de la paleta del sitio (`--mint`, `--lav`); se dejaron tal cual. La imagen la generó una herramienta externa; **su origen y licencia no están documentados** (desconocido). No se abrió la página en un navegador después del cambio. Sin revisión de otra persona. Revisor: _[pendiente]_.
+
+## 2026-10-27 (11:55, hora CDMX) — Observatorio: logo plano en el encabezado y logo 3D en el pie de la barra lateral
+
+**Qué cambió (a pedido de Omar; cambia la entrada de las 11:30).**
+- **Encabezado:** los dos corazones superpuestos (SVG inline `.brand .mark`) se reemplazaron por `ilustraciones/logo_marca_plano.png` (192 × 192 px, fondo transparente; se muestra a 40 px). La imagen venía con un tablero de ajedrez horneado como falso fondo transparente; se eliminó por color.
+- **Pie (tarjeta «El cuidado también es trabajo»):** el icono de manos y corazón de las 11:30 se reemplazó por `ilustraciones/icono_cuidado_3d.webp` (256 × 256 px, **con fondo blanco**, como se pidió; se muestra a 72 px con esquinas redondeadas).
+- `css/layout.css`: reglas `.brand .mark` (escritorio y móvil) y `.side-quote img`. Respaldo: `_to_delete/backup_pre_logo_3d_2026-10-27/`. `ilustraciones/icono_cuidado.png` (manos y corazón) queda sin uso.
+
+**Observaciones.** Los dos logos son la misma ilustración (plana arriba, 3D abajo): la barra lateral la muestra dos veces. El favicon sigue siendo `logo_marca.svg`, otro dibujo; no se tocó. El origen y la licencia de las imágenes (generadas con una herramienta externa) no están documentados (desconocido). Verificado: tamaños y transparencia de los archivos copiados, y una maqueta de la barra con las medidas reales; **no se abrió la página completa en un navegador.** Sin revisión de otra persona. Revisor: _[pendiente]_.
+
+## 2026-10-27 (12:05, hora CDMX) — Observatorio: el logo 3D pasa a ser el icono de la pestaña (favicon); la tarjeta del pie vuelve a las manos y el corazón
+
+**Corrección a la entrada de las 11:55 (no se reescribe).** «El icono» que Omar pidió cambiar por el logo 3D con fondo blanco era el **favicon del sitio** (el de la pestaña del navegador), no la imagen de la tarjeta del pie. Se hizo mal en la tarjeta y se corrige.
+- **Favicon:** `index.html` ya no apunta a `ilustraciones/logo_marca.svg`; usa `favicon_3d_48.png` y `favicon_3d_256.png` (más `apple-touch-icon`), con fondo blanco, creados del logo 3D. Los enlaces llevan `?v=20261027` para saltar la caché del navegador.
+- **Tarjeta del pie:** vuelve a `ilustraciones/icono_cuidado.png` (manos y corazón, estado de las 11:30) con su regla `.side-quote img` anterior.
+- **Sin cambios:** el logo plano en el encabezado (a las 11:55) se queda. `icono_cuidado_3d.webp` y `logo_marca.svg` quedan sin uso en esta página. `Frontend/index.html` (app) no declara favicon propio y no se tocó.
+- Respaldo: `Frontend/observatorio/_to_delete/backup_pre_favicon_y_tarjeta_2026-10-27/`.
+
+**Verificado:** dimensiones de los archivos copiados y el diff de `index.html` y `layout.css`; vista previa del favicon a 16 y 32 px. **No se abrió la página en un navegador.** El origen y la licencia de las imágenes siguen sin documentarse (desconocido). Sin revisión de otra persona. Revisor: _[pendiente]_.
+
+## 2026-10-29 (21:00, hora CDMX) — DW 1.1.0: los modelos 11 y 18 a 25 entran al ETL; la app Streamlit los lee de los marts
+
+**Qué cambió (a pedido de Omar: «Integrar los modelos 11 y 18–25 al ETL»).**
+- **Esquema 1.1.0** (`DW/sql/01_schema_dw.sql`): nivel AGEB en `dim_geografia` (orden 4); hecho nuevo `fact_resultado_modelo` con `dim_modelo` (incluye la alternativa simple obligatoria de cada modelo), `dim_metrica` y `dim_configuracion`; `calidad_valor` admite «derivado (regla)».
+- **ETL 1.1.0** (`DW/etl/run_etl.py` + mapeo nuevo `DW/etl/config_modelos.py`): 49 archivos de resultados de los modelos se despivotan a 6,970 filas; las 2,371 AGEB del notebook D entran como geografía con 22 medidas (más 3 del script 24); la regla del script 24 entra como 13 medidas por alcaldía. 10 pruebas nuevas (DQ19 a DQ26).
+- **Marts nuevos:** `mart_modelos.csv`, `mart_ageb.csv`, `catalogo_modelos.csv`. `mart_perfil_alcaldia.csv` gana 13 columnas `prioridad_*`. `mart_territorio.csv` excluye las AGEB.
+- **App Streamlit:** los modelos ya se leen de los marts (`datos.modelo()`, `datos.ageb()`, `datos.prioridad()`); prueba de reconciliación nueva (`tests/test_dw_modelos.py`).
+
+**Correcciones a decisiones anteriores (no se reescriben; se registran aquí).**
+1. *Fuente de la tipología.* El DW 1.0.0 (20 oct) cargó las 6 medidas de `18_tipologia_por_alcaldia.csv` con F20 (rezago CONEVAL). Es incorrecto: la tipología sale del Censo 2020 por AGEB (F02) y la distancia al DENUE. Se cambia a F02. Los valores no cambian; cambian `fuente_id` y `fuente` en 96 filas de `mart_territorio.csv`.
+2. *Nivel geográfico de las fuentes.* F02, F09 y F20 pasan de 3 a 4 (AGEB). I01 (supuestos del equipo) pasa de 1 a 2 porque el script 20 aplica supuestos al total de la CDMX; esas filas van con `es_ilustrativo = 1` (55).
+3. *Escenarios 19 y 20.* `modelo_dimensional.md` §7 (20 oct) decía que irían «en un hecho aparte con `es_simulado = 1`». Se hizo en un hecho aparte, pero la bandera se llama `es_ilustrativo`: no son datos simulados, son cálculos con supuestos sin fuente.
+4. *Tabla de orden de alcaldías.* La app quitó la columna `#` (`orden_presentacion` del script 24). El DW no la carga porque se leía como ranking; dentro de cada nivel la tabla va en orden alfabético.
+
+**Verificado.**
+- El ETL corre sin rechazos y pasa las 12 pruebas de severidad *error*. Siguen abiertas solo las 2 advertencias de la 1.0.0: DQ05b, con 49 intervalos fuera de [0,100], y DQ10, con ceros sin respaldo.
+- Hubo una corrida previa a la corrección del grano de `22_tarjeta_estabilidad.csv`, que repite los puntos de la tarjeta. En esa corrida hubo 27 rechazos.
+- Contra la publicación anterior del DW:
+  - `mart_necesidad_cuidado`, `mart_asequibilidad` y `calidad_precision` salen idénticos.
+  - Las 46 columnas previas de `mart_perfil_alcaldia` salen idénticas.
+  - `mart_territorio` solo cambia en la fuente de la tipología y en las 207 filas nuevas del script 24.
+- Reconciliación: la app reconstruye desde los marts los 49 archivos, la tabla AGEB y la regla del 24. Coinciden columna por columna con `Analysis/resultados/`.
+- Pruebas internas del DW:
+  - DQ21: N del 24 = Σ 60+ de las AGEB con brecha = medida de la tipología, en las 16 alcaldías.
+  - DQ22: 257 = 257 AGEB.
+  - DQ25: 11 versión 1 = ampliación; 18 decisión = perfiles = 2,371 AGEB; 22 tarjeta = estabilidad en 27 de 27.
+- 62 pruebas de la app pasan.
+- Se vio en navegador la pestaña «¿En qué orden atender las zonas?».
+- Todo se corrió en una copia del repositorio en la nube. Los archivos de entrada se verificaron idénticos a los de la carpeta de Omar.
+
+**No verificado / desconocido.**
+- A qué objetivo corresponden `11_modelo_coeficientes_logit.csv`, `21_escalera_por_grupo.csv` y `21_calibracion_logit.csv`. Quedan vacíos.
+- De qué estadístico es el intervalo de `21_escalera_bootstrap_upm.csv`.
+- La definición exacta de `margen` (modelo 18).
+- Las unidades de las métricas de validación cruzada del notebook 23.
+- DQ17: 40 de 87 medidas sin definición verificada.
+- No se probó si `Frontend/observatorio/build_datos.py` sigue funcionando con las 13 columnas nuevas de `mart_perfil_alcaldia`. Agregar columnas no debería romper una lectura por nombre, pero no se corrió.
+
+**Hallazgo para los dueños de los scripts.** El 11 usa `DANO_ALGUNO` y `DANO_SALUD_FISICA`; el 21 y el 22 usan `ALGUN_DANO` y `SALUD_FISICA`. El DW los unifica en `objetivo_comun`, pero conviene un solo código en origen. `21_tarjeta_puntos.csv` no es la tarjeta vigente; la vigente es la del 22.
+
+Sin revisión de otra persona: esquema, ETL, `config_modelos.py` (qué columna es qué métrica y con qué unidad) y la app. Revisor: _[pendiente]_.
+
+
+## 2026-11-01 (10:30, hora CDMX) — Diagnóstico previo al modelo de focalización (script 26)
+
+**Pedido de Omar.** Revisar los resultados del modelo de focalización porque el análisis exploratorio tuvo omisiones graves; reconstruir el diagnóstico que debió preceder al modelado, fijar la hipótesis correcta y no elegir modelo por intuición.
+
+**Qué se hizo.** `Analysis/26_diagnostico_previo_focalizacion.py` → `Analysis/resultados/26_diag_*.csv` (7 archivos). Memo con la lectura y la hipótesis corregida: `Documentos/diagnostico_focalizacion_2026-11-01.md`. No se modificó la sección 11 ni los scripts 21 y 22. El script reproduce la sección 11 (62.2 %, 40.7 %, 50.8 %; AUC logística 0.751 contra 0.752).
+
+**Hallazgos (nacional, posteriores a los resultados; no es preregistro).**
+1. Potencia: n efectivo ≈ 554; diferencia mínima detectable 9.5 pp contra una ganancia máxima posible de 14.7 pp. El IC −4.1 a +8.5 pp es **no concluyente**. La frase «la regla basta» de `ML/README.md` excede los datos (no se edita; se registra aquí).
+2. El aumento de AUC del modelo (0.63 → 0.75) viene en buena parte de reasignar el cupo entre bloques: solo agregar «discapacidad vs solo 60+» baja la selección del bloque 60+ de 35.4 % a 17.4 % sin cambiar la cobertura total.
+3. Medición: ABVD y clínicas no preguntadas a 384 de 407 del bloque 60+; código 8 («No aplica») de `P6_28_x` recodificado como «no»; 204 personas en ambos bloques con predictores combinados con «O»; horas con tope de 98 por bloque y 38.6 % en múltiplos de 7.
+4. Objetivo: `DANO_ALGUNO` lo declara 48.9 % de quienes cuidan menos de 7 h; no es específico de la alta intensidad.
+5. Horas → daño es un escalón en 40 h (plano debajo), así que «horas continuas» no era una línea base competidora.
+6. Hay información además de las horas (+11 a +36 pp dentro de < 40 h), pero la más fuerte es autopercepción de la misma batería que el daño o carga medida en un solo bloque.
+
+**Propuesta (no es decisión).** Separar la cuota entre bloques (normativa) de la comparación de modelos (dentro de bloque, con cuota fija). Hipótesis H1/H2 y protocolo de 9 decisiones en el memo. Antes de correr otro modelo, el equipo fija objetivo, cupo, cuota entre bloques y Δ / δ (cupo y cuota dependen de la institución).
+
+**No verificado.** Diferencia mínima detectable por bloque; traslape temporal de horas entre bloques; motivo del «No aplica» en el bloque 60+. La logística de la escalera (D7) es propia en numpy, porque el entorno no tenía scikit-learn.
+
+Sin revisión de otra persona. Revisor: _[pendiente]_.
+
+
+## 2026-11-01 (10:30, hora CDMX) — DEC-OBJ-002: objetivo, cupo, cuota y Δ/δ del modelo de focalización v2 (preregistro)
+
+**Pedido de Omar.** «Haz esto: el equipo fija objetivo, cupo, cuota y Δ.» Claude propuso opciones con su evidencia y Omar eligió las cuatro.
+
+**Decisiones (de Omar).**
+1. Objetivo primario: `DANO_SALUD3` (salud física, cansancio o sueño; 48.7 %). **Sustituye a DEC-OBJ-001** (`DANO_ALGUNO`, 20 oct), que pasa a sensibilidad.
+2. Cupo: 40.7 % (tasa de la regla) como convención; 10 % y 20 % de sensibilidad.
+3. Cuota entre bloques: la de la regla, 62.1 % discapacidad / 37.9 % solo 60+.
+4. Δ = 5 pp; δ = 10 pp.
+
+Detalle, predictores, candidatos y regla de decisión: `Documentos/preregistro_focalizacion_2026-11-01.md`.
+
+**Por qué cambia el objetivo (historia real).** El 20 oct se eligió primero salud física (10:40) y luego `DANO_ALGUNO` (11:05), ambas después de ver resultados. El diagnóstico del script 26 mostró que `DANO_ALGUNO` lo declara 48.9 % de quienes cuidan menos de 7 h y que incluye reactivos de trabajo que dependen del empleo previo. `DANO_SALUD3` se elige por constructo: es lo que mide el piloto y lo que el relevo puede cambiar. **No** se eligió por cómo se separa con las horas. Ningún modelo se ha corrido con este objetivo.
+
+**Consecuencias que se aceptan.**
+- La potencia no alcanza para Δ (≈ 9.5 pp detectables en el bloque de discapacidad y ≈ 17 pp en el de 60+): lo esperable es «no concluyente».
+- Las cifras de la sección 11 y de los scripts 21 y 22 quedan como versión 1 (exploratoria). No se reescriben.
+- La app (`Frontend/js/config.js`) sigue con la tarjeta del script 22 hasta que la v2 tenga resultado.
+
+**Pendiente.** Correr la v2 según el preregistro (todavía no hay script). Cupo y cuota reales con la institución. Confirmar si el modelo informa el nivel de la app y no una exclusión. Sin revisión de otra persona. Revisor: _[pendiente]_.
+
+
+## 2026-11-01 (10:45, hora CDMX) — Enmienda 1 al preregistro v2: se elimina la regla compuesta propuesta
+
+**Pedido de Omar.** «Revisa tú si dejamos la regla compuesta y haz el script v2.» **Decisión (Claude, por encargo):** eliminarla. Salió de asociaciones del script 26, así que sería evaluarla con los mismos datos que la sugirieron. En la sensibilidad del bloque de discapacidad entra en su lugar R2 del script 21 (a priori, 20 oct). Se fijan los detalles de implementación antes de correr: `Documentos/preregistro_focalizacion_2026-11-01.md`, enmienda 1. Sin revisión de otra persona.
+
+
+## 2026-11-01 (10:55, hora CDMX) — Resultado de la focalización v2 (script 27): no concluyente, se queda la regla ≥ 40 h
+
+**Qué se hizo.** `Analysis/27_focalizacion_v2.py` aplica el preregistro del 1 nov (con la enmienda 1): objetivo `DANO_SALUD3`, cupo 40.7 % con la cuota de la regla, Δ = 5 pp y δ = 10 pp; candidatos logística y tarjeta; validación 5 × 20 por UPM. Sale: `resultados/27_v2_*.csv`. Dos corridas, mismos números.
+
+**Resultado primario (regla de decisión escrita antes).** Logística −0.3 pp (IC 90 −5.1 a 4.4) y tarjeta −1.4 pp (−6.1 a 3.4) frente a la regla: **no concluyente**. Diferencia mínima detectable: 7.2 pp. Ambos fallan además el criterio de equidad: los hombres pierden ≈ 33 pp de cobertura. **Se queda la regla ≥ 40 h.** Ninguna sensibilidad cambia el veredicto (detalle en el preregistro, sección «Resultado»).
+
+**Hallazgos que el equipo debe leer.**
+1. La ganancia de la v1 (+2.2 pp) no sobrevive a fijar la cuota entre bloques ni a quitar las variables medidas de forma desigual.
+2. La tarjeta da **4 puntos por ser mujer** y **5 por haber recibido capacitación**. Usar el sexo para asignar un beneficio es un problema de discriminación directa (consultar a Daniel), aunque los datos lo asocien. Lo de la capacitación es probable causalidad inversa: se capacita a quien ya cuida mucho.
+3. La única señal de mejora sin pérdida grave de equidad está dentro del bloque de discapacidad: R2 a priori, +2.7 pp, peor grupo −7.2 pp. No es concluyente.
+
+**Consecuencias.**
+- Frontend: la app hoy prioriza con la tarjeta del script 22, que incluye «mujer» y autopercepción. Con este resultado no tiene respaldo. Se propone volver a la regla ≥ 40 h para el nivel de prioridad. **Pendiente de decisión de Omar; no se modificó la app.**
+- `ML/README.md` se actualiza; la v1 se conserva.
+
+Sin revisión de otra persona. Revisor: _[pendiente]_.
+
+
+## 2026-11-02 (≈ 20:10, hora CDMX) — Registro retroactivo del 1 y 2 nov: script 28, presentación, archivos que no están en la carpeta y conflicto sobre el objetivo primario
+
+**Pedido de Omar.** «Actualiza la bitácora y todo». Un chat del 1 nov sobre la presentación dejó sin registrar el script 28 y sus ediciones porque no tenía acceso a la carpeta. Aquí se registra lo que se pudo comprobar y se marca lo que no. **No se reescribe ninguna entrada anterior.**
+
+**1. Script 28 y figuras (verificado en la carpeta).** `Analysis/28_figuras_diagnostico_v2.py` (1 nov, ≈ 10:42 CDMX) lee solo `resultados/26_diag_*.csv` y `resultados/27_v2_*.csv` y escribe `figuras/f32_horas_escalon.png`, `f33_escalera_reasignacion.png` y `f34_v2_regla_vs_modelos.png` para la presentación. No recalcula cifras. Pidió: Omar. Revisor: _[pendiente]_. **No verificado:** que las cifras de las figuras coincidan con los CSV; en esta sesión no se abrieron las imágenes ni se corrió el script.
+
+**2. Presentación del segundo avance en Canva (según el texto de los chats del 1 nov; no verificable desde la carpeta).** Diseño `DAHZo_dDu4M`.
+- Se agregó una lámina del data warehouse (08 / 13) y se renumeró el resto.
+- Láminas editadas el 1 nov: 09 (v2 contra la regla con la figura f34: −0.3 pp, diferencia mínima detectable 7.2 pp, peor caída −33.6 pp), 11 («Diagnóstico»: escalón en 40 h y reasignación del cupo entre bloques), 12 (la app como RedCare; la v2 no respalda la tarjeta del script 22) y 13 (decisiones pendientes: cupo y cuota con la institución, volver a ≥ 40 h, «mujer» a dictamen legal, doble revisión de los scripts 26 a 28).
+- **Pendiente que esos chats dejaron abierto:** el diagrama de la lámina 12 es una imagen que todavía dice «Mientras» y «tarjeta de 8 variables»; la lámina 10 sigue mencionando DEC-OBJ-001 y «algún daño»; la presentación tiene 12 páginas pero el total dice 13; las notas del orador de las láminas 9 a 13 conservan el número anterior; el texto de la lámina del DW quedó en otra tipografía.
+- Sin doble revisión.
+
+**3. Archivos de otros chats que NO están en la carpeta (verificado: `Documentos/` no tiene archivos posteriores al 21 oct, salvo el diagnóstico y el preregistro del 1 nov).**
+- 31 oct / 1 nov, chat «Segundo avance presentación»: según su resumen, versiones corregidas de los documentos del segundo avance (Maestro 2.1, Tablero 2.1, Técnico 2.1, App 1.1) y una lista de cambios.
+- 2 nov, chat «Documento maestro y avance»: una presentación de 13 diapositivas (`Segundo_avance_Observatorio_del_Cuidado.pptx`, entregada en el chat) y el documento maestro del que sale. No verifiqué qué archivos quedaron del documento.
+- **Consecuencia:** `Documentos/README.md` sigue apuntando a las versiones v2 del 21 oct. Hasta que esos archivos se copien a la carpeta, no se puede comprobar su contenido ni cuáles cifras citan. Las cifras de esas versiones **no están verificadas**.
+
+**4. Conflicto de registro sobre el objetivo primario (abierto; la decisión vigente no cambia).**
+- **Vigente en la bitácora:** DEC-OBJ-002 (1 nov, 10:30). Primario `DANO_SALUD3`; `DANO_ALGUNO` solo como sensibilidad. Lo usan el preregistro, el script 27 y la lámina 09.
+- **Lo que dijo después, en otro chat:** el 1 nov, entre las 16:05 y las 16:59 (chat «Técnicas de ciencia de datos», sin acceso a la carpeta y sin conocer DEC-OBJ-002), al preguntarle qué objetivo presentarían, Omar respondió «fue un ejemplo, algún daño, será el principal». La frase no menciona DEC-OBJ-002 ni da motivo.
+- **Efecto:** otros chats lo tomaron como decisión. Uno (1–2 nov, «Significado de pp e IC») le dijo a Omar que «el 1 de noviembre fijaste algún daño como objetivo principal»; **la bitácora no lo respalda**. La lámina 10 de la presentación sigue en «algún daño».
+- **Qué no se hizo:** no se registra como reversión de DEC-OBJ-002, porque no hay evidencia de que fuera esa la intención («fue un ejemplo» apunta a la lámina de ejemplo). Tampoco se borra la frase.
+- **Qué falta decidir (Omar):** si el objetivo sigue siendo `DANO_SALUD3`. Si prefiere volver a `DANO_ALGUNO`, tiene que registrarlo con fecha y motivo. Sería el cuarto cambio de objetivo (20 oct 10:40, 20 oct 11:05 y 1 nov 10:30; los dos primeros se tomaron después de ver resultados, el tercero antes de correr ningún modelo con ese objetivo) y el preregistro del 1 nov quedaría sin efecto. Con `DANO_ALGUNO` el script 27 ya dio −1.2 pp (sensibilidad). Mientras no se decida, cada lámina y cada documento debe decir con qué objetivo se calculó.
+
+**5. Doble revisión y fechas.** Scripts 26, 27 y 28, el diagnóstico y el preregistro siguen sin revisor. El dictamen de Daniel sobre usar «mujer» como criterio de asignación sigue pendiente. La segunda revisión (2 al 6 nov) está en curso.
+
+**También se actualizaron (mismo día):** `README.md` (raíz), `Documentos/README.md`, `Analysis/README.md`, `ML/README.md` y `ESTADO_SINCRONIZACION.md`. Respaldo previo: `_to_delete/backup_pre_registro_2026-11-02/`.
+
+**Verificado en esta sesión:** listado de la carpeta y de `Documentos/` con fechas de modificación; lectura de la bitácora (hasta la entrada de las 10:55 del 1 nov), el preregistro, `ML/README.md`, `Analysis/README.md` y el README de la raíz; lectura del texto de los chats citados. **No verificado:** el contenido de la presentación en Canva, de los archivos de otros chats, de las figuras f32 a f34, y que alguna cifra haya cambiado. Sin revisión de otra persona. Revisor: _[pendiente]_.
+
+
+## 2 nov 2026 (noche) · Se retira la tarjeta de puntos del prototipo RedCare; la entrada es la regla de 40 h
+
+**Decide:** Omar (instrucción del 2 nov, 20:41). **Ejecuta y verifica:** Claude. **Sin revisión de otra persona.** Revisor: _[pendiente]_.
+
+**Decisión.** La tarjeta de puntos (script 22) sale de la app. La entrada al programa es «40 h o más de cuidado a la semana». Las horas efectivas (declaradas más espera) solo ordenan el reparto de la bolsa.
+
+**Motivo (verificable en el repo).**
+- Ninguna variante de la tarjeta superó a la regla de forma demostrable (`22_tarjeta_validacion_umbral.csv`: +2.2 pp, IC 90 % de −3.4 a 7.7).
+- En la v2 preregistrada (`27_v2_global.csv`) el resultado fue no concluyente y se queda la regla.
+- Costaba preguntas sensibles extra. «Mujer» sumaba 2 puntos sin dictamen legal. «Le falta fuerza física» sumaba 4 con un argumento circular respecto del objetivo.
+
+**Lo que esta decisión NO afirma.** No está demostrado que la regla sea mejor que un modelo ni que «baste». Hay poca potencia (diferencia mínima detectable ≈ 7 pp; n efectivo ≈ 554). Se elige la regla por parsimonia y transparencia. La prueba de que basta tendría que ser de no inferioridad con un margen fijado antes de mirar los resultados, o prospectiva (piloto o nueva ola de la ENASIC). El margen Δ sigue sin definirse.
+
+**Cambios en el código.** `Frontend/js/prioridad.js`, `config.js`, `app.js`, `relevo.js` (comentario), `css/app.css`, `index.html` (versión de scripts) y `tests/prueba_asignacion.js`.
+- Dos niveles: dentro o fuera de la regla.
+- Solo los casos dentro entran al reparto de la bolsa.
+- Se retiran las preguntas «necesita apoyo» y «le falta fuerza física», y el chequeo `zarit_vs_fuerza`.
+- El sexo se sigue registrando solo para seguimiento de equidad.
+- Se renombra `puntos_por_semana` a `horas_por_semana`. El envejecimiento (0.5 h/semana, tope 4 h) es provisional y no tiene respaldo empírico.
+- En el KPI de la exportación JSON, `casos_nivel_{alta,media,baja}` se reemplaza por `casos_{dentro,fuera}_regla`.
+
+**Se conserva como historia:** scripts y resultados 22 (`22_tarjeta_*.csv`). Respaldo previo en `_respaldo_pre_trazabilidad_2026-11-02/`.
+
+**Verificado:** `node Frontend/tests/prueba_asignacion.js` termina en «Todo OK». Chromium carga sin errores de JavaScript a 1440 y 390 px. Se recorrieron las cuatro pestañas como «Programa», el detalle de un caso y el flujo de solicitud hasta el resultado, con 55 h (dentro) y 30 h (fuera). **No verificado:** los datos simulados de `data.js` siguen armados para niveles de puntaje, y la diferencia entre canales que muestra el panel es ilustración. Lámina 10 y diagramas de Canva con la tarjeta.
+
+**Pendiente de decisión (Omar).**
+1. Qué pasa con quien declara menos de 40 h. Hoy puede enviar la solicitud y el flujo le pide días y tareas de relevo.
+2. Objetivo primario del Observatorio. Sigue sin resolverse el conflicto de objetivos. Los KPIs y vistas del Observatorio siguen en `DANO_ALGUNO`.
+3. Margen Δ de no inferioridad.
+
+
+## 2 nov 2026 (20:51) · Objetivo primario confirmado: DANO_SALUD3 · quien queda fuera de la regla sí envía solicitud
+
+**Decide:** Omar (mensaje del 2 nov, 20:51). **Registra:** Claude. **Sin revisión de otra persona.** Revisor: _[pendiente]_.
+
+**1. Objetivo primario del Observatorio: `DANO_SALUD3`.** Esto confirma DEC-OBJ-002 (1 nov, preregistrado) y cierra el conflicto abierto en la entrada del 2 nov. No es un cuarto cambio de objetivo. Consecuencias:
+- Lo calculado con `DANO_ALGUNO` (notebook 11, scripts 21 y 22) queda como **versión 1, exploratoria**, y se conserva por historia.
+- El resultado primario del Observatorio es la v2 (scripts 26 y 27): **no concluyente, se queda la regla de 40 h**. No existe una versión con `DANO_SALUD3` de las curvas de cobertura, la calibración, la importancia por permutación ni los coeficientes del notebook 11: no se pueden presentar como si lo fueran.
+- Hasta que las vistas se actualicen, cada lámina y documento debe decir con qué objetivo se calculó.
+
+**2. Solicitud de quien declara menos de 40 h.** Se corrige lo anotado como pendiente en la entrada anterior: **sí puede enviar la solicitud**. Queda registrada como «demanda no atendida» (`casos_fuera_regla`) y no recibe horas por ahora. El texto explica que la regla es un criterio de racionamiento por presupuesto y no un juicio sobre su carga. Motivo: bloquearla destruiría el dato de demanda no atendida y no hay base empírica para decir que su daño no importa (algún daño: 54.9 % entre 20 y 39 h, IC 90 % de 46.6 a 63.2, frente a 70.5 % con 40 h o más; `07_enasic_necesidad_vs_norma_estimaciones.csv`, cifras nacionales).
+
+**3. Margen Δ de no inferioridad.** Sin definir. No aplica a los casos sintéticos de la app. Sí aplica a cualquier afirmación de que «la regla basta» con datos de la ENASIC. Mientras tanto, la frase permitida es «no concluyente: no hay evidencia para sustituir la regla».
+
+
+## 2 nov 2026 (21:30) · El Observatorio pasa a `DANO_SALUD3` como resultado primario; se agrega el verificador de trazabilidad
+
+**Decide:** Omar («hazlo», 21:13). **Ejecuta y verifica:** Claude. **Sin revisión de otra persona.** Revisor: _[pendiente]_.
+
+**Qué cambió.**
+- **Observatorio HTML** (`Frontend/observatorio`):
+  - Nuevo `js/vistas/focalizacion-v2.js` y una sección al inicio de la pestaña «¿A quién primero?» con el resultado de la v2, tomado de `D.modelo_v2`.
+  - Todo lo anterior queda debajo con el rótulo «Versión 1, exploratoria».
+  - Se cambia el titular de la pestaña y el texto de `metodo.js`, que decía «Basta la regla». Eso no está probado.
+- **KPI «Cobertura de la regla»**, en HTML y en Streamlit: ahora sale de `27_v2_global.csv` (50.8 %, IC 90 % de 44.7 a 56.9) y menciona la cifra de la v1.
+- **Streamlit** (`Observatorio_streamlit/paginas`): `focalizacion.py` (sección v2 al inicio y la v1 rotulada), `inicio.py` e `indicadores.py`.
+- **`build_datos.py`:** KPI de focalización desde la v2 (guarda si falta la fila primaria) y rótulos en «grupo del problema» y «daño por intensidad».
+- **Diccionario:** `diccionario_observatorio.csv` documenta `modelo_v2` y `diagnostico_v2`.
+- **Verificador:** nuevo `Frontend/observatorio/verificar_trazabilidad.py` (escribe `trazabilidad_reporte.csv`).
+
+**Lo que NO se pudo cambiar.** «Grupo del problema» y «daño por intensidad de cuidado» siguen calculados con «algún daño» (script 07). No existe en el repo una cifra con `DANO_SALUD3` entre quienes dicen «sin necesidad». Quedan rotuladas «pendiente de recalcular». Recalcularlas exige un script nuevo sobre los microdatos de la ENASIC (con doble revisión).
+
+**Verificado.**
+- ETL: DQ18, DQ19 y DQ19b OK.
+- Streamlit: 10 de 10 páginas corren, y 59 de 59 pruebas del DW pasan.
+- Observatorio HTML: carga sin errores de JavaScript a 1440 y 390 px, y recorrí las ocho pestañas.
+- La captura de pantalla de la sección nueva se vio bien.
+
+**Trazabilidad (resultado del verificador).** 38,624 cifras revisadas.
+- 9,596 tienen rastro FUERTE: coinciden con un archivo de resultados con 2 o más decimales.
+- 29,016 coincidencias son DÉBILES (enteros o 1 decimal): no cuentan como rastro, porque un entero coincide por azar con cualquier columna. Eso incluye casi todo `tipologia` (19,573) y `zonas` (4,754). **Para esas cifras no se puede afirmar que estén trazadas.**
+- 12 no tienen rastro. Son valores calculados dentro de `build_datos.py` sin archivo propio:
+  - `tipologia`: `frontera.pct`, `frontera.poblacion`, `brecha_total.n_60`, `sin_internet_total.viviendas`, `sin_internet_total.pct` y `dejar_fuera.coincidencia_ponderada`.
+  - `relevo_enigh`: `pct_ingreso_mediano` (filas 18 y 19) y `necesidad_cdmx_det.total`.
+  - `sostenibilidad.elegibles_cdmx`.
+  - Y los 2 KPI que repiten esas cifras de `tipologia`.
+
+  El verificador termina con código 1 hasta que alguien documente o respalde cada una. **No se hizo.**
+
+**No verificado:** la presentación de Canva (lámina 10 sigue en «algún daño»), la vista móvil de la sección nueva en pantalla (solo carga sin errores), y que no queden otras referencias a `DANO_ALGUNO` como primario en `necesidad.js` e `indicadores-formulas.js` (son definiciones del grupo del problema, no de focalización). Respaldos previos en `_respaldo_pre_trazabilidad_2026-11-02/`.
+
+## 2 nov 2026, noche — Recálculo del grupo del problema con DANO_SALUD3 (script 29)
+- Autorizado por Omar. `Analysis/29_grupo_problema_salud3.py` → `resultados/29_grupo_problema_salud3.csv`.
+- Controles: reproduce la cifra de 07 con algún daño (12.46 %, n 1043/132) y la de salud entre ≥40 h y «sin necesidad» (58.21 % [49.84–66.59]). Si no coincidían, no se publicaba.
+- Resultado: grupo del problema con DANO_SALUD3 = **10.29 %** del universo (IC 90 % 7.87–12.71), ≈ 640,581 personas (versión 1, algún daño: 12.46 %, ≈ 775,546).
+- Corrección mía: dije que no existía la cifra de daño por intensidad con salud; sí existía en 07 (58.2 %). Fue un error de revisión, no de datos.
+- Actualizados: DW/ETL (M26/M27, bloque 6_magnitud_salud3), build_datos, KPIs, embudo, Streamlit. El perfil del grupo (16_*) sigue en versión 1 y está rotulado así.
+- Sin doble revisión de otra persona (scripts 26–29). Pendiente.
+- Quedan 12 cifras derivadas sin rastro documentado (tipologia 6, relevo_enigh 3, kpis 2, sostenibilidad 1).
+
+## 2 nov 2026, 22:00 — «Actualiza todo con la v2»: perfil del grupo y prevalencia (script 30) + presentación
+- `Analysis/30_perfil_y_prevalencia_salud3.py` → `30_perfil_grupo_salud3.csv`, `30_prevalencia_dano_cuidadoras.csv`. Controles con «algún daño»: reproduce las 22 filas de `16_perfil_grupo_problema.csv` y 62.16 [58.80–65.52] de `12_segmentacion_estimaciones.csv`.
+- Resultado: prevalencia de daño a la salud entre cuidadoras 48.7 % (IC 90 % 44.8–52.6; 495/1,043). Perfil del grupo (n = 107): solo «a quién cuida» se distingue del resto (75 % cuida a persona con discapacidad). Con v1 las mujeres salían sobrerrepresentadas (+10.3 pp); con DANO_SALUD3 ya no es significativo.
+- Error encontrado en la lámina 5 del avance: decía «IC 95 %: 58.8–65.6». El intervalo del archivo es de 90 % y el extremo es 65.52. Corregido en la presentación.
+- DW: bloque «perfil» pasa a salud3 y el anterior queda como «perfil_v1». build_datos: `D.perfil` (vigente) y `D.perfil_v1`. Series por segmento de 12/12b siguen en v1 y quedan rotuladas «(v1)»: no se recalculan aquí.
+- Presentación: láminas 2, 5, 8, 9, 11, 12, 13 actualizadas con los resultados v2. Sin doble revisión.
+
+
+## 2 nov 2026, noche — Pestaña «¿A quién primero?» rehecha con una sola versión (DANO_SALUD3)
+- **Decide:** Omar («rehagamos toda esta pestaña… todas las gráficas deben decir eso»). **Ejecuta:** Claude. **Sin revisión de otra persona.** Revisor: _[pendiente]_.
+- `Frontend/observatorio/index.html` (sección `#v-focalizacion`) y `js/vistas/focalizacion-v2.js`, modificados en el archivo vigente. Cinco gráficas, cada una rotulada «¿A quién primero?» y titulada con la parte de la pregunta que responde: (1) qué método encuentra más a quien tiene el daño; (2) si cambia con el cupo o los supuestos; (3) a quién deja fuera cada método; (4) por qué 40 h; (5) qué sube o baja el lugar en la fila (tarjeta).
+- Todas con DANO_SALUD3: `27_v2_global/equidad/tarjeta.csv`, `26_diag_objetivo.csv` (componentes), `26_diag_candidatos_objetivo.csv`. Ninguna cifra escrita a mano.
+- **Salió de la pestaña** todo lo de «algún daño» (v1): cobertura por grupo, coeficientes, ocho formas de elegir, curvas por cupo, importancia, calibración, objetivo. Motivo: no existen versiones con DANO_SALUD3 y presentarlas juntas confundía el resultado primario. Copia en `_respaldo_pre_apq_2026-11-02/` (index.html y los tres JS). Los scripts `focalizacion.js` y `focalizacion-ampliado.js` ya no se cargan.
+- **No usé** `26_diag_horas_forma.csv` ni `26_diag_escalera_informacion.csv`: el script 26 las calcula con DANO_ALGUNO. La gráfica «¿por qué 40 h?» usa solo los componentes de salud.
+- Pendiente: la curva de daño por horas, la calibración y las curvas por cupo con DANO_SALUD3 requieren un script nuevo con doble revisión. Streamlit (`focalizacion.py`) aún muestra la v1 rotulada; no se tocó.
+- Verificado: carga sin errores de JavaScript a 1440 y 390 px; captura revisada. No se corrió `verificar_trazabilidad.py`.
+- (22:10) «¿A quién primero?», «Qué no permite afirmar»: se agrega el límite de medición de las horas (la regla de 40 h usa la suma de P6_7 y P6_26, tope 98 h, amontonamiento en múltiplos de 7). Cifras de `26_diag_medicion.csv` vía `D.diagnostico_v2.medicion`. Motivo: el EDA general (cuaderno `EDA_general_fuentes`) señala que no hay una variable única de horas. Sin doble revisión.
+- Pendiente de la misma revisión: la capa «Pobreza 65+» del mapa muestra el conteo de CONEVAL, que difiere del censo 2020 (Cuajimalpa +30.1 %, Miguel Hidalgo +12.3 %; causa desconocida). Falta un script que guarde la comparación en CSV antes de cambiar el rótulo.
+
+
+## 3 nov 2026, mañana — Principio rector: el Observatorio es para quien lo usa, no para defender al equipo
+- **Decide:** Omar («todo lo que hagamos es para quien usa el Observatorio, no para defendernos»). **Ejecuta:** Claude. **Sin revisión de otra persona.** Revisor: _[pendiente]_.
+- **Regla, vigente desde hoy:** todo texto, gráfica o sección del Observatorio se justifica por lo que le sirve a quien lo usa: decidir, entender o desconfiar con razón. Lo que solo sirve para respaldar una decisión del equipo (preregistro, pruebas de hipótesis, comparaciones contra modelos) va en una sección de método, plegada y en lenguaje llano, no en el cuerpo de la pestaña.
+- **Cómo se verifica:** (1) cada titular se entiende sin saber estadística: nada de «IC», «potencia», «comparador» o «veredicto» sin explicarlo; (2) cada tarjeta responde una pregunta que haría quien usa el Observatorio; (3) los límites se escriben para que nadie se equivoque, no para blindar la decisión.
+- **Origen:** la sección «Evidencia de la decisión 2 · por qué la regla y no un modelo de ML» (Parte 1 de 5). Su titular, «ningún método se separa de ella (los intervalos incluyen el cero)», respondía una pregunta del equipo, no del lector.
+- **Cambios hechos:** `Frontend/observatorio/index.html` y `js/vistas/focalizacion-v2.js`, en el archivo vigente.
+  - Titular y entrada de la pestaña: dicen a quién se ofrece primero el relevo y cuántas personas con daño deja fuera la regla (51 encontradas de cada 100, 49 fuera), con cifras de `27_v2_global.csv`.
+  - El bloque de comparación contra modelos pasó a un plegable cerrado, «Para revisar el método», al final de la pestaña. «Qué no permite afirmar» sigue visible.
+  - Textos en lenguaje llano: «rango probable» en vez de IC en los titulares, «la diferencia más pequeña que se nota» en vez de diferencia mínima detectable, se quitó «Veredicto: no concluyente».
+  - Se agregó la referencia de elegir al azar (40.7 %, el mismo cupo que la regla) en la Parte 1. Sin ella, «51 %» no se podía leer.
+  - El texto «Ningún modelo encuentra a más» pasó de «ningún método se separa» porque era lo que los datos dicen (logística −0.3 pp, tarjeta −1.4 pp). Se añadió que no notar diferencia no prueba que sean iguales: la muestra solo distingue ≈ 7.2 pp.
+  - El pill «Objetivo fijado el 1 nov 2026, antes de correr los modelos» salió del cuerpo; sigue en «Fuente y precisión».
+- **Pendiente, por el mismo principio:**
+  - Las Partes 3 a 5 (a quién deja fuera cada método, por qué 40 h, qué sube o baja en la tarjeta) siguen dentro del plegable. La Parte 4 se parece a «¿Dónde cae el corte de 40 horas?» de la decisión 2: decidir si se quita.
+  - El botón «IC 90 % y fuente» de las tarjetas y otros rótulos con jerga en el resto de la pestaña y en Indicadores no se revisaron.
+  - Cualquier sección nueva debe pasar la regla antes de publicarse; revisar el resto de las pestañas con ella.
+- Verificado: carga sin errores de JavaScript a 1440 y 390 px; cifras del texto coinciden con `27_v2_global.csv`. Respaldo: `_respaldo_pre_lector_2026-11-03/`. `verificar_trazabilidad.py` sigue en código 1 por las 12 cifras derivadas de siempre; los cambios de hoy no añaden cifras sin rastro.
+
+
+## 3 nov 2026, mañana — El principio rector se aplica a todo el Observatorio
+- **Decide:** Omar («aplica esto para todo el Observatorio»). **Ejecuta:** Claude. **Sin revisión de otra persona.** Revisor: _[pendiente]_. Respaldo: `_respaldo_pre_lector_2026-11-03/`.
+- **Método:** se renderizaron las ocho pestañas, se extrajo el texto visible por defecto y se marcó lo que (a) no se entiende sin saber estadística o (b) responde una pregunta del equipo y no del lector. Los textos de «Fuente y precisión» y de Método, que ya están plegados, no se tocaron.
+- **Inicio:** la tarjeta «¿A quién atender primero?» tenía la versión 1 («algún daño», +2.2 pp, IC −4.1 a +8.5) y decía «hoy la regla simple rinde igual», que no estaba probado. Ahora sale de `27_v2_global.csv`: 51 de cada 100 personas con daño a la salud, 41 al azar, 49 fuera.
+- **Necesidad, «El grupo del problema»:** mostraba ≈ 776 mil (versión 1) mientras Inicio decía 641 mil. En el total nacional ahora muestra 641 mil (10.3 %, rango 7.9–12.7 %, `29_grupo_problema_salud3.csv`). Con filtro por segmento sigue en versión 1 y lo dice («algún daño»), porque no existe el cálculo por segmento con la versión vigente. Se quitó el 79.6 % del total porque era «algún daño» y no tiene equivalente con la versión vigente.
+- **Dónde:** la validación de la tipología (silueta, estabilidad) pasó a un plegable, «Para revisar el método». Quedó visible y abierto «Cuándo no debe usarse esta clasificación», que sí le sirve al lector. El texto de apertura ya no habla de k, silueta ni ARI.
+- **¿A quién primero?:** sin «k-means» en los rótulos; los límites visibles sobre los tipos de zona se dicen en palabras llanas.
+- **Todas las pestañas:** el rótulo «IC 90 % y fuente» pasó a «Rango probable y fuente»; la leyenda de las tablas de segmentos («significativamente… IC 90 %», «precisión baja») ahora dice «claramente… con 90 % de confianza» y «muy pocos casos».
+- **No se hizo, y debería revisarse:**
+  - Barreras, Relevo, Indicadores y Método no tienen texto defensivo evidente, pero conservan «IC 90 %» y «precisión baja/mod.» en etiquetas y gráficas. Falta un sitio que explique una sola vez «rango probable» y «pocos casos».
+  - En Necesidad quedan dos filas rotuladas «(v1)» en «¿Cuánto cambia con más horas?» y las gráficas por segmento en versión 1: mezclar versiones confunde. Se resuelve con un script nuevo y doble revisión.
+  - En Dónde, la tabla de comparación contra alternativas simples sigue plegada pero con jerga (R², ARI, V de Cramér): es método y está en su lugar.
+  - La Parte 3 de focalización (a quién deja fuera cada método) y la Parte 4 (¿por qué 40 h?), dentro del plegable. Pendiente decidir si salen de ahí.
+- Verificado: carga sin errores de JavaScript a 1440 y 390 px, y los textos nuevos coinciden con `27_v2_global.csv` y `29_grupo_problema_salud3.csv`. `verificar_trazabilidad.py` sigue en código 1 por las 12 cifras derivadas de siempre. No se revisó la presentación de Canva.
+
+
+## 3 nov 2026, noche — Panel de afectaciones que declaran las personas cuidadoras (¿Quién lo carga?)
+- **Decide:** Omar («decide tú cuál sería la mejor [pestaña]… si hace falta quitar algo, hazlo»). **Ejecuta:** Claude. **Sin revisión de otra persona.** Revisor: _[pendiente]_.
+- **Qué entró:** tarjeta «¿Qué afectaciones declaran por cuidar, y quién las declara?» en ¿Quién lo carga?, después de «¿Cuánto cambia con más horas de cuidado?» y antes de la segmentación por clases latentes. Es la pestaña donde ya vive «daño», y la tarjeta dice qué hay dentro de ese daño sin tocar el mensaje de la pestaña (la carga crece con las horas; la necesidad declarada, no): no habla de horas. No la recorta el filtro de segmento. No se quitó nada.
+- **De dónde sale:** `Analysis/31_afectaciones_cuidadoras.ipynb` → `resultados/31_afectaciones_cuidadoras.csv` (48 filas) → `D.afectaciones` en `build_datos.py`. Filas nuevas en `diccionario_observatorio.csv` (variable `AFECTACION_DECLARADA`, bloque `afectaciones`).
+- **Cifras de Omar (tabla de la presentación de INEGI):** se reproducen al decimal (14 de 14) con TPOB_CUI, todas las personas cuidadoras, «sí» en cualquiera de los bloques P6.11 y P6.30. **Error de Claude, corregido el mismo día:** la primera comprobación usó solo P6.11 (636 casos) y concluyó que la tabla no coincidía; faltaba P6.30. La lámina exacta de la presentación sigue sin confirmar: la transcripción es de Omar, no del PDF.
+- **Decisión de fondo:** el universo de la presentación (todas las personas cuidadoras, n = 5,031) no es el del Observatorio (cuidan a una persona con discapacidad o de 60+, n = 1,043). En el universo del Observatorio todas las afectaciones salen más altas (16 de 16 comparaciones por sexo; p. ej. salud física, cansancio o sueño: 55 % mujeres y 34 % hombres, contra 50 % y 24 %). La tarjeta abre en el universo del Observatorio y deja el de INEGI en un selector.
+- **Pendiente:** (1) `Analysis/31_verificacion_survey.R` (misma estimación con el paquete `survey`, a partir del código de referencia del INEGI) está escrito y **no se ejecutó**: R no estaba instalado. (2) Conciliar con el 62.16 % de «algún daño por cuidar» (`12_segmentacion_estimaciones.csv`), que es otra definición e incluye daño laboral. (3) Hombres con precisión moderada o baja en varias filas. (4) Doble revisión.
+- Verificado: la página carga sin errores de JavaScript a 1280 y 390 px, sin desplazamiento horizontal; `verificar_trazabilidad.py` sigue en 12 cifras sin rastro, ninguna del bloque nuevo.
+
+
+## 3 nov 2026, noche (después) — Afectaciones por horas en lugar de por sexo; se quitan repetidos; sin «pp» para el lector
+- **Decide:** Omar («si se repite elimínalo, esto aplica para TODO»; «haz una gráfica con esto»; «pp» solo si le sirve al lector). **Ejecuta:** Claude. **Sin revisión de otra persona.** Revisor: _[pendiente]_.
+- **Corrección a la entrada anterior:** la tarjeta por sexo no seguía la tesis de la pestaña (la carga crece con las horas). La reemplaza la gráfica «¿Qué afectaciones suben con más horas de cuidado?» (barras horizontales agrupadas, tres grupos de horas), que responde al filtro de segmento. Con 40 h o más, 61 de cada 100 declaran al menos una afectación de salud; con menos de 20 h, 36. Cansancio, dormir menos, salud física, depresión y terapia suben con claridad; irritabilidad y enfermedad, no. Fuente: `31_afectaciones_por_horas.csv` (notebook 31, sección 7).
+- **Se quitó por repetida en ¿Quién lo carga?:** «¿Cuánto cambia con más horas?» (sus filas eran las cifras de la tarjeta «no tuve necesidad»; su prueba quedó en «Fuente y precisión» de esa tarjeta); la ficha «Brecha de daño» (+31 pp; la gráfica nueva la muestra); la tarjeta por sexo (la da el filtro Sexo); del mapa «Comparar segmentos» de esta pestaña, la fila «Cuida 40 h o más» (repetía la ficha) y las columnas de Intensidad (repetían la tarjeta de «no tuve necesidad»).
+- **«pp»:** fuera de lo que ve el lector en fichas, avisos del filtro y mapas de ¿Quién lo carga? y ¿Por qué no se contrata? («X de cada 100», «diferencia clara»). Se queda en «Fuente y precisión» y en Método.
+- **No se hizo, por ser decisión de diseño en otras pestañas (pendiente de Omar):** Inicio repite 31.7 M y 641 mil dos veces dentro de la misma pestaña; ¿Por qué no se contrata? tiene fichas que repiten barras de sus gráficas (norma familiar 82.3 %, desconfianza 25.3 %, «son caros» 2.8 %); ¿Cuánto cuesta? repite 66.2 % en ficha y gráfica; ¿A quién primero? muestra la comparación modelo contra regla en «pp» con IC y diferencia mínima detectable: es evidencia para el equipo y debería ir a Método.
+- Verificado: las ocho pestañas cargan sin errores de JavaScript ni desplazamiento horizontal a 1440 y 390 px; el filtro Sexo, Intensidad y Total cambian la gráfica nueva; `verificar_trazabilidad.py` sigue en 12 cifras sin rastro, ninguna nueva.
+
+
+## 3 nov 2026, noche (cierre) — Repetidos en Inicio; ¿Por qué no se contrata? y ¿Cuánto cuesta? se quedan como están
+- **Decide:** Omar («sí, haz eso»: dejar la ficha y que el texto de la gráfica no repita el número). **Ejecuta:** Claude. **Sin revisión de otra persona.**
+- **Inicio, embudo:** cada cifra queda una vez, en la ficha de su etapa. Salieron el número grande de fondo del escenario, la cifra de cada botón de etapa, el % escrito sobre el mapa (ya está en «Del total de personas que cuidan») y las cifras del titular, que ahora lo dice en palabras. En «¿A quién atender primero?» el 51 de cada 100 queda en grande y el párrafo ya no lo repite.
+- **No se cambió, y por qué:** en ¿Por qué no se contrata? (82.3 %, 25.3 %, 2.8 %) y en ¿Cuánto cuesta? (66.2 %) la gráfica no repite la cifra en su texto: la repite la etiqueta de su barra. Quitar la etiqueta de una sola barra deja la gráfica incompleta y quitar la ficha le quita el titular a la pestaña. Se dejan las dos. Corrige lo que Claude había anticipado.
+- **Pendiente de decisión:** el 641 mil está en Inicio y en «El grupo del problema» (¿Quién lo carga?); el botón de la etapa 5 lleva a esa tarjeta. ¿A quién primero? sigue mostrando la comparación modelo contra regla en puntos porcentuales con IC y diferencia mínima detectable.
+- Verificado: sin errores de JavaScript en Inicio a 1440 y 390 px.
+
+
+## 3 nov 2026, noche (final) — La evidencia del modelo sale de «¿A quién primero?» y pasa a Método
+- **Decide:** Omar (visto bueno explícito). **Ejecuta:** Claude. **Sin revisión de otra persona.**
+- **Qué se movió:** el plegable «¿Un modelo estadístico elegiría mejor que la regla de 40 horas?» (resumen, Partes 1 a 5, tabla de configuraciones, tabla por bloque), su lista de límites y su «Fuente y precisión». Es evidencia para defender una decisión del equipo (puntos porcentuales, IC, diferencia mínima detectable), no para quien lee la pestaña. Queda en Método, debajo de «Cada modelo responde a una decisión», con el mismo código y los mismos datos (`focalizacion-v2.js`, `D.modelo_v2`, `D.diagnostico_v2`); los estilos se comparten con `:is(#v-focalizacion,#fzMet)`.
+- **En «¿A quién primero?»** queda una línea con el enlace «ver en Método →», que abre el plegable. Al moverlo se quitó también una repetición: la pestaña tenía dos listas de «Qué no permite afirmar»; ahora tiene una.
+- **En Método** la tarjeta «¿A quién?» de «Cada modelo responde a una decisión» ya no repite las cifras del modelo: lo dice en palabras y remite al plegable.
+- Verificado: sin errores de JavaScript ni desplazamiento horizontal a 1440 y 390 px; en «¿A quién primero?» ya no hay «pp», «IC 90» ni «diferencia mínima detectable» a la vista; las gráficas del plegable se dibujan en Método. Trazabilidad sin cambios (12 cifras sin rastro de siempre).

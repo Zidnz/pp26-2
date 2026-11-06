@@ -24,7 +24,8 @@
     $('#segKpi').innerHTML=DIMS.map(function(d,i){return '<button data-d="'+d+'" aria-pressed="'+(i===0)+'">'+d+'</button>'}).join('');
     function renderKpi(d){
       var L=K.filter(function(k){return d==='Todas'||k.dimension===d});
-      $('#kpiTiles').innerHTML=L.map(function(k){var nm=k.valor==null;return '<div class="card tile"'+(nm?' style="border-style:dashed"':'')+'><div class="kicker" style="margin:0">'+k.dimension+'</div><div class="big num" style="font-size:'+(nm?'20px;color:var(--alert)':'30px')+'">'+valK(k)+'</div><div class="lbl"><b style="color:var(--ink)">'+esc(k.nombre)+'</b><br>'+esc(k.universo)+'</div><div class="chips">'+(nm?'':prec(k.precision.split(' (')[0]))+'<span class="chip ev">'+esc(k.evidencia.split(/[ :(]/)[0])+'</span></div></div>'}).join('');
+      $('#kpiTiles').innerHTML=L.map(function(k){var nm=k.valor==null;return OBS.tile({k:esc(k.nombre),v:valK(k),fs:30,sinvalor:nm,
+        det:'<div class="lbl">'+esc(k.dimension)+' · '+esc(k.universo)+'</div><div class="chips">'+(nm?'':prec(k.precision.split(' (')[0]))+'<span class="chip ev">'+esc(k.evidencia.split(/[ :(]/)[0])+'</span></div>'})}).join('');
     }
     seg('#segKpi','d',renderKpi);renderKpi('Todas');
   }
@@ -63,8 +64,7 @@
       return '<button type="button" class="ind-card '+EV[e].c+(nm?' nm':'')+'" data-i="'+i+'" aria-pressed="false" style="--i:'+i+'">'+
         '<span class="ind-top"><span class="ind-dim">'+esc(k.dimension)+'</span><span class="ind-no">'+pad(i+1)+'</span></span>'+
         '<span class="ind-body">'+glyph(k)+'<span class="ind-val"><b class="ind-v">'+valK(k)+'</b>'+(u?'<small>'+esc(u)+'</small>':'')+'</span></span>'+
-        '<span class="ind-nm">'+esc(k.nombre)+'</span><span class="ind-un">'+esc(k.universo)+'</span>'+
-        '<span class="ind-chips"><span class="chip ind-evc">'+EV[e].t+'</span>'+(nm?'':prec(k.precision.split(' (')[0]))+'</span></button>'}).join('')+
+        '<span class="ind-nm">'+esc(k.nombre)+'</span></button>'}).join('')+
       '<p class="ind-empty" hidden>Ningún indicador cumple ese filtro. Quita uno para ver más.</p>';
     var cards=[].slice.call(box.querySelectorAll('.ind-card')), pips=[].slice.call(document.querySelectorAll('.ind-pip')), empty=box.querySelector('.ind-empty');
 

@@ -1,0 +1,109 @@
+/* Observatorio del Cuidado · css/nodo.css (5 nov 2026)
+   Réplica del diseño de la pantalla «Red» de la app (Frontend/css/app.css + redcare.css + bento.css) para la caja «El nodo»
+   de la pestaña Método. Todo va bajo .rc para no tocar el resto del sitio. Si cambia el diseño de la app, hay que sincronizar. */
+.rc{--ink:#2b3045;--ink-soft:rgba(43,48,69,.8);--ink-faint:rgba(43,48,69,.7);--hair:rgba(63,71,96,.15);--accent:#77689d;--alert:#c0435a;
+  --shell:#3f4760;--mint:#7dd1c1;--teal:#23806f;--coral:#e5677f;--display:'Manrope','Archivo',system-ui,sans-serif;
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:start;background:#f4f2f9;border-radius:28px;padding:14px;
+  color:var(--ink);font:400 14px/normal var(--sans);margin:0 0 14px}
+.rc *{box-sizing:border-box}
+.rc-col{display:flex;flex-direction:column;min-width:0}
+.rc .mono{font-family:var(--mono)}
+.rc-card{background:#fff;border:0;border-radius:24px}
+.rc .panel{margin-top:14px;padding:16px}
+.rc-col>.panel:first-child{margin-top:0}
+.rc .eyebrow{font:800 10px/1 var(--mono);letter-spacing:.12em;color:var(--ink);text-transform:uppercase}
+.rc .sub{margin-top:4px;font:400 12px/1.5 var(--sans);color:var(--ink-soft)}
+
+/* Tarjeta del grafo */
+.rc .graphcard{background:#f4f1fa radial-gradient(circle,#d9d1ec 1px,transparent 1.4px) 0 0/16px 16px;overflow:hidden;padding:8px 8px 4px;transition:background .2s}
+.rc .graphcard.off{background:#fbecef}
+.rc .g-svg{display:block;width:100%;height:auto}
+.rc .g-edge{fill:none;stroke:#aa95d1;stroke-opacity:.75;stroke-linecap:round;transition:stroke-opacity .25s,opacity .25s}
+.rc .g-edge.pro{stroke:#3fae9b;stroke-opacity:.9}
+.rc .g-edge.parcial{stroke-dasharray:5 5}
+.rc .g-edge.off{stroke:#e5677f;stroke-opacity:.8;stroke-dasharray:2 5}
+.rc .g-p{fill:#77689d;filter:drop-shadow(0 0 3px rgba(119,104,157,.9))}.rc .g-p.pro{fill:#23806f;filter:drop-shadow(0 0 3px rgba(63,174,155,.9))}
+.rc .g-h rect{fill:#fff;stroke:none;filter:drop-shadow(0 1px 2px rgba(43,48,69,.18))}
+.rc .g-h text{font:800 8px var(--display);fill:var(--ink)}.rc .g-h.off{opacity:.35}
+.rc .g-c{fill:#fff;stroke:#aa95d1;stroke-width:2.5;transition:transform .25s,fill .25s,stroke .25s;transform-box:fill-box;transform-origin:center}
+.rc .g-i,.rc .g-n{font-family:var(--display);font-weight:800;fill:var(--ink);pointer-events:none}
+.rc .g-s{font-family:var(--sans);fill:rgba(43,48,69,.62);pointer-events:none}
+.rc .g-node{transition:opacity .25s}
+.rc .g-node.act{cursor:pointer}
+.rc .g-node.act:hover .g-c{transform:scale(1.14)}
+.rc .g-node:focus{outline:none}.rc .g-node:focus-visible .g-c{stroke:var(--accent);stroke-width:3}
+.rc .g-node.hub .g-c{fill:#77689d;stroke:#fff;stroke-width:3;filter:drop-shadow(0 4px 8px rgba(119,104,157,.5))}
+.rc .g-node.hub .g-i{fill:#fff}.rc .g-node.hub .g-n{fill:var(--ink)}.rc .g-node.hub .g-s{fill:rgba(43,48,69,.62)}
+.rc .g-node.pro .g-c{fill:#7dd1c1;stroke:#fff;stroke-width:3}
+.rc .g-node.parcial .g-c{fill:#f6ecd0;stroke:#d09a35}
+.rc .g-node.sin .g-c{fill:#e5677f;stroke:#fff}.rc .g-node.sin .g-i{fill:#fff}.rc .g-node.sin .g-n{fill:var(--ink)}.rc .g-node.sin .g-s{fill:rgba(43,48,69,.62)}
+.rc .g-node.off .g-c{fill:transparent;stroke:#e5677f;stroke-dasharray:4 3}.rc .g-node.off .g-i,.rc .g-node.off .g-n,.rc .g-node.off .g-s{opacity:.4}
+.rc .g-node.sel .g-c{stroke:#2b3045;stroke-width:3}
+.rc .g-pulse{fill:none;stroke:#77689d;stroke-width:2;transform-box:fill-box;transform-origin:center;animation:rc-gpulse 1.9s ease-out infinite}
+@keyframes rc-gpulse{0%{transform:scale(.8);opacity:.9}100%{transform:scale(1.6);opacity:0}}
+.rc .glegend{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;padding:2px 10px 10px;font:500 9.5px/1.5 var(--mono);color:var(--ink-faint)}
+.rc .glegend span{display:flex;align-items:center;gap:6px}
+.rc .lg{display:inline-block;width:18px;height:0;border-top:3px solid #aa95d1;border-radius:2px}
+.rc .lg.dashed{border-top-style:dashed}.rc .lg.pro{border-top-color:#3fae9b}
+
+/* Cabecera, ficha, indicadores, lista */
+.rc .ghead{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px 0;align-items:center}
+.rc .gh-n{font:600 11px var(--sans);color:var(--ink);background:#fff;border-radius:99px;padding:4px 10px}
+.rc .gh-n b{font:800 12px var(--display)}
+.rc .gh-t{margin-left:auto;font:800 11px var(--display);border-radius:99px;padding:4px 11px;color:var(--ink)}
+.rc .gh-t.t-r{background:#e5677f}.rc .gh-t.t-a{background:#f1d28a}.rc .gh-t.t-n{background:#7dd1c1}
+.rc .nodeinfo{display:flex;flex-direction:column;gap:12px}
+.rc .ni-top{display:flex;align-items:center;gap:10px}
+.rc .ni-av{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:#fff;border:3px solid #aa95d1;font:800 17px var(--display);flex:none}
+.rc .ni-av.hub{background:#77689d;border-color:#fff;color:#fff;box-shadow:0 3px 8px rgba(119,104,157,.45)}
+.rc .ni-av.pro{background:#7dd1c1;border-color:#fff}
+.rc .ni-id{display:flex;flex-direction:column;min-width:0}
+.rc .ni-id b{font:800 16px var(--display)}.rc .ni-id small{font:500 12px var(--sans);color:rgba(43,48,69,.65)}
+.rc .ni-tag{margin-left:auto;font:800 10.5px var(--display);background:#e6dff3;border-radius:99px;padding:4px 10px;white-space:nowrap}
+.rc .ni-tag.hub{background:#77689d;color:#fff}.rc .ni-tag.pro{background:#7dd1c1}.rc .ni-tag.off{background:#e5677f}
+.rc .ni-rows{display:flex;flex-direction:column;gap:8px}
+.rc .ni-rows>div{display:grid;grid-template-columns:74px 1fr;gap:8px;align-items:center}
+.rc .ni-rows i{font:600 11px var(--sans);font-style:normal;color:rgba(43,48,69,.62)}
+.rc .pills{display:flex;flex-wrap:wrap;gap:5px}.rc .pills em{font:500 12px var(--sans);color:rgba(43,48,69,.5)}
+.rc .pill{display:inline-flex;gap:6px;align-items:baseline;background:#f1eef8;border-radius:99px;padding:3px 10px;font:600 12px var(--sans)}
+.rc .pill b{font:800 12px var(--display);color:#77689d}
+.rc .ni-cov{display:flex;align-items:center;gap:8px}.rc .ni-cov b{font:800 12px var(--display);white-space:nowrap}
+.rc .cbar{flex:1;height:10px;background:#e9e5f3;border-radius:99px;overflow:hidden;display:block}
+.rc .cbar i{display:block;height:100%;background:#7dd1c1;border-radius:99px;transition:width .5s}
+.rc .cbar.a i{background:#e0b24a}.rc .cbar.r i{background:#e5677f}
+.rc .btn{border:0;border-radius:16px;padding:13px 18px;min-height:46px;font:800 13px var(--display);letter-spacing:.01em;cursor:pointer;width:100%}
+.rc .btn-alert{background:#e5677f;color:var(--ink)}
+.rc .btn-dark{background:var(--shell);color:#fff}
+.rc .btn-ghost{background:#fff;color:var(--ink);min-height:40px;padding:9px 13px;font-size:12.5px;margin-top:10px}
+.rc .btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.rc .redbar{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}
+.rc .redbar>div{background:#fff;border-radius:18px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.rc .redbar b{font:800 22px var(--display);line-height:1.1}
+.rc .redbar b.r{color:#c0435a}.rc .redbar b.a{color:#a8761a}.rc .redbar b.n{color:#23806f}
+.rc .redbar span{font:600 10.5px var(--sans);color:rgba(43,48,69,.7)}
+.rc .dep{display:grid;grid-template-columns:minmax(70px,96px) 1fr auto;gap:10px;align-items:center;padding:8px 0}
+.rc .dep+.dep{border-top:1px solid var(--hair)}
+.rc .dn{display:flex;flex-direction:column;font:700 13px var(--display)}.rc .dn small{font:500 11px var(--sans);color:rgba(43,48,69,.6)}
+.rc .dep b{font:800 12px var(--display);white-space:nowrap}
+.rc .dep-card .eyebrow{margin-bottom:2px}
+.rc .rc-note{margin:8px 0 0;font:400 11.5px/1.55 var(--sans);color:var(--ink-soft)}
+.rc .rc-note.off{color:var(--alert)}
+/* Variante sin ficha de nodo: mismo lenguaje (tarjetas blancas, número grande, color por nivel) en otras cajas de Método */
+.rc.rc-flat{display:block;margin:0 0 10px}
+.rc .redbar-4{grid-template-columns:repeat(4,1fr);margin-top:0}
+.rc .redbar-4 b{font-size:18px;overflow-wrap:anywhere}
+.rc .lim{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}
+.rc .lim .panel{margin-top:0;padding:14px 16px;display:flex;flex-direction:column;gap:6px;border-radius:18px}
+.rc .lim b{font:800 13px/1.3 var(--display)}
+.rc .lim span{font:400 12.5px/1.5 var(--sans);color:var(--ink-soft)}
+@media (max-width:860px){.rc{grid-template-columns:1fr}}
+@media (max-width:640px){.rc .redbar-4{grid-template-columns:repeat(2,1fr)}}
+@media (prefers-reduced-motion:reduce){.rc .g-pulse{animation:none}.rc .g-edge,.rc .g-c,.rc .cbar i{transition:none}}
+
+/* Enlace a RedCare en Método */
+.rcl{display:flex;align-items:center;gap:14px 18px;flex-wrap:wrap;margin:12px 0;padding:16px 20px;border-radius:20px;background:#f4f2f9;border:1px solid rgba(63,71,96,.15);font-family:'Manrope','Archivo',system-ui,sans-serif}
+.rcl>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.rcl b{font:800 17px var(--sans);font-family:'Manrope','Archivo',system-ui,sans-serif;color:#2b3045}
+.rcl span{font:500 13px/1.4 var(--sans);color:rgba(43,48,69,.75)}
+.rcl a{margin-left:auto;padding:11px 20px;border-radius:14px;background:#77689d;color:#fff;font:800 13px 'Manrope','Archivo',system-ui,sans-serif;text-decoration:none;white-space:nowrap}
+.rcl a:hover{background:#655885}.rcl a:focus-visible{outline:2px solid #2b3045;outline-offset:2px}

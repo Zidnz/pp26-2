@@ -27,6 +27,7 @@ Archivos que lee (todos deben existir; si falta uno, el script se detiene en lug
   matrices/diccionario_observatorio.csv (diccionario de variables y de esta base; el script se detiene si falta un bloque)
   resultados/14_enigh_asequibilidad_cdmx.csv, 14_enigh_resumen.csv (asequibilidad con ingreso ENIGH 2022, nacional y CDMX)
   resultados/12_segmentacion_estimaciones.csv (filtros de segmentación)
+  resultados/31_afectaciones_cuidadoras.csv (afectaciones declaradas por cuidar, por sexo y universo; notebook 31, 3 nov 2026)
   resultados/12b_segmentacion_series.csv (series completas por segmento: filtro de toda la pestaña, 14 oct 2026)
   resultados/11_modelo_focalizacion_global.csv, _por_grupo.csv, _sensibilidad.csv, 11_modelo_coeficientes_logit.csv
   resultados/11_modelo_alternativas.csv, _curvas_cobertura.csv, _calibracion.csv, _importancia.csv, _por_cupo.csv y 11_objetivo_*.csv (13 oct 2026)
@@ -153,6 +154,9 @@ e03 = leer(R / '03_enasic_barreras_estimaciones.csv')
 e07 = leer(R / '07_enasic_necesidad_vs_norma_estimaciones.csv')
 d07 = leer(R / '07_enasic_diferencias.csv')
 F03, F07 = 'Analysis/resultados/03_enasic_barreras_estimaciones.csv', 'Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv'
+# 2 nov 2026: grupo del problema con DANO_SALUD3 (script 29; reproduce dos filas de 07 antes de calcular lo nuevo)
+e29 = leer(R / '29_grupo_problema_salud3.csv')
+F29 = 'Analysis/resultados/29_grupo_problema_salud3.csv'
 
 D = {'actualizado': '6 oct 2026',
      'generado_desde': f'Analysis/resultados, Analysis/outputs y Analysis/matrices; territorio y asequibilidad del relevo vía {DW_TXT} (ver build_datos.py)'}
@@ -161,7 +165,9 @@ D = {'actualizado': '6 oct 2026',
 D['clave'] = {
     'busco_todas': fila(e03, 'Todas las cuidadoras | Buscó servicio (P6.42)') | {'fuente': F03},
     'busco_obj': fila(e03, 'Cuidan discapacidad o 60+ | Buscó servicio (P6.42)') | {'fuente': F03},
-    'grupo_problema': fila(e07, 'Peso en el universo | >=40 h, "sin necesidad" y algún daño') | {'fuente': F07},
+    'grupo_problema': fila(e07, 'Peso en el universo | >=40 h, "sin necesidad" y algún daño') | {'fuente': F07},   # versión 1, «algún daño»
+    'grupo_problema_salud3': fila(e29, 'Peso en el universo | >=40 h, "sin necesidad" y daño a la salud (salud física, cansancio o sueño)') | {'fuente': F29},
+    'dano_salud3_40h': fila(e07, '"Sin necesidad" | >=40 h | Algún daño a la salud (física, cansancio, sueño)') | {'fuente': F07},
     'nucleo_duro': fila(e07, 'Peso en el universo | ABVD y >=40 h') | {'fuente': F07},
     'pesa_40': fila(e07, 'Peso en el universo | >=40 h') | {'fuente': F07},
     'unas_horas': fila(e07, 'P7_8 | De acuerdo: solo unas horas') | {'fuente': F07},
@@ -191,7 +197,7 @@ D['embudo'] = [
     {'etapa': 'Cuidan a una persona con discapacidad o de 60+', 'total': uni, 'fuente': F07 + ' (suma de los tres grupos de horas)'},
     {'etapa': 'Cuidan 40 h o más a la semana', 'total': fila(e07, 'Peso en el universo | >=40 h')['total_expandido'], 'fuente': F07},
     {'etapa': 'No buscaron servicios y dicen "no tuve necesidad"', 'total': fila(e07, 'Horas | >=40 h | No ha tenido necesidad')['total_expandido'], 'fuente': F07},
-    {'etapa': 'Y declaran daño a su salud o su trabajo', 'total': fila(e07, 'Peso en el universo | >=40 h, "sin necesidad" y algún daño')['total_expandido'], 'fuente': F07},
+    {'etapa': 'Y declaran daño a su salud física, cansancio o sueño', 'total': fila(e29, 'Peso en el universo | >=40 h, "sin necesidad" y daño a la salud (salud física, cansancio o sueño)')['total_expandido'], 'fuente': F29},
 ]
 
 # Segmentación (script 12): una fila por segmento × indicador, con CV, IC y diferencia contra el resto
@@ -215,7 +221,11 @@ D['seg2'] = [{k: nn(v) for k, v in r.items()} for r in
 D['seg2_fuente'] = 'Analysis/resultados/12b_segmentacion_series.csv (notebook B, sección 12b)'
 
 # Perfil del grupo del problema y distribución de horas (script 16)
-pf = leer(R / '16_perfil_grupo_problema.csv')
+COLS_PF = ['dimension', 'segmento', 'poblacion', 'pct', 'cv', 'li90', 'ls90', 'n_muestra_dominio', 'precision',
+           'dif_pp', 'dif_li90', 'dif_ls90', 'dif_significativa']
+pf1 = leer(R / '16_perfil_grupo_problema.csv')   # versión 1 («algún daño»); se conserva rotulada
+D['perfil_v1'] = [{k: nn(v) for k, v in r.items()} for r in pf1[COLS_PF].to_dict('records')]
+pf = leer(R / '30_perfil_grupo_salud3.csv')      # vigente: DANO_SALUD3 (script 30, 2 nov 2026)
 D['perfil'] = [{k: nn(v) for k, v in r.items()} for r in
                pf[['dimension', 'segmento', 'poblacion', 'pct', 'cv', 'li90', 'ls90', 'n_muestra_dominio', 'precision',
                    'dif_pp', 'dif_li90', 'dif_ls90', 'dif_significativa']].to_dict('records')]
@@ -463,6 +473,40 @@ for clave, n_esperado in [('alternativas', 18), ('cupo', 24), ('decision', 11), 
     if len(D['modelo2'][clave]) != n_esperado:
         raise SystemExit(f'modelo2.{clave}: {len(D["modelo2"][clave])} filas, se esperaban {n_esperado}')
 
+# Etiqueta de versión. DEC-OBJ-002 (1 nov 2026) fijó DANO_SALUD3 como objetivo primario; lo de arriba (notebook 11, scripts 21 y 22)
+# es la versión 1, exploratoria, con DANO_ALGUNO (DEC-OBJ-001). No se reescribe: se rotula.
+VERSION_V1 = ('Versión 1, exploratoria (objetivo DANO_ALGUNO, DEC-OBJ-001, 20 oct 2026). Superada como objetivo primario por '
+              'DEC-OBJ-002 (1 nov 2026), que fija DANO_SALUD3. Se conserva por historia.')
+D['modelo']['version'] = VERSION_V1
+D['modelo2']['version'] = VERSION_V1
+
+# ---------------------------------------------------------------- Focalización v2 preregistrada (27) y diagnóstico previo (26)
+# Preregistro: Documentos/preregistro_focalizacion_2026-11-01.md. Veredicto primario: no concluyente, se queda la regla de 40 h.
+D['modelo_v2'] = {
+    'version': 'Versión 2, preregistrada (objetivo primario DANO_SALUD3, DEC-OBJ-002, 1 nov 2026). Sin doble revisión.',
+    'global': registros('27_v2_global.csv'),
+    'por_bloque': registros('27_v2_por_bloque.csv'),
+    'equidad': registros('27_v2_equidad.csv'),
+    'tarjeta': registros('27_v2_tarjeta.csv'),
+    'fuente': 'Analysis/resultados/27_v2_{global,por_bloque,equidad,tarjeta}.csv (script 27_focalizacion_v2.py; preregistro del 1 nov 2026)',
+}
+D['diagnostico_v2'] = {
+    'version': 'Diagnóstico previo a la v2 (script 26, 1 nov 2026). Descriptivo: no sirve para elegir el objetivo. Sin doble revisión.',
+    'muestra': registros('26_diag_muestra.csv'),
+    'escalera_informacion': registros('26_diag_escalera_informacion.csv'),
+    'candidatos_objetivo': registros('26_diag_candidatos_objetivo.csv'),
+    'horas_forma': registros('26_diag_horas_forma.csv'),
+    'info_condicional': registros('26_diag_info_condicional.csv'),
+    'medicion': registros('26_diag_medicion.csv'),
+    'objetivo_componentes': registros('26_diag_objetivo.csv'),
+    'fuente': 'Analysis/resultados/26_diag_*.csv (script 26_diagnostico_previo_focalizacion.py)',
+}
+for bloque, clave, n_esperado in [('modelo_v2', 'global', 22), ('modelo_v2', 'por_bloque', 40), ('modelo_v2', 'equidad', 238),
+                                  ('modelo_v2', 'tarjeta', 13), ('diagnostico_v2', 'muestra', 12),
+                                  ('diagnostico_v2', 'escalera_informacion', 6), ('diagnostico_v2', 'candidatos_objetivo', 6)]:
+    if len(D[bloque][clave]) != n_esperado:
+        raise SystemExit(f'{bloque}.{clave}: {len(D[bloque][clave])} filas, se esperaban {n_esperado}')
+
 # ---------------------------------------------------------------- Territorio CDMX (01, 02, 05, 08, 09)
 # indice_por_tipo_servicio, oferta_nucleo_vs_pob60, 08_dependencia y 13_rezago ya no se leen aquí: llegan por el almacén.
 ql = pd.read_csv(R / '02_indice_capacidad_residencial.csv', index_col=0, encoding='utf-8-sig')  # solo ql_plazas
@@ -662,12 +706,16 @@ OD = D['oferta_declarada']
 def kpi(dimension, nombre, definicion, valor, unidad, universo, precision, evidencia, fuente):
     return dict(dimension=dimension, nombre=nombre, definicion=definicion, valor=valor, unidad=unidad, universo=universo,
                 precision=precision, evidencia=evidencia, fuente=fuente)
+V2_REGLA = [r for r in D['modelo_v2']['global'] if r['configuracion'].startswith('PRIMARIO') and r['puntaje'] == 'Regla >= 40 h']
+if len(V2_REGLA) != 1:
+    raise SystemExit('modelo_v2.global: falta la fila primaria de la regla')
+V2_REGLA = V2_REGLA[0]
 D['kpis'] = [
     kpi('Demanda', 'Hogares con necesidad de cuidado', 'Hogares con al menos una persona con discapacidad o de 60 años y más',
         D['tasa_necesidad_nal'], '% de los hogares', 'Hogares, nacional', 'alta', 'confirmado', 'Analysis/resultados/05_tasas_y_anclajes.csv'),
-    kpi('Demanda', 'Grupo del problema', 'Personas cuidadoras que cuidan 40 h o más, dicen "no tuve necesidad" y declaran algún daño',
-        K['grupo_problema']['pct'], '% del universo', 'Cuidadoras de persona con discapacidad o 60+, nacional',
-        K['grupo_problema']['precision'], 'probable', F07),
+    kpi('Demanda', 'Grupo del problema', 'Personas cuidadoras que cuidan 40 h o más, dicen "no tuve necesidad" y declaran daño a su salud (física, cansancio o sueño; DANO_SALUD3, objetivo primario). Con la definición de la versión 1, «algún daño» (salud o trabajo): ' + f"{K['grupo_problema']['pct']:.1f} %",
+        K['grupo_problema_salud3']['pct'], '% del universo', 'Cuidadoras de persona con discapacidad o 60+, nacional',
+        K['grupo_problema_salud3']['precision'], 'probable', F29),
     kpi('Demanda', 'Cuidado de alta intensidad', 'Personas cuidadoras que dedican 40 h o más a la semana',
         K['pesa_40']['pct'], '% del universo', 'Cuidadoras de persona con discapacidad o 60+, nacional', K['pesa_40']['precision'], 'confirmado', F07),
     kpi('Demanda', 'Preferencia por cuidado en casa', 'Si contratara cuidado, lo querría en su casa (P6.46)',
@@ -685,8 +733,8 @@ D['kpis'] = [
     kpi('Cobertura', 'Cobertura territorial oferta–necesidad', 'Indicador por alcaldía que compare oferta y necesidad compatibles',
         None, 'no medible', 'CDMX', 'no aplica', 'desconocido: ningún par oferta–necesidad cumple la regla de compatibilidad',
         'Analysis/matrices/pares_oferta_necesidad.csv'),
-    kpi('Tiempos', 'Daño por intensidad de cuidado', 'Declara algún daño, entre quienes cuidan 40 h o más y dicen "no tuve necesidad"',
-        Cg['dano'][2]['pct'], '%', 'Cuidadoras de persona con discapacidad o 60+, nacional', Cg['dano'][2]['precision'], 'probable', F07),
+    kpi('Tiempos', 'Daño por intensidad de cuidado', 'Declara daño a su salud (física, cansancio o sueño; DANO_SALUD3), entre quienes cuidan 40 h o más y dicen "no tuve necesidad". Con la definición de la versión 1, «algún daño»: ' + f"{Cg['dano'][2]['pct']:.1f} %",
+        K['dano_salud3_40h']['pct'], '%', 'Cuidadoras de persona con discapacidad o 60+, nacional', K['dano_salud3_40h']['precision'], 'probable', F07),
     kpi('Costos', 'Costo de la jornada completa', 'Costo mensual de 40 h/semana al salario mínimo profesional 2026, como % del ingreso mediano',
         float(rel40.costo_pct_ingreso_mediano), '% del ingreso mediano', 'Hogares con necesidad, nacional', 'sin varianza de diseño', 'probable',
         D['relevo']['fuente']),
@@ -715,14 +763,39 @@ D['kpis'] = [
         K['cumplio']['pct'], '%', 'Personas cuidadoras que buscaron, nacional', K['cumplio']['precision'], 'confirmado', F03),
     kpi('Calidad', 'Calidad del cuidado domiciliario', 'Calidad del servicio de cuidado en casa (trato, capacitación, incidentes)',
         None, 'no medible', '—', 'no aplica', 'desconocido: ninguna fuente del proyecto lo mide; lo tendría que medir el piloto', '—'),
-    kpi('Focalización', 'Cobertura de la regla "40 h o más"', 'Personas con daño que la regla selecciona (misma tasa de selección que el modelo)',
-        glob['Regla >= 40 h']['cobertura'], '%', 'Cuidadoras de persona con discapacidad o 60+, nacional', 'IC 90% en el archivo', 'probable',
-        D['modelo']['fuente']),
+    kpi('Focalización', 'Cobertura de la regla "40 h o más"',
+        'Personas con el daño (salud física, cansancio o sueño; DANO_SALUD3, preregistrado) que la regla selecciona, con la misma tasa de selección que el modelo. Veredicto: no concluyente, se queda la regla; no prueba que la regla sea mejor. Versión 1 (exploratoria, «algún daño»): '
+        + f"{glob['Regla >= 40 h']['cobertura']:.1f} %",
+        V2_REGLA['cobertura'], '%', 'Cuidadoras de persona con discapacidad o 60+, nacional', 'IC 90% en el archivo', 'probable',
+        D['modelo_v2']['fuente']),
 ]
+
+# ---------------------------------------------------------------- Afectaciones declaradas por cuidar (notebook 31, 3 nov 2026)
+# Pestaña «¿Quién lo carga?». Nacional, autorreporte. Nada se escribe a mano: todo sale de 31_afectaciones_cuidadoras.csv.
+af = leer(R / '31_afectaciones_cuidadoras.csv')
+CLAVES_AF = ['salud3', 'cansado', 'sueno', 'irritado', 'deprimido', 'salud', 'terapia', 'enfermedad']
+if len(af) != 48 or sorted(af.clave.unique()) != sorted(CLAVES_AF) or af.universo.nunique() != 2 or set(af.sexo) != {'Total', 'Mujeres', 'Hombres'}:
+    raise SystemExit(f'31_afectaciones_cuidadoras.csv: se esperaban 48 filas (2 universos × 3 sexos × 8 indicadores); hay {len(af)}')
+D['afectaciones'] = {
+    'filas': [{k: nn(v) for k, v in r.items()} for r in
+              af[['universo', 'sexo', 'clave', 'indicador', 'pct', 'cv', 'li90', 'ls90', 'n_muestra_dominio', 'n_muestra_si',
+                  'total_expandido', 'precision', 'dif_pp', 'dif_li90', 'dif_ls90', 'dif_significativa']].to_dict('records')],
+    'fuente': 'Analysis/resultados/31_afectaciones_cuidadoras.csv (notebook 31)',
+}
+# Por horas de cuidado y por segmento del filtro (lo que dibuja la pestaña). Universo B: cuidan a persona con discapacidad o 60+.
+ah = leer(R / '31_afectaciones_por_horas.csv')
+if len(ah) != 11 * 8 * 3 or sorted(ah.clave.unique()) != sorted(CLAVES_AF) or set(ah.horas) != {'<20 h', '20-39 h', '>=40 h'}:
+    raise SystemExit(f'31_afectaciones_por_horas.csv: se esperaban 264 filas (11 segmentos × 8 indicadores × 3 grupos de horas); hay {len(ah)}')
+D['afect_horas'] = {
+    'filas': [{k: nn(v) for k, v in r.items()} for r in
+              ah[['dimension', 'segmento', 'clave', 'horas', 'pct', 'li90', 'ls90', 'n_muestra_dominio', 'precision',
+                  'dif_pp', 'dif_li90', 'dif_ls90', 'dif_significativa']].to_dict('records')],
+    'fuente': 'Analysis/resultados/31_afectaciones_por_horas.csv (notebook 31, sección 7)',
+}
 
 # ---------------------------------------------------------------- Diccionario: cada bloque de la base debe estar documentado
 dic = leer(A / 'matrices' / 'diccionario_observatorio.csv')
-# 21 oct 2026: grupo, depende_de y advertencia alimentan el linaje y la tabla expandible de la pestaña Método.
+# 21 oct 2026: grupo, depende_de y advertencia alimentan la tabla expandible de la pestaña Método (el linaje se quitó el 5 nov 2026).
 CAMPOS_DIC = ['nombre', 'definicion', 'origen', 'grupo', 'depende_de', 'advertencia', 'unidad_o_grano', 'factor_de_expansion', 'archivo']
 D['diccionario'] = dic[dic.tipo.str.startswith('variable')][CAMPOS_DIC].fillna('').to_dict('records')
 for v in D['diccionario']:

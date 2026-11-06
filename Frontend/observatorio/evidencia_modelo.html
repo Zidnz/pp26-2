@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evidencia del modelo · Observatorio del Cuidado</title>
+<link rel="icon" type="image/png" sizes="48x48" href="ilustraciones/favicon_3d_48.png?v=20261027">
+<link rel="icon" type="image/png" sizes="256x256" href="ilustraciones/favicon_3d_256.png?v=20261027">
+<link rel="apple-touch-icon" href="ilustraciones/favicon_3d_256.png?v=20261027">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Manrope:wght@500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap">
+<link rel="stylesheet" href="css/base.css?v=20261103k">
+<link rel="stylesheet" href="css/layout.css?v=20261103k">
+<link rel="stylesheet" href="css/componentes.css?v=20261103k">
+<link rel="stylesheet" href="css/graficas.css?v=20261103k">
+<link rel="stylesheet" href="css/vistas.css?v=20261103l">
+<link rel="stylesheet" href="css/evidencia-nodos.css?v=20261106a">
+</head>
+<body>
+<!-- 3 nov 2026: la comparación de la regla de 40 horas con modelos estadísticos salió del Observatorio (Método) a esta página.
+     Los datos y el código son los mismos (js/vistas/focalizacion-v2.js). Respaldo: _respaldo_pre_evidencia_2026-11-03/ -->
+<div class="content">
+<main class="wrap">
+<section class="view on" id="v-evidencia">
+  <div class="vhead"><div><div class="kicker">Evidencia del modelo</div><h2>Regla de 40 horas frente a modelos estadísticos</h2></div>
+    <p><a class="fr-go" href="index.html#metodo">← Volver al Observatorio</a></p></div>
+  <div class="ev" id="evNodos"></div>
+  <div id="fzMet">
+  <details class="acc" style="margin-top:22px"><summary>Versión con gráficas de intervalos de confianza (Partes 1 a 5)</summary><div class="in">
+  <div class="card fz-card" id="v2Bloque">
+    <div class="kicker">Qué se busca encontrar · daño a la salud física, cansancio o sueño</div>
+    <p class="fz-find" id="v2Find"></p>
+    <div class="fz-pills" id="v2Pills"></div>
+    <div class="grid c4" id="v2Tiles" style="margin-top:14px"></div>
+  </div>
+  <div class="card fz-card" style="margin-top:18px">
+    <div class="kicker">Parte 1 de 5</div>
+    <h3>¿Qué método encuentra más a quien tiene el daño?</h3>
+    <p class="fz-find" id="q1Find"></p>
+    <div class="chart" id="ch-q1" data-chart></div>
+    <div class="legend"><span><i style="background:#2b3045;border-radius:50%"></i>Regla 40 h o más</span><span><i style="background:#a9711a;border-radius:50%"></i>Regresión logística</span><span><i style="background:#77689d;border-radius:50%"></i>Tarjeta de puntos</span><span class="muted">Línea gruesa: rango probable (IC 90 %) · línea roja punteada: elegir al azar · todos eligen al mismo número de personas · sombra: diferencia demasiado pequeña para notarse</span></div>
+  </div>
+  <div class="card fz-card" style="margin-top:18px">
+    <div class="kicker">Parte 2 de 5</div>
+    <h3>¿Cambia si se atiende a menos personas o si cambian los supuestos?</h3>
+    <p class="fz-find" id="q2Find"></p>
+    <div class="chart" id="ch-q2" data-chart></div>
+    <div class="legend"><span><i style="background:#a9711a;border-radius:50%"></i>Regresión logística</span><span><i style="background:#77689d;border-radius:50%"></i>Tarjeta de puntos</span><span><i style="background:#9a93ad;border-radius:50%"></i>Regla compuesta a priori</span><span class="muted">Comparador: la regla de 40 h (en «cupo 10 % y 20 %», las horas más altas al mismo cupo)</span></div>
+  </div>
+  <div class="card fz-card" style="margin-top:18px">
+    <div class="kicker">Parte 3 de 5</div>
+    <h3>¿A quién deja fuera cada método?</h3>
+    <p class="fz-find" id="q3Find"></p>
+    <div class="ctrls fz-bar"><div class="seg" id="segEq"><button data-m="Logística" aria-pressed="true">Regresión logística</button><button data-m="Tarjeta de puntos" aria-pressed="false">Tarjeta de puntos</button></div></div>
+    <div class="chart" id="ch-q3" data-chart></div>
+    <div class="legend"><span><i style="background:#2b3045;border-radius:50%"></i>Regla 40 h o más</span><span><i id="q3Dot" style="background:#a9711a;border-radius:50%"></i>Método elegido</span><span class="muted">n: personas con el daño · atenuado: menos de 100 casos · rojo: cambio de 10 pp o más · sin intervalos</span></div>
+  </div>
+  <div class="grid c2" style="margin-top:18px;align-items:start">
+    <div class="card fz-card">
+      <div class="kicker">Parte 4 de 5</div>
+      <h3>¿Por qué 40 horas?</h3>
+      <p class="fz-find" id="q4Find"></p>
+      <div class="chart" id="ch-q4" data-chart></div>
+      <div class="legend"><span><i style="background:#77689d"></i>Menos de 40 h</span><span><i style="background:#a9711a"></i>40 h o más</span><span class="muted">Descriptivo, sin intervalos: no prueba que 40 h sea el mejor corte</span></div>
+    </div>
+    <div class="card fz-card">
+      <div class="kicker">Parte 5 de 5</div>
+      <h3>¿Qué sube o baja el lugar en la fila?</h3>
+      <p class="fz-find" id="q5Find"></p>
+      <div class="chart" id="ch-q5" data-chart></div>
+      <div class="legend"><span><i style="background:#c0435a"></i>Sube la prioridad</span><span><i style="background:#23806f"></i>La baja</span><span class="muted">Tarjeta retirada del prototipo; solo para leer qué pesa · asociaciones, no causas · sin intervalos</span></div>
+    </div>
+  </div>
+  </div></details>
+  <details class="acc" style="margin-top:18px"><summary>Tabla de todas las configuraciones (primaria y sensibilidades)</summary><div class="in scroll-x" id="v2Tabla"></div></details>
+  <details class="acc"><summary>Por bloque de cuidado (discapacidad / solo 60+)</summary><div class="in scroll-x" id="v2Bloques"></div></details>
+  <details class="acc" open><summary>Qué no permite afirmar esta comparación</summary><div class="in"><ul class="list" id="limMod"></ul></div></details>
+  <details class="src"><summary>Fuente y precisión</summary><dl id="src-v2"></dl></details>
+  </div>
+</section>
+</main>
+<footer><div class="wrap"><span>Observatorio del Cuidado · Proyecto integrador 7.º semestre LCDN · UNRC · 2026-2</span></div></footer>
+</div>
+<script src="js/datos/datos.js"></script>
+<script src="js/nucleo/obs.js"></script>
+<script src="js/nucleo/util.js?v=20261103g"></script>
+<script src="js/vistas/focalizacion-v2.js?v=20261103i"></script>
+<script src="js/vistas/evidencia-nodos.js?v=20261106a"></script>
+</body>
+</html>

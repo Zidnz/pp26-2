@@ -1,0 +1,17 @@
+﻿alcaldia,configuraciones,rango_min,rango_mediana,rango_max,veces_primera,veces_en_5_primeras
+Azcapotzalco,60,1.0,1.0,2.0,51,60
+Cuajimalpa de Morelos,60,1.0,2.0,9.0,9,51
+Cuauhtémoc,60,2.0,3.0,5.0,0,60
+Iztacalco,60,2.0,4.0,6.0,0,58
+Iztapalapa,60,2.0,6.0,11.0,0,24
+Venustiano Carranza,60,4.0,6.0,9.0,0,28
+Tlalpan,60,3.0,7.0,8.0,0,20
+Coyoacán,60,6.0,9.5,13.0,0,0
+Álvaro Obregón,60,7.0,10.0,13.0,0,0
+La Magdalena Contreras,60,6.0,10.0,13.0,0,0
+Milpa Alta,60,6.0,12.0,14.0,0,0
+Xochimilco,60,8.0,12.0,14.0,0,0
+Gustavo A. Madero,60,6.0,13.0,14.0,0,0
+Miguel Hidalgo,60,8.0,14.0,14.0,0,0
+Tláhuac,60,15.0,15.0,16.0,0,0
+Benito Juárez,60,15.0,16.0,16.0,0,0

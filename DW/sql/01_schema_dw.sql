@@ -1,6 +1,8 @@
 -- =====================================================================
 -- Observatorio del Cuidado · Data Warehouse (esquema dimensional)
--- Motor: SQLite 3.37+  ·  Versión del esquema: 1.0.0 (20 oct 2026)
+-- Motor: SQLite 3.37+  ·  Versión del esquema: 1.1.0 (29 oct 2026; 1.0.0 del 20 oct 2026)
+-- 1.1.0: nivel AGEB en dim_geografia; resultados de modelos (scripts 11 y 18 a 25) en
+--        fact_resultado_modelo con dim_modelo, dim_metrica y dim_configuracion.
 -- Estado de revisión: SIN revisión de otra persona.
 --
 -- Qué es: un almacén de INDICADORES PUBLICADOS (estimaciones con intervalo,
@@ -70,7 +72,7 @@ CREATE TABLE dim_fuente (
   origen_tipo            TEXT NOT NULL CHECK (origen_tipo IN
                            ('externa oficial','externa no oficial','archivo del proyecto (productor desconocido)','interna (supuesto del equipo)')),
   nivel_geo_max          TEXT NOT NULL,          -- texto del inventario
-  nivel_geo_max_orden    INTEGER NOT NULL CHECK (nivel_geo_max_orden BETWEEN 1 AND 3), -- 1 Nacional, 2 Entidad, 3 Alcaldía o más fino
+  nivel_geo_max_orden    INTEGER NOT NULL CHECK (nivel_geo_max_orden BETWEEN 1 AND 4), -- 1 Nacional, 2 Entidad, 3 Alcaldía, 4 AGEB o más fino
   periodo_cubierto       TEXT,
   estado_evidencia       TEXT,
   permite_afirmar        TEXT,
@@ -79,9 +81,9 @@ CREATE TABLE dim_fuente (
 
 CREATE TABLE dim_geografia (
   geografia_sk INTEGER PRIMARY KEY,
-  nivel        TEXT NOT NULL CHECK (nivel IN ('No aplica','Nacional','Entidad','Alcaldía')),
-  nivel_orden  INTEGER NOT NULL CHECK (nivel_orden BETWEEN 0 AND 3),   -- 0 no aplica, 1 Nacional, 2 Entidad, 3 Alcaldía
-  cve_geo      TEXT NOT NULL UNIQUE,             -- 00 nacional · 09 entidad · 09002 alcaldía (INEGI)
+  nivel        TEXT NOT NULL CHECK (nivel IN ('No aplica','Nacional','Entidad','Alcaldía','AGEB')),
+  nivel_orden  INTEGER NOT NULL CHECK (nivel_orden BETWEEN 0 AND 4),   -- 0 no aplica, 1 Nacional, 2 Entidad, 3 Alcaldía, 4 AGEB urbana
+  cve_geo      TEXT NOT NULL UNIQUE,             -- 00 nacional · 09 entidad · 09002 alcaldía · 0900200010010 AGEB (INEGI)
   nombre       TEXT NOT NULL,
   abreviatura  TEXT,
   padre_sk     INTEGER REFERENCES dim_geografia(geografia_sk)
@@ -133,7 +135,7 @@ CREATE TABLE dim_medida (              -- catálogo de medidas territoriales (al
   tema                  TEXT NOT NULL,
   unidad                TEXT NOT NULL,
   aditiva               INTEGER NOT NULL CHECK (aditiva IN (0,1)),   -- 1: se puede sumar entre alcaldías
-  nivel_geo             TEXT NOT NULL CHECK (nivel_geo IN ('Alcaldía','Entidad')),
+  nivel_geo             TEXT NOT NULL CHECK (nivel_geo IN ('Alcaldía','Entidad','AGEB')),
   definicion            TEXT NOT NULL,
   definicion_verificada INTEGER NOT NULL CHECK (definicion_verificada IN (0,1))
 );
@@ -203,7 +205,7 @@ CREATE TABLE fact_indicador_territorial (
   ls90           REAL,
   n_muestra      INTEGER,
   calidad_valor  TEXT NOT NULL CHECK (calidad_valor IN
-                  ('observado','derivado','derivado (mezcla de fuentes)','derivado (modelo)','derivado (ETL)')),
+                  ('observado','derivado','derivado (mezcla de fuentes)','derivado (modelo)','derivado (regla)','derivado (ETL)')),
   nota           TEXT,
   archivo_origen TEXT NOT NULL,
   fila_origen    INTEGER NOT NULL,
@@ -255,6 +257,69 @@ CREATE TABLE fact_asequibilidad (
   run_id                 INTEGER NOT NULL REFERENCES etl_run(run_id),
   UNIQUE (geografia_sk, ingreso_sk, salario_sk, paquete_sk, umbral_pct_ingreso, periodo_sk, fuente_sk)
 );
+
+-- ---------------------------------------------------------------------
+-- 4. Resultados de modelos (1.1.0, 29 oct 2026)
+-- Un modelo no es una observación: sus cifras dependen de un método, de
+-- parámetros y de supuestos. Por eso van en un hecho aparte y nunca se
+-- mezclan con las estimaciones de encuesta ni con las medidas territoriales.
+-- ---------------------------------------------------------------------
+CREATE TABLE dim_modelo (
+  modelo_sk          INTEGER PRIMARY KEY,
+  codigo             TEXT NOT NULL UNIQUE,      -- M11, M18 ... M25 (número del script o sección)
+  nombre             TEXT NOT NULL,
+  tipo               TEXT NOT NULL CHECK (tipo IN ('modelo supervisado','agrupamiento','clases latentes','regla de decisión',
+                                                   'tarjeta de puntos','escenario','cálculo de costo','prueba de sensibilidad','diagnóstico descriptivo')),
+  script             TEXT NOT NULL,             -- dónde vive el código que produce los archivos
+  decision           TEXT NOT NULL,             -- qué decisión del Observatorio informa
+  alternativa_simple TEXT NOT NULL,             -- regla del proyecto: todo modelo se compara contra una alternativa simple
+  estado             TEXT NOT NULL,             -- exploratorio / sin doble revisión / vigente...
+  advertencia        TEXT
+);
+CREATE TABLE dim_metrica (
+  metrica_sk  INTEGER PRIMARY KEY,
+  codigo      TEXT NOT NULL UNIQUE,
+  nombre      TEXT NOT NULL,
+  unidad      TEXT NOT NULL,                    -- '%', 'pp', '0-1', 'personas', '$ 2026/mes', 'indicador 0/1', 'texto'...
+  tipo        TEXT NOT NULL CHECK (tipo IN ('proporcion','diferencia','ajuste','conteo','monto','indice','rango','parametro','texto'))
+);
+CREATE TABLE dim_configuracion (       -- con qué se corrió: objetivo, método, variante y parámetros (texto canónico «a=1; b=2»)
+  configuracion_sk INTEGER PRIMARY KEY,
+  modelo_sk        INTEGER NOT NULL REFERENCES dim_modelo(modelo_sk),
+  objetivo         TEXT NOT NULL DEFAULT '',
+  metodo           TEXT NOT NULL DEFAULT '',
+  variante         TEXT NOT NULL DEFAULT '',
+  parametros       TEXT NOT NULL DEFAULT '',
+  UNIQUE (modelo_sk, objetivo, metodo, variante, parametros)
+);
+-- Grano: una métrica de un modelo, en una configuración, para un dominio y una geografía.
+-- No aditivo. es_ilustrativo = 1 cuando la cifra descansa en supuestos sin fuente (escenarios).
+CREATE TABLE fact_resultado_modelo (
+  resultado_id      INTEGER PRIMARY KEY,
+  modelo_sk         INTEGER NOT NULL REFERENCES dim_modelo(modelo_sk),
+  configuracion_sk  INTEGER NOT NULL REFERENCES dim_configuracion(configuracion_sk),
+  metrica_sk        INTEGER NOT NULL REFERENCES dim_metrica(metrica_sk),
+  segmento_sk       INTEGER NOT NULL REFERENCES dim_segmento(segmento_sk),
+  geografia_sk      INTEGER NOT NULL REFERENCES dim_geografia(geografia_sk),
+  periodo_sk        INTEGER NOT NULL REFERENCES dim_tiempo(periodo_sk),
+  fuente_sk         INTEGER NOT NULL REFERENCES dim_fuente(fuente_sk),
+  precision_sk      INTEGER NOT NULL REFERENCES dim_precision(precision_sk),
+  valor             REAL,
+  valor_texto       TEXT,
+  li90              REAL,                      -- intervalo al 90 % (o percentiles 5-95 de validación cruzada; ver nota)
+  ls90              REAL,
+  cv                REAL,
+  es_ilustrativo    INTEGER NOT NULL DEFAULT 0 CHECK (es_ilustrativo IN (0,1)),
+  nota              TEXT,
+  archivo_origen    TEXT NOT NULL,
+  fila_origen       INTEGER NOT NULL,
+  run_id            INTEGER NOT NULL REFERENCES etl_run(run_id),
+  CHECK (valor IS NOT NULL OR valor_texto IS NOT NULL),
+  UNIQUE (modelo_sk, configuracion_sk, metrica_sk, segmento_sk, geografia_sk, periodo_sk, fuente_sk)
+);
+CREATE INDEX ix_frm_mod ON fact_resultado_modelo(modelo_sk);
+CREATE INDEX ix_frm_met ON fact_resultado_modelo(metrica_sk);
+CREATE INDEX ix_dgeo_padre ON dim_geografia(padre_sk);
 
 CREATE INDEX ix_fee_ind  ON fact_estimacion_encuesta(indicador_sk);
 CREATE INDEX ix_fee_seg  ON fact_estimacion_encuesta(segmento_sk);

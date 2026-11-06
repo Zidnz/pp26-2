@@ -14,19 +14,20 @@
   /* semáforo: con filtro, cada cifra es la del segmento (P6.45 y P7.7 del script 12; P7.11 de la sección 12b).
      La lectura (color y veredicto) es la del total nacional: no se reclasifica una hipótesis con la muestra de un segmento. */
   function LTf(){var tot=F.dim==='Total',c=tot?car:SG('raz_caros'),t=tot?tm:S2('p711','Tratan mal a las personas'),f=tot?K.familia:SG('norma_familia');
-    return [['Precio','#a9711a','No es el cuello de botella',c,'no buscó porque "son caros"'],
-      ['Desconfianza','#a9711a','Requisito de diseño',t,'rechaza residencias porque "tratan mal"'],
-      ['Norma familiar','#23806f','Respaldada',f,'dice que la familia debe cuidar']]}
+    return [['Precio','#5d4d8f','Rara vez se da como razón',c,'de quienes no buscaron dice que «son caros» (P6.45)'],
+      ['Desconfianza','#5d4d8f','Razón frecuente para rechazar residencias',t,'de quienes rechazan residencias dice que «tratan mal» (P7.11)'],
+      ['Norma familiar','#5d4d8f','Acuerdo alto; no se probó que frene',f,'dice que la familia debe cuidar (P7.7)']]}
   /* 7 oct 2026: la tarjeta «Falta de información» (hipótesis descartada, sigue en «¿Por qué no buscó?») se cambia por la oferta declarada (P6.47) */
   var difOf=OD.mujeres.pct-OD.hombres.pct,sigOf=OD.mujeres.li90>OD.hombres.ls90;
-  var ofTile='<div class="card tile" title="Mujeres: IC 90% '+fmt(OD.mujeres.li90)+'–'+fmt(OD.mujeres.ls90)+' · Hombres: IC 90% '+fmt(OD.hombres.li90)+'–'+fmt(OD.hombres.ls90)+'"><div class="light"><i style="background:#5d4d8f"></i><b style="font:650 14px var(--sans)">¿Trabajaría como cuidador(a) si le pagaran?</b></div>'+
-    '<div style="display:flex;align-items:baseline;gap:8px;margin-top:10px"><span class="big num" style="font-size:28px">'+fmt(OD.mujeres.pct)+'%</span><span class="lbl" style="font-weight:650;color:var(--ink)">de las mujeres</span></div>'+
-    '<div style="display:flex;align-items:baseline;gap:8px;margin-top:2px"><span class="num" style="font:700 17px var(--mono);color:var(--ink-soft)">'+fmt(OD.hombres.pct)+'%</span><span class="lbl">de los hombres</span></div>'+
-    '<div class="lbl" style="margin-top:6px">15 a 60 años · '+(sigOf?'+'+fmt(difOf)+' pp para ellas (significativa)':'diferencia no significativa')+'</div>'+
-    '<div class="chips"><span class="chip" style="background:#5d4d8f1f;color:#5d4d8f">Intención, no oferta real</span></div></div>';
+  var ofTile=OBS.tile({luz:'#5d4d8f',est:true,k:'Mujeres de 15 a 60 años que trabajarían como cuidadoras si les pagaran',v:fmt(OD.mujeres.pct)+'%',v2:'hombres: '+fmt(OD.hombres.pct)+'%',
+    det:'<div class="lbl">Población de 15 a 60 años, no solo cuidadoras · '+(sigOf?fmt(difOf,0)+' de cada 100 más entre ellas':'sin diferencia clara')+'</div>'+
+      '<div class="lbl">Mujeres: IC 90% '+fmt(OD.mujeres.li90)+'–'+fmt(OD.mujeres.ls90)+' · Hombres: IC 90% '+fmt(OD.hombres.li90)+'–'+fmt(OD.hombres.ls90)+'</div>'+
+      '<div class="chips"><span class="chip" style="background:#5d4d8f1f;color:#5d4d8f">Intención, no oferta real</span></div>',fuente:'ENASIC 2022 · P6.47'});
   function lights(){var tot=F.dim==='Total';
     $('#lights').innerHTML=ofTile.replace('Intención, no oferta real</span>','Intención, no oferta real</span>'+(tot?'':'<span class="chip p-noest" title="Universo: población de 15 a 60 años (TPER_ELE), no personas cuidadoras">no cambia con el filtro</span>'))+LTf().map(function(l){var e=l[3],weak=!tot&&isWeak(e.precision);
-      return '<div class="card tile"'+(weak?' style="border-style:dashed"':'')+'><div class="light"><i style="background:'+l[1]+'"></i><b style="font:650 14px var(--sans)">'+l[0]+'</b></div><div class="big num" style="font-size:28px;margin-top:10px;'+(weak?'color:var(--ink-faint)':'')+'">'+fmt(e.pct)+'%</div><div class="lbl">'+l[4]+(tot?'':' · <b>'+esc(segName())+'</b><br><span style="font-size:11.5px;color:var(--ink-faint)">El veredicto se lee con el total nacional.</span>')+'</div><div class="chips"><span class="chip" style="background:'+l[1]+'1f;color:'+l[1]+'">'+l[2]+'</span>'+(tot?'':prec(e.precision))+'</div></div>'}).join('');}
+      return OBS.tile({luz:l[1],est:e.li90!=null,weak:weak,k:l[0]+': % '+(l[4].indexOf('de quienes')===0?l[4]:'que '+l[4]),v:fmt(e.pct)+'%',
+        det:(tot?'':'<div class="lbl">Segmento: <b>'+esc(segName())+'</b>. La lectura (color y veredicto) es la del total nacional.</div>')+
+          '<div class="chips"><span class="chip" style="background:'+l[1]+'1f;color:'+l[1]+'">'+l[2]+'</span>'+(tot?'':prec(e.precision))+(e.li90!=null?'<span class="chip">IC 90% '+fmt(e.li90)+'–'+fmt(e.ls90)+'%</span>':'')+'</div>',fuente:'ENASIC 2022'+(tot?' · nacional':'')})}).join('');}
   function renderRaz(u){
     if(u)razU=u;
     if(F.dim!=='Total'){var L=RAZK.map(function(k){var r=SG(k);return Object.assign({},r,{etiqueta:r.indicador})});

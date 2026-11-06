@@ -4,19 +4,16 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#2d3347">
-  <title>Mientras · Relevo por horas para quien cuida</title>
+  <title>RedCare · Una red que cuida a quienes cuidan</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap">
-  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
+  <link rel="stylesheet" href="css/app.css?v=20261102">
+  <link rel="stylesheet" href="css/redcare.css?v=20261105j">
+  <link rel="stylesheet" href="css/bento.css?v=20261105j">
 </head>
 <body>
 <div class="app" id="app">
-
-  <div class="strip">
-    <div class="l"><span class="dot"></span><span>Mientras · prototipo · datos simulados</span></div>
-    <span id="clock" class="mono"></span>
-  </div>
 
   <div class="topbar">
     <div class="id"><img class="mark" src="observatorio/ilustraciones/logo_marca.svg" alt=""><div><h1 id="topTitle">Necesito cuidado</h1><div class="brandline" id="brandline"></div></div></div>
@@ -31,6 +28,8 @@
     <button type="button" data-rol="programa">Programa</button>
   </div>
 
+  <div class="ticker" aria-hidden="true"><div class="ticker-in"><span>RedCare ✦ Una red que cuida a quienes cuidan ✦ Horas de relevo ✦ Descansar también es cuidar ✦ </span><span>RedCare ✦ Una red que cuida a quienes cuidan ✦ Horas de relevo ✦ Descansar también es cuidar ✦ </span></div></div>
+
   <!-- ============ 0a. CUIDADORA: solo su solicitud ============ -->
   <section class="screen" id="view-mia" hidden><div class="pane" id="mia-body"></div></section>
 
@@ -44,7 +43,6 @@
         <button data-val="todos" class="on">Todos</button>
         <button data-val="espera">En cola</button>
         <button data-val="activo">Con relevo</button>
-        <button data-val="revision">Revisión</button>
       </div>
     </div>
     <div class="pane tight">
@@ -70,7 +68,7 @@
         <button class="btn-primary sm" data-action="new-relevo">+ Registrar</button>
       </div>
       <div class="card infocard">
-        <img src="observatorio/ilustraciones/cuidadoraSilla.png" alt="" loading="lazy">
+        <img src="observatorio/ilustraciones/puedo_cuidar.webp" alt="" loading="lazy">
         <p><b>Registras tu disponibilidad y tu zona.</b> El programa te asigna casos según su prioridad: no eliges familia ni la familia te elige.</p>
       </div>
       <div class="list" id="rel-list"></div>
@@ -81,16 +79,14 @@
   <section class="screen" id="view-seguimiento" hidden>
     <div class="segwrap">
       <div class="seg" id="seg-sub" role="group" aria-label="Seguimiento">
-        <button data-sub="prog">Programa</button>
-        <button data-sub="hoy" class="on">Visitas</button>
-        <button data-sub="caso">Caso</button>
+        <button data-sub="caso" class="on">Red</button>
         <button data-sub="mapa">Mapa</button>
-        <button data-sub="kpi">KPI</button>
+        <button data-sub="hoy">Visitas</button>
+        <button data-sub="prog">Programa</button>
       </div>
     </div>
 
     <div class="pane tight" data-sub-panel="prog" hidden>
-      <div class="simbanner">SIMULADO · panel del programa con casos de ejemplo</div>
       <div id="prog-body"></div>
     </div>
 
@@ -106,18 +102,21 @@
     <div class="pane tight" data-sub-panel="caso" hidden>
       <select id="sc-caso" aria-label="Caso"></select>
       <div class="card graphcard" id="graphWrap">
+        <div class="ghead" id="redHead"></div>
         <svg viewBox="0 0 300 250" id="graphSvg" role="img" aria-label="Red de cuidado del hogar"></svg>
         <div class="glegend">
-          <span><i class="lg solid"></i> sostiene</span>
+          <span><i class="lg solid"></i> cuida</span>
           <span><i class="lg dashed"></i> parcial</span>
-          <span><i class="lg pro"></i> relevo</span>
+          <span><i class="lg pro"></i> relevo del programa</span>
         </div>
       </div>
+      <div class="card panel nodeinfo" id="nodeInfo"></div>
       <div class="redbar">
         <div><b class="mono" id="fragScore">0.00</b><span id="fragLabel">fragilidad</span></div>
+        <div><b class="mono" id="cobPct">0%</b><span>cuidado cubierto</span></div>
         <div><b class="mono" id="horasSinCubrir">0 h</b><span>sin cubrir</span></div>
-        <button class="btn-alert sm" id="nodeBtn">Apagar</button>
       </div>
+      <div class="card panel" id="depCard"><div class="eyebrow">Quién necesita cuidado</div><div id="depList"></div></div>
       <p class="note" id="noteBox"></p>
       <div id="sc-body"></div>
     </div>
@@ -135,12 +134,6 @@
       </div>
       <div class="mono statline">punto = caso, en el centro de su alcaldía · límites INEGI 2020</div>
     </div>
-
-    <div class="pane tight" data-sub-panel="kpi" hidden>
-      <div class="simbanner">SIMULADO · prueba del circuito, no resultados</div>
-      <div id="kpi-body"></div>
-      <button class="btn-ghost wide" id="kpi-export">Exportar agregados (JSON)</button>
-    </div>
   </section>
 
   <!-- ============ 4. AJUSTES ============ -->
@@ -153,18 +146,17 @@
         <label class="fld">Prestaciones sobre el costo: <b id="cfg-fp-val"></b>
           <input type="range" id="cfg-fp" min="0" max="60" step="1">
         </label>
-        <p class="sub">Factor de prestaciones por definir (Daniel).</p>
         <label class="fld">Bolsa de horas al mes (simulación): <b id="cfg-bolsa-val"></b>
           <input type="range" id="cfg-bolsa" min="50" max="3000" step="10">
         </label>
         <p class="sub" id="cfg-bolsa-nota"></p>
       </div>
       <details class="card panel">
-        <summary>Priorización (js/config.js)</summary>
+        <summary>Reglas del programa</summary>
         <ul class="params" id="cfg-prio"></ul>
       </details>
       <details class="card panel">
-        <summary>Parámetros y fuentes</summary>
+        <summary>Sueldos y horas</summary>
         <ul class="params" id="cfg-params"></ul>
       </details>
       <details class="card panel">
@@ -182,9 +174,133 @@
           <button class="btn-ghost" id="cfg-intro">Ver la bienvenida otra vez</button>
         </div>
       </div>
-      <p class="sub foot">Tasas de daño: ENASIC 2022, nacionales (probables para la CDMX). Fragilidad: índice propio del prototipo.</p>
     </div>
   </section>
+
+  <div class="scrim" id="scrim" hidden></div>
+
+  <!-- ============ Detalle (caso o persona de relevo) ============ -->
+  <dialog id="dlg-det">
+    <form method="dialog">
+      <div class="handle" aria-hidden="true"></div>
+      <div id="det-body"></div>
+      <div class="btn-row end sticky" id="det-acciones"></div>
+    </form>
+  </dialog>
+
+  <!-- ============ Solicitud: entrada → registro → consentimiento → entrevista (3 bloques) → resultado ============ -->
+  <dialog id="dlg-sol">
+    <form id="form-sol" novalidate>
+      <div class="handle" aria-hidden="true"></div>
+      <div class="wiz-top"><span class="mono" id="sol-paso"></span><div class="wiz-bar"><i id="sol-bar"></i></div></div>
+      <div id="sol-body"></div>
+      <p class="form-error" role="alert" id="sol-err"></p>
+      <div class="btn-row end sticky">
+        <button type="button" class="btn-ghost" id="sol-atras">Atrás</button>
+        <button type="submit" class="btn-primary" id="sol-sig">Siguiente</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ============ Registrar persona de relevo ============ -->
+  <dialog id="dlg-relevo">
+    <form id="form-relevo" novalidate>
+      <div class="handle" aria-hidden="true"></div>
+      <img class="personaje sm" src="observatorio/ilustraciones/puedo_cuidar.webp" alt="" loading="lazy">
+      <h3>Puedo cuidar</h3>
+      <p class="sub">Registra tu disponibilidad y tu zona.</p>
+      <div class="row-sx">
+        <div class="chips radio sxpick" data-sx="sexo"></div>
+        <input name="nombre" maxlength="40" autocomplete="off" placeholder="Nombre" aria-label="Nombre">
+      </div>
+      <div class="row2">
+        <label class="fld">Alcaldía<select name="alcaldia" id="rel-alcaldia"></select></label>
+        <label class="fld">Certificación
+          <select name="certificacion">
+            <option value="certificada">Certificada</option>
+            <option value="en_proceso">En proceso</option>
+            <option value="no">No</option>
+          </select>
+        </label>
+      </div>
+      <div class="chips" data-name="dias"></div>
+      <div class="row3 eq">
+        <label class="fld">Desde<input name="desde" type="time" step="1800" value="08:00"></label>
+        <label class="fld">Hasta<input name="hasta" type="time" step="1800" value="16:00"></label>
+        <label class="fld">Máx. h/sem<input name="horasMax" type="number" min="3" max="48" value="12" inputmode="numeric"></label>
+      </div>
+      <div class="chips" data-name="tareas"></div>
+      <input type="hidden" name="experiencia" value="0">
+
+      <div class="eyebrow sep">Documentos</div>
+      <label class="fld">CURP<input name="curp" maxlength="18" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
+      <div class="row2">
+        <label class="fld">Identificación<select name="docId" id="rel-doc"></select></label>
+        <label class="fld">Carta de antecedentes<input name="antecedentesFecha" type="date"></label>
+      </div>
+      <div class="row2">
+        <label class="fld">Referencia<input name="refNombre" maxlength="60" autocomplete="off"></label>
+        <label class="fld">Teléfono<input name="refTel" type="tel" inputmode="numeric" maxlength="14" autocomplete="off"></label>
+      </div>
+      <label class="check"><input type="checkbox" name="contrato"><span>Contrato, IMSS y pago al piso legal</span></label>
+      <label class="check"><input type="checkbox" name="privacidad"><span>Aviso de privacidad leído</span></label>
+      <label class="check"><input type="checkbox" name="veracidad"><span>Mis datos son ciertos</span></label>
+      <ul class="reqs compact" id="rel-reqs" aria-live="polite"></ul>
+
+      <p class="form-error" role="alert"></p>
+      <div class="btn-row end sticky">
+        <button type="button" class="btn-ghost" data-close>Cancelar</button>
+        <button type="submit" class="btn-primary" id="rel-ok" disabled>Enviar a revisión</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ============ Asignar o cambiar relevo ============ -->
+  <dialog id="dlg-asig">
+    <form id="form-asig" novalidate>
+      <div class="handle" aria-hidden="true"></div>
+      <h3 id="asig-titulo">Asignar relevo</h3>
+      <div id="asig-body"></div>
+      <div id="asig-formal">
+        <label class="fld" id="asig-motivo-row" hidden>Motivo del cambio<input name="motivo" maxlength="120" autocomplete="off"></label>
+        <label class="check"><input type="checkbox" name="escrito"><span>Contrato por escrito</span></label>
+        <label class="check"><input type="checkbox" name="imss"><span>Alta en el IMSS</span></label>
+      </div>
+      <div class="btn-row end sticky">
+        <button type="button" class="btn-ghost" data-close>Cancelar</button>
+        <button type="submit" class="btn-primary" id="asig-ok" disabled>Asignar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ============ Confirmar o pedir motivo ============ -->
+  <dialog id="dlg-msg">
+    <form id="form-msg" novalidate>
+      <div class="handle" aria-hidden="true"></div>
+      <p class="msg" id="msg-texto"></p>
+      <label class="fld" id="msg-input-row" hidden>Motivo<input id="msg-input" maxlength="160" autocomplete="off"></label>
+      <p class="form-error" id="msg-err" role="alert"></p>
+      <div class="btn-row end sticky">
+        <button type="button" class="btn-ghost" data-close>Cancelar</button>
+        <button type="submit" class="btn-primary" id="msg-ok">Aceptar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ============ Exportar JSON ============ -->
+  <dialog id="dlg-json">
+    <form method="dialog" novalidate>
+      <div class="handle" aria-hidden="true"></div>
+      <h3>Exportar</h3>
+      <p class="sub mono" id="json-nombre"></p>
+      <textarea id="json-txt" readonly spellcheck="false"></textarea>
+      <div class="btn-row end sticky">
+        <button type="button" class="btn-ghost" data-close>Cerrar</button>
+        <button type="button" class="btn-ghost" id="json-bajar">Descargar</button>
+        <button type="button" class="btn-primary" id="json-copiar">Copiar</button>
+      </div>
+    </form>
+  </dialog>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
@@ -192,20 +308,24 @@
   <div class="intro" id="intro" hidden>
     <div class="intro-marca">
       <img src="observatorio/ilustraciones/logo_marca.svg" alt="">
-      <h2>Mientras</h2>
-      <p>Relevo por horas para quien cuida</p>
+      <h2>RedCare</h2>
+      <p>Una red que cuida a quienes cuidan</p>
       <div class="intro-carga" aria-hidden="true"><i></i></div>
     </div>
-    <div class="intro-opc" role="group" aria-label="¿Cómo vas a usar Mientras?">
-      <h3>¿Cómo vas a usar Mientras?</h3>
+    <div class="intro-opc" role="group" aria-label="¿Cómo vas a usar RedCare?">
+      <h3>¿Cómo vas a usar RedCare?</h3>
       <button type="button" data-intro="cuidadora"><b>Cuido a un familiar</b><small>Pedir horas de relevo para descansar</small></button>
       <button type="button" data-intro="relevo"><b>Quiero dar relevo</b><small>Registrarme para cuidar por horas</small></button>
       <button type="button" data-intro="programa"><b>Trabajo en el programa</b><small>Ver casos, asignar y dar seguimiento</small></button>
-      <p class="intro-nota">Prototipo con datos simulados</p>
+      <p class="intro-nota">Prototipo · datos simulados</p>
     </div>
   </div>
 
   <nav class="tabbar" role="tablist" aria-label="Secciones">
+    <button class="tabbtn" role="tab" id="tab-seguimiento" data-view="seguimiento">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4m0 0-5.5 5M12 11.5l5.5 5"/></svg>
+      <span>Red</span>
+    </button>
     <button class="tabbtn" role="tab" id="tab-casos" data-view="casos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
       <span>Casos</span>
@@ -214,10 +334,6 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="m16 11 2 2 4-4"/></svg>
       <span>Relevos</span>
     </button>
-    <button class="tabbtn" role="tab" id="tab-seguimiento" data-view="seguimiento">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4m0 0-5.5 5M12 11.5l5.5 5"/></svg>
-      <span>Seguimiento</span>
-    </button>
     <button class="tabbtn" role="tab" id="tab-ajustes" data-view="ajustes">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
       <span>Ajustes</span>
@@ -225,137 +341,15 @@
   </nav>
 </div>
 
-<!-- ============ Detalle (caso o persona de relevo) ============ -->
-<dialog id="dlg-det">
-  <form method="dialog">
-    <div class="handle" aria-hidden="true"></div>
-    <div id="det-body"></div>
-    <div class="btn-row end sticky" id="det-acciones"></div>
-  </form>
-</dialog>
-
-<!-- ============ Solicitud: entrada → registro → consentimiento → entrevista (3 bloques) → resultado ============ -->
-<dialog id="dlg-sol">
-  <form id="form-sol" novalidate>
-    <div class="handle" aria-hidden="true"></div>
-    <div class="wiz-top"><span class="mono" id="sol-paso"></span><div class="wiz-bar"><i id="sol-bar"></i></div></div>
-    <div id="sol-body"></div>
-    <p class="form-error" role="alert" id="sol-err"></p>
-    <div class="btn-row end sticky">
-      <button type="button" class="btn-ghost" id="sol-atras">Atrás</button>
-      <button type="submit" class="btn-primary" id="sol-sig">Siguiente</button>
-    </div>
-  </form>
-</dialog>
-
-<!-- ============ Registrar persona de relevo ============ -->
-<dialog id="dlg-relevo">
-  <form id="form-relevo" novalidate>
-    <div class="handle" aria-hidden="true"></div>
-    <img class="personaje sm" src="observatorio/ilustraciones/cuidadoraSilla.png" alt="" loading="lazy">
-    <h3>Puedo cuidar</h3>
-    <p class="sub">Registra tu disponibilidad y tu zona. El programa asigna según la prioridad de cada caso.</p>
-    <div class="row-sx">
-      <div class="chips radio sxpick" data-sx="sexo"></div>
-      <input name="nombre" maxlength="40" autocomplete="off" placeholder="Nombre" aria-label="Nombre">
-    </div>
-    <div class="row2">
-      <label class="fld">Alcaldía<select name="alcaldia" id="rel-alcaldia"></select></label>
-      <label class="fld">Certificación
-        <select name="certificacion">
-          <option value="certificada">Certificada</option>
-          <option value="en_proceso">En proceso</option>
-          <option value="no">No</option>
-        </select>
-      </label>
-    </div>
-    <div class="chips" data-name="dias"></div>
-    <div class="row3 eq">
-      <label class="fld">Desde<input name="desde" type="time" step="1800" value="08:00"></label>
-      <label class="fld">Hasta<input name="hasta" type="time" step="1800" value="16:00"></label>
-      <label class="fld">Máx. h/sem<input name="horasMax" type="number" min="3" max="48" value="12" inputmode="numeric"></label>
-    </div>
-    <div class="chips" data-name="tareas"></div>
-    <input type="hidden" name="experiencia" value="0">
-
-    <div class="eyebrow sep">Documentos</div>
-    <label class="fld">CURP<input name="curp" maxlength="18" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
-    <div class="row2">
-      <label class="fld">Identificación<select name="docId" id="rel-doc"></select></label>
-      <label class="fld">Carta de antecedentes<input name="antecedentesFecha" type="date"></label>
-    </div>
-    <div class="row2">
-      <label class="fld">Referencia<input name="refNombre" maxlength="60" autocomplete="off"></label>
-      <label class="fld">Teléfono<input name="refTel" type="tel" inputmode="numeric" maxlength="14" autocomplete="off"></label>
-    </div>
-    <label class="check"><input type="checkbox" name="contrato"><span>Contrato, IMSS y pago al piso legal</span></label>
-    <label class="check"><input type="checkbox" name="privacidad"><span>Aviso de privacidad leído</span></label>
-    <label class="check"><input type="checkbox" name="veracidad"><span>Mis datos son ciertos</span></label>
-    <ul class="reqs compact" id="rel-reqs" aria-live="polite"></ul>
-
-    <p class="form-error" role="alert"></p>
-    <div class="btn-row end sticky">
-      <button type="button" class="btn-ghost" data-close>Cancelar</button>
-      <button type="submit" class="btn-primary" id="rel-ok" disabled>Enviar a revisión</button>
-    </div>
-  </form>
-</dialog>
-
-<!-- ============ Asignar o cambiar relevo ============ -->
-<dialog id="dlg-asig">
-  <form id="form-asig" novalidate>
-    <div class="handle" aria-hidden="true"></div>
-    <h3 id="asig-titulo">Asignar relevo</h3>
-    <div id="asig-body"></div>
-    <div id="asig-formal">
-      <label class="fld" id="asig-motivo-row" hidden>Motivo del cambio<input name="motivo" maxlength="120" autocomplete="off"></label>
-      <label class="check"><input type="checkbox" name="escrito"><span>Contrato por escrito</span></label>
-      <label class="check"><input type="checkbox" name="imss"><span>Alta en el IMSS</span></label>
-    </div>
-    <div class="btn-row end sticky">
-      <button type="button" class="btn-ghost" data-close>Cancelar</button>
-      <button type="submit" class="btn-primary" id="asig-ok" disabled>Asignar</button>
-    </div>
-  </form>
-</dialog>
-
-<!-- ============ Confirmar o pedir motivo ============ -->
-<dialog id="dlg-msg">
-  <form id="form-msg" novalidate>
-    <div class="handle" aria-hidden="true"></div>
-    <p class="msg" id="msg-texto"></p>
-    <label class="fld" id="msg-input-row" hidden>Motivo<input id="msg-input" maxlength="160" autocomplete="off"></label>
-    <p class="form-error" id="msg-err" role="alert"></p>
-    <div class="btn-row end sticky">
-      <button type="button" class="btn-ghost" data-close>Cancelar</button>
-      <button type="submit" class="btn-primary" id="msg-ok">Aceptar</button>
-    </div>
-  </form>
-</dialog>
-
-<!-- ============ Exportar JSON ============ -->
-<dialog id="dlg-json">
-  <form method="dialog" novalidate>
-    <div class="handle" aria-hidden="true"></div>
-    <h3>Exportar</h3>
-    <p class="sub mono" id="json-nombre"></p>
-    <textarea id="json-txt" readonly spellcheck="false"></textarea>
-    <div class="btn-row end sticky">
-      <button type="button" class="btn-ghost" data-close>Cerrar</button>
-      <button type="button" class="btn-ghost" id="json-bajar">Descargar</button>
-      <button type="button" class="btn-primary" id="json-copiar">Copiar</button>
-    </div>
-  </form>
-</dialog>
-
 <script src="vendor/d3.min.js"></script>
-<script src="js/cdmx-alcaldias.js"></script>
-<script src="js/config.js"></script>
-<script src="js/prioridad.js"></script>
-<script src="js/data.js"></script>
-<script src="js/legal.js"></script>
-<script src="js/relevo.js"></script>
-<script src="js/red.js"></script>
-<script src="js/app.js"></script>
+<script src="js/cdmx-alcaldias.js?v=20261102"></script>
+<script src="js/config.js?v=20261102"></script>
+<script src="js/prioridad.js?v=20261102"></script>
+<script src="js/data.js?v=20261102"></script>
+<script src="js/legal.js?v=20261102"></script>
+<script src="js/relevo.js?v=20261102"></script>
+<script src="js/red.js?v=20261102"></script>
+<script src="js/app.js?v=20261105k"></script>
+<script src="js/interaccion.js?v=20261105j"></script>
 </body>
 </html>

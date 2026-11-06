@@ -1,0 +1,3 @@
+﻿indicador,objetivo,nivel_confianza,pct,cv,li90,ls90,n_muestra_dominio,n_muestra_si,total_expandido,precision
+Cuidadoras que declaran algún daño (v1; control),DANO_ALGUNO,90,62.16,3.29,58.8,65.52,1043,631,3868691.0,alta
+"Cuidadoras que declaran daño a la salud (física, cansancio o sueño)",DANO_SALUD3,90,48.73,4.85,44.85,52.62,1043,495,3033040.0,alta

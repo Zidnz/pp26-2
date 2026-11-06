@@ -91,3 +91,15 @@ Se listó la carpeta completa y se comparó con los README, la bitácora y el Pr
 
 - **Project de claude.ai:** se borraron 20 documentos obsoletos: `d3.min.js`, los `datos_observatorio.json`, `index.html` y `plantilla.html` viejos del Observatorio, `clasificador.js`, `matching.js`, los scripts y notebooks sueltos 01 a 14 y los 2 metadatos ENASIC. El conocimiento bajó de 2,064,633 a **1,257,738 de 2,000,000**. La sección 15 (anuncios) se conservó. Los catálogos y microdatos ENASIC (archivos subidos) siguen ahí: hay que quitarlos a mano en claude.ai.
 - **Carpeta:** se borraron `_to_delete/` completa (217 MB, con todos los respaldos `backup_pre_*`), las 3 carpetas `__pycache__` y el proyecto C++ de 2015 de `Documentos/`. La tabla de las 11:15 y el pendiente 4 que mencionan `_to_delete/` quedan superados. **No se borró:** `denue_09_0525_csv.zip` (lo usa la reproducción de Colmex), `denue_09_csv.zip`, `_obs_snapshot.tgz`, `app_matching_relevo_frontend.zip`, `Claude outputs/` ni las versiones superadas de Word.
+
+## Actualización del 2 nov 2026
+
+Lo que existe solo en chats y **no está en esta carpeta** (comprobado el 2 nov listando `Documentos/`):
+- Versiones 2.1 de Maestro, Tablero y Técnico y App 1.1, con su lista de cambios (chat «Segundo avance presentación», 31 oct / 1 nov).
+- Presentación `Segundo_avance_Observatorio_del_Cuidado.pptx` (13 diapositivas) y el documento maestro del que sale (chat «Documento maestro y avance», 2 nov).
+- Ediciones en la presentación de Canva (diseño `DAHZo_dDu4M`): lámina del DW y láminas 09, 11, 12 y 13. Viven en Canva, no en archivos.
+
+Repositorio: la carpeta local sigue **sin `.git`**. Según un chat del 1 nov, el último commit visible en `github.com/Zidnz/pp26-2` era del 24 oct, así que lo hecho del 24 oct en adelante (DW 1.1.0, Streamlit, scripts 24 a 28, preregistro) podría no estar en GitHub. **No verificado desde aquí:** no hay `.git` local ni acceso a GitHub en esta sesión.
+
+Estado de la bitácora: al día al 2 nov 2026 (entrada retroactiva). Lo registrado ese día cubre lo comprobable; el contenido de los archivos de otros chats no se pudo comprobar.
+

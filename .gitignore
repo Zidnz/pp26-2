@@ -48,3 +48,8 @@ _to_delete/
 _respaldo_*/
 *.tgz
 _obs_snapshot*
+
+# Añadido 6 nov 2026
+_to_delete/
+*.tgz
+pp26-2_dotgit.tar

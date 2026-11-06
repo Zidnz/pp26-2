@@ -19,12 +19,11 @@ const P = require(path.join(__dirname, '..', 'js', 'prioridad.js'));
 function rng(seed) { // mulberry32, igual que data.js
   return function () { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; let t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; };
 }
-const MAXPUNTOS = Object.values(CFG.pesos).reduce((t, v) => t + Math.max(0, v), 0);
 
 function simular(n, semilla) {
   const r = rng(semilla);
   return Array.from({ length: n }, (_, i) => {
-    const base = Math.round(r() * MAXPUNTOS);
+    const base = Math.round(CFG.regla_horas + r() * (168 - CFG.regla_horas)); // solo personas dentro de la regla entran al reparto
     const semanas = Math.floor(r() * 30); // hasta 29 semanas en cola
     const ef = P.puntajeEfectivo(base, semanas, CFG);
     return { id: 'p' + String(i + 1).padStart(3, '0'), base, semanas, efectivo: ef.efectivo, extra: ef.extra };
@@ -39,18 +38,18 @@ const resumen = (pers, res) => {
   pers.forEach((p) => { const nv = P.nivel(p.efectivo, CFG); (porNivel[nv] = porNivel[nv] || []).push(res.horas[p.id]); });
   const media = (a) => (a.reduce((t, v) => t + v, 0) / a.length).toFixed(1);
   console.log(`  bolsa ${res.presupuesto} h · usado ${res.usado} h · sobrante ${res.sobrante} h · min ${Math.min(...hs)} · max ${Math.max(...hs)} h/mes · en cola ${res.en_cola.length}`);
-  ['alta', 'media', 'baja'].forEach((nv) => { if (porNivel[nv]) console.log(`  ${P.NIVEL[nv].padEnd(5)} n=${String(porNivel[nv].length).padStart(3)}  promedio ${media(porNivel[nv])} h/mes`); });
+  ['dentro', 'fuera'].forEach((nv) => { if (porNivel[nv]) console.log(`  ${P.NIVEL[nv].padEnd(5)} n=${String(porNivel[nv].length).padStart(3)}  promedio ${media(porNivel[nv])} h/mes`); });
 };
 
 /* ---------- Escenario principal: valores de config.js ---------- */
-console.log(`\n1) 100 personas, valores de config.js (bolsa ${CFG.presupuesto_horas_mes} h, mínimo ${CFG.horas_minimas}, tope hogar ${CFG.horas_maximas}, envejecimiento ${CFG.envejecimiento.puntos_por_semana}/sem tope ${CFG.envejecimiento.tope_envejecimiento})`);
+console.log(`\n1) 100 personas, valores de config.js (bolsa ${CFG.presupuesto_horas_mes} h, mínimo ${CFG.horas_minimas}, tope hogar ${CFG.horas_maximas}, envejecimiento ${CFG.envejecimiento.horas_por_semana}/sem tope ${CFG.envejecimiento.tope_envejecimiento})`);
 const pers = simular(100, 20261020);
 const res = P.asignarHoras(pers, CFG);
 resumen(pers, res);
 ok(pers.every((p) => res.horas[p.id] >= CFG.horas_minimas), `(a) nadie recibe menos de ${CFG.horas_minimas} h`);
 ok(res.usado <= CFG.presupuesto_horas_mes && Object.values(res.horas).reduce((t, v) => t + v, 0) === res.usado, `(b) suma ${res.usado} ≤ ${CFG.presupuesto_horas_mes}`);
 ok(pers.every((p) => p.extra <= CFG.envejecimiento.tope_envejecimiento && p.efectivo - p.base <= CFG.envejecimiento.tope_envejecimiento), `(c) envejecimiento ≤ ${CFG.envejecimiento.tope_envejecimiento} puntos (máx. observado ${Math.max(...pers.map((p) => p.extra))})`);
-ok(pers.some((p) => p.semanas * CFG.envejecimiento.puntos_por_semana > CFG.envejecimiento.tope_envejecimiento), '    (c) la simulación sí incluye casos que rebasarían el tope sin él');
+ok(pers.some((p) => p.semanas * CFG.envejecimiento.horas_por_semana > CFG.envejecimiento.tope_envejecimiento), '    (c) la simulación sí incluye casos que rebasarían el tope sin él');
 ok(pers.every((p) => res.horas[p.id] <= CFG.horas_maximas), `    nadie pasa el tope por hogar (${CFG.horas_maximas} h)`);
 // Monotonía: a mayor puntaje efectivo, no menos horas
 const ord = pers.slice().sort((a, b) => a.efectivo - b.efectivo);

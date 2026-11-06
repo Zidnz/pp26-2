@@ -1,93 +1,54 @@
-/* Priorización de Mientras: entrevista, puntaje, niveles, envejecimiento en cola, reparto de horas y chequeos.
+/* Priorización de RedCare: entrevista, puntaje, niveles, envejecimiento en cola, reparto de horas y chequeos.
  * Namespace: Care.prioridad. Funciones puras (sin DOM): las usa la app y las prueba Node (tests/prueba_asignacion.js).
  *
  * Flujo: Registro → Consentimiento → Entrevista → Puntaje y nivel → Horas asignadas → Asignación de relevo por el programa.
  *
- * El puntaje es la tarjeta de puntos del script 22 (ENASIC 2022, NACIONAL, exploratoria, sin doble revisión).
- * No hay modelo serializado que cargar, así que SIEMPRE se muestra «Puntaje provisional — modelo en validación».
- * La tarjeta no supera a la regla de 40 h de forma demostrable: la app muestra las dos.
+ * Desde el 2 nov 2026 NO hay puntaje: la entrada es la regla «40 h o más a la semana» (Analysis/11, 21 y 27). La tarjeta de
+ * puntos (script 22) se retiró: no superó a la regla de forma demostrable y exigía preguntas sensibles extra. Esto NO prueba
+ * que la regla sea mejor que otras opciones; solo que no hay evidencia para sustituirla (Documentos/preregistro_focalizacion_2026-11-01.md).
+ * Las horas efectivas (declaradas + espera) solo ordenan el reparto de la bolsa entre quienes están dentro de la regla.
  */
 (function (raiz) {
   'use strict';
 
-  /* ================= Bloque 1. Variables del modelo (codificación de la ENASIC 2022) ================= */
-  // Mismas definiciones que Analysis/22_tarjeta_puntos.py (bloque PREPARACIÓN).
+  /* ================= Bloque 1. Entrevista y regla de entrada ================= */
   // HORAS = P6_7 + P6_26 (horas de cuidado a la semana, bloques de discapacidad y de 60+), topado en 168.
-  // La app pregunta el total de horas a la semana en una sola pregunta.
   // PENDIENTE: confirmar la redacción literal de cada reactivo contra el cuestionario de la ENASIC 2022.
-  const ABVD = [ // N_ABVD = número de «Sí» (código 1) en estas 5
+  // ABVD y CLIN ya no puntúan: se conservan solo para los chequeos de consistencia con Barthel (bloque F).
+  const ABVD = [
     { id: 'P6_2_01', txt: 'Darle de comer' },
     { id: 'P6_2_02', txt: 'Vestirle' },
     { id: 'P6_2_03', txt: 'Cambiarle el pañal o llevarle al baño' },
     { id: 'P6_2_04', txt: 'Bañarle o asearle' },
     { id: 'P6_2_08', txt: 'Acostarle o levantarle de la cama' },
   ];
-  const CLIN = [ // N_CLINICAS = número de «Sí» en estas 4
+  const CLIN = [
     { id: 'P6_2_10', txt: 'Darle medicinas' },
     { id: 'P6_2_11', txt: 'Hacerle curaciones' },
     { id: 'P6_2_12', txt: 'Ayudarle con terapias' },
     { id: 'P6_2_13', txt: 'Ayudarle con tratamientos' },
   ];
-  // Preguntas de la entrevista. `codigo` documenta la variable de origen.
   const PREGUNTAS_MODELO = [
     { id: 'horas', codigo: 'P6_7 + P6_26', txt: '¿Cuántas horas a la semana dedica a cuidar a esta persona?', tipo: 'numero', min: 0, max: 168 },
     { id: 'abvd', codigo: 'P6_2_01…P6_2_08', txt: '¿En cuáles de estas actividades le ayuda?', tipo: 'multi', opciones: ABVD },
     { id: 'clin', codigo: 'P6_2_10…P6_2_13', txt: '¿Cuáles de estas tareas de salud hace usted?', tipo: 'multi', opciones: CLIN },
-    { id: 'req', codigo: 'P6_9_4 / P6_28_4', txt: '¿Necesita que otra persona le apoye para poder cuidar?', tipo: 'sino' },
-    { id: 'fuerza', codigo: 'P6_9_1 / P6_28_1', txt: '¿Se le dificulta cuidar porque le falta fuerza física?', tipo: 'sino' },
-    // SEXO = 2 (mujer) se captura en el registro. Lo usa la tarjeta (2 puntos).
   ];
-  // Variables con 0 puntos en la tarjeta «completa»: NO se preguntan (minimización). h80 sale de las horas.
-  const NO_PREGUNTADAS = { disc: 'FILTRO6_1 (cuida a persona con discapacidad)', edad60: 'EDAD ≥ 60 de quien cuida' };
+  // Retiradas el 2 nov 2026 (solo alimentaban la tarjeta): «necesita apoyo» (req), «le falta fuerza física» (fuerza, argumento
+  // circular con el objetivo), sexo de quien cuida y los filtros de discapacidad/edad. El sexo se sigue registrando para equidad.
+  const NO_PREGUNTADAS = { fuerza: 'P6_9_1 / P6_28_1', req: 'P6_9_4 / P6_28_4' };
+  const ETIQUETA = { horas: 'Horas de cuidado a la semana' };
 
-  const ETIQUETA = {
-    h40: 'Cuida 40 horas o más a la semana',
-    h80: 'Cuida 80 horas o más a la semana',
-    abvd1: 'Ayuda en al menos una actividad básica (comer, vestir, baño, aseo, cama)',
-    abvd3: 'Ayuda en tres o más actividades básicas',
-    clin1: 'Hace al menos una tarea de salud (medicinas, curaciones, terapias o tratamientos)',
-    disc: 'Cuida a una persona con discapacidad',
-    req: 'Necesita que otra persona le apoye para cuidar',
-    fuerza: 'Se le dificulta cuidar porque le falta fuerza física',
-    mujer: 'Es mujer: las mujeres cargan la mayor parte del cuidado',
-    edad60: 'Tiene 60 años o más',
-  };
+  const horasDe = (m) => Math.min(168, Math.max(0, +m.horas || 0));
+  const variables = (m) => ({ horas: horasDe(m) });
 
-  /** Respuestas de la entrevista → 10 variables binarias, igual que binarias() del script 22. */
-  function variables(m) {
-    const horas = Math.min(168, Math.max(0, +m.horas || 0));
-    const nAbvd = (m.abvd || []).length, nClin = (m.clin || []).length;
-    return {
-      h40: horas >= 40 ? 1 : 0, h80: horas >= 80 ? 1 : 0,
-      abvd1: nAbvd >= 1 ? 1 : 0, abvd3: nAbvd >= 3 ? 1 : 0, clin1: nClin >= 1 ? 1 : 0,
-      disc: m.disc ? 1 : 0, req: m.req ? 1 : 0, fuerza: m.fuerza ? 1 : 0,
-      mujer: m.sexo === 'M' ? 1 : 0, edad60: m.edad60 ? 1 : 0,
-    };
-  }
-
-  /** Intenta cargar un modelo entrenado. Hoy no hay ninguno: devuelve null y la app usa la tarjeta. */
-  function cargarModelo(cfg) { return cfg && cfg.modelo && cfg.modelo.archivo && raiz && raiz.Care && raiz.Care.MODELO ? raiz.Care.MODELO : null; }
-
-  /**
-   * Puntaje de la entrevista. Devuelve { base, max, detalle:[{var, etiqueta, puntos}], top3, provisional, fuente }.
-   * `top3`: las 3 variables presentes que más puntos sumaron (para explicar en lenguaje simple).
-   */
+  /** Valoración de la entrevista. base = horas a la semana; dentro = cumple la regla de entrada (cfg.regla_horas). */
   function puntuar(m, cfg) {
-    const modelo = cargarModelo(cfg);
-    const x = variables(m);
-    const W = cfg.pesos;
-    const detalle = Object.keys(W).map((k) => ({ var: k, etiqueta: ETIQUETA[k], presente: !!x[k], puntos: x[k] ? W[k] : 0, peso: W[k] }));
-    const base = modelo ? modelo.puntuar(x) : detalle.reduce((t, d) => t + d.puntos, 0);
-    const max = Object.values(W).reduce((t, v) => t + Math.max(0, v), 0);
-    const top3 = detalle.filter((d) => d.puntos > 0).sort((a, b) => b.puntos - a.puntos || a.var.localeCompare(b.var)).slice(0, 3);
-    return {
-      base, max, detalle, top3, variables: x,
-      provisional: !modelo,
-      fuente: modelo ? 'Modelo cargado' : `Tarjeta de puntos «${cfg.variante_tarjeta}» (script 22, ENASIC 2022 nacional)`,
-    };
+    const horas = horasDe(m);
+    return { base: horas, max: 168, horas, dentro: horas >= cfg.regla_horas, detalle: [], top3: [], variables: { horas },
+      fuente: `Regla de ${cfg.regla_horas} h o más a la semana (scripts 11, 21 y 27; sin evidencia de que un modelo la supere)` };
   }
 
-  /** Regla de referencia (la que hoy no se supera): ≥ 40 h. Se muestra junto al puntaje. */
+  /** Regla de entrada en formato texto. */
   const reglaHoras = (horas) => (+horas >= 40 ? 'dentro' : 'fuera');
 
   /* ================= Cola: envejecimiento y niveles ================= */
@@ -98,18 +59,16 @@
     if (!desde || !hasta) return 0;
     return Math.max(0, Math.floor((fechaUTC(hasta) - fechaUTC(desde)) / DIA_MS / 7));
   }
-  /** Puntaje efectivo = base + min(tope, x × semanas). El envejecimiento nunca pasa el tope. */
+  /** Horas efectivas = base + min(tope, x × semanas). Solo ordena el reparto; no cambia quién entra. Parámetros PROVISIONALES. */
   function puntajeEfectivo(base, semanas, cfg) {
     const e = cfg.envejecimiento;
-    const extra = Math.min(e.tope_envejecimiento, Math.max(0, semanas) * e.puntos_por_semana);
+    const extra = Math.min(e.tope_envejecimiento, Math.max(0, semanas) * e.horas_por_semana);
     return { efectivo: base + extra, extra, semanas };
   }
   function nivel(p, cfg) {
-    if (p >= cfg.umbrales.alta) return 'alta';
-    if (p >= cfg.umbrales.media) return 'media';
-    return 'baja';
+    return p >= cfg.regla_horas ? 'dentro' : 'fuera';
   }
-  const NIVEL = { alta: 'Alta', media: 'Media', baja: 'Baja' };
+  const NIVEL = { dentro: 'Dentro de la regla (≥ 40 h)', fuera: 'Fuera de la regla (< 40 h)' };
 
   /* ================= Reparto de horas ================= */
   /**
@@ -163,14 +122,29 @@
   /** Horas por semana del paquete a partir de las horas del mes (hacia abajo: nunca pasa lo asignado). */
   const horasSemana = (hMes, cfg) => Math.floor(hMes / cfg.semanas_por_mes);
 
-  /* ================= Bloque 2. Sobrecarga (estructura tipo Zarit) ================= */
-  // Los reactivos de la escala de Zarit tienen derechos de autor: la app NO los escribe. Hasta tener licencia
-  // solo existen los ID, la escala de respuesta y el cálculo. Se usa para seguimiento y chequeos, NO para el puntaje.
+  /* ================= Bloque 2. Cómo se siente quien cuida (cuestionario PROPIO de RedCare) =================
+   * NO es el cuestionario de Zarit ni una adaptación suya: los textos son originales del equipo y NO están validados.
+   * Sirve para seguimiento y para el Observatorio, NO para el puntaje de prioridad. No tiene puntos de corte ni se
+   * interpreta como diagnóstico. Los ID (Z01…) se conservan por compatibilidad con los datos ya guardados. */
+  const ITEMS_SENTIR = [
+    'Terminé el día agotada o agotado por cuidar.',
+    'Dormí menos de lo que necesito por cuidar.',
+    'Me faltó tiempo para descansar o hacer algo para mí.',
+    'Dejé de atender mi propia salud (citas, estudios, medicinas).',
+    'Me dolió el cuerpo por el esfuerzo de cuidar.',
+    'Me sentí triste o sin ánimo.',
+    'Me sentí con poca paciencia o irritable.',
+    'Me sentí sola o solo en el cuidado.',
+    'Me preocupó no poder pagar lo que la persona necesita.',
+    'Cuidar me complicó mi trabajo o mis estudios.',
+    'Vi menos a mi familia o a mis amistades.',
+    'Pensé que no voy a poder seguir cuidando así por mucho tiempo.',
+  ];
   function reactivosZarit(cfg) {
-    return Array.from({ length: cfg.zarit.n_reactivos }, (_, i) => ({ id: 'Z' + String(i + 1).padStart(2, '0'), txt: `[Reactivo Zarit ${i + 1} — requiere licencia]` }));
+    return ITEMS_SENTIR.slice(0, cfg.zarit.n_reactivos).map((txt, i) => ({ id: 'Z' + String(i + 1).padStart(2, '0'), txt }));
   }
-  const ESCALA_ZARIT = ['0', '1', '2', '3', '4']; // etiquetas verbales pendientes de la versión licenciada
-  /** Total de Zarit: suma de respuestas. null si falta alguna (no se imputa). */
+  const ESCALA_ZARIT = ['Nunca', 'Casi nunca', 'A veces', 'Seguido', 'Casi siempre']; // 0 a 4
+  /** Total del cuestionario: suma de respuestas. null si falta alguna (no se imputa). */
   function totalZarit(resp, cfg) {
     const items = reactivosZarit(cfg);
     if (!resp) return null;
@@ -230,14 +204,12 @@
       out.push({ id: 'abvd_vs_barthel', txt: `Declara ayuda en ${nAbvd} actividades básicas, pero según Barthel la persona las hace sola (${b}/100).` });
     if (h >= c.horas_inverosimiles)
       out.push({ id: 'horas_inverosimiles', txt: `${h} h/semana es casi todo el día, todos los días: verificar la captura o si hay más de una persona cuidada.` });
-    if (z != null && z <= c.zarit_bajo && m.fuerza && m.req)
-      out.push({ id: 'zarit_vs_fuerza', txt: `Declara que le falta fuerza y que necesita apoyo, pero su sobrecarga es baja (Zarit ${z}).` });
     return out;
   }
 
   const API = {
     ABVD, CLIN, PREGUNTAS_MODELO, NO_PREGUNTADAS, ETIQUETA, BARTHEL, ESCALA_ZARIT, NIVEL,
-    variables, cargarModelo, puntuar, reglaHoras, semanasEnCola, puntajeEfectivo, nivel, asignarHoras, horasSemana,
+    variables, puntuar, reglaHoras, semanasEnCola, puntajeEfectivo, nivel, asignarHoras, horasSemana,
     reactivosZarit, totalZarit, totalBarthel, nivelBarthel, chequeos,
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = API;

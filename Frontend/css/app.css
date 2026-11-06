@@ -57,13 +57,6 @@ p { margin: 0; }
   }
 }
 
-.strip {
-  flex: 0 0 auto; padding: calc(9px + env(safe-area-inset-top, 0px)) 18px 9px; background: var(--shell-2);
-  display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255, 255, 255, .06);
-}
-.strip span { font: 700 9.5px/1 var(--mono); letter-spacing: .1em; color: var(--lav); text-transform: uppercase; white-space: nowrap; }
-.strip .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--amber-fill); flex: 0 0 auto; padding: 0; }
-.strip .l { display: flex; align-items: center; gap: 8px; }
 
 .topbar { flex: 0 0 auto; display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: var(--shell); }
 .topbar .id { display: flex; align-items: center; gap: 11px; min-width: 0; }
@@ -585,12 +578,12 @@ dialog .chips { margin-top: 10px; }
 .dots10 i.on { background: var(--alert); }
 .docs { display: flex; flex-direction: column; gap: 5px; font: 400 12.5px var(--sans); color: var(--ink-soft); }
 
-/* ============ Mientras (20 oct 2026): solicitud, valoración, programa ============ */
+/* ============ RedCare (20 oct 2026): solicitud, valoración, programa ============ */
 .brandline { margin-top: 3px; font: 500 10px/1.2 var(--mono); letter-spacing: .04em; color: var(--on-shell-soft); }
 .complementario { margin-top: 10px; padding: 9px 12px; border-radius: 10px; background: var(--accent-soft); color: var(--ink); font: 400 11.5px/1.5 var(--sans); }
 .provisional { margin-top: 10px; padding: 7px 10px; border-radius: 8px; border: 1px dashed var(--amber); color: var(--amber); font: 700 10.5px/1.3 var(--mono); letter-spacing: .03em; text-transform: uppercase; text-align: center; }
 .personaje { display: block; width: 150px; max-width: 46%; height: auto; margin: 4px auto 8px; }
-.personaje.hero-img { width: 190px; max-width: 60%; }
+.personaje.hero-img { width: 240px; max-width: 72%; max-height: 220px; object-fit: contain; }
 .personaje.sm { width: 92px; margin: 0 auto 4px; }
 .infocard { display: flex; align-items: center; gap: 12px; margin-top: 12px; padding: 10px 12px; }
 .infocard img { width: 64px; height: auto; flex: 0 0 auto; }
@@ -704,3 +697,5 @@ h3.marca { text-align: center; font-size: 26px; letter-spacing: -.01em; margin-t
 .row-sx { flex-wrap: wrap; }
 .row-sx > .chips { flex: 1 1 100%; flex-wrap: nowrap; }
 .row-sx > input { flex: 1 1 100%; }
+.resnivel.nv-dentro b, .kpi.nv-dentro b { color: var(--alert); }
+.resnivel.nv-fuera b, .kpi.nv-fuera b { color: var(--accent); }

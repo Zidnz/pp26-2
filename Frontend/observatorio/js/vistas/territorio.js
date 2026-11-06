@@ -7,8 +7,10 @@
       ,esc=OBS.esc,fmt=OBS.fmt,seg=OBS.seg,svg=OBS.svg;
   var DM=D.dimension_cdmx;
   var NC=D.relevo_enigh.necesidad_cdmx_det;
-  $('#dimTiles').innerHTML='<div class="card tile" style="border-color:var(--teal)"><div class="big num" style="font-size:30px;color:var(--teal)">≈ '+ent(NC.total)+'</div><div class="lbl">Hogares CDMX con persona de 60+ o con discapacidad: <b>'+fmt(NC.pct)+'%</b> (IC 90% '+fmt(NC.li90)+'–'+fmt(NC.ls90)+')</div><div class="chips"><span class="chip ev">confirmado</span><span class="chip">ENIGH 2022 · medición directa</span></div></div>'
-    +DM.map(function(r,i){return '<div class="card tile"><div class="big num" style="font-size:30px">'+(i?'≈ ':'≥ ')+ent(r.valor)+'</div><div class="lbl">'+esc(r.nivel)+(i?'':'. La ENIGH mide '+fmt(NC.total/r.valor*100-100,0)+'% más.')+'</div><div class="chips"><span class="chip ev">'+esc(r.evidencia)+'</span><span class="chip p-noest">inferido de tasas nacionales</span></div></div>'}).join('');
+  $('#dimTiles').innerHTML=OBS.tile({k:'Hogares de la CDMX con persona de 60+ o con discapacidad',v:'≈ '+ent(NC.total),fs:30,color:'var(--teal)',borde:'var(--teal)',est:true,
+      det:'<div class="lbl"><b>'+fmt(NC.pct)+'%</b> de los hogares de la CDMX (IC 90% '+fmt(NC.li90)+'–'+fmt(NC.ls90)+')</div><div class="chips"><span class="chip ev">confirmado</span><span class="chip">medición directa</span></div>',fuente:'ENIGH 2022'})
+    +DM.map(function(r,i){return OBS.tile({k:esc(r.nivel),v:(i?'≈ ':'≥ ')+ent(r.valor),v2:'inferido de tasas nacionales',fs:30,
+      det:(i?'':'<div class="lbl">La ENIGH mide '+fmt(NC.total/r.valor*100-100,0)+'% más.</div>')+'<div class="chips"><span class="chip ev">'+esc(r.evidencia)+'</span><span class="chip p-noest">inferido de tasas nacionales</span></div>'})}).join('');
   var T=D.territorio.alcaldias,TT=D.territorio.totales,key='idx_asilos',sel='Iztapalapa';
   var IDX=[[0.5,'#c0435a','< 0.5'],[0.9,'#e59aa8','0.5–0.9'],[1.1001,'#d9d3e6','0.9–1.1'],[1.75,'#9fd9cc','1.1–1.75'],[1e9,'#23806f','> 1.75']];
   var SEQ=['#efeaf7','#d3c8e8','#b09fd3','#8a76b8','#5d4d8f'];

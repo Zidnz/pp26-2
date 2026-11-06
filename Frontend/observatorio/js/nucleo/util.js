@@ -1,7 +1,7 @@
 /* Observatorio del Cuidado · js/nucleo/util.js
    Utilidades de formato y DOM compartidas: $, $$, fmt, ent, mxn, mill, esc, dl, seg, svg y constantes de texto SVG.
    Importa de OBS: —
-   Exporta a OBS:  $, $$, FAINT, MONO, dl, ent, esc, fmt, isWeak, mill, mxn, prec, seg, svg */
+   Exporta a OBS:  $, $$, FAINT, MONO, dl, ent, esc, fmt, isWeak, mill, mxn, prec, seg, svg, tile */
 (function(){
   function $(s){return document.querySelector(s)}
   function $$(s){return [].slice.call(document.querySelectorAll(s))}
@@ -34,9 +34,26 @@
   function dl(o){return Object.keys(o).map(function(k){var v=o[k],lb=(k==='Archivo'||k==='Archivos')?origen(v):null;
     return lb?'<dt>Origen</dt><dd title="'+String(v).replace(/"/g,'&quot;')+'">'+lb+'</dd>':'<dt>'+k+'</dt><dd>'+v+'</dd>'}).join('')}
   function seg(sel,attr,cb){$$(sel+' button').forEach(function(b){b.addEventListener('click',function(){$$(sel+' button').forEach(function(x){x.setAttribute('aria-pressed',x===b)});cb(b.dataset[attr])})})}
-  function svg(W,H,lbl){return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block" role="img" aria-label="'+lbl+'">'}
-  var MONO='font-family="JetBrains Mono,monospace"', FAINT='rgba(43,48,69,.56)';
+  /* 3 nov 2026: tope de escala. El SVG se estira al ancho de su tarjeta; sin tope, en una tarjeta ancha las letras crecían 1.7 veces. Ningún gráfico pasa de 1.3 veces su tamaño de diseño. */
+  function svg(W,H,lbl){return '<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;max-width:'+Math.round(W*1.3)+'px;height:auto;display:block" role="img" aria-label="'+lbl+'">'}
+  /* 2 nov 2026: tarjeta de indicador única (regla del equipo). Al frente SOLO etiqueta + número (y, si hace falta, una línea corta bajo el número).
+     La etiqueta debe decir qué se cuenta, de quién y en qué unidad. La explicación larga, el IC, la precisión, el segmento y la fuente van en
+     «detalle» (<details>, sin JS, se abre con clic o teclado). Una tarjeta nueva se escribe con esta función, no a mano.
+     o: k etiqueta · v valor (texto o html) · v2 línea corta bajo el número · det html del detalle · fuente texto · est true si es estimación con IC
+        weak precisión baja (borde rayado, número gris) · na no aplica · sinvalor valor no medible · color · borde · luz (punto de color) · fs tamaño · plano sin .card */
+  function tile(o){
+    var sty=(o.weak||o.na||o.sinvalor?'border-style:dashed;':'')+(o.borde?'border-color:'+o.borde+';':'');
+    var col=(o.weak||o.na)?'var(--ink-faint)':o.sinvalor?'var(--alert)':(o.color||'');
+    var fs=o.fs||(o.sinvalor?20:null);
+    var kk='<div class="kicker" style="margin:0">'+o.k+'</div>';
+    var k=o.luz?'<div class="light"><i style="background:'+o.luz+'"></i>'+kk+'</div>':kk;
+    var det=(o.det||'')+(o.fuente?'<div class="tdet-f"><b>Fuente</b> '+o.fuente+'</div>':'');
+    return '<div class="'+(o.plano?'':'card ')+'tile tile-min"'+(sty?' style="'+sty+'"':'')+'>'+k+
+      '<div class="big num" style="'+(fs?'font-size:'+fs+'px;':'')+(col?'color:'+col+';':'')+'">'+o.v+'</div>'+(o.v2?'<div class="tile-v2">'+o.v2+'</div>':'')+
+      (det?'<details class="tdet"><summary>'+(o.est?'Rango probable y fuente':'Detalle')+'</summary><div class="tdet-in">'+det+'</div></details>':'')+'</div>';
+  }
+  var MONO='font-family="Archivo,system-ui,sans-serif"', FAINT='rgba(43,48,69,.56)';
   OBS.$=$;OBS.$$=$$;OBS.FAINT=FAINT;OBS.MONO=MONO;OBS.dl=dl;OBS.ent=ent;
   OBS.esc=esc;OBS.fmt=fmt;OBS.isWeak=isWeak;OBS.mill=mill;OBS.mxn=mxn;
-  OBS.prec=prec;OBS.seg=seg;OBS.svg=svg;OBS.origen=origen;
+  OBS.prec=prec;OBS.seg=seg;OBS.svg=svg;OBS.origen=origen;OBS.tile=tile;
 })();

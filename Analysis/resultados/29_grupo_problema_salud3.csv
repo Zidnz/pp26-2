@@ -1,0 +1,4 @@
+﻿indicador,objetivo,tipo,pct,se,cv,li90,ls90,n_muestra_dominio,n_muestra_si,total_expandido,precision
+"Peso en el universo | >=40 h, ""sin necesidad"" y algún daño (control: reproduce 07)",DANO_ALGUNO,control,12.46,1.589,12.75,9.85,15.07,1043,132,775546.0,alta
+"Daño a la salud entre >=40 h y ""sin necesidad"" (control: reproduce 07)",DANO_SALUD3,control,58.21,5.094,8.75,49.84,66.59,185,107,640581.0,alta
+"Peso en el universo | >=40 h, ""sin necesidad"" y daño a la salud (salud física, cansancio o sueño)",DANO_SALUD3,resultado,10.29,1.471,14.29,7.87,12.71,1043,107,640581.0,alta

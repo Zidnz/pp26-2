@@ -89,29 +89,33 @@ Generado por `DW/sql/ejecutar_consultas.py` a partir de `DW/observatorio_dw.sqli
 
 ## Q5 · COBERTURA: qué alcaldías quedan sin dato por medida (desconocido ≠ 0)
 
-2 filas.
+3 filas.
 
 | medida_codigo                | alcaldias_sin_dato                                              |
 |:-----------------------------|:----------------------------------------------------------------|
 | plazas_por_1000_personas_adl | Cuajimalpa de Morelos, Milpa Alta, Tláhuac, Venustiano Carranza |
 | plazas_residencias_privadas  | Cuajimalpa de Morelos, Milpa Alta, Tláhuac, Venustiano Carranza |
+| prioridad_pct_en_5_ageb      | Benito Juárez                                                   |
 
 
 
 ## Q6 · TENDENCIAS: ¿alguna fuente admite series de tiempo? (regla de ≥ 2 periodos)
 
-12 filas.
+15 filas.
 
 | fuente_id   | tabla_hecho                | periodos    |   permite_tendencia |
 |:------------|:---------------------------|:------------|--------------------:|
 | F02         | fact_indicador_territorial | 2020        |                   0 |
+| F02         | fact_resultado_modelo      | 2020        |                   0 |
 | F04         | fact_asequibilidad         | 2022        |                   0 |
 | F04         | fact_estimacion_encuesta   | 2022        |                   0 |
+| F04         | fact_resultado_modelo      | 2022        |                   0 |
 | F09         | fact_indicador_territorial | mayo 2026   |                   0 |
 | F20         | fact_indicador_territorial | 2020        |                   0 |
 | F22         | fact_indicador_territorial | 2020        |                   0 |
 | F23         | fact_asequibilidad         | 2022        |                   0 |
 | F23         | fact_indicador_territorial | 2022        |                   0 |
+| I01         | fact_resultado_modelo      | 2026        |                   0 |
 | P01         | fact_indicador_territorial | desconocido |                   0 |
 | P02         | fact_indicador_territorial | desconocido |                   0 |
 | P03         | fact_indicador_territorial | desconocido |                   0 |

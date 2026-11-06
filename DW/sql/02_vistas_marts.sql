@@ -25,7 +25,8 @@ JOIN dim_tiempo    t ON t.periodo_sk   = f.periodo_sk
 JOIN dim_fuente   fu ON fu.fuente_sk   = f.fuente_sk
 JOIN dim_precision p ON p.precision_sk = f.precision_sk;
 
--- MART 2 · Territorio y oferta (alcaldía y entidad) — formato largo
+-- MART 2 · Territorio y oferta (alcaldía y entidad) — formato largo.
+-- 1.1.0: las medidas por AGEB (≈ 53 mil filas) NO entran aquí; tienen su propio mart ancho (v_mart_ageb).
 CREATE VIEW v_mart_territorio AS
 SELECT f.territorial_id,
        g.nivel AS nivel_geografico, g.cve_geo, g.nombre AS geografia, g.abreviatura,
@@ -39,7 +40,8 @@ JOIN dim_geografia g ON g.geografia_sk = f.geografia_sk
 JOIN dim_medida    m ON m.medida_sk    = f.medida_sk
 JOIN dim_tiempo    t ON t.periodo_sk   = f.periodo_sk
 JOIN dim_fuente   fu ON fu.fuente_sk   = f.fuente_sk
-JOIN dim_precision p ON p.precision_sk = f.precision_sk;
+JOIN dim_precision p ON p.precision_sk = f.precision_sk
+WHERE g.nivel <> 'AGEB';
 
 -- MART 3 · Asequibilidad del relevo por horas
 CREATE VIEW v_mart_asequibilidad AS
@@ -65,6 +67,42 @@ LEFT JOIN fact_costo_paquete c
        ON c.geografia_sk = a.geografia_sk AND c.ingreso_sk = a.ingreso_sk AND c.salario_sk = a.salario_sk
       AND c.paquete_sk   = a.paquete_sk   AND c.periodo_sk = a.periodo_sk AND c.fuente_sk  = a.fuente_sk;
 
+-- MART 4 · Resultados de modelos (1.1.0) — formato largo, una métrica por fila.
+-- objetivo_comun unifica dos vocabularios de los scripts (11: DANO_ALGUNO / DANO_SALUD_FISICA;
+-- 21 y 22: ALGUN_DANO / SALUD_FISICA). El valor original se conserva en «objetivo».
+CREATE VIEW v_mart_modelos AS
+SELECT f.resultado_id,
+       mo.codigo AS modelo, mo.nombre AS modelo_nombre, mo.tipo AS modelo_tipo, mo.decision,
+       c.objetivo,
+       CASE c.objetivo WHEN 'DANO_ALGUNO' THEN 'ALGUN_DANO' WHEN 'DANO_SALUD_FISICA' THEN 'SALUD_FISICA' ELSE c.objetivo END AS objetivo_comun,
+       c.metodo, c.variante, c.parametros,
+       me.codigo AS metrica, me.nombre AS metrica_nombre, me.unidad, me.tipo AS metrica_tipo,
+       s.dimension AS dominio_dimension, s.segmento AS dominio_segmento,
+       g.nivel AS nivel_geografico, g.cve_geo, g.nombre AS geografia,
+       t.etiqueta AS periodo, fu.fuente_id, fu.nombre AS fuente,
+       f.valor, f.valor_texto, f.li90, f.ls90, f.cv, p.clase AS precision,
+       f.es_ilustrativo, f.nota, f.archivo_origen, f.fila_origen
+FROM fact_resultado_modelo f
+JOIN dim_modelo        mo ON mo.modelo_sk        = f.modelo_sk
+JOIN dim_configuracion c  ON c.configuracion_sk  = f.configuracion_sk
+JOIN dim_metrica       me ON me.metrica_sk       = f.metrica_sk
+JOIN dim_segmento      s  ON s.segmento_sk       = f.segmento_sk
+JOIN dim_geografia     g  ON g.geografia_sk      = f.geografia_sk
+JOIN dim_tiempo        t  ON t.periodo_sk        = f.periodo_sk
+JOIN dim_fuente        fu ON fu.fuente_sk        = f.fuente_sk
+JOIN dim_precision     p  ON p.precision_sk      = f.precision_sk;
+
+-- Catálogo: qué modelo existe, qué decisión informa, contra qué alternativa simple se compara y qué tan maduro está.
+CREATE VIEW v_catalogo_modelos AS
+SELECT mo.codigo AS modelo, mo.nombre, mo.tipo, mo.script, mo.decision, mo.alternativa_simple, mo.estado, mo.advertencia,
+       COUNT(f.resultado_id) AS n_resultados,
+       COUNT(DISTINCT f.archivo_origen) AS n_archivos,
+       COUNT(DISTINCT f.configuracion_sk) AS n_configuraciones,
+       SUM(f.es_ilustrativo) AS n_ilustrativos,
+       GROUP_CONCAT(DISTINCT f.archivo_origen) AS archivos
+FROM dim_modelo mo LEFT JOIN fact_resultado_modelo f ON f.modelo_sk = mo.modelo_sk
+GROUP BY mo.modelo_sk;
+
 -- ---------------------------------------------------------------------
 -- Gobierno de los datos: las reglas del proyecto convertidas en consultas
 -- ---------------------------------------------------------------------
@@ -84,6 +122,9 @@ FROM (
   UNION ALL
   SELECT fu.fuente_id, fu.nombre, 'fact_asequibilidad', t.etiqueta
     FROM fact_asequibilidad f JOIN dim_fuente fu USING (fuente_sk) JOIN dim_tiempo t USING (periodo_sk)
+  UNION ALL
+  SELECT fu.fuente_id, fu.nombre, 'fact_resultado_modelo', t.etiqueta
+    FROM fact_resultado_modelo f JOIN dim_fuente fu USING (fuente_sk) JOIN dim_tiempo t USING (periodo_sk)
 )
 GROUP BY fuente_id, fuente, tabla_hecho;
 
@@ -110,6 +151,10 @@ WHERE g.nivel_orden > fu.nivel_geo_max_orden
 UNION ALL
 SELECT 'fact_asequibilidad', f.asequibilidad_id, fu.fuente_id, g.nivel, fu.nivel_geo_max
 FROM fact_asequibilidad f JOIN dim_geografia g USING (geografia_sk) JOIN dim_fuente fu USING (fuente_sk)
+WHERE g.nivel_orden > fu.nivel_geo_max_orden
+UNION ALL
+SELECT 'fact_resultado_modelo', f.resultado_id, fu.fuente_id, g.nivel, fu.nivel_geo_max
+FROM fact_resultado_modelo f JOIN dim_geografia g USING (geografia_sk) JOIN dim_fuente fu USING (fuente_sk)
 WHERE g.nivel_orden > fu.nivel_geo_max_orden;
 
 -- Calidad de las estimaciones por tipo de precisión (para el pie de cada gráfica)

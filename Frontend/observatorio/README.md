@@ -48,6 +48,16 @@ Reglas:
 - Los objetos 3D de «Lo que encontramos» se dibujan con las mismas cifras de `D` que sus tarjetas (alturas, conteos, arcos e IC). Las figuras de personas son ilustración: no son datos ni personas reales.
 - `css/` de esta carpeta es independiente de `Frontend/css/app.css` (el prototipo de la app); solo se copió la paleta.
 
+## Cambio del 5 nov 2026: «¿Qué afectaciones suben con más horas de cuidado?» pasa de barras agrupadas a mancuerna
+- Mismas cifras (`D.afect_horas`, notebook 31, `resultados/31_afectaciones_por_horas.csv`); solo cambia la presentación: una fila por afectación con los extremos (menos de 20 h y 40 h o más), punto intermedio (20 a 39 h), línea tenue con el IC 90 % de 40 h o más, y la diferencia al lado. Filas agrupadas en «En resumen / Suben con claridad / Sin cambio claro / Muy pocos casos» a partir de `dif_significativa` y `precision`; sigue respondiendo al filtro de segmento.
+- Componente nuevo `OBS.mancuerna` (`js/graficas/componentes.js`), HTML/CSS responsivo (`.mc-*` en `css/vistas.css`); se quitó `.afh-cols`. Sin «pp» para el lector. Versiones de caché subidas a `20261105a`. Sin doble revisión. Verificado con Playwright a 1440 y 390 px: sin errores de JS ni desplazamiento horizontal. No se verificó con el filtro Sexo/Edad/Ingreso/Intensidad activo.
+
+## Cambio del 3 nov 2026 (noche): afectaciones por horas en ¿Quién lo carga? y limpieza de repetidos
+- Nueva gráfica «¿Qué afectaciones suben con más horas de cuidado?» en el lugar de «¿Cuánto cambia con más horas de cuidado?»: siete afectaciones que declaran las personas cuidadoras (y «al menos una de salud»), en tres grupos de horas, con el filtro de segmento. Origen: `Analysis/31_afectaciones_cuidadoras.ipynb` (sección 7) → `resultados/31_afectaciones_por_horas.csv` → `D.afect_horas` → `necesidad.js`. Las cifras de la presentación de INEGI (todas las personas cuidadoras, por sexo) se reproducen en el mismo notebook y se citan en «Fuente y precisión».
+- Regla aplicada: si una cifra o una comparación ya está en la pestaña, se quita. Salieron: la tarjeta «¿Cuánto cambia…?» (repetía la de «no tuve necesidad»; su prueba estadística pasó a «Fuente y precisión» de esa tarjeta), la ficha «Brecha de daño» (la muestra la gráfica nueva), la tarjeta de afectaciones por sexo del mismo día (la da el filtro Sexo), y del mapa «Comparar segmentos» de esta pestaña la fila «Cuida 40 h o más» (repetía la ficha) y las columnas de Intensidad (repetían la tarjeta de «no tuve necesidad»).
+- Sin «pp» en lo que ve el lector: las fichas y avisos del filtro y del mapa dicen «X de cada 100» y «diferencia clara»; los puntos porcentuales e intervalos quedan en «Fuente y precisión» y en Método.
+- Variable y bloques nuevos en `Analysis/matrices/diccionario_observatorio.csv`. Verificación en R escrita (`Analysis/31_verificacion_survey.R`) y **pendiente de ejecutar**. Sin doble revisión.
+
 ## Cambio del 7 oct 2026 (21:30): pestaña ¿Cuánto cuesta? con más contenido
 - Nueva tarjeta «¿Qué parte del ingreso se lleva?» (`pct_ingreso_mediano`, que ya estaba en los datos) y tres servicios en «¿Cuánto se paga hoy por hora?». `build_datos.py` agrega `horas_sem_mediana` al bloque `pago`. La advertencia «Poder pagar no es querer contratar» ya no va plegada. Detalle y límites en la bitácora; respaldo en `_to_delete/backup_pre_relevo_lleno_2026-10-07/`.
 
@@ -232,3 +242,19 @@ La ficha «Lectura, fuente y precisión» de las tarjetas ya no es un plegable: 
 - Datos: bloque `seg23` de `build_datos.py`, que lee `Analysis/resultados/23_seg_*.csv` y se detiene si cambian los nombres de las clases, si k = 2 deja de ser la más estable o si cambia el número de filas. Documentado en `matrices/diccionario_observatorio.csv`.
 - Código: `index.html` (tarjeta `.s23`), `js/vistas/necesidad.js` (bloque al final, se redibuja al cambiar el ancho para que el texto no se encoja en teléfono) y final de `css/vistas.css`.
 - Verificado en Chromium sin interfaz a 1440 y 390 px, sin errores de JavaScript ni desborde. Respaldo en `_to_delete/backup_pre_seg23_observatorio_2026-10-21/`. **Pendiente de doble revisión.**
+
+## Cambio del 27 oct 2026: se retira `inicio-3d.js` (nota que corrige descripciones anteriores)
+- Las líneas de arriba que describen las escenas 3D del embudo, el estallido «¡Mentiraaa!» (7 oct) y `inicio-3d.js` como vigentes **ya no describen el estado actual**. Se dejan como historia. Desde el 14 oct el embudo lo dibuja `js/vistas/inicio-seleccion.js` (selector de etapas; desde el 15 oct, con mapa relleno en lugar del campo de puntos), y `inicio-3d.js` no tenía contenedor desde entonces.
+- `index.html` ya no carga `inicio-3d.js`. El archivo y el `index.html` anterior están en `_to_delete/backup_pre_quitar_inicio3d_2026-10-27/`.
+- Las presentaciones `?mdec=juego` y `?mdec=trio` descritas el 15 oct se retiraron el 20 oct; solo queda el selector.
+- Sigue cargándose `vendor/three.min.js` y `js/graficas/motor-3d.js`; no se verificó si algo más los usa.
+- Detalle y pendientes: `Documentos/bitacora-decisiones.md`, entrada del 2026-10-27 (00:35).
+
+## Cambio del 2 nov 2026: regla de tarjeta de indicador (etiqueta + número al frente, detalle plegable)
+- Toda tarjeta de indicador se escribe con `OBS.tile()` (`js/nucleo/util.js`; estilos `.tile-min` y `details.tdet` en `css/componentes.css`). Al frente solo van la **etiqueta** (qué se cuenta, de quién y en qué unidad), el **número** y, a lo sumo, una línea corta bajo el número. La definición larga, el IC 90 %, la precisión, el segmento y la fuente van en «Detalle» / «IC 90 % y fuente» (`<details>`, sin JS). Precisión baja = borde rayado y número gris; no aplica = rayado.
+- Migradas: los 4 indicadores de «¿Cuánto cuidado?» (`#kpi-nec`), las 2 tarjetas de dificultad en la tarea (`#s23Tiles`), las 4 de barreras (`#lights`), las 4 de relevo (`#relTiles`), las 4 de focalización (`#v2Tiles`), las 4 de territorio (`#dimTiles`) y las fichas de Indicadores (se quitaron universo y chips de la cara; siguen en el inspector). `segmentacion.js` ya no pinta tarjetas (la función `tiles` quedó sin llamarse desde el 8 oct); se migró igual para no dejar un patrón viejo.
+- **No migradas, a propósito:** «El grupo del problema» (`.gp`, su descripción es la definición del grupo central), las tarjetas de valor más alto/más bajo (`.ext`, llevan la advertencia de la capa) y los contadores del Inicio (no son indicadores).
+- Ninguna cifra cambió: solo cambió dónde se muestra cada texto. Respaldo de los archivos anteriores y del script que aplicó el cambio: `_respaldo_pre_tarjetas_2026-11-02/`.
+
+## Cambio del 2 nov 2026 (noche): «¿A quién primero?» con las tres decisiones
+- Bloque nuevo al inicio de la pestaña, en `js/vistas/focalizacion-prioridad.js` (6 gráficas, sin cifras escritas a mano): decisión 1 (¿dónde hacer el piloto?: los 4 tipos del k-means en las 9 variables y su peso en la CDMX), decisión 2 (relevo: solo la regla «40 h o más», sin modelo de ML; horas y cobertura por grupo) y decisión 3 (orden de zonas: volumen y concentración por alcaldía, nivel y estabilidad). Las gráficas de modelos (partes 1 a 5) siguen debajo como evidencia de la regla. Lee `D.tipologia`, `D.horas_dist`, `D.modelo_v2` y `D.diagnostico_v2`. Respaldo previo: `_respaldo_pre_prioridad_2026-11-02/index.html` (raíz del repo).

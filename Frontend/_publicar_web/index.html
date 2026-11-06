@@ -1,0 +1,541 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Observatorio del Cuidado</title>
+<link rel="icon" type="image/png" sizes="48x48" href="ilustraciones/favicon_3d_48.png?v=20261027">
+<link rel="icon" type="image/png" sizes="256x256" href="ilustraciones/favicon_3d_256.png?v=20261027">
+<link rel="apple-touch-icon" href="ilustraciones/favicon_3d_256.png?v=20261027">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&display=swap">
+<link rel="stylesheet" href="css/base.css?v=20261103c">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/componentes.css">
+<link rel="stylesheet" href="css/graficas.css">
+<link rel="stylesheet" href="css/vistas.css?v=20261103b">
+</head>
+<body>
+
+<div class="shell">
+<aside class="side" aria-label="Navegación del Observatorio">
+  <a class="brand" href="#inicio"><img class="mark" src="ilustraciones/logo_marca_plano.png" width="192" height="192" alt="" decoding="async"><span><b>Observatorio del Cuidado</b><span>Economía del cuidado · México y CDMX</span></span></a>
+  <nav class="tabs" role="tablist" aria-label="Secciones" aria-orientation="vertical">
+      <button role="tab" data-t="inicio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3.5l8.5 7"/><path d="M5.5 9v11h4.5v-6h4v6h4.5V9"/></svg><span>Inicio</span></button>
+      <button role="tab" data-t="necesidad"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17.2" cy="9" r="2.4"/><path d="M16 14.1c2.9.3 5 2.7 5 5.9"/></svg><span>¿Quién lo carga?</span></button>
+      <button role="tab" data-t="barreras"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M9.6 9.4a2.5 2.5 0 0 1 4.9.7c0 1.8-2.5 2.2-2.5 3.9"/><path d="M12 17.2v.1"/></svg><span>¿Por qué no se contrata?</span></button>
+      <button role="tab" data-t="relevo"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="2.8"/><path d="M5 6v6c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6"/><path d="M5 12v6c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8v-6"/></svg><span>¿Cuánto cuesta?</span></button>
+      <button role="tab" data-t="focalizacion"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2"/></svg><span>¿A quién primero?</span></button>
+      <button role="tab" data-t="territorio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.1-7-11.4a7 7 0 0 1 14 0C19 14.9 12 21 12 21z"/><circle cx="12" cy="9.6" r="2.5"/></svg><span>¿Dónde?</span></button>
+      <button role="tab" data-t="indicadores"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20h16"/><rect x="5.5" y="11" width="3" height="6" rx="1"/><rect x="10.5" y="5.5" width="3" height="11.5" rx="1"/><rect x="15.5" y="13.5" width="3" height="3.5" rx="1"/></svg><span>Indicadores</span></button>
+      <button role="tab" data-t="metodo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3.5h6"/><path d="M10 3.5V9l-5.4 9.3A2 2 0 0 0 6.3 21.3h11.4a2 2 0 0 0 1.7-3L14 9V3.5"/><path d="M7.3 15.5h9.4"/></svg><span>Método</span></button>
+  </nav>
+  <div class="side-foot">
+    <div class="side-quote"><img src="ilustraciones/icono_cuidado.png" width="320" height="243" alt="" decoding="async"><p>El cuidado también es trabajo</p></div>
+  </div>
+</aside>
+
+<div class="content">
+<main class="wrap">
+
+<!-- ======================= INICIO ======================= -->
+<section class="view" id="v-inicio" role="tabpanel">
+
+  <!-- 1 · Los datos que cuidan: bloque oscuro como el prototipo (razones y medallón en inicio.js, contadores en inicio-contadores.js) -->
+  <section class="hero" id="hero-enfoque" aria-labelledby="h-enfoque">
+    <div class="hero-head">
+      <div>
+        <div class="kicker" style="color:var(--lav)">Personas cuidadoras de personas con discapacidad o de 60 años y más</div>
+        <h1 id="h-enfoque">Los datos que cuidan</h1>
+        <p>Nuestro enfoque: quien cuida en casa sin pago y quien recibe ese cuidado.</p>
+      </div>
+      <div class="profiles"><span><b>Necesito cuidado</b> · la cuidadora familiar pide relevo</span><span><b>Puedo cuidar</b> · cuidadoras verificadas con pago justo</span></div>
+    </div>
+    <div class="hero-grid">
+      <div class="hero-logo"><div class="medallon" id="medallon"><img src="ilustraciones/logo_personajes.webp" width="710" height="669" alt="Ilustración: una cuidadora familiar descansa en un sillón con una taza mientras una cuidadora con uniforme lila acompaña a una mujer mayor con bastón"><!-- Versión anterior (emblema con aro, corazón y reloj; 7 oct 2026). Para regresar a ella, cambiar el <img> de arriba por este:
+        <img src="ilustraciones/logo_cuidado.webp" width="710" height="724" alt="Ilustración: una cuidadora familiar descansa en un sillón con una taza mientras una cuidadora con uniforme lila acompaña a una mujer mayor con bastón, dentro de un aro verde y lila con un corazón arriba y un reloj abajo"> --></div><div class="medallon-sombra" aria-hidden="true"></div></div>
+      <div class="carrusel" id="carrusel"></div>
+    </div>
+    <div class="stats" id="stats"></div>
+  </section>
+
+  <!-- 2 · ¿Cuántas personas están en el problema? (embudo en cinco escenas) -->
+  <section class="fr" id="fr-embudo" aria-labelledby="h-embudo">
+    <div class="fr-in">
+      <div class="fr-head">
+        <h2 id="h-embudo">¿Cuántas personas están en el problema?</h2>
+        <p id="embFind"></p>
+      </div>
+      <div class="sel" id="sel-embudo"></div>
+      <div class="fr-modelo" id="embudo-modelo"></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl id="src-embudo"></dl></details>
+    </div>
+  </section>
+
+  <!-- 3 · «Lo que encontramos» se quitó el 8 oct 2026: repetía tres de las cuatro razones del bloque 1. Su tarjeta del modelo pasó al final del embudo (#embudo-modelo). Respaldo: _to_delete/backup_pre_dedup_2026-10-08/ -->
+</section>
+
+<!-- ======================= NECESIDAD ======================= -->
+<section class="view" id="v-necesidad" role="tabpanel">
+  <div class="vhead"><div><div class="kicker">Necesidad · nacional</div><h2>La carga crece con las horas; la necesidad declarada, no.</h2></div>
+    <p>"No tuve necesidad" casi no cambia con la intensidad del cuidado. El daño declarado sí.</p></div>
+  <!-- 14 oct 2026 (noche): la barra «Segmentar por» vuelve y ahora filtra TODA la pestaña (sección 12b). La fila de KPI reacciona al filtro.
+       Respaldo: _to_delete/backup_pre_filtro_pestana_2026-10-14/ -->
+  <div class="fbar" data-fb></div>
+  <div class="grid c4" id="kpi-nec"></div>
+  <details class="src" style="margin-top:6px"><summary>Fuente y método de los indicadores</summary><dl id="src-kpi-nec"></dl></details>
+  <div class="card" style="margin:18px 0">
+    <h3>Comparar segmentos</h3>
+    <div class="chart" id="ch-cmp-nec" data-chart></div>
+    <details class="src"><summary>Fuente y precisión</summary><dl class="seg-src"></dl></details>
+  </div>
+  <div class="grid c21">
+    <div class="card">
+      <h3>Quienes dicen «no tuve necesidad», ¿declaran daño?</h3>
+      <p class="find" id="cargaFind"></p>
+      <div class="chart" id="ch-carga" data-chart></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl id="src-carga"></dl></details>
+    </div>
+    <div class="card">
+      <h3>¿Cuánto cambia con más horas de cuidado?</h3>
+      <p class="find">Diferencia en puntos porcentuales e intervalo al 90%. Si el intervalo cruza el cero, la diferencia no se distingue de 0.</p>
+      <div class="ctrls" id="ctrlDif"><div class="seg" id="segDif"><button data-d="h" aria-pressed="true" title="40 h o más frente a menos de 20 h">40 h vs. 20 h</button><button data-d="q" aria-pressed="false" title="Comprobación: cuartil de horas más alto frente al más bajo">Cuartiles</button></div></div>
+      <div class="chart" id="ch-dif" data-chart></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl id="src-dif"></dl></details>
+    </div>
+  </div>
+  <!-- 21 oct 2026: segmentación por clases latentes (notebook 23). No la recorta el filtro de la pestaña. Respaldo: _to_delete/backup_pre_seg23_observatorio_2026-10-21/ -->
+  <div class="card s23" style="margin-top:18px">
+    <div class="kicker" style="margin:0">Segmentación · clases latentes</div>
+    <h3>A las mismas horas, ¿quién declara más daño?</h3>
+    <p class="find" id="s23Find"></p>
+    <div class="chips"><span class="chip ev">exploratorio</span><span class="chip geo">nacional</span><span class="chip">no la recorta el filtro</span></div>
+    <div class="grid c21 s23-g">
+      <div>
+        <div class="ctrls"><div class="seg" id="s23Y" aria-label="Desenlace"></div><div class="seg" id="s23B" aria-label="Quién recibe el cuidado"></div></div>
+        <div class="chart" id="ch-s23" data-chart></div>
+        <div class="legend"><span><i style="background:#c0435a"></i>Dificultad en la tarea</span><span><i style="background:#b8b3c9"></i>Sin dificultad declarada</span><span>Rayado: menos de 30 casos, no se compara</span></div>
+      </div>
+      <div class="s23-side">
+        <div id="s23Tiles"></div>
+        <div class="s23-perf"><div class="kicker">Cómo se reconoce la clase</div><div class="chart" id="ch-s23p"></div></div>
+      </div>
+    </div>
+    <div class="note" id="s23Note"></div>
+    <details class="src"><summary>Fuente y precisión</summary><dl id="src-s23"></dl></details>
+  </div>
+  <div class="grid c2" style="margin-top:18px">
+    <div class="card dark">
+      <div id="grupo"></div>
+    </div>
+    <div class="card">
+      <h3>¿Cuántas horas a la semana cuidan?</h3>
+      <p class="find" id="horFind"></p>
+      <div class="chart" id="ch-horas" data-chart></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl id="src-horas"></dl></details>
+    </div>
+  </div>
+  <div class="grid c12" style="margin-top:18px">
+    <div class="card">
+      <h3>¿Quiénes forman el grupo del problema?</h3>
+      <p class="find" id="perfFind"></p>
+      <div class="ctrls"><div class="seg" id="segPerf"></div></div>
+      <div class="chart" id="ch-perfil" data-chart></div>
+      <div class="legend"><span><i style="background:#c0435a"></i>Grupo del problema</span><span><i style="background:#b8b3c9;height:6px"></i>Todas las cuidadoras</span><span>★ difiere del resto</span></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl id="src-perfil"></dl></details>
+    </div>
+    <div class="card">
+      <h3>Horas semanales de cuidado por sexo y edad</h3>
+      <p class="find" id="sexoFind"></p>
+      <div class="chips"><span class="chip p-noest">origen sin documentar</span></div>
+      <div class="chart" id="ch-sexo" data-chart></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl><dt>Archivo</dt><dd>Analysis/resultados/08_brecha_cuidado_sexo.csv (script 08)</dd><dt>Advertencia</dt><dd>Productor y año del archivo sin documentar: sirve para ver la forma de la brecha, no para citar niveles.</dd></dl></details>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= BARRERAS ======================= -->
+<section class="view" id="v-barreras" role="tabpanel">
+  <div class="vhead"><div><div class="kicker">Barreras · nacional</div><h2>La razón que más se da para no buscar es «no tuve necesidad»; la norma familiar es una explicación posible, aún sin probar.</h2></div>
+    <p>Las estimaciones con precisión baja aparecen rayadas y no cuentan como evidencia.</p></div>
+  <div class="fbar" data-fb></div>
+  <!-- 8 oct 2026: se quitó la fila de cajas (#segTiles-bar); repetía «Comparar segmentos» y el semáforo. -->
+  <div class="card" style="margin:18px 0">
+    <h3>Comparar segmentos</h3>
+    <div class="chart" id="ch-cmp-bar" data-chart></div>
+    <details class="src"><summary>Fuente y precisión</summary><dl class="seg-src"></dl></details>
+  </div>
+  <div class="grid c4" id="lights"></div>
+  <div class="grid c2" style="margin-top:18px">
+    <div class="card">
+      <h3>¿Por qué no buscó servicios?</h3>
+      <p class="find" id="razFind"></p>
+      <div class="ctrls"><div class="seg" id="segRaz"><button data-u="obj" aria-pressed="true">Cuidan disc. o 60+</button><button data-u="todas" aria-pressed="false">Todas las cuidadoras</button></div></div>
+      <div class="chart bars" id="ch-raz" data-chart></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl id="src-raz"></dl></details>
+    </div>
+    <div class="card">
+      <h3>¿Contratan más los hogares con más ingreso?</h3>
+      <p class="find" id="qFind"></p>
+      <div class="chart" id="ch-quintil" data-chart></div>
+      <div class="legend"><span class="muted">Línea: IC 90 % (aprox. a partir del CV). Barra rayada: precisión baja, sin intervalo.</span></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl><dt>Universo</dt><dd>Hogares con persona con discapacidad o 60+, nacional</dd><dt>Archivo</dt><dd>Analysis/resultados/04_contratacion_por_quintil.csv</dd></dl></details>
+    </div>
+  </div>
+  <div class="grid c2" style="margin-top:18px">
+    <div class="card">
+      <h3>Si contratara cuidado, ¿dónde?</h3>
+      <p class="find" id="prefFind"></p>
+      <div class="chart bars" id="ch-pref" data-chart></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl id="src-pref"></dl></details>
+    </div>
+    <div class="card">
+      <h3>¿Por qué rechazaría una residencia?</h3>
+      <p class="find" id="p711Find"></p>
+      <div class="chart bars" id="ch-p711" data-chart></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl><dt>Pregunta</dt><dd>P7.11, razón principal</dd><dt>Archivo</dt><dd>Analysis/resultados/07_enasic_necesidad_vs_norma_estimaciones.csv</dd></dl></details>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= RELEVO ======================= -->
+<section class="view" id="v-relevo" role="tabpanel">
+  <div class="vhead"><div><div class="kicker">Costos · nacional y CDMX</div><h2>Unas horas de cuidado pagado cuestan una fracción de la jornada completa.</h2></div>
+    <p><span class="chip p-moderada">sin prestaciones · jornada diurna</span> Las gráficas de asequibilidad (script 10) todavía no incluyen IMSS, aguinaldo ni vacaciones, ni la hora nocturna: están sobreestimadas. La tarjeta de jornada ya muestra el costo con carga laboral (script 20, por confirmar).</p></div>
+  <div class="grid c4" id="relTiles"></div>
+  <div class="ctrls" style="margin-top:18px"><div class="seg" id="segFte"><button data-f="enasic" aria-pressed="true">ENASIC · nacional</button><button data-f="Nacional" aria-pressed="false">ENIGH · nacional</button><button data-f="CDMX" aria-pressed="false">ENIGH · CDMX</button></div><div class="seg" id="segSal"></div><div class="seg" id="segUmb"><button data-u="u10" aria-pressed="false">≤ 10% del ingreso</button><button data-u="u20" aria-pressed="true">≤ 20%</button><button data-u="u30" aria-pressed="false">≤ 30%</button></div></div>
+  <div class="grid c2 fila-relevo" style="margin-top:12px">
+    <div class="card">
+      <h3>¿Cuántos hogares podrían pagarlo?</h3>
+      <p class="find" id="relFind"></p>
+      <div class="chart" id="ch-relevo" data-chart></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl id="src-relevo"></dl></details>
+    </div>
+    <div class="card">
+      <h3>¿Qué parte del ingreso se lleva?</h3>
+      <p class="find" id="ingFind"></p>
+      <div class="chart" id="ch-ing" data-chart></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl id="src-ing"></dl></details>
+    </div>
+  </div>
+  <p class="muted" style="font-size:12.5px;margin-top:12px" id="relIng"></p>
+  <div class="note" style="margin-top:18px"><span>⚠</span><span id="relNo"></span></div>
+  <!-- Ampliación del 13 oct 2026: costo por tipo de jornada (script 19). Bloque en js/vistas/relevo.js -->
+  <div class="grid c2 fila-relevo" style="margin-top:18px">
+  <div class="card" id="jorBloque">
+    <div class="kicker">Ampliación · 13 y 20 oct 2026</div>
+    <h3>¿Cambia el costo si el relevo es de noche o con carga laboral?</h3>
+    <p class="find" id="jorFind"></p>
+    <div class="ctrls"><div class="seg" id="segJor"><button data-h="3" aria-pressed="false">3 h/sem</button><button data-h="6" aria-pressed="true">6 h/sem</button><button data-h="9" aria-pressed="false">9 h/sem</button><button data-h="12" aria-pressed="false">12 h/sem</button></div><div class="seg" id="segCarga"><button data-c="1" aria-pressed="true">Sin carga</button><button data-c="2" aria-pressed="false">+ IMSS e Infonavit (22%)</button><button data-c="3" aria-pressed="false">+ aguinaldo y vacaciones</button></div></div>
+    <div class="chart" id="ch-jor" data-chart></div>
+    <details class="src"><summary>Fuente y precisión</summary><dl id="src-jor"></dl></details>
+  </div>
+  <div class="card">
+    <h3>¿Cuánto se paga hoy por hora?</h3>
+    <p class="find" id="pagoFind"></p>
+    <div class="chart" id="ch-pago" data-chart></div>
+    <details class="src"><summary>Fuente y precisión</summary><dl id="src-pago"></dl></details>
+  </div>
+  </div>
+  <div style="margin-top:18px">
+  <div class="card">
+    <div class="kicker">Actualizado 20 oct 2026 · script 20</div>
+    <h3>Si se subsidia el relevo: financiamiento anual en la CDMX contra la solicitud de cuidados</h3>
+    <p class="find" id="subFind"></p>
+    <div class="ctrls"><div class="seg" id="segOpex"><button data-o="0" aria-pressed="true">Operación $0</button><button data-o="250" aria-pressed="false">$250</button><button data-o="500" aria-pressed="false">$500</button><button data-o="1000" aria-pressed="false">$1,000 por hogar-mes</button></div></div>
+    <div class="chart" id="ch-sub" data-chart></div>
+    <details class="src"><summary>Fuente y precisión</summary><dl id="src-sub"></dl></details>
+  </div>
+  </div>
+</section>
+
+<!-- ======================= ¿A QUIÉN PRIMERO? ======================= -->
+<!-- Rediseñada el 2 nov 2026 (noche): menos texto, gráficas en HTML/CSS con tooltips y filtro por tipo de zona. Los textos largos pasaron a «Leer más».
+     Código: js/vistas/focalizacion-v2.js (piezas compartidas + evidencia de la decisión 2) y js/vistas/focalizacion-prioridad.js (las tres decisiones). -->
+<section class="view" id="v-focalizacion" role="tabpanel">
+  <div class="vhead"><div><div class="kicker">¿A quién primero?</div><h2>Quién recibe el relevo primero y dónde empezar</h2></div>
+    <p id="fzLead">Cada tarjeta responde una parte de «¿a quién ofrecer primero el relevo?».</p></div>
+
+  <!-- Las tres decisiones -->
+  <div class="card fz-card" id="prBloque">
+    <div class="kicker">Tres decisiones · lo que hoy dicen los datos</div>
+    <div class="fz-pills" id="prFind"></div>
+    <div class="grid c3" id="prTiles" style="margin-top:14px"></div>
+  </div>
+  <div class="ctrls" style="margin-top:18px"><div class="seg fz-steps" id="segPr" role="group" aria-label="Decisión"><button data-d="1" aria-pressed="true"><b>1</b><span>¿Dónde hacer el piloto?</span></button><button data-d="2" aria-pressed="false"><b>2</b><span>¿A quién ofrecer el relevo?</span></button><button data-d="3" aria-pressed="false"><b>3</b><span>¿En qué orden las zonas?</span></button></div></div>
+
+  <!-- Decisión 1 -->
+  <div id="prD1">
+  <div class="card fz-card" id="cPerfil" style="margin-top:18px">
+    <div class="kicker">Decisión 1 · piloto · tipos de zona · CDMX</div>
+    <h3>¿Cómo se ven los 4 tipos de zona en las 9 variables?</h3>
+    <p class="fz-find" id="pr1Find"></p>
+    <div class="ctrls fz-bar"><div class="fz-chips" id="pr1Chips"></div></div>
+    <div class="chart" id="ch-pr1" data-chart></div>
+    <div class="legend" id="pr1Leg"></div>
+    <details class="mas"><summary>Cómo leerla</summary><div class="mas-in" id="pr1Mas"></div></details>
+    <details class="src"><summary>Fuente</summary><dl id="src-pr1"></dl></details>
+  </div>
+  <div class="card fz-card" id="cVolumen" style="margin-top:18px">
+    <div class="kicker">Decisión 1 · piloto · volumen frente a tasa</div>
+    <h3>¿Cuánto del total de la CDMX concentra cada tipo?</h3>
+    <p class="fz-find" id="pr2Find"></p>
+    <div class="ctrls fz-bar"><div class="fz-chips" id="pr2Chips"></div></div>
+    <div class="chart" id="ch-pr2" data-chart></div>
+    <details class="mas"><summary>Volumen no es tasa</summary><div class="mas-in" id="pr2Mas"></div></details>
+    <details class="src"><summary>Fuente</summary><dl id="src-pr2"></dl></details>
+  </div>
+  </div>
+
+  <!-- Decisión 2 -->
+  <div id="prD2" hidden>
+  <div class="card fz-card" style="margin-top:18px">
+    <div class="kicker">Decisión 2 · relevo · solo la regla, sin modelo · nacional</div>
+    <h3>¿Dónde cae el corte de 40 horas?</h3>
+    <p class="fz-find" id="pr3Find"></p>
+    <div class="chart" id="ch-pr3" data-chart></div>
+    <div class="legend"><span><i style="background:#77689d"></i>Menos de 40 h</span><span><i style="background:#a9711a"></i>40 h o más (la regla)</span><span class="muted">Línea: IC 90 % · rayado: precisión baja</span></div>
+    <details class="mas"><summary>Leer más</summary><div class="mas-in" id="pr3Mas"></div></details>
+    <details class="src"><summary>Fuente</summary><dl id="src-pr3"></dl></details>
+  </div>
+  <div class="card fz-card" style="margin-top:18px">
+    <div class="kicker">Decisión 2 · relevo · solo la regla, sin modelo · nacional</div>
+    <h3>¿A quién encuentra y a quién deja fuera?</h3>
+    <p class="fz-find" id="pr4Find"></p>
+    <div class="chart" id="ch-pr4" data-chart></div>
+    <div class="legend"><span><i style="background:#a9711a;border-radius:50%"></i>Cobertura de la regla en el grupo</span><span><i class="dash"></i>Todas las cuidadoras: <b id="pr4Ref"></b></span><span class="muted">n: personas con el daño · atenuado: menos de 100 casos · sin intervalos</span></div>
+    <details class="mas"><summary>Leer más</summary><div class="mas-in" id="pr4Mas"></div></details>
+    <details class="src"><summary>Fuente</summary><dl id="src-pr4"></dl></details>
+  </div>
+  </div>
+
+  <!-- Decisión 3 -->
+  <div id="prD3" hidden>
+  <div class="card fz-card" style="margin-top:18px">
+    <div class="kicker">Decisión 3 · zonas · regla de dos medidas · CDMX</div>
+    <h3>¿Dónde hay más gente de 60+ sin oferta cerca, y dónde pesa más?</h3>
+    <p class="fz-find" id="pr5Find"></p>
+    <div class="chart" id="ch-pr5" data-chart></div>
+    <div class="legend"><span><i style="background:#c0435a;border-radius:50%"></i>Doble</span><span><i style="background:#a9711a;border-radius:50%"></i>Solo volumen o solo concentración</span><span><i style="background:#9a93ad;border-radius:50%"></i>Brecha menor</span><span><i style="background:#d9d5e3;border-radius:50%"></i>Sin brecha</span><span class="muted">Atenuado: cambia de nivel según el corte</span></div>
+    <details class="mas"><summary>Leer más</summary><div class="mas-in" id="pr5Mas"></div></details>
+    <details class="src"><summary>Fuente</summary><dl id="src-pr5"></dl></details>
+  </div>
+  <div class="card fz-card" id="cAlcaldias" style="margin-top:18px">
+    <div class="kicker">Decisión 3 · zonas · regla de dos medidas · CDMX</div>
+    <h3>Las 16 alcaldías, en el orden de presentación</h3>
+    <p class="fz-find" id="pr6Find"></p>
+    <div class="ctrls fz-bar"><div class="fz-chips" id="pr6Chips"></div><div class="seg" id="pr6Orden" role="group" aria-label="Ordenar por"><button data-o="p" aria-pressed="true">Presentación</button><button data-o="v" aria-pressed="false">Volumen</button><button data-o="c" aria-pressed="false">Concentración</button></div></div>
+    <div class="chart" id="ch-pr6" data-chart></div>
+    <div class="legend" id="pr6Leg"></div>
+    <details class="mas"><summary>Leer más</summary><div class="mas-in" id="pr6Mas"></div></details>
+    <details class="src"><summary>Fuente</summary><dl id="src-pr6"></dl></details>
+  </div>
+  </div>
+  <details class="acc" style="margin-top:18px" open><summary>Qué no permite afirmar este bloque</summary><div class="in"><ul class="list" id="prLim"></ul></div></details>
+  <details class="src"><summary>Fuente y precisión</summary><dl id="src-pr"></dl></details>
+
+  <!-- Evidencia de la decisión 2 -->
+  <details class="acc" id="v2Rev" style="margin-top:30px"><summary>Para revisar el método · ¿un modelo estadístico elegiría mejor que la regla de 40 horas?</summary><div class="in">
+  <div class="card fz-card" id="v2Bloque">
+    <div class="kicker">Qué se busca encontrar · daño a la salud física, cansancio o sueño</div>
+    <p class="fz-find" id="v2Find"></p>
+    <div class="fz-pills" id="v2Pills"></div>
+    <div class="grid c4" id="v2Tiles" style="margin-top:14px"></div>
+  </div>
+  <div class="card fz-card" style="margin-top:18px">
+    <div class="kicker">Parte 1 de 5</div>
+    <h3>¿Qué método encuentra más a quien tiene el daño?</h3>
+    <p class="fz-find" id="q1Find"></p>
+    <div class="chart" id="ch-q1" data-chart></div>
+    <div class="legend"><span><i style="background:#2b3045;border-radius:50%"></i>Regla 40 h o más</span><span><i style="background:#a9711a;border-radius:50%"></i>Regresión logística</span><span><i style="background:#77689d;border-radius:50%"></i>Tarjeta de puntos</span><span class="muted">Línea gruesa: rango probable (IC 90 %) · línea roja punteada: elegir al azar · todos eligen al mismo número de personas · sombra: diferencia demasiado pequeña para notarse</span></div>
+  </div>
+  <div class="card fz-card" style="margin-top:18px">
+    <div class="kicker">Parte 2 de 5</div>
+    <h3>¿Cambia si se atiende a menos personas o si cambian los supuestos?</h3>
+    <p class="fz-find" id="q2Find"></p>
+    <div class="chart" id="ch-q2" data-chart></div>
+    <div class="legend"><span><i style="background:#a9711a;border-radius:50%"></i>Regresión logística</span><span><i style="background:#77689d;border-radius:50%"></i>Tarjeta de puntos</span><span><i style="background:#9a93ad;border-radius:50%"></i>Regla compuesta a priori</span><span class="muted">Comparador: la regla de 40 h (en «cupo 10 % y 20 %», las horas más altas al mismo cupo)</span></div>
+  </div>
+  <div class="card fz-card" style="margin-top:18px">
+    <div class="kicker">Parte 3 de 5</div>
+    <h3>¿A quién deja fuera cada método?</h3>
+    <p class="fz-find" id="q3Find"></p>
+    <div class="ctrls fz-bar"><div class="seg" id="segEq"><button data-m="Logística" aria-pressed="true">Regresión logística</button><button data-m="Tarjeta de puntos" aria-pressed="false">Tarjeta de puntos</button></div></div>
+    <div class="chart" id="ch-q3" data-chart></div>
+    <div class="legend"><span><i style="background:#2b3045;border-radius:50%"></i>Regla 40 h o más</span><span><i id="q3Dot" style="background:#a9711a;border-radius:50%"></i>Método elegido</span><span class="muted">n: personas con el daño · atenuado: menos de 100 casos · rojo: cambio de 10 pp o más · sin intervalos</span></div>
+  </div>
+  <div class="grid c2" style="margin-top:18px;align-items:start">
+    <div class="card fz-card">
+      <div class="kicker">Parte 4 de 5</div>
+      <h3>¿Por qué 40 horas?</h3>
+      <p class="fz-find" id="q4Find"></p>
+      <div class="chart" id="ch-q4" data-chart></div>
+      <div class="legend"><span><i style="background:#77689d"></i>Menos de 40 h</span><span><i style="background:#a9711a"></i>40 h o más</span><span class="muted">Descriptivo, sin intervalos: no prueba que 40 h sea el mejor corte</span></div>
+    </div>
+    <div class="card fz-card">
+      <div class="kicker">Parte 5 de 5</div>
+      <h3>¿Qué sube o baja el lugar en la fila?</h3>
+      <p class="fz-find" id="q5Find"></p>
+      <div class="chart" id="ch-q5" data-chart></div>
+      <div class="legend"><span><i style="background:#c0435a"></i>Sube la prioridad</span><span><i style="background:#23806f"></i>La baja</span><span class="muted">Tarjeta retirada del prototipo; solo para leer qué pesa · asociaciones, no causas · sin intervalos</span></div>
+    </div>
+  </div>
+  <details class="acc" style="margin-top:18px"><summary>Tabla de todas las configuraciones (primaria y sensibilidades)</summary><div class="in scroll-x" id="v2Tabla"></div></details>
+  <details class="acc"><summary>Por bloque de cuidado (discapacidad / solo 60+)</summary><div class="in scroll-x" id="v2Bloques"></div></details>
+  </div></details>
+  <details class="acc" open><summary>Qué no permite afirmar esta pestaña</summary><div class="in"><ul class="list" id="limMod"></ul></div></details>
+  <details class="src"><summary>Fuente y precisión</summary><dl id="src-v2"></dl></details>
+</section>
+
+<!-- ======================= TERRITORIO ======================= -->
+<section class="view" id="v-territorio" role="tabpanel">
+  <div class="vhead"><div><div class="kicker">Territorio · CDMX · exploratorio</div><h2>Oferta, dependencia y vulnerabilidad por alcaldía</h2></div>
+    <p>Fuentes distintas a la ENASIC. Ninguna capa mide cobertura; rezago y derechohabiencia son contexto, no necesidad.</p></div>
+  <div class="grid c4" id="dimTiles"></div>
+  <div class="card" style="margin-top:18px">
+    <h3 id="tTitle"></h3>
+    <div class="ctrls">
+      <div class="seg" id="segMap"><button data-k="idx_asilos" aria-pressed="true">Asilos</button><button data-k="idx_centros" aria-pressed="false">Centros de día</button><button data-k="ql_plazas" aria-pressed="false">Plazas privadas</button><button data-k="dep_pct" aria-pressed="false">Dependencia severa</button><button data-k="pob65_pct" aria-pressed="false">Pobreza 65+</button><button data-k="rez_pct" aria-pressed="false">Rezago social</button><button data-k="sds_pct" aria-pressed="false">Sin derechohabiencia</button></div>
+    </div>
+    <p class="find" id="mapDef"></p>
+    <div class="grid c2" style="margin-top:12px;align-items:start">
+      <div><div id="map" data-chart role="img" aria-label="Mapa de alcaldías"></div><div class="legend" id="mapLegend"></div></div>
+      <div><div class="chart" id="ch-scatter" style="margin-top:0" data-chart></div><p class="muted" style="font-size:12px;margin-top:6px" id="scNote"></p><div class="ext" id="ext"></div></div>
+    </div>
+    <details class="src"><summary>Tabla por alcaldía, fuente y precisión</summary>
+      <div class="scroll-x" style="margin-top:8px"><table id="tterr" class="click"><thead><tr><th>Alcaldía</th><th class="n" id="thV">Valor</th><th class="n" id="thC">Conteo</th><th class="n">% 60+</th></tr></thead><tbody></tbody></table></div>
+      <dl id="src-terr"></dl></details>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <div class="kicker">México · 32 entidades · ENIGH 2022 y CONAPO 2020</div>
+    <h3 id="eTitle"></h3>
+    <div class="ctrls">
+      <div class="seg" id="segEst"><button data-k="pobreza60" aria-pressed="true">Pobreza 60+</button><button data-k="segsoc60" aria-pressed="false">Sin seguridad social 60+</button><button data-k="salud60" aria-pressed="false">Sin servicios de salud 60+</button><button data-k="sola60" aria-pressed="false">60+ que vive sola</button><button data-k="hog60" aria-pressed="false">Hogares con 60+</button><button data-k="pct_pob60" aria-pressed="false">Peso de 60+</button><button data-k="im" aria-pressed="false">Marginación</button></div>
+    </div>
+    <p class="find" id="eDef"></p>
+    <div class="grid c2" style="margin-top:12px;align-items:start">
+      <div><div id="mapEst" class="map-est" data-chart></div><div class="legend" id="mapEstLegend"></div><div class="ext ext3" id="extEst"></div></div>
+      <div><div class="chart" id="ch-estados" style="margin-top:0" data-chart></div><p class="find" id="eCdmx" style="margin-top:8px"></p></div>
+    </div>
+    <details class="src"><summary>Fuente, precisión y validación</summary><dl id="src-est"></dl></details>
+  </div>
+
+  <!-- Tipología de AGEB (segundo modelo, notebook D, sección 18): js/vistas/territorio-tipologia.js -->
+  <div class="card" style="margin-top:18px" id="tipoCard">
+    <div class="kicker">CDMX · zonas urbanas (AGEB) · Censo 2020</div>
+    <h3>Cuatro tipos de zona para decidir dónde probar el relevo</h3>
+    <p class="find" id="tipoFind"></p>
+    <div class="ctrls">
+      <div class="seg" id="segTipo"><button data-k="tipo" aria-pressed="true">Tipo de zona</button><button data-k="brecha" aria-pressed="false">Brecha de oferta</button><button data-k="sin_int" aria-pressed="false">Sin internet</button><button data-k="p60" aria-pressed="false">Personas de 60+</button></div>
+    </div>
+    <p class="find" id="tipoDef"></p>
+    <div class="grid c21" style="margin-top:12px;align-items:start">
+      <div><div id="mapTipo" data-chart></div><div class="legend" id="tipoLegend"></div></div>
+      <div><div class="tipos" id="tipoLista"></div><div id="tipoPerfil"></div></div>
+    </div>
+    <details class="src"><summary>Fuente, universo y lectura</summary><dl id="src-tipo"></dl></details>
+  </div>
+  <div class="grid c3" style="margin-top:18px;align-items:start">
+    <div class="card"><h3>¿Dónde viven las personas de 60+?</h3><p class="find" id="t60Find"></p><div class="chart" id="ch-t60" data-chart></div></div>
+    <div class="card"><h3>¿La app llega a todas las viviendas?</h3><p class="find" id="tIntFind"></p><div class="chart" id="ch-tint" data-chart></div></div>
+    <div class="card"><h3>¿Qué tan lejos queda la oferta formal?</h3><p class="find" id="tLejFind"></p><div class="chart" id="ch-tlej" data-chart></div></div>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <h3>Brechas de oferta por alcaldía: personas de 60+ en AGEB con brecha</h3>
+    <p class="find" id="tBrFind"></p>
+    <div class="chart" id="ch-tbrecha" data-chart></div>
+    <details class="src"><summary>Definición y límites</summary><dl id="src-tbrecha"></dl></details>
+  </div>
+  <div class="card" style="margin-top:18px">
+    <div class="kicker">Antes de usarla</div>
+    <h3>¿Qué tan firme es la clasificación en 4 tipos de zona?</h3>
+    <p class="find" id="tConfFind"></p>
+    <details class="acc" style="margin-top:12px"><summary>Para revisar el método · separación y estabilidad de los grupos</summary><div class="in">
+      <div class="grid c2" style="margin-top:12px;align-items:start">
+      <div class="chart" id="ch-tsil" data-chart></div>
+      <div class="chart" id="ch-tari" data-chart></div>
+    </div>
+    </div></details>
+    <details class="acc"><summary>Comparación contra alternativas simples (mismo número de grupos)</summary><div class="in scroll-x"><table id="tcomp"><thead><tr><th>Partición</th><th class="n">R² (9 variables)</th><th class="n">Estabilidad (ARI)</th><th class="n">V de Cramér con rezago CONEVAL</th><th class="n">η² limitación</th><th class="n">η² distancia a la oferta</th><th class="n">Vecinos del mismo grupo</th></tr></thead><tbody></tbody></table>
+      <p class="muted" style="font-size:12px;margin-top:8px">El R² favorece de origen a k-means, que optimiza esa medida. La coincidencia con el rezago del CONEVAL es en parte circular. La limitación y la distancia no entraron al modelo.</p></div></details>
+    <details class="acc" open><summary>Cuándo no debe usarse esta clasificación</summary><div class="in"><div class="scroll-x"><table id="trob"><thead><tr><th>Variante (cambia una decisión)</th><th class="n">Coincidencia con el modelo (ARI)</th></tr></thead><tbody></tbody></table></div><ul class="list" style="margin-top:12px" id="limTipo"></ul></div></details>
+  </div>
+</section>
+
+<!-- ======================= INDICADORES ======================= -->
+<section class="view" id="v-indicadores" role="tabpanel">
+  <div class="vhead"><div><div class="kicker">Ficha de indicadores</div><h2>Qué mide el Observatorio, y qué todavía no puede medir.</h2></div>
+    <p>Cuando un indicador no tiene fuente, aparece como "no medible" en lugar de llenarse con un supuesto.</p></div>
+  <div class="seg" id="segKpi" style="margin-bottom:14px"></div>
+  <div class="grid c4" id="kpiTiles"></div>
+  <details class="acc" style="margin-top:22px"><summary>Lista completa con definiciones y archivos</summary><div class="in"><div class="scroll"><table id="tkpi"><thead><tr><th>#</th><th>Dimensión</th><th>Indicador</th><th>Definición</th><th>Universo</th><th>Evidencia</th><th>Origen</th></tr></thead><tbody></tbody></table></div></div></details>
+</section>
+
+<!-- ======================= MÉTODO ======================= -->
+<section class="view" id="v-metodo" role="tabpanel">
+  <div class="vhead"><div><div class="kicker">Método</div><h2>Cada cifra dice de dónde sale y qué tan precisa es.</h2></div>
+    <p>Ninguna cifra de este sitio se escribió a mano: <span class="mono" style="font-size:12.5px">build_datos.py</span> las lee de los archivos de resultados y arma la página.</p></div>
+  <div class="mdec">
+    <h3 class="mdec-t">Cada modelo responde a una decisión</h3>
+    <p class="mdec-p">Un modelo solo se queda si cambia una decisión del programa: dónde, a quién o en qué orden. Cada uno se compara con una alternativa simple, y si la alternativa lo iguala, se dice.</p>
+    <div class="grid c3" id="modDec"></div>
+  </div>
+  <details class="acc"><summary>Fuentes de datos</summary><div class="in"><div class="scroll"><table id="tinv"><thead><tr><th>ID</th><th>Fuente</th><th>Emisor</th><th>Desagregación máxima</th><th>Periodo</th><th>Estado</th></tr></thead><tbody></tbody></table></div></div></details>
+  <details class="acc"><summary>Diccionario de variables y de la base</summary><div class="in"><p class="find" style="margin:0 0 10px">Archivo completo, con cada bloque de <span class="mono" style="font-size:12px">datos_observatorio.json</span>: <a id="dicLink" class="mono" style="font-size:12px"></a>. <span class="mono" style="font-size:12px">build_datos.py</span> se detiene si un bloque no está documentado.</p><div class="dic-bar"><div class="seg" id="dicVista" role="group" aria-label="Vista del diccionario"><button type="button" data-v="linaje" aria-pressed="true">Linaje</button><button type="button" data-v="tabla" aria-pressed="false">Tabla</button></div></div><div id="dicLinaje" class="dic-lin"></div><div id="dicTabla" hidden><div class="dic-tools"><input type="search" id="dicQ" placeholder="Buscar variable, pregunta o definición" aria-label="Buscar en el diccionario"><div class="dic-chips" id="dicChips" role="group" aria-label="Filtrar por grupo"></div></div><ul class="dic-list" id="dicList"></ul><p class="dic-vacio" id="dicVacio" hidden>Ninguna variable coincide con la búsqueda.</p></div></div></details>
+  <details class="acc"><summary>Cómo leer la precisión</summary><div class="in"><div class="grid c4">
+    <div class="light"><span class="chip p-alta">alta</span><span style="font-size:13px">CV &lt; 15%: hallazgo</span></div>
+    <div class="light"><span class="chip p-moderada">moderada</span><span style="font-size:13px">CV 15–30%: con cautela</span></div>
+    <div class="light"><span class="chip p-baja">baja</span><span style="font-size:13px">CV ≥ 30%: no es hallazgo</span></div>
+    <div class="light"><span class="chip p-noest">sin varianza</span><span style="font-size:13px">orden de magnitud</span></div></div>
+    <p class="muted" style="font-size:12.5px;margin-top:10px">Estimaciones ENASIC con diseño muestral (estratos y conglomerados), varianza por linealización de Taylor e intervalos al 90%. Evidencia: confirmado, probable o desconocido.</p></div></details>
+  <details class="acc"><summary>Lo que el Observatorio no puede afirmar</summary><div class="in"><ul class="list">
+    <li><b>Nada de la ENASIC aplica a la CDMX ni a una alcaldía:</b> la encuesta es nacional.</li>
+    <li><b>No hay tendencias:</b> la ENASIC 2022 es la primera edición.</li>
+    <li><b>No mide si alguien aceptaría un relevo en casa:</b> las preguntas son sobre lugares e instituciones.</li>
+    <li><b>Poder pagar no es querer contratar:</b> la asequibilidad no mide disposición a pagar.</li>
+    <li><b>El modelo no prueba que el relevo reduzca el daño:</b> solo ordena a quién ofrecerlo primero.</li>
+    <li><b>No publica datos personales:</b> solo agregados de microdatos públicos.</li></ul></div></details>
+  <details class="acc"><summary>Compatibilidad oferta–necesidad</summary><div class="in scroll-x"><table id="tpares"><thead><tr><th>Oferta</th><th>Necesidad</th><th>Población</th><th>Territorio</th><th>Unidad</th><th>Periodo</th><th>Decisión</th></tr></thead><tbody></tbody></table></div></details>
+  <details class="acc"><summary>Archivos territoriales y su calidad</summary><div class="in"><div class="scroll-x"><table id="tfichas"><thead><tr><th>Archivo</th><th>Unidad</th><th>Medida</th><th>Año</th><th>Productor</th></tr></thead><tbody></tbody></table></div><ul class="list" style="margin-top:12px" id="calidad"></ul></div></details>
+  <details class="acc"><summary>Variables de registro del modelo</summary><div class="in scroll-x"><table id="tvars"><thead><tr><th>Variable</th><th>Qué mide</th><th>Pregunta ENASIC</th></tr></thead><tbody></tbody></table></div></details>
+  <p class="muted" style="font-size:12.5px;margin-top:16px"><b style="color:var(--ink)">Piloto:</b> sus preguntas y su protocolo de datos corresponden al documento de práctica profesional; al Observatorio solo llegarán agregados.</p>
+</section>
+</main>
+
+<footer><div class="wrap"><span>Observatorio del Cuidado · Proyecto integrador 7.º semestre LCDN · UNRC · 2026-2</span></div></footer>
+</div><!-- .content -->
+</div><!-- .shell -->
+
+<script src="js/datos/datos.js"></script>
+<script src="js/datos/geo.js"></script>
+<script src="js/datos/geo-estados.js"></script>
+<script src="js/datos/geo-ageb.js"></script>
+<script src="js/nucleo/obs.js"></script>
+<script src="js/nucleo/util.js?v=20261103c"></script>
+<script src="js/nucleo/alias.js"></script>
+<script src="js/nucleo/filtro-segmento.js"></script>
+<script src="js/graficas/componentes.js"></script>
+<script src="vendor/three.min.js"></script>
+<script src="js/graficas/motor-3d.js"></script>
+<script src="js/graficas/ilustraciones.js"></script>
+<script src="js/vistas/inicio.js?v=20261103c"></script>
+<script src="js/vistas/inicio-seleccion.js"></script>
+<script src="js/vistas/necesidad.js?v=20261103c"></script>
+<script src="js/vistas/barreras.js"></script>
+<script src="js/vistas/segmentacion.js?v=20261103c"></script>
+<script src="js/vistas/relevo.js"></script>
+<script src="js/vistas/focalizacion-v2.js?v=20261103a"></script>
+<script src="js/vistas/focalizacion-prioridad.js?v=20261103c"></script>
+<script src="js/vistas/territorio.js"></script>
+<script src="js/vistas/territorio-estados.js"></script>
+<script src="js/vistas/territorio-tipologia.js?v=20261103c"></script>
+<script src="js/vistas/indicadores-formulas.js?v=20261023b"></script>
+<script src="js/vistas/indicadores.js?v=20261023b"></script>
+<script src="js/vistas/metodo.js?v=20261027e"></script>
+<script src="js/vistas/inicio-contadores.js"></script>
+<script src="js/app/coachmark.js"></script>
+<script src="js/app/plegables.js"></script>
+<script src="js/app/pestanas.js"></script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 /* Reglas del programa de relevo por horas (opción C). Namespace: Care.relevo
  *
- * Cambio 20 oct 2026 (Mientras): la PRIORIDAD ya no sale de aquí. La calculan js/prioridad.js (puntaje de la tarjeta,
+ * Cambio 20 oct 2026 (Mientras): la PRIORIDAD ya no sale de aquí. La calculan js/prioridad.js (regla de ≥ 40 h,
  * niveles, envejecimiento y reparto de la bolsa) y js/config.js (parámetros). `prioridad()` se conserva solo como
  * regla de referencia (≥ 40 h) que la app muestra junto al puntaje. Paquetes, jornada, costo y asignación siguen aquí.
  *

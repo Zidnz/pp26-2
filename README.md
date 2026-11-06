@@ -3,6 +3,18 @@
 Proyecto integrador del 7.º semestre, Licenciatura en Ciencia de Datos para el Negocio (UNRC), semestre 2026-2.
 Equipo: Omar Gutiérrez Escoto (líder), Daniel Cureño Martínez y Alondra Danae Madrigal García.
 
+## Cambios desde el 20 oct (comprobado el 2 nov 2026)
+
+Lo siguiente **corrige o completa** el estado de abajo, que se conserva por historia. Detalle y motivos: bitácora.
+
+- **Objetivo primario del modelo de focalización:** vigente DEC-OBJ-002 (1 nov, 10:30): `DANO_SALUD3`; preregistro en `Documentos/`. Hay un **conflicto abierto** (Omar dijo «algún daño» en otro chat; no se registró como reversión). La línea de abajo sobre `DANO_ALGUNO` quedó superada.
+- **Resultado de la v2 (script 27):** no concluyente; se queda la regla ≥ 40 h. Scripts 26 a 28 y el preregistro sin doble revisión.
+- **App:** se llama **RedCare** desde el 26 oct (antes «Mientras»).
+- **Carpetas nuevas o no documentadas antes:** `Observatorio_streamlit/` (Observatorio en Streamlit, 29 oct; sin comprobar aquí de dónde lee los datos), `_entrega_2026-10-29/` y `_respaldo_graficas_*` (raíz).
+- **Repositorio:** existe `https://github.com/Zidnz/pp26-2` (no es el de MILPÍN). La carpeta local sigue **sin `.git`** (comprobado el 2 nov).
+- **Segunda revisión:** 2 al 6 nov 2026, en curso.
+- **Archivos fuera de la carpeta:** versiones 2.1 de los documentos del segundo avance y una presentación de 13 diapositivas existen solo en chats (bitácora, 2 nov).
+
 ## Estado (20 oct 2026, 11:10 h CDMX)
 
 Inventario hecho contra la carpeta `Downloads\pp26-2` el 20 oct 2026. Lo que dice este README se comprobó listando los archivos. Las decisiones y sus motivos están en la bitácora, no aquí.
@@ -17,7 +29,7 @@ Inventario hecho contra la carpeta `Downloads\pp26-2` el 20 oct 2026. Lo que dic
 
 | Carpeta | Contenido | Estado |
 |---|---|---|
-| `Documentos/bitacora-decisiones.md` | Registro de decisiones, append-only. Es la fuente canónica. | Al día al 20 oct 2026 |
+| `Documentos/bitacora-decisiones.md` | Registro de decisiones, append-only. Es la fuente canónica. | Al día al 2 nov 2026 |
 | `Documentos/` | Informes Word/PDF, sus generadores (`build_*.js`, `generar_valores*.py`), documento técnico y referencias. Ver `Documentos/README.md` para saber qué versión rige. | Hay versiones superadas sin archivar. El proyecto C++ ajeno se borró el 20 oct |
 | `Data/investigacion/` | 11 CSV de origen (de varios no está documentado el productor ni el año) | Sin cambios desde el 14 sept |
 | `Data/ref/`, `Data/raw/` | Copias de referencia; DENUE 05_2026 CDMX (260 MB, git lo ignora) | Ver `Data/README_notebook01.md` |
@@ -33,7 +45,7 @@ Inventario hecho contra la carpeta `Downloads\pp26-2` el 20 oct 2026. Lo que dic
 | `scripts/` | `app.py` (asistente de voz Flask que apunta a una carpeta `ERP/` que **ya no existe**), `danita.html` y `parche_comparador_2026-10-07/` | Pendiente decidir si son del proyecto (bitácora, 22 sept) |
 | `Fotos/` | Capturas del Observatorio (9) | — |
 | `Claude outputs/` | `Omar_Tema3_I_Care_a_Lot.docx` (9 sept) | Parece ajeno al Observatorio; pendiente decidir |
-| `_to_delete/` | — | **Borrada el 20 oct 2026 (11:35)** por decisión de Omar, con todos sus respaldos. Las referencias a `_to_delete/…` en la bitácora y en `Frontend/observatorio/README.md` son históricas: esos archivos ya no existen |
+| `_to_delete/` | Existe de nuevo (respaldos posteriores al 20 oct; por ejemplo `backup_pre_registro_2026-11-02/`) | **Borrada el 20 oct 2026 (11:35)** por decisión de Omar, con todos sus respaldos. Las referencias a `_to_delete/…` en la bitácora y en `Frontend/observatorio/README.md` son históricas: esos archivos ya no existen |
 
 En la raíz también están `denue_09_csv.zip` y `denue_09_0525_csv.zip` (45 MB cada uno; git los ignora por `*.zip`). El segundo lo usa `Analysis/reproduccion_colmex_2026-09-22/`. `_obs_snapshot.tgz` y `app_matching_relevo_frontend.zip` se borraron el 20 oct (21:50).
 
@@ -64,3 +76,4 @@ Los microdatos (ENASIC, DENUE, Censo 2020 por AGEB, ENUT 2024) tienen que estar 
 - 20 oct 2026 (11:35): se borraron `_to_delete/` completa, las carpetas `__pycache__` y el proyecto C++ de 2015 de `Documentos/`.
 - 21 oct 2026 (10:55): fila de `Backend/` actualizada (backend 0.1.0; bitácora del 21 oct, 10:55).
 - 21 oct 2026 (22:30): orden de reproducción (ETL antes que `build_datos.py`) y filas de `DW/`, `Backend/` y Observatorio (bitácora del 21 oct, 22:30).
+- 2 nov 2026: sección «Cambios desde el 20 oct», fila de la bitácora y de `_to_delete/` (bitácora, 2 nov). La tabla y el resto del estado del 20 oct no se revisaron línea por línea.

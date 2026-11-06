@@ -20,11 +20,11 @@
       op:'Hogares con al menos una persona con discapacidad o de 60 años y más ÷ total de hogares del país × 100',
       datos:'= '+fmt(D.tasa_necesidad_nal)+' % (tasa nacional, hogares expandidos)',
       nota:'Fuente: ENASIC 2022 (archivo 05, concepto «Tasa nacional de hogares con persona con discapacidad o 60+»). La ficha cita también el Censo 2020, pero esta cifra sale de la ENASIC.'}},
-    'Grupo del problema':function(){var e=K.grupo_problema;return {
-      op:'Σ FAC_CUI · 1[cuida a persona con discapacidad o 60+ ∧ HORAS ≥ 40 ∧ «no tuve necesidad» ∧ algún daño] ÷ Σ FAC_CUI · 1[cuida a persona con discapacidad o 60+] × 100',
+    'Grupo del problema':function(){var e=K.grupo_problema_salud3;return {
+      op:'Σ FAC_CUI · 1[cuida a persona con discapacidad o 60+ ∧ HORAS ≥ 40 ∧ «no tuve necesidad» ∧ daño a la salud] ÷ Σ FAC_CUI · 1[cuida a persona con discapacidad o 60+] × 100',
       datos:razon(e,'personas del grupo','personas cuidadoras del universo'),
-      dax:'CALCULATE(AVERAGE(seg_series[pct]), seg_series[serie] = "kpi", seg_series[categoria] = "grupo")',
-      nota:'HORAS = P6_7 + P6_26 con tope de 168 (cada bloque topa en 98 h). «No tuve necesidad» = P6_45_09. Algún daño = salud o trabajo (DANO_ALGUNO). '+VAR}},
+      dax:'(sin medida DAX: la cifra sale de resultados/29_grupo_problema_salud3.csv)',
+      nota:'HORAS = P6_7 + P6_26 con tope de 168 (cada bloque topa en 98 h). «No tuve necesidad» = P6_45_09. Daño a la salud = salud física, cansancio o sueño (DANO_SALUD3, objetivo primario). Con «algún daño» (salud o trabajo, versión 1) el grupo era '+fmt(K.grupo_problema.pct)+' %. Script 29, sin doble revisión. '+VAR}},
     'Cuidado de alta intensidad':function(){var e=K.pesa_40;return {
       op:PERS.replace('condición','HORAS ≥ 40').replace('universo','cuida a persona con discapacidad o 60+'),
       datos:razon(e,'cuidan 40 h o más','personas cuidadoras del universo'),
@@ -53,8 +53,8 @@
       op:'No se calcula. Sería oferta ÷ necesidad por alcaldía, pero solo si ambas miden la misma población.',
       datos:'Ningún par oferta–necesidad cumple la regla de compatibilidad (matrices/pares_oferta_necesidad.csv).',
       nota:'«Desconocido» es una respuesta válida: no se rellena con un supuesto.'}},
-    'Daño por intensidad de cuidado':function(){var n=CG.dano[2],d=CG.sin_necesidad[2];return {
-      op:'Σ FAC_CUI · 1[algún daño ∧ HORAS ≥ 40 ∧ «no tuve necesidad»] ÷ Σ FAC_CUI · 1[HORAS ≥ 40 ∧ «no tuve necesidad»] × 100',
+    'Daño por intensidad de cuidado':function(){var n=K.dano_salud3_40h,d=CG.sin_necesidad[2];return {
+      op:'Σ FAC_CUI · 1[daño a la salud ∧ HORAS ≥ 40 ∧ «no tuve necesidad»] ÷ Σ FAC_CUI · 1[HORAS ≥ 40 ∧ «no tuve necesidad»] × 100',
       datos:'≈ '+ent(n.total_expandido)+' (con daño) ÷ ≈ '+ent(d.total_expandido)+' (con 40 h o más que dicen «no tuve necesidad») = '+fmt(n.pct)+' %',
       nota:'Es una asociación entre horas y daño declarado en una encuesta transversal, no causalidad. '+VAR}},
     'Costo de la jornada completa':function(){var r=pisoRow(40);return {
@@ -98,11 +98,11 @@
       op:'No se calcula: ninguna fuente del proyecto mide trato, capacitación ni incidentes del cuidado en casa.',
       datos:'Lo tendría que medir el piloto.',
       nota:'«Desconocido» es una respuesta válida.'}},
-    'Cobertura de la regla "40 h o más"':function(){var g=D.modelo.global.filter(function(r){return r.puntaje==='Regla >= 40 h'})[0];return {
-      op:'cobertura = Σ w · 1[HORAS ≥ 40 ∧ algún daño] ÷ Σ w · 1[algún daño] × 100  (personas con daño que la regla selecciona)',
-      datos:'= '+fmt(g.cobertura)+' % (IC 90 %: '+fmt(g.cobertura_li90)+' a '+fmt(g.cobertura_ls90)+'); la regla selecciona al '+fmt(g.tasa_seleccion)+' % del universo',
-      dax:'CALCULATE(AVERAGE(modelo_global[cobertura]), modelo_global[objetivo] = "DANO_ALGUNO", modelo_global[puntaje] = "Regla >= 40 h")',
-      nota:'Validación cruzada agrupada por UPM (5 × 20), métricas ponderadas con FAC_CUI. El daño es autodeclarado.'}}
+    'Cobertura de la regla "40 h o más"':function(){var g=D.modelo_v2.global.filter(function(r){return r.configuracion.indexOf('PRIMARIO')===0&&r.puntaje==='Regla >= 40 h'})[0];return {
+      op:'cobertura = Σ w · 1[HORAS ≥ 40 ∧ daño a la salud, cansancio o sueño] ÷ Σ w · 1[daño a la salud, cansancio o sueño] × 100  (personas con el daño que la regla selecciona; DANO_SALUD3)',
+      datos:'= '+fmt(g.cobertura)+' % (IC 90 %: '+fmt(g.cob_li90)+' a '+fmt(g.cob_ls90)+'); la regla selecciona al '+g.cupo+' del universo',
+      dax:'(sin medida DAX: la cifra sale de resultados/27_v2_global.csv)',
+      nota:'Versión 2 preregistrada (script 27): validación por UPM (5 × 20), métricas ponderadas con FAC_CUI. El daño es autodeclarado. No prueba que la regla sea mejor que un modelo. Sin doble revisión.'}}
   };
 
   /* ---- notación matemática (MathML nativo, sin librerías) ----

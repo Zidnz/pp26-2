@@ -1,21 +1,31 @@
 ﻿run_id,codigo,severidad,descripcion,paso,detalle
-6,DQ01,error,Integridad referencial: ninguna clave foránea huérfana,1,0 huérfanas
-6,DQ02,error,"Conteos de control: filas de origen = filas cargadas + rechazadas (6 estimaciones, 2 asequibilidad)",1,
-6,DQ03,error,Alcance: ningún hecho está en un nivel geográfico más fino que el que permite su fuente,1,0 violaciones: []
-6,DQ04,error,Protección de datos: ninguna columna de staging parece identificar a una persona,1,[]
-6,DQ05,error,Rango: toda proporción estimada está entre 0 y 100,1,"encuesta 0, asequibilidad 0"
-6,DQ05b,advertencia,"Intervalos de confianza dentro de [0,100] (los de Wald pueden salirse; el DW no los recorta)",0,"49 intervalos fuera de rango: 03_enasic_barreras_estimaciones.csv: 3 (mín li90 -1.4, máx ls90 12.2); 04_contratacion_por_quintil.csv: 2 (mín li90 -0.25, máx ls90 1.26); 07_enasic_necesidad_vs_norma_estimaciones.csv: 14 (mín li90 -0.8, máx ls90 7.0); 12_segmentacion_estimaciones.csv: 13 (mín li90 -0.91, máx ls90 7.03); 12b_segmentacion_series.csv: 17 (mín li90 -1.41, máx ls90 13.24)"
-6,DQ06,advertencia,Intervalos: li90 ≤ estimación ≤ ls90 (tolerancia 0.06 por redondeo),1,"encuesta 0, asequibilidad 0"
-6,DQ07,advertencia,Precisión: la clase publicada coincide con la regla del INEGI aplicada al CV,1,0 filas: []
-6,DQ08,error,Totales de control: núcleo = 235 (bitácora 20 sept); participaciones suman 100,1,"{'dependencia_severa_pct_cdmx': 99.9, 'oferta_nucleo_estab': 235.0, 'oferta_nucleo_pct_cdmx': 100.0, 'participacion_60mas_censo2020': 100.0, 'pob_total_censo2020': 9209944.0, 'poblacion_60mas_participacion_p01': 100.0}"
-6,DQ08b,advertencia,"Total de control: población CDMX del Censo 2020 = 9,209,944",1,suma 9209944
-6,DQ09,error,"Alias de alcaldía: plazas (por abreviatura) = capacidad (por nombre, otro archivo) en las 12 alcaldías con dato",1,12 alcaldías; discrepancias: []
-6,DQ10,advertencia,Desconocido ≠ 0: oferta_por_alcaldia.csv trae capacidad 0 donde la fuente no tiene dato (no se cargó),0,"se omitieron los 0 de: Cuajimalpa de Morelos, Tláhuac, Venustiano Carranza"
-6,DQ11,advertencia,Contraste: participación en 60+ del archivo P01 (año desconocido) vs Censo 2020,1,diferencia máxima 0.00 pp en Tlalpan; Spearman 1.000; media 0.00 pp
-6,DQ12,info,Tendencias: fuentes con >= 2 periodos distintos (solo ellas admiten series),1,0 de 12 combinaciones fuente×hecho; ENASIC: 0
-6,DQ13,advertencia,Consistencia 10 vs 14: la cifra ENASIC que cita el script 14 coincide con la del script 10,1,diferencia máxima 0.000
-6,DQ14,advertencia,Índices recomputables: oferta/60+ y los índices por tipo se reproducen desde sus componentes,1,error máximo 0.00056
-6,DQ15,info,Cobertura: medidas por alcaldía con alcaldías SIN dato (quedan como desconocido),1,plazas_por_1000_personas_adl: faltan 4; plazas_residencias_privadas: faltan 4
-6,DQ16,error,Una medida por alcaldía tiene un solo periodo/fuente (requisito del mart ancho),1,[]
-6,DQ17,info,Definiciones de medidas sin verificar contra el notebook (pendiente de la doble revisión),1,20 de 49
-6,DQ18,advertencia,Reconciliación: cada cifra clave del Observatorio existe en el DW con el mismo valor y total expandido,1,11/11; sin correspondencia: []
+20,DQ01,error,Integridad referencial: ninguna clave foránea huérfana,1,0 huérfanas
+20,DQ02,error,"Conteos de control: filas de origen = filas cargadas + rechazadas (6 estimaciones, 2 asequibilidad)",1,
+20,DQ03,error,Alcance: ningún hecho está en un nivel geográfico más fino que el que permite su fuente,1,0 violaciones: []
+20,DQ04,error,Protección de datos: ninguna columna de staging parece identificar a una persona,1,[]
+20,DQ05,error,Rango: toda proporción estimada está entre 0 y 100,1,"encuesta 0, asequibilidad 0"
+20,DQ05b,advertencia,"Intervalos de confianza dentro de [0,100] (los de Wald pueden salirse; el DW no los recorta)",0,"49 intervalos fuera de rango: 03_enasic_barreras_estimaciones.csv: 3 (mín li90 -1.4, máx ls90 12.2); 04_contratacion_por_quintil.csv: 2 (mín li90 -0.25, máx ls90 1.26); 07_enasic_necesidad_vs_norma_estimaciones.csv: 14 (mín li90 -0.8, máx ls90 7.0); 12_segmentacion_estimaciones.csv: 13 (mín li90 -0.91, máx ls90 7.03); 12b_segmentacion_series.csv: 17 (mín li90 -1.41, máx ls90 13.24)"
+20,DQ06,advertencia,Intervalos: li90 ≤ estimación ≤ ls90 (tolerancia 0.06 por redondeo),1,"encuesta 0, asequibilidad 0"
+20,DQ07,advertencia,Precisión: la clase publicada coincide con la regla del INEGI aplicada al CV,1,0 filas: []
+20,DQ08,error,Totales de control: núcleo = 235 (bitácora 20 sept); participaciones suman 100,1,"{'dependencia_severa_pct_cdmx': 99.9, 'oferta_nucleo_estab': 235.0, 'oferta_nucleo_pct_cdmx': 100.0, 'participacion_60mas_censo2020': 100.0, 'pob_total_censo2020': 9209944.0, 'poblacion_60mas_participacion_p01': 100.0}"
+20,DQ08b,advertencia,"Total de control: población CDMX del Censo 2020 = 9,209,944",1,suma 9209944
+20,DQ09,error,"Alias de alcaldía: plazas (por abreviatura) = capacidad (por nombre, otro archivo) en las 12 alcaldías con dato",1,12 alcaldías; discrepancias: []
+20,DQ10,advertencia,Desconocido ≠ 0: oferta_por_alcaldia.csv trae capacidad 0 donde la fuente no tiene dato (no se cargó),0,"se omitieron los 0 de: Cuajimalpa de Morelos, Tláhuac, Venustiano Carranza"
+20,DQ11,advertencia,Contraste: participación en 60+ del archivo P01 (año desconocido) vs Censo 2020,1,diferencia máxima 0.00 pp en Tlalpan; Spearman 1.000; media 0.00 pp
+20,DQ12,info,Tendencias: fuentes con >= 2 periodos distintos (solo ellas admiten series),1,0 de 15 combinaciones fuente×hecho; ENASIC: 0
+20,DQ13,advertencia,Consistencia 10 vs 14: la cifra ENASIC que cita el script 14 coincide con la del script 10,1,diferencia máxima 0.000
+20,DQ14,advertencia,Índices recomputables: oferta/60+ y los índices por tipo se reproducen desde sus componentes,1,error máximo 0.00056
+20,DQ15,info,Cobertura: medidas por alcaldía con alcaldías SIN dato (quedan como desconocido),1,plazas_por_1000_personas_adl: faltan 4; plazas_residencias_privadas: faltan 4; prioridad_pct_en_5_ageb: faltan 1
+20,DQ16,error,Una medida por alcaldía tiene un solo periodo/fuente (requisito del mart ancho),1,[]
+20,DQ17,info,Definiciones de medidas sin verificar contra el notebook (pendiente de la doble revisión),1,40 de 87
+20,DQ18,advertencia,Reconciliación: cada cifra clave del Observatorio existe en el DW con el mismo valor y total expandido,1,13/13; sin correspondencia: []
+20,DQ19,error,Conteos de control de modelos: celdas con valor = filas cargadas + rechazadas (56 archivos),1,
+20,DQ19b,advertencia,"Modelos: ninguna celda rechazada (duplicado de grano, geografía no resuelta o texto en columna numérica)",1,0 rechazos; primeros: []
+20,DQ20,error,"AGEB: 2,371 claves únicas de 13 dígitos, cada una colgada de la alcaldía que indica su clave",1,"AGEB 2371, con padre coherente 2371, claves únicas 2371"
+20,DQ21,advertencia,Script 24 vs notebook D: N (cuartil) = Σ 60+ de AGEB con brecha = medida de la tipología; pob_60 = Σ 60+ de las AGEB,1,"16 alcaldías; diferencias máximas: N 0.0, tipología 0.0, pob_60 0.0"
+20,DQ22,advertencia,AGEB de 24_brecha_ageb = AGEB con brecha por tercil en 18_tipologia_ageb,1,"tercil 257, archivo 24 257, solo en uno: 0"
+20,DQ23,error,Modelos: cada uno declara su alternativa simple y tiene resultados en el DW,1,[]
+20,DQ24,error,Rango: toda proporción de un modelo está entre 0 y 100,1,[]
+20,DQ24b,advertencia,Escala: ninguna métrica declarada en % parece venir en proporción 0-1,1,[]
+20,DQ25,advertencia,Consistencia entre archivos del mismo modelo (11: versión 1 vs ampliación; 18: decisión vs perfiles; 22: tarjeta vs estabilidad),1,"11 v1 vs ampliación: 4 métodos en común, dif. máx. de cobertura 0.000 pp; 18 decisión y perfiles suman {'18_tipologia_decision.csv': 2371.0, '18_tipologia_perfiles.csv': 2371.0} AGEB (esperado 2371); 22 puntos de la tarjeta = puntos_final de estabilidad: 27 de 27"
+20,DQ26,info,"Madurez de los modelos: exploratorios o sin doble revisión, y resultados ilustrativos",1,11 de 11 modelos sin doble revisión; 55 resultados ilustrativos (script 20)

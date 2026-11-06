@@ -1,0 +1,13 @@
+﻿bloque,ruta,valor
+relevo_enigh,relevo_enigh.filas[18].pct_ingreso_mediano,102.6
+relevo_enigh,relevo_enigh.filas[19].pct_ingreso_mediano,136.7
+relevo_enigh,relevo_enigh.necesidad_cdmx_det.total,1407522.0
+sostenibilidad,sostenibilidad.elegibles_cdmx,70557.0
+tipologia,tipologia.dejar_fuera.coincidencia_ponderada,97.84900885702235
+tipologia,tipologia.frontera.pct,12.652889076339097
+tipologia,tipologia.frontera.poblacion,1057017.0
+tipologia,tipologia.brecha_total.n_60,164354.0
+tipologia,tipologia.sin_internet_total.viviendas,655725.0
+tipologia,tipologia.sin_internet_total.pct,23.990863550351452
+kpis,kpis[14].valor,23.990863550351452
+kpis,kpis[15].valor,164354.0

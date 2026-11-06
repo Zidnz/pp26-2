@@ -11,14 +11,14 @@
 .card.dark .find{color:var(--on-shell-soft)} .card.dark .find b{color:#fff}
 
 details.src{margin-top:auto;padding-top:10px}
-details.src summary{list-style:none;cursor:pointer;font:600 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);display:inline-flex;align-items:center;gap:6px;padding:6px 0}
+details.src summary{list-style:none;cursor:pointer;font:600 10.5px var(--mono);letter-spacing:0;text-transform:uppercase;color:var(--ink-faint);display:inline-flex;align-items:center;gap:6px;padding:6px 0}
 details.src summary::-webkit-details-marker{display:none}
 details.src summary::before{content:"ⓘ";font-size:13px;color:var(--accent)}
 details.src[open] summary{color:var(--ink)}
 details.src dl{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font:400 11px/1.45 var(--mono);color:var(--ink-faint);border-top:1px dashed var(--hair);padding-top:8px}
 details.src dt{font-weight:600;color:var(--ink-soft)} details.src dd{margin:0;word-break:break-word}
 
-.chip{display:inline-flex;align-items:center;padding:3px 8px;border-radius:99px;font:600 10px/1.2 var(--mono);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.chip{display:inline-flex;align-items:center;padding:3px 8px;border-radius:99px;font:600 10px/1.2 var(--mono);letter-spacing:0;text-transform:uppercase;white-space:nowrap}
 .p-alta{background:rgba(35,128,111,.12);color:var(--teal)}
 .p-moderada{background:var(--amber-soft);color:var(--amber)}
 .p-baja{background:var(--alert-soft);color:var(--alert)}
@@ -36,6 +36,20 @@ details.src dt{font-weight:600;color:var(--ink-soft)} details.src dd{margin:0;wo
 .go:hover{text-decoration:underline}
 .tile .big{font:740 34px/1 var(--sans);font-stretch:85%;letter-spacing:-.02em;margin-top:6px}
 .tile .lbl{margin-top:8px;font-size:13px;color:var(--ink-soft)}
+/* 2 nov 2026: tarjeta mínima (etiqueta + número) con detalle plegable. Se genera con OBS.tile (js/nucleo/util.js). */
+.tile-min .big{font-size:30px}
+.tile-min .kicker{line-height:1.35}
+.tile-v2{margin-top:4px;font:600 12px var(--mono);color:var(--ink-soft)}
+details.tdet{margin-top:auto;padding-top:10px}
+details.tdet summary{list-style:none;cursor:pointer;font:600 10.5px var(--mono);letter-spacing:0;text-transform:uppercase;color:var(--ink-faint);display:inline-flex;align-items:center;gap:6px;padding:6px 0}
+details.tdet summary::-webkit-details-marker{display:none}
+details.tdet summary::before{content:"ⓘ";font-size:13px;color:var(--accent)}
+details.tdet summary:hover,details.tdet[open] summary{color:var(--ink)}
+.tdet-in{border-top:1px dashed var(--hair);padding-top:8px;font-size:12.5px;line-height:1.5;color:var(--ink-soft)}
+.tdet-in .lbl{margin-top:0}
+.tdet-in .chips{margin-top:8px}
+.tdet-f{margin-top:8px;font:400 11px/1.45 var(--mono);color:var(--ink-faint)}
+.tdet-f b{color:var(--ink-soft)}
 .dark .tile .lbl,.card.dark .lbl{color:var(--on-shell-soft)}
 
 .light{display:flex;align-items:center;gap:10px}
@@ -45,7 +59,7 @@ details.src dt{font-weight:600;color:var(--ink-soft)} details.src dd{margin:0;wo
 .note{display:flex;gap:10px;align-items:flex-start;padding:11px 14px;border-radius:10px;background:var(--amber-soft);border:1px solid rgba(169,113,26,.22);font-size:13px;color:#5d3f0f}
 
 table{border-collapse:collapse;width:100%;font-size:12.8px}
-th{font:600 10px var(--mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:8px 8px;border-bottom:1px solid var(--hair);white-space:nowrap;position:sticky;top:0;background:var(--card)}
+th{font:600 10px var(--mono);letter-spacing:0;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:8px 8px;border-bottom:1px solid var(--hair);white-space:nowrap;position:sticky;top:0;background:var(--card)}
 td{padding:8px 8px;border-bottom:1px solid var(--hair-2);vertical-align:top}
 td.n,th.n{text-align:right} td.n{font:500 12px var(--mono);white-space:nowrap}
 .scroll{overflow:auto;max-height:420px;border:1px solid var(--hair);border-radius:10px;background:var(--card)}
@@ -81,7 +95,7 @@ details.acc .in{padding:0 18px 16px}
 /* Recorrido guiado de la ficha de cada tarjeta (js/app/coachmark.js). Sustituye a details.src dentro de .card desde el 7 oct 2026 (noche). */
 .cm-anchor{position:relative;margin-top:auto;padding-top:10px}
 .cm-trigger{display:inline-flex;align-items:center;gap:6px;background:none;border:0;border-radius:99px;padding:5px 10px 5px 6px;margin-left:-6px;
-  font:600 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);transition:color .15s,box-shadow .2s,background .15s}
+  font:600 10.5px var(--mono);letter-spacing:0;text-transform:uppercase;color:var(--ink-faint);transition:color .15s,box-shadow .2s,background .15s}
 .cm-trigger::before{content:"ⓘ";font-size:13px;color:var(--accent)}
 .cm-trigger:hover{color:var(--ink);background:var(--accent-soft)}
 .cm-trigger.is-lit{color:var(--ink);background:var(--card);box-shadow:0 0 0 2px var(--card),0 0 0 4px var(--accent),0 0 0 9px var(--accent-soft)}
@@ -93,7 +107,7 @@ details.acc .in{padding:0 18px 16px}
   background:var(--shell-3);color:var(--on-shell);border-radius:14px;padding:16px 18px 14px;text-align:left;
   box-shadow:0 18px 40px rgba(37,42,59,.32),0 2px 6px rgba(37,42,59,.18);animation:cm-in .16s ease-out}
 .cm-arrow{position:absolute;top:-6px;left:var(--cm-arrow);width:13px;height:13px;background:var(--shell-3);transform:rotate(45deg);border-radius:2px 0 0 0}
-.cm-step{font:700 10px/1.2 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--on-shell-faint)}
+.cm-step{font:700 10px/1.2 var(--mono);letter-spacing:0;text-transform:uppercase;color:var(--on-shell-faint)}
 .cm-title{font:680 16px/1.25 var(--sans);color:#fff;margin-top:6px}
 .cm-body{margin-top:6px;font-size:13.5px;line-height:1.5;color:var(--on-shell-soft);max-height:min(260px,45vh);overflow:auto;scrollbar-width:thin}
 .cm-body b{color:#fff}

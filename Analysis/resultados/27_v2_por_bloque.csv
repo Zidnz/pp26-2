@@ -1,0 +1,41 @@
+﻿configuracion,objetivo,cupo,bloque,puntaje,tasa_seleccion_bloque,cobertura,dif_vs_comparador_pp,dif_li90,dif_ls90,dif_minima_detectable_pp,veredicto_secundario
+"PRIMARIO: DANO_SALUD3, predictores primarios",DANO_SALUD3,40.7 % (regla),Discapacidad,Regla >= 40 h,44.82125845049195,52.13192451517523,0.0,0.0,0.0,,comparador
+"PRIMARIO: DANO_SALUD3, predictores primarios",DANO_SALUD3,40.7 % (regla),Solo 60+,Regla >= 40 h,35.413645156279806,48.03938871701169,0.0,0.0,0.0,,comparador
+"PRIMARIO: DANO_SALUD3, predictores primarios",DANO_SALUD3,40.7 % (regla),Discapacidad,Logística,44.82125845049195,54.91004048661237,2.77811597143713,-1.7281659693495592,7.284397912223819,6.811885248809109,no concluyente: se queda la regla
+"PRIMARIO: DANO_SALUD3, predictores primarios",DANO_SALUD3,40.7 % (regla),Solo 60+,Logística,35.413645156279806,41.06320466767717,-6.976184049334523,-17.332004277538726,3.37963617886968,15.654293268545048,no concluyente: se queda la regla
+"PRIMARIO: DANO_SALUD3, predictores primarios",DANO_SALUD3,40.7 % (regla),Discapacidad,Tarjeta de puntos,44.82125845049195,54.216598544800995,2.0846740296257646,-2.4951745680170565,6.6645226272685845,6.923091700430953,no concluyente: se queda la regla
+"PRIMARIO: DANO_SALUD3, predictores primarios",DANO_SALUD3,40.7 % (regla),Solo 60+,Tarjeta de puntos,35.413645156279806,39.28240692676647,-8.756981790245218,-18.71639294972553,1.2024293692350905,15.055064653199459,no concluyente: se queda la regla
+Sens. cupo,DANO_SALUD3,10 %,Discapacidad,Horas (continuo),11.006043647176066,12.011044438646838,0.0,0.0,0.0,,comparador
+Sens. cupo,DANO_SALUD3,10 %,Solo 60+,Horas (continuo),8.695965659378821,14.258632503477916,0.0,0.0,0.0,,comparador
+Sens. cupo,DANO_SALUD3,10 %,Discapacidad,Logística,11.006043647176066,14.081804214859265,2.0707597762124244,-2.5179216354291714,6.6594411878540205,6.93644375344813,no concluyente: se queda la regla
+Sens. cupo,DANO_SALUD3,10 %,Solo 60+,Logística,8.695965659378821,11.95303253669982,-2.3055999667780984,-13.178467915114227,8.56726798155803,16.435884341624284,no concluyente: se queda la regla
+Sens. cupo,DANO_SALUD3,10 %,Discapacidad,Tarjeta de puntos,11.006043647176066,14.694707752364941,2.683663313718101,-1.9218745988018255,7.289201226238028,6.961924748909234,no concluyente: se queda la regla
+Sens. cupo,DANO_SALUD3,10 %,Solo 60+,Tarjeta de puntos,8.695965659378821,11.698781171487303,-2.5598513319906147,-13.420279103377863,8.300576439396634,16.41707924709976,no concluyente: se queda la regla
+Sens. cupo,DANO_SALUD3,20 %,Discapacidad,Horas (continuo),22.01208729435213,25.794610159337527,0.0,0.0,0.0,,comparador
+Sens. cupo,DANO_SALUD3,20 %,Solo 60+,Horas (continuo),17.391931318757642,24.305454620958866,0.0,0.0,0.0,,comparador
+Sens. cupo,DANO_SALUD3,20 %,Discapacidad,Logística,22.01208729435213,28.387637572349288,2.593027413011759,-4.102170154540303,9.288224980563822,10.12074214342404,no concluyente: se queda la regla
+Sens. cupo,DANO_SALUD3,20 %,Solo 60+,Logística,17.391931318757642,18.349909677955193,-5.955544943003675,-19.457333201693334,7.546243315685981,20.409870815996005,no concluyente: se queda la regla
+Sens. cupo,DANO_SALUD3,20 %,Discapacidad,Tarjeta de puntos,22.01208729435213,28.32226956933453,2.5276594099970047,-4.183227297539154,9.238546117533163,10.144458507075603,no concluyente: se queda la regla
+Sens. cupo,DANO_SALUD3,20 %,Solo 60+,Tarjeta de puntos,17.391931318757642,18.349909677955193,-5.955544943003675,-19.457333201693334,7.546243315685981,20.409870815996005,no concluyente: se queda la regla
+Sens. A: + autopercepción,DANO_SALUD3,40.7 % (regla),Discapacidad,Regla >= 40 h,44.82125845049195,52.13192451517523,0.0,0.0,0.0,,comparador
+Sens. A: + autopercepción,DANO_SALUD3,40.7 % (regla),Solo 60+,Regla >= 40 h,35.413645156279806,48.03938871701169,0.0,0.0,0.0,,comparador
+Sens. A: + autopercepción,DANO_SALUD3,40.7 % (regla),Discapacidad,Logística,44.82125845049195,58.81786822042496,6.685943705249732,-0.5291655584114694,13.901052968910932,10.906662523006611,no concluyente: se queda la regla
+Sens. A: + autopercepción,DANO_SALUD3,40.7 % (regla),Solo 60+,Logística,35.413645156279806,48.529619401590494,0.4902306845788086,-12.155136672134255,13.135598041291871,19.115268972257905,no concluyente: se queda la regla
+Sens. A: + autopercepción,DANO_SALUD3,40.7 % (regla),Discapacidad,Tarjeta de puntos,44.82125845049195,59.33636741359152,7.204442898416287,0.1402842570046553,14.26860153982792,10.678479215678777,"supera Δ en el bloque (secundario: sin equidad evaluada, no permite adoptar)"
+Sens. A: + autopercepción,DANO_SALUD3,40.7 % (regla),Solo 60+,Tarjeta de puntos,35.413645156279806,47.54666638981749,-0.4927223271942028,-12.918654343979629,11.933209689591223,18.783561286240477,no concluyente: se queda la regla
+Sens. objetivo: DANO_ALGUNO,DANO_ALGUNO,40.7 % (regla),Discapacidad,Regla >= 40 h,44.82125845049195,51.1529941917822,0.0,0.0,0.0,,comparador
+Sens. objetivo: DANO_ALGUNO,DANO_ALGUNO,40.7 % (regla),Solo 60+,Regla >= 40 h,35.413645156279806,50.15401266663231,0.0,0.0,0.0,,comparador
+Sens. objetivo: DANO_ALGUNO,DANO_ALGUNO,40.7 % (regla),Discapacidad,Logística,44.82125845049195,51.233407823814915,0.08041363203271147,-4.382034414839273,4.542861678904696,6.745624091766788,no concluyente: se queda la regla
+Sens. objetivo: DANO_ALGUNO,DANO_ALGUNO,40.7 % (regla),Solo 60+,Logística,35.413645156279806,46.562455471239346,-3.5915571953929595,-14.25397517295855,7.070860782172632,16.117759317415555,no concluyente: se queda la regla
+Sens. objetivo: DANO_ALGUNO,DANO_ALGUNO,40.7 % (regla),Discapacidad,Tarjeta de puntos,44.82125845049195,51.42047739023637,0.2674831984541754,-4.047850659714251,4.582817056622602,6.523240098690372,no concluyente: se queda la regla
+Sens. objetivo: DANO_ALGUNO,DANO_ALGUNO,40.7 % (regla),Solo 60+,Tarjeta de puntos,35.413645156279806,45.88531513477624,-4.2686975318560645,-14.774704136410124,6.237309072697996,15.881321309638075,no concluyente: se queda la regla
+Sens. sin personas en ambos bloques,DANO_SALUD3,40.7 % (regla),Discapacidad,Regla >= 40 h,32.94587583315722,39.97241793327141,0.0,0.0,0.0,,comparador
+Sens. sin personas en ambos bloques,DANO_SALUD3,40.7 % (regla),Solo 60+,Regla >= 40 h,35.413645156279806,48.03938871701169,0.0,0.0,0.0,,comparador
+Sens. sin personas en ambos bloques,DANO_SALUD3,40.7 % (regla),Discapacidad,Logística,32.94587583315722,43.46646994346199,3.4940520101905808,-3.2244108535728717,10.212514873954033,10.155910943369095,no concluyente: se queda la regla
+Sens. sin personas en ambos bloques,DANO_SALUD3,40.7 % (regla),Solo 60+,Logística,35.413645156279806,38.5694856834368,-9.469903033574885,-18.94181723185156,0.0020111647017900802,14.318143749781113,no concluyente: se queda la regla
+Sens. sin personas en ambos bloques,DANO_SALUD3,40.7 % (regla),Discapacidad,Tarjeta de puntos,32.94587583315722,43.43996308453224,3.4675451512608304,-3.121989120098572,10.057079422620232,9.961017062274397,no concluyente: se queda la regla
+Sens. sin personas en ambos bloques,DANO_SALUD3,40.7 % (regla),Solo 60+,Tarjeta de puntos,35.413645156279806,39.42536492182471,-8.614023795186977,-18.16867480493174,0.9406272145577834,14.443212192674538,no concluyente: se queda la regla
+"Sens. B: bloque discapacidad, + ABVD y clínicas",DANO_SALUD3,40.7 % (regla),Discapacidad,Regla >= 40 h,44.82125845049195,52.13192451517523,0.0,0.0,0.0,,comparador
+"Sens. B: bloque discapacidad, + ABVD y clínicas",DANO_SALUD3,40.7 % (regla),Discapacidad,Logística,44.82125845049195,58.66679228145443,6.534867766279194,-0.4176725041045756,13.487408036662963,10.509752193026472,no concluyente: se queda la regla
+"Sens. B: bloque discapacidad, + ABVD y clínicas",DANO_SALUD3,40.7 % (regla),Discapacidad,Tarjeta de puntos,44.82125845049195,58.29608371742471,6.164159202249471,-0.7599796301125241,13.088298034611467,10.466819385171197,no concluyente: se queda la regla
+"Sens. B: bloque discapacidad, + ABVD y clínicas",DANO_SALUD3,40.7 % (regla),Discapacidad,R2 a priori (>=40 h + >=2 ABVD),44.82125845049195,54.83713559633204,2.7052110811568157,-3.3955324641745186,8.80595462648815,9.222140449550954,no concluyente: se queda la regla

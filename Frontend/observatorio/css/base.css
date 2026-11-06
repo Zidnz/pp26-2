@@ -14,7 +14,7 @@
   --amber:#a9711a; --amber-soft:rgba(169,113,26,.12);
   --on-shell:#f4f2f9; --on-shell-soft:rgba(244,242,249,.74); --on-shell-faint:rgba(244,242,249,.5);
   --sans:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif;
-  --mono:'JetBrains Mono',ui-monospace,Consolas,monospace;
+  --mono:'Archivo',system-ui,-apple-system,'Segoe UI',sans-serif; /* etiquetas/cifras: ya no monoespaciada; el nombre de la variable se conserva para no tocar ~30 reglas */
   --max:1240px;
 }
 *{box-sizing:border-box}

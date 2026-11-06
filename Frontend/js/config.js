@@ -1,4 +1,4 @@
-/* Configuración del programa Mientras. Namespace: Care.CONFIG_PROGRAMA
+/* Configuración del programa RedCare. Namespace: Care.CONFIG_PROGRAMA
  *
  * TODO lo que decide quién recibe cuántas horas vive aquí, no en el código.
  * Es un .js y no un .json porque la app se abre con doble clic (file://) y el navegador bloquea fetch() en ese modo.
@@ -24,27 +24,14 @@
     horas_maximas: 52,
     semanas_por_mes: 4.33, // mismo supuesto que Analysis/10 y relevo.js
 
-    // Niveles sobre el puntaje EFECTIVO (base + envejecimiento). Escala de la tarjeta «completa»: 0 a 20 puntos.
-    // Media ≥ 8 porque 8 es el umbral operativo del script 22 (resultados/22_tarjeta_validacion_umbral.csv):
-    // selecciona ≈ la misma proporción que la regla de 40 h. Alta ≥ 13 es un corte PROVISIONAL sin respaldo empírico.
-    umbrales: { alta: 13, media: 8 },
+    // Regla de entrada (2 nov 2026): 40 h o más de cuidado a la semana. Reemplaza a la tarjeta de puntos del script 22.
+    // Fuente: Analysis/resultados/11_modelo_alternativas.csv, 21_escalera_global.csv y 27_v2_global.csv. NO está probado que la
+    // regla sea mejor que un modelo: los resultados son no concluyentes (diferencia mínima detectable ≈ 7 pp). Se usa por parsimonia.
+    regla_horas: 40,
 
-    // Envejecimiento en cola: +x puntos por semana sin relevo asignado, hasta un tope.
-    // Con 0.5 y tope 4, un caso de 4 puntos llega a Media (8) en 8 semanas. PROVISIONAL.
-    envejecimiento: { puntos_por_semana: 0.5, tope_envejecimiento: 4 },
-
-    /* ---------- E. Puntaje ---------- */
-    // Si existe un modelo serializado que la app pueda cargar, se indica aquí. Hoy no existe ninguno
-    // (los modelos viven en notebooks de Analysis/), así que la app usa la tarjeta como regla transparente.
-    modelo: { archivo: null },
-
-    // Tarjeta de puntos, variante «completa», objetivo «algún daño» (DEC-OBJ-001).
-    // Fuente: Analysis/resultados/22_tarjeta_puntos.csv (script 22, ENASIC 2022 NACIONAL, exploratorio, sin doble revisión).
-    // Ninguna variante supera a la regla de 40 h de forma demostrable (+2.2 pp, IC 90 % −3.4 a 7.7).
-    variante_tarjeta: 'completa',
-    pesos: {
-      h40: 5, h80: 0, abvd1: 1, abvd3: 2, clin1: 3, disc: 0, req: 3, fuerza: 4, mujer: 2, edad60: 0,
-    },
+    // Horas efectivas = horas declaradas + espera. Solo ordena el reparto de la bolsa. PROVISIONAL, sin respaldo empírico:
+    // 0.5 h por semana en cola, tope 4 h.
+    envejecimiento: { horas_por_semana: 0.5, tope_envejecimiento: 4 },
 
     /* ---------- B. Autoselección: vías de entrada ---------- */
     canales: {
@@ -60,17 +47,16 @@
       abvd_muchas: 3,           // declara ayuda en ≥ 3 actividades básicas…
       barthel_sin_ayuda: 100,   // …pero Barthel = 100 (independiente en todas)
       horas_inverosimiles: 140, // ≥ 140 h/semana: verificar captura
-      zarit_bajo: 20,           // Zarit total ≤ 20 pero declara «le falta fuerza» y «requiere apoyo». Corte PROVISIONAL.
     },
 
     /* ---------- Instrumentos ---------- */
-    // Zarit: 22 reactivos, respuesta 0-4, total 0-88. Los textos requieren licencia: la app solo usa marcadores.
-    zarit: { n_reactivos: 22, escala_min: 0, escala_max: 4 },
+    // Cuestionario propio "Cómo te sientes" (no es el Zarit): 12 reactivos, respuesta 0-4, total 0-48. Sin validar.
+    zarit: { n_reactivos: 12, escala_min: 0, escala_max: 4 },
 
     /* ---------- Textos visibles ---------- */
-    nombre: 'Mientras',
-    eslogan: 'Relevo por horas para quien cuida',
-    aviso_complementario: 'Mientras es un componente complementario del Sistema Público de Cuidados. Las horas dependen del presupuesto del programa.',
+    nombre: 'RedCare',
+    eslogan: 'Una red que cuida a quienes cuidan',
+    aviso_complementario: 'RedCare es un componente complementario del Sistema Público de Cuidados. Las horas dependen del presupuesto del programa.',
     aviso_privacidad: '[Aviso de privacidad — pendiente revisión legal, Daniel]',
   };
 

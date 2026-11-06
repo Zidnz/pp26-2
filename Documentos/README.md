@@ -9,7 +9,9 @@ Regla del proyecto: el informe académico (argumentación e interpretación) viv
 ### Registro
 | Archivo | Qué es | Estado |
 |---|---|---|
-| `bitacora-decisiones.md` | Registro de decisiones, append-only. **Fuente canónica.** | Al día al 20 oct 2026 |
+| `bitacora-decisiones.md` | Registro de decisiones, append-only. **Fuente canónica.** | Al día al 2 nov 2026 (entrada retroactiva de las ≈ 20:10) |
+| `preregistro_focalizacion_2026-11-01.md` | Preregistro del modelo de focalización v2 (DEC-OBJ-002), enmienda 1 y resultado | Bitácora, 1 nov. Sin doble revisión |
+| `diagnostico_focalizacion_2026-11-01.md` | Memo del diagnóstico previo (script 26) | Bitácora, 1 nov. Sin doble revisión |
 | `bitacora_pendiente_2026-10-08_razones_portada.md` | Entrada suelta sobre las «razones vivas» de la portada del Observatorio | **No se integró a la bitácora.** El cambio sí está en `Frontend/observatorio/README.md` |
 
 ### Documentos técnicos e informes (del más reciente al más antiguo)
@@ -33,6 +35,8 @@ Regla del proyecto: el informe académico (argumentación e interpretación) viv
 
 **Versiones superadas: borradas el 20 oct 2026 (21:50) a pedido de Omar.** Se borraron `Observatorio_Cuidado_Hallazgos_y_Propuestas.docx`, `_v2`, `_v3`, `_v4` y el `.pdf`, `Documento_Integrado_Observatorio_Cuidado.docx` y `_v0.2`, y `Estudio_de_Negocio_Programa_Cuidado.docx`. Ya no aplica la decisión del 25 sept de conservarlas «por historia».
 
+**Fuera de esta carpeta (2 nov 2026).** Según la bitácora del 2 nov, hay versiones 2.1 de Maestro, Tablero y Técnico, App 1.1 y una presentación de 13 diapositivas hechas en chats que **no están aquí**. Hasta que se copien, la tabla de arriba es lo único comprobado: el maestro, el tablero, el técnico y la guía de la app vigentes en la carpeta siguen siendo los del 21 oct.
+
 ### Generadores
 `build_documento_integrado.js`, `build_estudio_negocio.js`, `build_replanteamiento.js`, `comun.js`, `generar_valores.py` / `_v2` / `_v3` y `_valores*.json` (cifras leídas de `Analysis/resultados/`), `documento_tecnico/` (generador, figuras y su HTML).
 
@@ -47,3 +51,4 @@ El proyecto de C++ de septiembre de 2015 (`main.cpp`, `main.o`, `Makefile.win`, 
 - 17 sept 2026: versión de dos párrafos, sin inventario.
 - 20 oct 2026: inventario de la carpeta, estado de cada documento y archivos ajenos.
 - 20 oct 2026 (11:35): se borró el proyecto C++ ajeno.
+- 2 nov 2026: se agregan el preregistro y el diagnóstico del 1 nov; se anota que hay versiones fuera de la carpeta.

@@ -16,6 +16,8 @@ ARCHIVOS = {
     "enasic_12":  "Analysis/resultados/12_segmentacion_estimaciones.csv",
     "enasic_12b": "Analysis/resultados/12b_segmentacion_series.csv",
     "enasic_16":  "Analysis/resultados/16_perfil_grupo_problema.csv",
+    "enasic_30":  "Analysis/resultados/30_perfil_grupo_salud3.csv",           # 2 nov 2026: perfil del grupo con DANO_SALUD3
+    "enasic_29":  "Analysis/resultados/29_grupo_problema_salud3.csv",     # 2 nov 2026: grupo del problema con DANO_SALUD3
     # --- asequibilidad ---
     "aseq_10":    "Analysis/resultados/10_asequibilidad_relevo.csv",
     "aseq_14":    "Analysis/resultados/14_enigh_asequibilidad_cdmx.csv",
@@ -41,13 +43,13 @@ JSON_OBSERVATORIO = "Frontend/observatorio/datos_observatorio.json"  # solo para
 # Fuentes. Las F## salen de inventario_fuentes_cuidado.csv (el ETL las lee de ahí).
 # Aquí solo se añade lo que el inventario no dice: el nivel geográfico máximo como
 # número (para la prueba de alcance) y las fuentes que el inventario no cubre (P##, I##).
-# nivel: 1 Nacional, 2 Entidad, 3 Alcaldía o más fino.
+# nivel: 1 Nacional, 2 Entidad, 3 Alcaldía, 4 AGEB o más fino (4 desde la versión 1.1.0, 29 oct 2026).
 # ---------------------------------------------------------------------------------
 FUENTES_INVENTARIO = {          # fuente_id -> (nivel_geo_max_orden, origen_tipo)
-    "F02": (3, "externa oficial"),   # Censo 2020 por AGEB/manzana
+    "F02": (4, "externa oficial"),   # Censo 2020 por AGEB/manzana (3 -> 4 el 29 oct 2026: el DW ya carga AGEB)
     "F04": (1, "externa oficial"),   # ENASIC 2022: solo nacional
-    "F09": (3, "externa oficial"),   # DENUE
-    "F20": (3, "externa oficial"),   # CONEVAL rezago social por AGEB
+    "F09": (4, "externa oficial"),   # DENUE: punto con coordenadas (3 -> 4 el 29 oct 2026)
+    "F20": (4, "externa oficial"),   # CONEVAL rezago social por AGEB (3 -> 4 el 29 oct 2026)
     "F22": (3, "externa oficial"),   # CONAPO marginación por municipio
     "F23": (2, "externa oficial"),   # ENIGH 2022 (CONEVAL): hasta entidad
     "F24": (3, "externa oficial"),   # CONEVAL pobreza municipal 2020
@@ -65,7 +67,9 @@ FUENTES_EXTRA = {                # fuentes externas oficiales que usan los noteb
                 nivel_txt="Municipio (alcaldía)", periodo="2010, 2015 y 2020", orden=3, origen="externa oficial"),
 }
 FUENTE_INTERNA = dict(fuente_id="I01", nombre="Supuestos declarados del equipo (salario de referencia, jornada, umbrales)",
-                      emisor="Equipo del proyecto", nivel_txt="No aplica")
+                      emisor="Equipo del proyecto",
+                      nivel_txt="No aplica por sí misma; el script 20 aplica los supuestos al total de la CDMX (entidad)",
+                      nivel_orden=2)   # 1 -> 2 el 29 oct 2026, para los escenarios de escala de la CDMX (marcados ilustrativos)
 
 # ---------------------------------------------------------------------------------
 # Abreviaturas de alcaldía usadas en 02 y 08 -> clave municipal INEGI.
@@ -141,12 +145,14 @@ MEDIDAS = [
  ("terr_rezago","conapo_imn_2020","conapo_indice_marginacion_normalizado_2020","Índice de marginación normalizado (CONAPO)","índice 0-1",0,"F22","2020","observado","contexto","Índice de marginación normalizado 2020 por municipio (CONAPO).",0),
  ("terr_rezago","conapo_gm_2020","conapo_grado_marginacion_2020","Grado de marginación (CONAPO)","categoría",0,"F22","2020","observado","contexto","Grado de marginación 2020 por municipio (CONAPO). Valor de texto.",1),
  # --- tipología de AGEB (notebook D, modelo 2) ---
- ("terr_tipologia","pct_pob_tipo_1","tipologia_pct_pob_tipo1","Población en AGEB de tipo 1","%",0,"F20","2020","derivado (modelo)","brecha","Porcentaje de población de la alcaldía en AGEB del tipo 1 de la tipología del notebook D (agrupamiento no supervisado). La numeración de tipos es del modelo.",0),
- ("terr_tipologia","pct_pob_tipo_2","tipologia_pct_pob_tipo2","Población en AGEB de tipo 2","%",0,"F20","2020","derivado (modelo)","brecha","Ídem, tipo 2.",0),
- ("terr_tipologia","pct_pob_tipo_3","tipologia_pct_pob_tipo3","Población en AGEB de tipo 3","%",0,"F20","2020","derivado (modelo)","brecha","Ídem, tipo 3.",0),
- ("terr_tipologia","pct_pob_tipo_4","tipologia_pct_pob_tipo4","Población en AGEB de tipo 4","%",0,"F20","2020","derivado (modelo)","brecha","Ídem, tipo 4.",0),
- ("terr_tipologia","ageb_brecha_q75","tipologia_n_ageb_brecha_q75","AGEB en brecha (cuartil superior)","AGEB",1,"F20","2020","derivado (modelo)","brecha","AGEB en brecha según el umbral q75 del notebook D. Criterio no verificado en este ETL.",0),
- ("terr_tipologia","personas_60_en_brecha_q75","tipologia_personas_60_brecha_q75","Personas de 60+ en AGEB en brecha (q75)","personas",1,"F20","2020","derivado (modelo)","brecha","Personas de 60+ que viven en AGEB en brecha (notebook D). Criterio no verificado en este ETL.",0),
+ # Fuente corregida el 29 oct 2026: era F20 (rezago CONEVAL), pero la tipología se calcula con variables del
+ # Censo 2020 por AGEB (F02) y la distancia al DENUE; el rezago solo se usa para contrastarla. Ver bitácora.
+ ("terr_tipologia","pct_pob_tipo_1","tipologia_pct_pob_tipo1","Población en AGEB de tipo 1","%",0,"F02","2020","derivado (modelo)","brecha","Porcentaje de población de la alcaldía en AGEB del tipo 1 de la tipología del notebook D (agrupamiento no supervisado). La numeración de tipos es del modelo.",0),
+ ("terr_tipologia","pct_pob_tipo_2","tipologia_pct_pob_tipo2","Población en AGEB de tipo 2","%",0,"F02","2020","derivado (modelo)","brecha","Ídem, tipo 2.",0),
+ ("terr_tipologia","pct_pob_tipo_3","tipologia_pct_pob_tipo3","Población en AGEB de tipo 3","%",0,"F02","2020","derivado (modelo)","brecha","Ídem, tipo 3.",0),
+ ("terr_tipologia","pct_pob_tipo_4","tipologia_pct_pob_tipo4","Población en AGEB de tipo 4","%",0,"F02","2020","derivado (modelo)","brecha","Ídem, tipo 4.",0),
+ ("terr_tipologia","ageb_brecha_q75","tipologia_n_ageb_brecha_q75","AGEB en brecha (cuartil superior)","AGEB",1,"F02","2020","derivado (modelo)","brecha","AGEB en brecha según el umbral q75 del notebook D. Criterio no verificado en este ETL.",0),
+ ("terr_tipologia","personas_60_en_brecha_q75","tipologia_personas_60_brecha_q75","Personas de 60+ en AGEB en brecha (q75)","personas",1,"F02","2020","derivado (modelo)","brecha","Personas de 60+ que viven en AGEB en brecha (notebook D). Criterio no verificado en este ETL.",0),
 ]
 # Medidas calculadas por el propio ETL a partir del Censo 2020 (fuente F02)
 MEDIDAS_CENSO = [

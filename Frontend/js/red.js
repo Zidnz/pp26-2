@@ -88,34 +88,50 @@
   }
 
   const r1 = (n) => Math.round(n * 10) / 10;
+  const movimiento = () => !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
+  /* Grafo en SVG: aristas curvas con partículas que viajan de quien cuida a quien recibe (horas por semana en la etiqueta),
+   * nodos con inicial y nombre debajo, anillo pulsante en el nodo elegido. La interacción (elegir, resaltar) vive en app.js. */
   function dibujar(svg, info, objetivo, apagadoActivo) {
     const { pos, centro } = posiciones(info);
-    let s = '';
-    // aristas
-    info.rel.forEach((r) => {
+    const anim = movimiento();
+    let aristas = '', etiquetas = '', particulas = '', nodos = '';
+    info.rel.forEach((r, i) => {
       const a = pos[r.de], b = pos[r.a];
       if (!a || !b) return;
+      const dx = b[0] - a[0], dy = b[1] - a[1], len = Math.hypot(dx, dy) || 1;
+      const curva = (r.de < r.a ? 1 : -1) * 16;
+      const cxp = (a[0] + b[0]) / 2 - (dy / len) * curva, cyp = (a[1] + b[1]) / 2 + (dx / len) * curva;
+      const d = `M${r1(a[0])} ${r1(a[1])} Q${r1(cxp)} ${r1(cyp)} ${r1(b[0])} ${r1(b[1])}`;
       const parcial = r.horas < 0.5 * info.need(info.porId[r.a]);
-      const cls = 'g-edge' + (parcial ? ' parcial' : '') + (r.de === 'pro' ? ' pro' : '') + (apagadoActivo && r.de === info.apagado ? ' off' : '');
-      s += `<line class="${cls}" x1="${r1(a[0])}" y1="${r1(a[1])}" x2="${r1(b[0])}" y2="${r1(b[1])}" stroke-width="${r1(1.4 + Math.min(r.horas, 60) / 30)}"><title>${esc(info.porId[r.de].nombre)} → ${esc(info.porId[r.a].nombre)}: ${r.horas} h/sem</title></line>`;
+      const cae = apagadoActivo && r.de === info.apagado;
+      const cls = 'g-edge' + (parcial ? ' parcial' : '') + (r.de === 'pro' ? ' pro' : '') + (cae ? ' off' : '');
+      aristas += `<path class="${cls}" data-de="${esc(r.de)}" data-a="${esc(r.a)}" d="${d}" stroke-width="${r1(1.6 + Math.min(r.horas, 60) / 24)}"><title>${esc(info.porId[r.de].nombre)} → ${esc(info.porId[r.a].nombre)}: ${r.horas} h/sem</title></path>`;
+      const tt = 0.64, k0 = (1 - tt) * (1 - tt), k1 = 2 * tt * (1 - tt), k2 = tt * tt;
+      const mx = k0 * a[0] + k1 * cxp + k2 * b[0], my = k0 * a[1] + k1 * cyp + k2 * b[1];
+      etiquetas += `<g class="g-h${cae ? ' off' : ''}" data-de="${esc(r.de)}" data-a="${esc(r.a)}"><rect x="${r1(mx - 11)}" y="${r1(my - 6.5)}" width="22" height="13" rx="6.5"/><text x="${r1(mx)}" y="${r1(my + 3)}" text-anchor="middle">${r.horas}h</text></g>`;
+      if (anim && !cae) {
+        const dur = r1(2.2 + (i % 3) * 0.5);
+        particulas += `<circle class="g-p${r.de === 'pro' ? ' pro' : ''}" r="2.3" data-de="${esc(r.de)}" data-a="${esc(r.a)}"><animateMotion dur="${dur}s" repeatCount="indefinite" path="${d}"/></circle>`;
+      }
     });
-    // nodos
     info.personas.forEach((p) => {
       const [x, y] = pos[p.id];
       const hub = p.id === centro;
-      const radio = hub ? 27 : 20;
+      const radio = hub ? 25 : 18;
       const off = apagadoActivo && p.id === info.apagado;
       const st = apagadoActivo ? info.estado[p.id] : (info.estado[p.id] === 'sin' ? 'sin' : '');
       const cls = ['g-node', hub ? 'hub' : '', p.pro ? 'pro' : '', off ? 'off' : '', st, p.id === objetivo ? 'sel' : '', info.out[p.id] > 0 ? 'act' : ''].filter(Boolean).join(' ');
       const sub = (p.edad ? p.edad + ' · ' : '') + p.rol;
-      s += `<g class="${cls}" data-id="${esc(p.id)}" ${info.out[p.id] > 0 ? 'tabindex="0" role="button"' : ''} aria-label="${esc(p.nombre)}, ${esc(sub)}">` +
-        (p.id === objetivo ? `<circle class="g-ring" cx="${r1(x)}" cy="${r1(y)}" r="${radio + 5}"/>` : '') +
+      const ini = esc((p.nombre || '?').trim().charAt(0).toUpperCase());
+      nodos += `<g class="${cls}" data-id="${esc(p.id)}" ${info.out[p.id] > 0 ? 'tabindex="0" role="button"' : ''} aria-label="${esc(p.nombre)}, ${esc(sub)}">` +
+        (p.id === objetivo ? `<circle class="g-pulse" cx="${r1(x)}" cy="${r1(y)}" r="${radio + 4}"/>` : '') +
         `<circle class="g-c" cx="${r1(x)}" cy="${r1(y)}" r="${radio}"/>` +
-        `<text class="g-n" x="${r1(x)}" y="${r1(y - (hub ? 1 : 2))}" text-anchor="middle" font-size="${hub ? 10.5 : 9.5}">${esc(corto(p.nombre, hub ? 9 : 8))}</text>` +
-        `<text class="g-s" x="${r1(x)}" y="${r1(y + (hub ? 11 : 9.5))}" text-anchor="middle" font-size="${hub ? 7.2 : 6.8}">${esc(corto(sub, 12))}</text></g>`;
+        `<text class="g-i" x="${r1(x)}" y="${r1(y + (hub ? 5 : 4))}" text-anchor="middle" font-size="${hub ? 15 : 12}">${ini}</text>` +
+        `<text class="g-n" x="${r1(x)}" y="${r1(y + radio + 10)}" text-anchor="middle" font-size="9">${esc(corto(p.nombre, 10))}</text>` +
+        `<text class="g-s" x="${r1(x)}" y="${r1(y + radio + 19)}" text-anchor="middle" font-size="6.8">${esc(corto(sub, 16))}</text></g>`;
     });
-    svg.innerHTML = s;
+    svg.innerHTML = aristas + particulas + etiquetas + nodos;
   }
 
   // Lo que ocurriría con el hogar si se asigna un relevo.

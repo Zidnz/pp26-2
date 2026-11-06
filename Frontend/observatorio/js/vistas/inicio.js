@@ -125,7 +125,7 @@
       EA=[null,null,'ch-horas','ch-carga','grupo'],
       EB=[null,null,'Ver distribución de horas →','Ver necesidad vs. daño →','Ver el grupo del problema →'];
   function pa(i){return fmt(100*E[i].total/E[i-1].total,0)}
-  $('#embFind').innerHTML='De '+mill(E[0].total)+' de personas que cuidan, <b>≈ '+mill(E[4].total)+'</b> cuidan 40 h o más, dicen "no tuve necesidad" y declaran daño a su salud o su trabajo.';
+  $('#embFind').innerHTML='De todas las personas que cuidan, una parte chica <b>cuida 40 h o más, dice "no tuve necesidad" y declara daño a su salud</b> (salud física, cansancio o sueño). Recorre las etapas para ver cuántas son.';   // 3 nov 2026: sin cifras; cada cifra vive una vez, en la ficha de su etapa
   // 14 oct 2026: las cinco tarjetas pasaron al selector de personajes (inicio-seleccion.js); comparte estos datos. Respaldo: _to_delete/backup_pre_seleccion_personajes_2026-10-14/
   OBS.EMB={E:E,EH:EH,ET:ET,EA:EA,EB:EB};
   $('#src-embudo').innerHTML=dl({Fuente:'INEGI, ENASIC 2022, microdatos (TPOB_CUI, FAC_CUI)',Cobertura:'Nacional',Precisión:'grupo final: '+G.precision+' (IC 90% '+fmt(G.li90)+'–'+fmt(G.ls90)+'% del universo)',Archivos:esc(E[0].fuente)+' · '+esc(E[4].fuente)});
@@ -133,10 +133,17 @@
   // 3 · «Lo que encontramos» se quitó el 8 oct 2026 (repetía tres de las cuatro razones). Su único hallazgo propio,
   //     el modelo frente a la regla simple, cierra ahora el embudo. Respaldo: _to_delete/backup_pre_dedup_2026-10-08/
   var RG=GL['Regla >= 40 h'];
-  $('#embudo-modelo').innerHTML='<div class="fm-k">¿A quién atender primero?</div>'+
-    '<div class="fm-n num">'+signo(LG.dif_cobertura_vs_regla)+' <small>pp</small></div>'+
-    '<p>Con la misma proporción de personas seleccionadas, un modelo de regresión logística encuentra '+fmt(LG.cobertura)+'% de quienes declaran daño; '+
-    'la regla simple «cuida 40 h o más», '+fmt(RG.cobertura)+'%. La diferencia no es demostrable (IC 90% '+fmt(LG.dif_li90)+' a '+signo(LG.dif_ls90)+' pp): '+
-    'hoy la regla simple rinde igual.</p>'+
-    '<div class="fm-a"><span class="chip p-noest">IC incluye 0</span><button type="button" class="fr-go" data-goto="focalizacion">Ver el modelo →</button></div>';
+  /* 3 nov 2026: la tarjeta sale de la versión vigente (DANO_SALUD3, 27_v2_global.csv) y habla del lector, no de la prueba estadística. */
+  var G2=((D.modelo_v2||{}).global||[]).filter(function(r){return r.configuracion==='PRIMARIO: DANO_SALUD3, predictores primarios'}),
+      V2G=G2.filter(function(r){return r.puntaje==='Regla >= 40 h'})[0],
+      V2M=G2.filter(function(r){return r.puntaje!=='Regla >= 40 h'}),
+      AZ2=V2G?parseFloat(V2G.cupo):NaN,
+      nadaMejor=V2M.length>0&&V2M.every(function(r){return r.dif_li90<=0&&r.dif_ls90>=0});
+  $('#embudo-modelo').innerHTML=V2G
+    ?'<div class="fm-k">¿A quién atender primero?</div>'+
+      '<div class="fm-n num">'+fmt(V2G.cobertura,0)+' <small>de cada 100</small></div>'+
+      '<p>Si el relevo se ofrece primero a quien cuida <b>40 h o más</b> a la semana, se llega a esa parte de las personas con daño a su salud'+(isFinite(AZ2)?' (elegir al azar llegaría a '+fmt(AZ2,0)+')':'')+'. Las otras '+fmt(100-V2G.cobertura,0)+' quedan fuera.'+(nadaMejor?' Probamos modelos más complejos y no se notó que mejoraran esto.':'')+'</p>'+
+      '<div class="fm-a"><span class="chip p-noest">Regla simple</span><button type="button" class="fr-go" data-goto="focalizacion">Ver cómo se elige →</button></div>'
+    :'<div class="fm-k">¿A quién atender primero?</div><p>Hoy, a quien cuida 40 h o más a la semana.</p>'+
+      '<div class="fm-a"><button type="button" class="fr-go" data-goto="focalizacion">Ver cómo se elige →</button></div>';
 })();

@@ -30,10 +30,14 @@ import pandas as pd
 HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(HERE))
 import config_mapeo as C            # noqa: E402
+import config_modelos as M          # noqa: E402  (1.1.0: resultados de modelos y nivel AGEB)
 
-VERSION_ETL = "1.0.0"
+VERSION_ETL = "1.1.0"
 DW_DIR = HERE.parent
 ESTADOS_PRECISION = {"alta", "moderada", "baja", "no estimable"}
+# Todos los CSV que se leen a staging: los de 1.0.0 + los de modelos y del nivel AGEB (1.1.0)
+ARCHIVOS = {**C.ARCHIVOS, **{e["stg"]: e["archivo"] for e in M.RESULTADOS},
+            M.AGEB_STG: M.AGEB_ARCHIVO, M.BRECHA_STG: M.BRECHA_ARCHIVO, M.PRIORIDAD_STG: M.PRIORIDAD_ARCHIVO}
 
 
 # ----------------------------------------------------------------------------- utilidades
@@ -117,7 +121,7 @@ def leer_dbf(path: Path) -> pd.DataFrame:
 
 def extraer(cx: Ctx):
     print("1. EXTRAER")
-    for nombre, rel in C.ARCHIVOS.items():
+    for nombre, rel in ARCHIVOS.items():
         p = cx.raiz / rel
         if not p.exists():
             raise FileNotFoundError(f"Falta el archivo de entrada {rel}. El ETL se detiene en vez de cargar con huecos.")
@@ -148,7 +152,7 @@ def extraer(cx: Ctx):
     mg.to_sql("stg_marco_geo", cx.con, index=False, if_exists="replace")
     cx.con.execute("INSERT INTO etl_archivo VALUES (?,?,?,?,?,?)", (cx.run_id, "marco_geo", C.MARCO_GEO_DBF, sha256(dp), len(mg), None))
     cx.con.commit()
-    print(f"   {len(C.ARCHIVOS) + 2} orígenes leídos a staging")
+    print(f"   {len(ARCHIVOS) + 2} orígenes leídos a staging")
 
 
 # ----------------------------------------------------------------------------- 2/3. DIMENSIONES
@@ -156,7 +160,7 @@ def cargar_dimensiones_base(cx: Ctx) -> dict:
     """Carga dim_tiempo, dim_fuente y dim_geografia. Devuelve diccionarios de búsqueda (clave natural -> sk)."""
     con = cx.con
     # --- tiempo
-    for et, anio, mes in [("2020", 2020, None), ("2022", 2022, None), ("mayo 2026", 2026, 5)]:
+    for et, anio, mes in [("2020", 2020, None), ("2022", 2022, None), ("mayo 2026", 2026, 5), ("2026", 2026, None)]:
         con.execute("INSERT INTO dim_tiempo(etiqueta,anio,mes,es_desconocido) VALUES (?,?,?,0)", (et, anio, mes))
     # --- fuente (inventario + fuentes que el inventario no cubre)
     inv = cx.stg("ref_inventario").set_index("id")
@@ -173,7 +177,7 @@ def cargar_dimensiones_base(cx: Ctx) -> dict:
     for fid, d in C.FUENTES_EXTRA.items():
         filas.append((fid, d["nombre"], d["emisor"], d["origen"], d["nivel_txt"], d["orden"], d["periodo"], "ver bitácora (notebook 09)", None, None))
     d = C.FUENTE_INTERNA
-    filas.append((d["fuente_id"], d["nombre"], d["emisor"], "interna (supuesto del equipo)", d["nivel_txt"], 1, "2026", "supuesto declarado", None, None))
+    filas.append((d["fuente_id"], d["nombre"], d["emisor"], "interna (supuesto del equipo)", d["nivel_txt"], d.get("nivel_orden", 1), "2026", "supuesto declarado", None, None))
     con.executemany("""INSERT INTO dim_fuente(fuente_id,nombre,emisor,origen_tipo,nivel_geo_max,nivel_geo_max_orden,
                        periodo_cubierto,estado_evidencia,permite_afirmar,prohibe_afirmar) VALUES (?,?,?,?,?,?,?,?,?,?)""", filas)
     # --- geografía: Nacional > Entidad (32) > Alcaldía (16)
@@ -191,8 +195,13 @@ def cargar_dimensiones_base(cx: Ctx) -> dict:
     for _, r in mg.sort_values("CVE_MUN").iterrows():
         con.execute("INSERT INTO dim_geografia(nivel,nivel_orden,cve_geo,nombre,abreviatura,padre_sk) VALUES ('Alcaldía',3,?,?,?,?)",
                     (f"{r.CVE_ENT}{r.CVE_MUN}", r.NOMGEO, inv_abrev.get(r.CVE_MUN), cdmx))
+    # --- AGEB urbanas del notebook D (1.1.0). Nombre = CVEGEO; padre = alcaldía (primeros 5 dígitos de la clave)
+    alc = dict(con.execute("SELECT cve_geo, geografia_sk FROM dim_geografia WHERE nivel='Alcaldía'").fetchall())
+    ag = cx.stg(M.AGEB_STG)
+    for cve in ag.CVEGEO.astype(str).str.zfill(13):
+        con.execute("INSERT INTO dim_geografia(nivel,nivel_orden,cve_geo,nombre,padre_sk) VALUES ('AGEB',4,?,?,?)", (cve, cve, alc.get(cve[:5])))
     # --- alias de geografía (clave natural -> sk)
-    geo = pd.read_sql("SELECT geografia_sk, nivel, cve_geo, nombre, abreviatura FROM dim_geografia WHERE geografia_sk>0", con)
+    geo = pd.read_sql("SELECT geografia_sk, nivel, cve_geo, nombre, abreviatura FROM dim_geografia WHERE geografia_sk>0 AND nivel<>'AGEB'", con)
     alias = {}
     for _, g in geo.iterrows():
         alias[("cve", g.cve_geo)] = g.geografia_sk
@@ -203,6 +212,8 @@ def cargar_dimensiones_base(cx: Ctx) -> dict:
         elif g.nivel == "Entidad":
             alias[("ent", int(g.cve_geo))] = g.geografia_sk
     alias[("ent", 0)] = nac
+    for k, c in con.execute("SELECT geografia_sk, cve_geo FROM dim_geografia WHERE nivel='AGEB'"):
+        alias[("cve", c)] = k
     con.commit()
     mapa = {
         "periodo": dict(con.execute("SELECT etiqueta, periodo_sk FROM dim_tiempo").fetchall()),
@@ -270,6 +281,11 @@ def transformar_encuesta(cx: Ctx) -> pd.DataFrame:
     o["seg_dimension"] = np.where(seg == "", "Total", "Segmento (script 07)")
     o["seg_segmento"] = np.where(seg == "", "Total", seg)
     partes.append(o)
+    # 29 — grupo del problema con DANO_SALUD3 (2 nov 2026; las 2 filas «control» reproducen filas de 07)
+    d = cx.stg("enasic_29"); o = _base_est(d, "29_grupo_problema_salud3.csv")
+    o["bloque"], o["indicador"], o["dano"] = "6_magnitud_salud3", txt(d.indicador), txt(d.objetivo)
+    o["tema"] = o["bloque"]
+    partes.append(o)
     # 12 — segmentación
     d = cx.stg("enasic_12"); o = _base_est(d, "12_segmentacion_estimaciones.csv")
     o["bloque"], o["indicador"], o["clave_corta"], o["tema"] = txt(d.grupo), txt(d.indicador), txt(d.clave), txt(d.grupo)
@@ -293,6 +309,13 @@ def transformar_encuesta(cx: Ctx) -> pd.DataFrame:
     partes.append(o)
     # 16 — perfil del grupo del problema: dominio = población (Universo / Grupo del problema); evento = pertenecer al segmento
     d = cx.stg("enasic_16"); o = _base_est(d, "16_perfil_grupo_problema.csv")
+    o["bloque"], o["tema"] = "perfil", "perfil"
+    o["indicador"], o["variable"], o["categoria"] = "Pertenece al segmento", txt(d.dimension), txt(d.segmento)
+    o["seg_dimension"], o["seg_segmento"] = "Población", txt(d.poblacion)
+    partes.append(o)
+    # 30 — mismo perfil con DANO_SALUD3 (objetivo preregistrado, 2 nov 2026): es el bloque «perfil» vigente; el de 16 queda como v1
+    o["bloque"] = "perfil_v1"
+    d = cx.stg("enasic_30"); o = _base_est(d, "30_perfil_grupo_salud3.csv")
     o["bloque"], o["tema"] = "perfil", "perfil"
     o["indicador"], o["variable"], o["categoria"] = "Pertenece al segmento", txt(d.dimension), txt(d.segmento)
     o["seg_dimension"], o["seg_segmento"] = "Población", txt(d.poblacion)
@@ -337,15 +360,20 @@ GEO_COL = {   # archivo stg -> (columna con el identificador, tipo de identifica
     "terr_capacidad": ("col0", "abrev"), "terr_dependencia": ("alcaldia", "abrev"),
     "terr_pobreza65": ("clave_municipio", "clave"), "terr_rezago": ("clave_alcaldia", "clave"),
     "terr_tipologia": ("alcaldia", "nombre"),
+    M.PRIORIDAD_STG: ("alcaldia", "nombre"),          # 1.1.0: regla del script 24 por alcaldía
+    M.AGEB_STG: ("CVEGEO", "ageb"), M.BRECHA_STG: ("CVEGEO", "ageb"),   # 1.1.0: nivel AGEB
 }
-ARCHIVO_ORIGEN = {k: Path(v).name for k, v in C.ARCHIVOS.items()}
+ARCHIVO_ORIGEN = {k: Path(v).name for k, v in ARCHIVOS.items()}
+BOOL = {"True": 1.0, "False": 0.0, "true": 1.0, "false": 0.0}
 
 def cargar_territorio(cx: Ctx, mapa: dict) -> int:
     con = cx.con
     # --- catálogo de medidas
-    for (stg, col, cod, nom, uni, adit, fid, per, cal, tema, defin, ver) in C.MEDIDAS:
+    medidas_todas = C.MEDIDAS + M.MEDIDAS_PRIORIDAD + M.MEDIDAS_AGEB
+    for (stg, col, cod, nom, uni, adit, fid, per, cal, tema, defin, ver) in medidas_todas:
+        nivel = "AGEB" if GEO_COL[stg][1] == "ageb" else "Alcaldía"
         con.execute("INSERT OR IGNORE INTO dim_medida(codigo,nombre,tema,unidad,aditiva,nivel_geo,definicion,definicion_verificada) VALUES (?,?,?,?,?,?,?,?)",
-                    (cod, nom, tema, uni, adit, "Alcaldía", defin, ver))
+                    (cod, nom, tema, uni, adit, nivel, defin, ver))
     for (cod, nom, uni, adit, cal, tema, defin, ver) in C.MEDIDAS_CENSO:
         con.execute("INSERT INTO dim_medida(codigo,nombre,tema,unidad,aditiva,nivel_geo,definicion,definicion_verificada) VALUES (?,?,?,?,?,?,?,?)",
                     (cod, nom, tema, uni, adit, "Alcaldía", defin, ver))
@@ -365,12 +393,13 @@ def cargar_territorio(cx: Ctx, mapa: dict) -> int:
                       valor, texto, cv, li, ls, nm, cal, nota, arch, int(fila), cx.run_id))
     # --- medidas por alcaldía desde los CSV de resultados
     por_archivo: dict[str, list] = {}
-    for m in C.MEDIDAS:
+    for m in medidas_todas:
         por_archivo.setdefault(m[0], []).append(m)
     for stg, medidas in por_archivo.items():
         d = cx.stg(stg); gcol, gtipo = GEO_COL[stg]
         for _, r in d.iterrows():
-            geo = resolver_alcaldia(mapa, r[gcol], gtipo)
+            geo = (mapa["geo_alias"].get(("cve", str(r[gcol]).zfill(13))) if gtipo == "ageb"
+                   else resolver_alcaldia(mapa, r[gcol], gtipo))
             fila = int(r["_fila"]); arch = ARCHIVO_ORIGEN[stg]
             if geo is None:
                 cx.rechazar(arch, fila, "fact_indicador_territorial", "alcaldía no resuelta", r[gcol]); continue
@@ -381,8 +410,10 @@ def cargar_territorio(cx: Ctx, mapa: dict) -> int:
                 nota = None
                 if stg == "terr_pobreza65":
                     nota = f"precisión según archivo: {r.get('precision_pct_pobreza_2020')}"
-                if cod == "conapo_grado_marginacion_2020":
+                if uni == "categoría":            # valores de texto (grado CONAPO, tipo de zona, robustez...)
                     push(geo, cod, per, fid, None, str(v), None, None, None, None, "no aplica", cal, nota, arch, fila)
+                elif v in BOOL:                   # banderas True/False -> 1/0
+                    push(geo, cod, per, fid, BOOL[v], None, None, None, None, None, "no aplica", cal, nota, arch, fila)
                 else:
                     push(geo, cod, per, fid, float(v), None, None, None, None, None, "no aplica", cal, nota, arch, fila)
     # --- Censo 2020 (extraído del archivo oficial) + participación derivada por el ETL
@@ -474,6 +505,110 @@ def cargar_asequibilidad(cx: Ctx, mapa: dict) -> tuple[int, int]:
     return len(aseq), len(costo)
 
 
+# ----------------------------------------------------------------------------- 2/3. RESULTADOS DE MODELOS (1.1.0)
+def _campo(espec, fila):
+    """Literal o «@columna»; vacío si la columna viene vacía."""
+    if not espec:
+        return ""
+    if espec.startswith("@"):
+        v = fila.get(espec[1:])
+        return "" if v is None or (isinstance(v, float) and np.isnan(v)) else str(v).strip()
+    return espec
+
+def _parametros(lista, fila):
+    partes = []
+    for p in lista or []:
+        col, _, etiqueta = p.lstrip("@").partition(":")
+        v = fila.get(col)
+        if v is None or (isinstance(v, float) and np.isnan(v)) or str(v).strip() == "":
+            continue
+        partes.append(f"{etiqueta or col}={str(v).strip()}")
+    return "; ".join(partes)
+
+def cargar_modelos(cx: Ctx, mapa: dict) -> int:
+    """Despivota cada archivo de resultados (una columna de métrica -> una fila del hecho)."""
+    con = cx.con
+    con.executemany("""INSERT INTO dim_modelo(codigo,nombre,tipo,script,decision,alternativa_simple,estado,advertencia)
+                       VALUES (?,?,?,?,?,?,?,?)""",
+                    [(k, d["nombre"], d["tipo"], d["script"], d["decision"], d["alternativa_simple"], d["estado"], d.get("advertencia"))
+                     for k, d in M.MODELOS.items()])
+    con.executemany("INSERT INTO dim_metrica(codigo,nombre,unidad,tipo) VALUES (?,?,?,?)",
+                    [(k, n, u, t) for k, (n, u, t) in M.METRICAS.items()])
+    mod = dict(con.execute("SELECT codigo, modelo_sk FROM dim_modelo").fetchall())
+    met = dict(con.execute("SELECT codigo, metrica_sk FROM dim_metrica").fetchall())
+    segs = {(a, b): k for k, a, b in con.execute("SELECT segmento_sk, dimension, segmento FROM dim_segmento")}
+    confs: dict[tuple, int] = {}
+
+    def seg_sk(dim, val):
+        dim = M.DIM_SEG.get(dim, dim)
+        if (dim, val) not in segs:
+            cur = con.execute("INSERT INTO dim_segmento(dimension,segmento,es_total) VALUES (?,?,?)", (dim, val, int(dim == "Total")))
+            segs[(dim, val)] = cur.lastrowid
+        return segs[(dim, val)]
+
+    def conf_sk(m_sk, obj, metodo, var, par):
+        k = (m_sk, obj, metodo, var, par)
+        if k not in confs:
+            cur = con.execute("INSERT INTO dim_configuracion(modelo_sk,objetivo,metodo,variante,parametros) VALUES (?,?,?,?,?)", k)
+            confs[k] = cur.lastrowid
+        return confs[k]
+
+    filas, vistos = [], set()
+    cx.esperado_modelos = {}
+    for e in M.RESULTADOS:
+        d = cx.stg(e["stg"]); arch = Path(e["archivo"]).name
+        if e["stg"] == "m11_roc":                       # los puntos de una curva solo se distinguen por su orden
+            d["punto"] = d.groupby(["objetivo", "puntaje"]).cumcount() + 1
+        m_sk = mod[e["modelo"]]; fuente = mapa["fuente"][e["fuente"]]; periodo = mapa["periodo"][e["periodo"]]
+        esperado = 0
+        for _, r in d.iterrows():
+            r = r.to_dict(); fila = int(r["_fila"])
+            # geografía
+            g = e.get("geo", M.NAC)
+            if g == M.NAC: geo = mapa["nacional"]
+            elif g == M.CDMX: geo = mapa["cdmx"]
+            elif g == M.NA: geo = 0
+            elif g[0] == "map": geo = mapa["cdmx"] if _campo("@" + g[1], r) in g[2] else 0
+            else: geo = resolver_alcaldia(mapa, _campo(g[0], r), g[1])
+            # dominio
+            sd = e.get("seg")
+            seg = seg_sk(_campo(sd[0], r), _campo(sd[1], r)) if sd else seg_sk("Total", "Total")
+            cf = conf_sk(m_sk, _campo(e.get("objetivo", ""), r), _campo(e.get("metodo", ""), r),
+                         _campo(e.get("variante", ""), r), _parametros(e.get("params"), r))
+            il = e.get("ilustrativo", False)
+            ilus = int(_campo("@" + il[0], r) in il[1]) if isinstance(il, tuple) else int(bool(il))
+            prec = mapa["precision"][clase_precision(None, r.get(e["precision"]))] if e.get("precision") else mapa["precision"]["no aplica"]
+            celdas = []
+            for t in e.get("metricas", []):
+                col, cod = t[0], t[1]; v = r.get(col)
+                if v is None or (isinstance(v, float) and np.isnan(v)):
+                    continue
+                v = BOOL[v] if v in BOOL else pd.to_numeric(v, errors="coerce")
+                if pd.isna(v):
+                    cx.rechazar(arch, fila, "fact_resultado_modelo", "valor no numérico", f"{col}={r.get(col)}"); esperado += 1; continue
+                ext = [pd.to_numeric(r.get(c), errors="coerce") if c else np.nan for c in (list(t[2:]) + [None, None, None])[:3]]
+                celdas.append((cod, float(v), None, *[None if pd.isna(x) else float(x) for x in ext]))
+            for col, cod in e.get("textos", []):
+                v = r.get(col)
+                if v is None or (isinstance(v, float) and np.isnan(v)) or str(v).strip() == "":
+                    continue
+                celdas.append((cod, None, str(v).strip(), None, None, None))
+            for cod, v, vt, li, ls, cv in celdas:
+                esperado += 1
+                if geo is None:
+                    cx.rechazar(arch, fila, "fact_resultado_modelo", "geografía no resuelta", str(g)); continue
+                k = (m_sk, cf, met[cod], seg, geo, periodo, fuente)
+                if k in vistos:
+                    cx.rechazar(arch, fila, "fact_resultado_modelo", "duplicado de grano", f"métrica {cod}, configuración {cf}"); continue
+                vistos.add(k)
+                filas.append(k[:5] + (periodo, fuente, prec, v, vt, li, ls, cv, ilus, e.get("nota"), arch, fila, cx.run_id))
+        cx.esperado_modelos[arch] = esperado
+    con.executemany("""INSERT INTO fact_resultado_modelo(modelo_sk,configuracion_sk,metrica_sk,segmento_sk,geografia_sk,periodo_sk,fuente_sk,
+                       precision_sk,valor,valor_texto,li90,ls90,cv,es_ilustrativo,nota,archivo_origen,fila_origen,run_id)
+                       VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""", filas)
+    return len(filas)
+
+
 # ----------------------------------------------------------------------------- 4. VERIFICAR (calidad de datos)
 PROHIBIDAS = re.compile(r"(curp|rfc|nombre_?(pers|completo)|telefono|tel_|correo|email|domicilio|direccion|calle|nss|imss_num)", re.I)
 
@@ -486,7 +621,8 @@ def verificar(cx: Ctx, mapa: dict):
     # DQ02 conteos de control: filas de staging = filas cargadas + rechazadas (por archivo de origen)
     ctrl = {"03_enasic_barreras_estimaciones.csv": "enasic_03", "04_contratacion_por_quintil.csv": "enasic_04",
             "07_enasic_necesidad_vs_norma_estimaciones.csv": "enasic_07", "12_segmentacion_estimaciones.csv": "enasic_12",
-            "12b_segmentacion_series.csv": "enasic_12b", "16_perfil_grupo_problema.csv": "enasic_16"}
+            "12b_segmentacion_series.csv": "enasic_12b", "16_perfil_grupo_problema.csv": "enasic_16",
+            "29_grupo_problema_salud3.csv": "enasic_29", "30_perfil_grupo_salud3.csv": "enasic_30"}
     malos = []
     for arch, stg in ctrl.items():
         n_stg = q(f"SELECT COUNT(*) FROM stg_{stg}")[0][0]
@@ -613,6 +749,87 @@ def verificar(cx: Ctx, mapa: dict):
                   tot_ > 0 and hit == tot_, f"{hit}/{tot_}; sin correspondencia: {faltan}")
     else:
         cx.prueba("DQ18", "info", "Reconciliación con el Observatorio omitida (no existe datos_observatorio.json)", True)
+    # ------------------------------------------------------------------ 1.1.0: modelos y nivel AGEB
+    # DQ19 conteos de control de los archivos de modelos: celdas no vacías = filas cargadas + rechazadas
+    malos = []
+    for arch, n_esp in getattr(cx, "esperado_modelos", {}).items():
+        n_f = q("SELECT COUNT(*) FROM fact_resultado_modelo WHERE archivo_origen=?", arch)[0][0]
+        n_r = sum(1 for r in cx.rechazos if r[1] == arch and r[3] == "fact_resultado_modelo")
+        if n_esp != n_f + n_r or n_f == 0:
+            malos.append(f"{arch}: celdas {n_esp} ≠ cargadas {n_f} + rechazadas {n_r}")
+    cx.prueba("DQ19", "error", f"Conteos de control de modelos: celdas con valor = filas cargadas + rechazadas ({len(M.RESULTADOS)} archivos)",
+              not malos, "; ".join(malos[:5]))
+    rz = [r for r in cx.rechazos if r[3] == "fact_resultado_modelo"]
+    cx.prueba("DQ19b", "advertencia", "Modelos: ninguna celda rechazada (duplicado de grano, geografía no resuelta o texto en columna numérica)",
+              not rz, f"{len(rz)} rechazos; primeros: {rz[:3]}")
+    # DQ20 nivel AGEB: 2,371 AGEB urbanas del notebook D, cada una con su alcaldía como padre y clave coherente
+    ag = q("""SELECT COUNT(*), SUM(a.nivel='Alcaldía' AND substr(g.cve_geo,1,5)=a.cve_geo), COUNT(DISTINCT g.cve_geo)
+              FROM dim_geografia g LEFT JOIN dim_geografia a ON a.geografia_sk=g.padre_sk WHERE g.nivel='AGEB'""")[0]
+    cx.prueba("DQ20", "error", "AGEB: 2,371 claves únicas de 13 dígitos, cada una colgada de la alcaldía que indica su clave",
+              ag[0] == 2371 and ag[1] == 2371 and ag[2] == 2371, f"AGEB {ag[0]}, con padre coherente {ag[1]}, claves únicas {ag[2]}")
+    # DQ21 el volumen N del script 24 se reproduce desde las AGEB del notebook D y coincide con la medida de la tipología
+    t = pd.read_sql("""SELECT a.nombre alcaldia,
+                         SUM(CASE WHEN m.codigo='ageb_personas_60' THEN f.valor END) n60,
+                         SUM(CASE WHEN m.codigo='ageb_personas_60' AND b.valor=1 THEN f.valor END) n60_q75
+                       FROM fact_indicador_territorial f JOIN dim_medida m USING(medida_sk)
+                       JOIN dim_geografia g USING(geografia_sk) JOIN dim_geografia a ON a.geografia_sk=g.padre_sk
+                       LEFT JOIN (SELECT f2.geografia_sk, f2.valor FROM fact_indicador_territorial f2 JOIN dim_medida m2 USING(medida_sk)
+                                  WHERE m2.codigo='ageb_brecha_q75') b ON b.geografia_sk=f.geografia_sk
+                       WHERE g.nivel='AGEB' GROUP BY a.nombre""", con)
+    pv = pd.read_sql("SELECT alcaldia, prioridad_N_cuartil, tipologia_personas_60_brecha_q75 FROM v_mart_perfil_alcaldia", con)
+    p24 = cx.stg(M.PRIORIDAD_STG)[["alcaldia", "pob_60"]]
+    t = t.merge(pv, on="alcaldia", how="outer").merge(p24.assign(pob_60=num(p24.pob_60)), on="alcaldia", how="left")
+    e1 = (t.n60_q75.fillna(0) - t.prioridad_N_cuartil).abs().max()
+    e2 = (t.n60_q75.fillna(0) - t.tipologia_personas_60_brecha_q75).abs().max()
+    e3 = (t.n60 - t.pob_60).abs().max()
+    cx.prueba("DQ21", "advertencia", "Script 24 vs notebook D: N (cuartil) = Σ 60+ de AGEB con brecha = medida de la tipología; pob_60 = Σ 60+ de las AGEB",
+              len(t) == 16 and max(e1, e2, e3) < 0.5, f"{len(t)} alcaldías; diferencias máximas: N {e1}, tipología {e2}, pob_60 {e3}")
+    # DQ22 las AGEB con robustez (24_brecha_ageb) son exactamente las AGEB con brecha por tercil
+    s1 = {c for (c,) in q("""SELECT g.cve_geo FROM fact_indicador_territorial f JOIN dim_medida m USING(medida_sk) JOIN dim_geografia g USING(geografia_sk)
+                             WHERE m.codigo='ageb_brecha_q67' AND f.valor=1""")}
+    s2 = {c for (c,) in q("""SELECT g.cve_geo FROM fact_indicador_territorial f JOIN dim_medida m USING(medida_sk) JOIN dim_geografia g USING(geografia_sk)
+                             WHERE m.codigo='ageb_brecha_robustez'""")}
+    cx.prueba("DQ22", "advertencia", "AGEB de 24_brecha_ageb = AGEB con brecha por tercil en 18_tipologia_ageb", s1 == s2,
+              f"tercil {len(s1)}, archivo 24 {len(s2)}, solo en uno: {len(s1 ^ s2)}")
+    # DQ23 regla del proyecto: todo modelo declara su alternativa simple y tiene resultados cargados
+    sin = q("""SELECT mo.codigo FROM dim_modelo mo WHERE TRIM(mo.alternativa_simple)=''
+               OR NOT EXISTS (SELECT 1 FROM fact_resultado_modelo f WHERE f.modelo_sk=mo.modelo_sk)""")
+    cx.prueba("DQ23", "error", "Modelos: cada uno declara su alternativa simple y tiene resultados en el DW", not sin, str(sin))
+    # DQ24 rango de las proporciones de modelos
+    bad = q("""SELECT me.codigo, COUNT(*) FROM fact_resultado_modelo f JOIN dim_metrica me USING(metrica_sk)
+               WHERE me.unidad='%' AND me.tipo='proporcion' AND (f.valor<0 OR f.valor>100) GROUP BY me.codigo""")
+    cx.prueba("DQ24", "error", "Rango: toda proporción de un modelo está entre 0 y 100", not bad, str(bad))
+    esc = q("""SELECT me.codigo, MAX(f.valor) FROM fact_resultado_modelo f JOIN dim_metrica me USING(metrica_sk)
+               WHERE me.unidad='%' AND me.tipo='proporcion' GROUP BY me.codigo HAVING MAX(f.valor) <= 1 AND COUNT(*) > 2""")
+    cx.prueba("DQ24b", "advertencia", "Escala: ninguna métrica declarada en % parece venir en proporción 0-1", not esc, str(esc))
+    # DQ25 consistencia entre archivos del mismo modelo
+    det, ok = [], True
+    g1 = pd.read_sql("""SELECT c.metodo, f.valor FROM fact_resultado_modelo f JOIN dim_configuracion c USING(configuracion_sk)
+                        JOIN dim_metrica me USING(metrica_sk) JOIN dim_segmento s USING(segmento_sk)
+                        WHERE f.archivo_origen=? AND me.codigo='cobertura' AND c.objetivo='DANO_ALGUNO' AND s.es_total=1""",
+                     con, params=("11_modelo_focalizacion_global.csv",))
+    g2 = pd.read_sql("""SELECT c.metodo, f.valor v2 FROM fact_resultado_modelo f JOIN dim_configuracion c USING(configuracion_sk)
+                        JOIN dim_metrica me USING(metrica_sk) WHERE f.archivo_origen=? AND me.codigo='cobertura' AND c.objetivo='DANO_ALGUNO'""",
+                     con, params=("11_modelo_alternativas.csv",))
+    j = g1.merge(g2, on="metodo")
+    d11 = (j.valor - j.v2).abs().max() if len(j) else float("nan")
+    det.append(f"11 v1 vs ampliación: {len(j)} métodos en común, dif. máx. de cobertura {d11:.3f} pp")
+    td = pd.read_sql("""SELECT f.archivo_origen, SUM(f.valor) n FROM fact_resultado_modelo f JOIN dim_metrica me USING(metrica_sk)
+                        WHERE me.codigo='n_ageb' AND f.archivo_origen IN ('18_tipologia_decision.csv','18_tipologia_perfiles.csv')
+                        GROUP BY f.archivo_origen""", con).set_index("archivo_origen").n
+    ok18 = len(td) == 2 and td.nunique() == 1 and td.iloc[0] == 2371
+    det.append(f"18 decisión y perfiles suman {td.to_dict()} AGEB (esperado 2371)")
+    tp, te = cx.stg("m22_puntos"), cx.stg("m22_estabilidad")
+    k22 = tp.merge(te, on=["variante", "variable"], how="outer")
+    d22 = int(((num(k22.puntos) - num(k22.puntos_final)).abs() > 0).sum() + k22.puntos.isna().sum() + k22.puntos_final.isna().sum())
+    det.append(f"22 puntos de la tarjeta = puntos_final de estabilidad: {len(k22) - d22} de {len(k22)}")
+    ok = ok18 and d22 == 0 and (len(j) == 0 or d11 < 0.05)
+    cx.prueba("DQ25", "advertencia", "Consistencia entre archivos del mismo modelo (11: versión 1 vs ampliación; 18: decisión vs perfiles; 22: tarjeta vs estabilidad)", ok, "; ".join(det))
+    # DQ26 madurez: cuántos resultados son exploratorios o ilustrativos (para el pie de cada tablero)
+    ex = q("SELECT COUNT(*) FROM dim_modelo WHERE estado LIKE '%exploratorio%' OR estado LIKE '%sin doble revisión%'")[0][0]
+    il = q("SELECT COUNT(*) FROM fact_resultado_modelo WHERE es_ilustrativo=1")[0][0]
+    cx.prueba("DQ26", "info", "Madurez de los modelos: exploratorios o sin doble revisión, y resultados ilustrativos", True,
+              f"{ex} de {len(M.MODELOS)} modelos sin doble revisión; {il} resultados ilustrativos (script 20)")
     con.executemany("INSERT INTO etl_dq VALUES (?,?,?,?,?,?)", cx.dq)
     con.executemany("INSERT INTO etl_rechazo VALUES (?,?,?,?,?,?)", cx.rechazos)
     con.commit()
@@ -621,7 +838,8 @@ def verificar(cx: Ctx, mapa: dict):
 
 # ----------------------------------------------------------------------------- 5. PUBLICAR (marts)
 MARTS = ["v_mart_necesidad_cuidado", "v_mart_territorio", "v_mart_perfil_alcaldia", "v_mart_asequibilidad",
-         "v_cobertura_temporal", "v_cobertura_geografica", "v_diccionario_medidas", "v_calidad_precision"]
+         "v_cobertura_temporal", "v_cobertura_geografica", "v_diccionario_medidas", "v_calidad_precision",
+         "v_mart_modelos", "v_mart_ageb", "v_catalogo_modelos"]          # los tres últimos: 1.1.0
 
 def vista_perfil_alcaldia(con):
     """Mart ancho: una fila por alcaldía, una columna por medida (se genera desde dim_medida)."""
@@ -636,6 +854,23 @@ FROM dim_geografia g
 LEFT JOIN fact_indicador_territorial f ON f.geografia_sk = g.geografia_sk
 LEFT JOIN dim_medida m ON m.medida_sk = f.medida_sk
 WHERE g.nivel = 'Alcaldía'
+GROUP BY g.geografia_sk""")
+
+def vista_ageb(con):
+    """Mart ancho por AGEB (1.1.0): una fila por AGEB urbana, una columna por medida de nivel AGEB.
+    Las AGEB sin brecha no tienen robustez ni lugar en su alcaldía: quedan vacías (no aplica), no en 0."""
+    med = con.execute("SELECT codigo, unidad FROM dim_medida WHERE nivel_geo='AGEB' ORDER BY medida_sk").fetchall()
+    cols = ",\n  ".join(
+        f"MAX(CASE WHEN m.codigo='{c}' THEN f.{'valor_texto' if u == 'categoría' else 'valor'} END) AS {c.removeprefix('ageb_')}" for c, u in med)
+    con.execute("DROP VIEW IF EXISTS v_mart_ageb")
+    con.execute(f"""CREATE VIEW v_mart_ageb AS
+SELECT g.cve_geo AS cvegeo, a.cve_geo AS cve_alcaldia, a.nombre AS alcaldia,
+  {cols}
+FROM dim_geografia g
+JOIN dim_geografia a ON a.geografia_sk = g.padre_sk
+LEFT JOIN fact_indicador_territorial f ON f.geografia_sk = g.geografia_sk
+LEFT JOIN dim_medida m ON m.medida_sk = f.medida_sk
+WHERE g.nivel = 'AGEB'
 GROUP BY g.geografia_sk""")
 
 def exportar(con) -> dict:
@@ -683,11 +918,13 @@ def main():
         resumen["fact_estimacion_encuesta"] = cargar_encuesta(cx, mapa, est)
         resumen["fact_indicador_territorial"] = cargar_territorio(cx, mapa)
         resumen["fact_asequibilidad"], resumen["fact_costo_paquete"] = cargar_asequibilidad(cx, mapa)
+        resumen["fact_resultado_modelo"] = cargar_modelos(cx, mapa)
         con.commit()
         for k, v in resumen.items():
             print(f"   {k}: {v} filas")
         con.executescript((DW_DIR / "sql" / "02_vistas_marts.sql").read_text(encoding="utf-8"))
         vista_perfil_alcaldia(con)
+        vista_ageb(con)
         errores = verificar(cx, mapa)
         advert = [d for d in cx.dq if d[2] == "advertencia" and not d[4]]
         if errores:

@@ -122,18 +122,19 @@
       else s+=figura(x,y,off,false)}
     return s}
   /* pictograma por filas: necesidad declarada (barra corta) y, de esas personas, cuántas declaran daño (10 figuras) */
-  function iconosDano(rows){
-    var W=660,top=46,rowH=66,H=top+rows.length*rowH+8,xN=128,wN=96,xF=262,xV=532;
+  function iconosDano(rows,W){
+    /* 3 nov 2026: W sigue al ancho de la tarjeta (660 a 980). Las columnas se reparten; el tamaño de letra no crece. */
+    W=W||660;var top=46,rowH=66,H=top+rows.length*rowH+8,xN=Math.max(128,Math.round(W*.17)),wN=Math.max(96,Math.round(W*.14)),xF=Math.max(262,Math.round(W*.4)),xV=W-120,paso=Math.max(22,Math.min(46,(xV-30-xF-22)/9));
     var s=svg(W,H,'De cada 10 personas que dicen no haber tenido necesidad, cuántas declaran daño, por horas de cuidado');
-    s+='<text x="0" y="16" font-size="11" font-weight="700" fill="#77689d" letter-spacing=".06em">HORAS</text>';
-    s+='<text x="'+xN+'" y="16" font-size="11" font-weight="700" fill="#77689d" letter-spacing=".06em">DICE «NO TUVE</text><text x="'+xN+'" y="30" font-size="11" font-weight="700" fill="#77689d" letter-spacing=".06em">NECESIDAD»</text>';
-    s+='<text x="'+xF+'" y="16" font-size="11" font-weight="700" fill="#77689d" letter-spacing=".06em">DE CADA 10 QUE LO DICEN, CUÁNTAS DECLARAN DAÑO</text><text x="'+xF+'" y="30" font-size="11" fill="'+FAINT+'">a su salud o a su trabajo</text>';
+    s+='<text x="0" y="16" font-size="11" font-weight="700" fill="#77689d" letter-spacing="0">HORAS</text>';
+    s+='<text x="'+xN+'" y="16" font-size="11" font-weight="700" fill="#77689d" letter-spacing="0">DICE «NO TUVE</text><text x="'+xN+'" y="30" font-size="11" font-weight="700" fill="#77689d" letter-spacing="0">NECESIDAD»</text>';
+    s+='<text x="'+xF+'" y="16" font-size="11" font-weight="700" fill="#77689d" letter-spacing="0">DE CADA 10 QUE LO DICEN, CUÁNTAS DECLARAN DAÑO</text><text x="'+xF+'" y="30" font-size="11" fill="'+FAINT+'">a su salud o a su trabajo</text>';
     s+='<line x1="0" x2="'+W+'" y1="'+(top-6)+'" y2="'+(top-6)+'" stroke="rgba(63,71,96,.15)"/>';
     rows.forEach(function(r,i){var y=top+i*rowH,cy=y+rowH/2;
       s+='<text x="0" y="'+(cy-2)+'" font-size="15" font-weight="700" fill="'+C_INK+'">'+esc(r.lbl)+'</text><text x="0" y="'+(cy+15)+'" font-size="11" fill="'+FAINT+'">a la semana</text>';
       s+='<g><title>Dice «no tuve necesidad»: '+fmt(r.nec.pct)+'% (IC 90%: '+fmt(r.nec.li90)+'–'+fmt(r.nec.ls90)+')</title><rect x="'+xN+'" y="'+(cy-12)+'" width="'+wN+'" height="8" rx="4" fill="#ece8f5"/><rect x="'+xN+'" y="'+(cy-12)+'" width="'+(wN*r.nec.pct/100).toFixed(1)+'" height="8" rx="4" fill="#8a76b8"/>';
       s+='<text x="'+xN+'" y="'+(cy+14)+'" '+MONO+' font-size="13" font-weight="700" fill="'+C_INK+'">'+fmt(r.nec.pct)+'%</text></g>';
-      s+='<g><title>Declara daño: '+fmt(r.dano.pct)+'% (IC 90%: '+fmt(r.dano.li90)+'–'+fmt(r.dano.ls90)+') · n = '+r.dano.n+'</title>'+filaFiguras(xF,y+12,r.dano.pct,10,C_RED,C_OFF,'cf'+i+'_')+'</g>';
+      s+='<g><title>Declara daño: '+fmt(r.dano.pct)+'% (IC 90%: '+fmt(r.dano.li90)+'–'+fmt(r.dano.ls90)+') · n = '+r.dano.n+'</title>'+filaFiguras(xF,y+12,r.dano.pct,10,C_RED,C_OFF,'cf'+i+'_',paso)+'</g>';
       var wk=isWeak(r.dano.precision);   // 14 oct 2026: con filtro de segmento puede salir precisión baja
       s+='<text x="'+(xV)+'" y="'+(cy+2)+'" '+MONO+' font-size="22" font-weight="760" fill="'+(wk?FAINT:C_RED)+'">'+fmt(r.dano.pct)+'%'+(wk?'<tspan font-size="10" font-weight="400"> precisión baja</tspan>':'')+'</text>';
       s+='<text x="'+(xV)+'" y="'+(cy+18)+'" '+MONO+' font-size="10" fill="'+FAINT+'">IC 90%: '+fmt(r.dano.li90,0)+'–'+fmt(r.dano.ls90,0)+'</text>';
@@ -191,9 +192,32 @@
         yb+=bh+gapS});
       y+=catH+gapC});
     if(o.nota){var nl=o.nota.split(' | ');nl.forEach(function(t,i){s+='<text x="0" y="'+(H-3-(nl.length-1-i)*14)+'" font-size="10.5" fill="'+FAINT+'">'+esc(t)+'</text>'})}
+    if(o.sinLeyenda)return s+'</svg>';   /* 3 nov 2026: la leyenda la pone quien parte el gráfico en columnas */
     var lg='<div class="legend">'+series.map(function(sr){return '<span><i style="background:'+sr.col+'"></i>'+esc(sr.nombre)+'</span>'}).join('')+'</div>';
     return s+'</svg>'+lg}
   OBS.barrasGrupo=barrasGrupo;
+
+  /* 5 nov 2026: mancuerna (dumbbell) en HTML/CSS: dos extremos por fila (+ punto intermedio), ordenada por diferencia. Responsive sin escalar texto.
+     filas: [{nombre,resumen,lo,mid,hi:{pct,li90,ls90,precision},dif,difLi,difLs,clara,poco,grupo}]. Nada a mano: todo viene de D. */
+  function mancuerna(filas,o){o=o||{};var mx=o.max||100,ncl=o.nombres||['','',''];
+    function P(v){return (100*Math.max(0,Math.min(v,mx))/mx).toFixed(2)}
+    var tk='';for(var t=0;t<=4;t++){tk+='<span style="left:'+(t*25)+'%">'+fmt(mx*t/4,0)+(t===4?'%':'')+'</span>'}
+    var h='<div class="mc" role="list" aria-label="'+esc(o.aria||'Mancuerna')+'"><div class="mc-ax"><span></span><div class="mc-ticks">'+tk+'</div><span class="mc-axd">Diferencia</span></div>',gp='';
+    filas.forEach(function(f){
+      if(f.grupo&&f.grupo!==gp){gp=f.grupo;h+='<div class="mc-grp">'+esc(gp)+'</div>'}
+      var a=f.lo,b=f.hi,m=f.mid,w=f.poco,ns=!w&&!f.clara,x1=Math.min(a.pct,b.pct),x2=Math.max(a.pct,b.pct);
+      var tit=f.nombre+': '+ncl[0]+' '+fmt(a.pct,0)+'%'+(m?', '+ncl[1]+' '+fmt(m.pct,0)+'%':'')+', '+ncl[2]+' '+fmt(b.pct,0)+'% (IC 90 %: '+fmt(b.li90,0)+'–'+fmt(b.ls90,0)+'). '+(w?'Muy pocos casos: no se compara.':f.clara?'La diferencia es clara.':'La diferencia no se distingue de cero.');
+      h+='<div class="mc-row'+(f.resumen?' mc-sum':'')+(w?' mc-weak':'')+(ns?' mc-ns':'')+'" role="listitem" tabindex="0" title="'+esc(tit)+'" aria-label="'+esc(tit)+'">'+
+        '<div class="mc-lab">'+esc(f.nombre)+'</div><div class="mc-track">'+
+        (b.li90!=null&&!w?'<i class="mc-ci" style="left:'+P(b.li90)+'%;width:'+(P(b.ls90)-P(b.li90)).toFixed(2)+'%"></i>':'')+
+        '<i class="mc-bar" style="left:'+P(x1)+'%;width:'+Math.max(.6,P(x2)-P(x1)).toFixed(2)+'%"></i>'+
+        (m&&!w?'<i class="mc-dot mc-mid" style="left:'+P(m.pct)+'%"></i>':'')+
+        '<i class="mc-dot mc-lo" style="left:'+P(a.pct)+'%"></i><i class="mc-dot mc-hi" style="left:'+P(b.pct)+'%"></i>'+
+        '<b class="mc-v mc-vl" style="left:'+P(Math.min(a.pct,b.pct))+'%">'+fmt(Math.min(a.pct,b.pct),0)+'</b>'+
+        '<b class="mc-v mc-vr" style="left:'+P(Math.max(a.pct,b.pct))+'%">'+fmt(Math.max(a.pct,b.pct),0)+(w?'<small> baja</small>':'')+'</b></div>'+
+        '<div class="mc-dif">'+(w?'<small>muy pocos casos</small>':'<b>'+(f.dif>0?'+':'')+fmt(f.dif,0)+'</b><small>'+(f.clara?'más de cada 100':'sin cambio claro')+'</small>')+'</div></div>'});
+    return h+'</div>'}
+  OBS.mancuerna=mancuerna;
   /* columnas verticales agrupadas (una o varias series) con IC; etiquetas largas en varias líneas */
   function partir(t,n){var w=String(t).split(' '),L=[],c='';w.forEach(function(p){if((c+' '+p).trim().length>n&&c){L.push(c);c=p}else c=(c+' '+p).trim()});if(c)L.push(c);return L}
   function columnasGrupo(cats,series,o){o=o||{};
