@@ -82,8 +82,8 @@
       g+='<line x1="'+X(M[k])+'" x2="'+X(M[k])+'" y1="'+(y-7)+'" y2="'+(y+7)+'" stroke="'+INK+'" stroke-width="2"><title>Mediana de la CDMX: '+fmt(M[k])+v[2]+'</title></line>';
       TP.tipos.forEach(function(x){if(x.tipo===selTipo)return;g+='<circle cx="'+X(x.medianas[k])+'" cy="'+y+'" r="4" fill="'+TC[x.tipo]+'" opacity=".35"><title>'+esc(nom(x.tipo))+': '+fmt(x.medianas[k])+v[2]+'</title></circle>'});
       g+='<circle cx="'+X(t.medianas[k])+'" cy="'+y+'" r="6.5" fill="'+TC[selTipo]+'" stroke="#fff" stroke-width="1.5"><title>'+esc(nom(selTipo))+': '+fmt(t.medianas[k])+v[2]+'</title></circle>';
-      g+='<text x="'+(W-pr+8)+'" y="'+(y+4)+'" '+MONO+' font-size="11" font-weight="700" fill="'+INK+'">'+fmt(t.medianas[k])+'</text>'});
-    g+='<text x="0" y="'+(H-4)+'" font-size="10.5" fill="'+FAINT+'">Punto grande: mediana del tipo · puntos tenues: otros tipos · raya: CDMX</text>';
+      g+='<text x="'+(W-pr+8)+'" y="'+(y+4)+'" '+MONO+' font-size="11.5" font-weight="700" fill="'+INK+'">'+fmt(t.medianas[k])+'</text>'});
+    g+='<text x="0" y="'+(H-4)+'" font-size="11.5" fill="'+FAINT+'">Punto grande: mediana del tipo · puntos tenues: otros tipos · raya: CDMX</text>';
     var cab='<h4 style="margin:12px 0 6px;font-size:14px"><span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:'+TC[selTipo]+';margin-right:6px"></span>'+esc(nom(selTipo))+'</h4>';
     var ag=a?'<p class="find" style="margin:0 0 8px">AGEB '+a.cvegeo.slice(-4)+' de '+esc(a.alcaldia)+': '+ent(a.poblacion)+' habitantes, '+ent(a.n_60)+' de 60+ ('+fmt(a.pct_60)+'%), '+fmt(a.pct_sin_int)+'% de viviendas sin internet, oferta núcleo a '+fmt(a.dist_oferta_km,2)+' km.'+(a.frontera?' <b>Está en la frontera con otro tipo:</b> revisarla contra los dos.':'')+(a.brecha?' <b>Es AGEB con brecha de oferta.</b>':'')+'</p>':'';
     $('#tipoPerfil').innerHTML=cab+ag+g+'</svg>';
@@ -100,8 +100,8 @@
       g+='<text x="'+(X(e.v)+6)+'" y="'+(y+27.5)+'" '+MONO+' font-size="12" font-weight="700" fill="'+INK+'">'+o.f(e.v)+'</text>';
       var ys=y+43;
       if(hasRef&&e.ref!=null){g+='<rect x="0" y="'+(y+33)+'" width="'+Math.max(1.5,X(e.ref)).toFixed(1)+'" height="5" rx="2" fill="#b8b3c9"><title>'+esc(o.refLbl)+': '+o.f(e.ref)+'</title></rect>';ys=y+50}
-      if(e.sub)g+='<text x="0" y="'+ys+'" font-size="10.5" fill="'+FAINT+'">'+esc(e.sub)+(hasRef&&e.ref!=null?' · '+esc(o.refLbl.toLowerCase())+': '+o.f(e.ref):'')+'</text>'});
-    if(o.nota)g+='<text x="0" y="'+(H-5)+'" font-size="10.5" fill="'+FAINT+'">'+esc(o.nota)+'</text>';
+      if(e.sub)g+='<text x="0" y="'+ys+'" font-size="11.5" fill="'+FAINT+'">'+esc(e.sub)+(hasRef&&e.ref!=null?' · '+esc(o.refLbl.toLowerCase())+': '+o.f(e.ref):'')+'</text>'});
+    if(o.nota)g+='<text x="0" y="'+(H-5)+'" font-size="11.5" fill="'+FAINT+'">'+esc(o.nota)+'</text>';
     return g+'</svg>'}
 
   /* ---------- Línea por k (silueta y estabilidad), con dos decimales ---------- */
@@ -109,12 +109,12 @@
     var W=400,H=230,pl=40,pr=12,pt=14,pb=34,K=TP.seleccion_k.map(function(r){return r.k}),k0=K[0],k1=K[K.length-1];
     function X(k){return pl+(W-pl-pr)*(k-k0)/(k1-k0)} function Y(v){return pt+(H-pt-pb)*(1-(v-o.min)/(o.max-o.min))}
     var g=svg(W,H,o.aria);
-    o.ticks.forEach(function(t){g+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,.1)"/><text x="'+(pl-6)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="10" fill="'+FAINT+'">'+fmt(t,2)+'</text>'});
-    K.forEach(function(k){g+='<text x="'+X(k)+'" y="'+(H-pb+16)+'" text-anchor="middle" '+MONO+' font-size="10.5" fill="'+FAINT+'">'+k+'</text>'});
-    g+='<text x="'+(W-pr)+'" y="'+(H-4)+'" text-anchor="end" font-size="10.5" fill="'+FAINT+'">número de tipos (k) →</text>';
-    if(o.banda)g+='<rect x="'+pl+'" y="'+Y(o.max)+'" width="'+(W-pl-pr)+'" height="'+(Y(o.banda)-Y(o.max))+'" fill="rgba(35,128,111,.10)"/><text x="'+(W-pr-4)+'" y="'+(Y(o.banda)-5)+'" text-anchor="end" font-size="10" fill="#23806f">criterio de estabilidad (≥ '+fmt(o.banda,2)+')</text>';
+    o.ticks.forEach(function(t){g+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,.1)"/><text x="'+(pl-6)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+fmt(t,2)+'</text>'});
+    K.forEach(function(k){g+='<text x="'+X(k)+'" y="'+(H-pb+16)+'" text-anchor="middle" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+k+'</text>'});
+    g+='<text x="'+(W-pr)+'" y="'+(H-4)+'" text-anchor="end" font-size="11.5" fill="'+FAINT+'">número de tipos (k) →</text>';
+    if(o.banda)g+='<rect x="'+pl+'" y="'+Y(o.max)+'" width="'+(W-pl-pr)+'" height="'+(Y(o.banda)-Y(o.max))+'" fill="rgba(35,128,111,.10)"/><text x="'+(W-pr-4)+'" y="'+(Y(o.banda)-5)+'" text-anchor="end" font-size="11.5" fill="#23806f">criterio de estabilidad (≥ '+fmt(o.banda,2)+')</text>';
     var kk=TP.seleccion_k.filter(function(r){return r.estable}).map(function(r){return r.k}).pop();
-    g+='<line x1="'+X(kk)+'" x2="'+X(kk)+'" y1="'+pt+'" y2="'+(H-pb)+'" stroke="'+INK+'" stroke-dasharray="4 3" opacity=".5"/><text x="'+(X(kk)+5)+'" y="'+(H-pb-6)+'" font-size="10.5" fill="'+INK+'">k elegido = '+kk+'</text>';
+    g+='<line x1="'+X(kk)+'" x2="'+X(kk)+'" y1="'+pt+'" y2="'+(H-pb)+'" stroke="'+INK+'" stroke-dasharray="4 3" opacity=".5"/><text x="'+(X(kk)+5)+'" y="'+(H-pb-6)+'" font-size="11.5" fill="'+INK+'">k elegido = '+kk+'</text>';
     series.forEach(function(sr){var d='';TP.seleccion_k.forEach(function(r,i){d+=(i?'L':'M')+X(r.k).toFixed(1)+','+Y(r[sr.c]).toFixed(1)});
       g+='<path d="'+d+'" fill="none" stroke="'+sr.col+'" stroke-width="2.4"'+(sr.dash?' stroke-dasharray="5 4"':'')+'/>';
       TP.seleccion_k.forEach(function(r){g+='<circle cx="'+X(r.k)+'" cy="'+Y(r[sr.c])+'" r="4.5" fill="'+sr.col+'" stroke="#fff" stroke-width="1.5"><title>'+esc(sr.n)+', k = '+r.k+': '+fmt(r[sr.c],3)+'</title></circle>'})});
@@ -156,7 +156,7 @@
       g+='<text x="'+(pl-8)+'" y="'+(y+13)+'" text-anchor="end" font-size="11.5" fill="'+INK+'">'+esc(r.alcaldia)+'</text>';
       [1,2,3,4].forEach(function(t){var v=(bt[r.alcaldia]||{})[t]||0;if(!v)return;var w=X(v)-pl;
         g+='<rect x="'+x.toFixed(1)+'" y="'+(y+3)+'" width="'+Math.max(1,w-1.5).toFixed(1)+'" height="14" rx="2" fill="'+TC[t]+'"><title>'+esc(r.alcaldia)+' · '+esc(nom(t))+': '+ent(v)+' personas de 60+</title></rect>';x+=w});
-      g+='<text x="'+(x+6)+'" y="'+(y+14)+'" '+MONO+' font-size="11" font-weight="700" fill="'+INK+'">'+ent(r.n_60_brecha)+'<tspan font-weight="400" fill="'+FAINT+'"> · '+r.ageb_brecha+' AGEB</tspan></text>'});
+      g+='<text x="'+(x+6)+'" y="'+(y+14)+'" '+MONO+' font-size="11.5" font-weight="700" fill="'+INK+'">'+ent(r.n_60_brecha)+'<tspan font-weight="400" fill="'+FAINT+'"> · '+r.ageb_brecha+' AGEB</tspan></text>'});
     $('#ch-tbrecha').innerHTML=g+'</svg><div class="legend">'+T.map(function(t){return '<span><i style="background:'+TC[t.tipo]+'"></i>'+esc(nom(t.tipo))+'</span>'}).join('')+'</div>'})();
   var dosA=PA.slice(0,2);
   $('#tBrFind').innerHTML='<b>'+ent(BT.ageb)+'</b> AGEB con <b>'+ent(BT.n_60)+'</b> personas de 60+ tienen muchas personas mayores y la oferta formal lejos. '+esc(dosA[0].alcaldia)+' y '+esc(dosA[1].alcaldia)+' concentran más. Con terciles en vez de cuartiles serían '+ent(DC.reduce(function(s,d){return s+d.ageb_brecha_terciles},0))+' AGEB: el umbral es una convención.';
@@ -169,7 +169,8 @@
     {min:.1,max:.35,ticks:[.1,.15,.2,.25,.3,.35],aria:'Silueta por número de tipos frente a una referencia sin grupos'});
   $('#ch-tari').innerHTML='<h4 class="mini">Estabilidad en 50 submuestras (ARI)</h4>'+lineaK([{c:'ari_promedio',n:'Promedio',col:'#5d4d8f'},{c:'ari_min',n:'Mínimo',col:'#c0435a'}],
     {min:.4,max:1,banda:.9,ticks:[.4,.5,.6,.7,.8,.9,1],aria:'Estabilidad por número de tipos'});
-  $('#tConfFind').innerHTML=(k4.ari_promedio>=0.9?'La clasificación es estable: casi no cambia al repetirla con otras submuestras de zonas. ':'La clasificación cambia con las submuestras de zonas. ')+'Pero la ciudad cambia de forma gradual, no a saltos: <b>los tipos son tramos útiles para decidir dónde probar, no grupos con fronteras claras</b>. Al quitar una alcaldía y volver a clasificar sus zonas, '+fmt(DF.coincidencia_ponderada,0)+' de cada 100 quedan en el mismo tipo.';
+  var rW=TP.robustez.filter(function(r){return /Ward/.test(r.variante)})[0],rG=TP.robustez.filter(function(r){return /gaussiana/.test(r.variante)})[0];
+  $('#tConfFind').innerHTML=(k4.ari_promedio>=0.9?'Con el mismo método, la clasificación se repite al usar otras submuestras de zonas. ':'La clasificación cambia con las submuestras de zonas. ')+(rW&&rG?'<b>Pero depende del método:</b> con otro algoritmo la coincidencia baja a '+fmt(rW.ari,2)+' y '+fmt(rG.ari,2)+' (1 sería idéntica). ':'')+'La ciudad cambia de forma gradual, no a saltos: <b>los tipos son tramos útiles para decidir dónde probar, no grupos con fronteras claras</b>. Al quitar una alcaldía y volver a clasificar sus zonas, '+fmt(DF.coincidencia_ponderada,0)+' de cada 100 quedan en el mismo tipo.';
   $('#tcomp tbody').innerHTML=CO.map(function(r,i){return '<tr'+(i===CO.length-1?' style="font-weight:650"':'')+'><td>'+esc(r.particion)+'</td><td class="n">'+fmt(r.r2_9_variables,2)+'</td><td class="n">'+fmt(r.ari_promedio,2)+'</td><td class="n">'+fmt(r.cramer_v_rezago_coneval,2)+'</td><td class="n">'+fmt(r.eta2_pct_limitacion,3)+'</td><td class="n">'+fmt(r.eta2_log_distancia_oferta,3)+'</td><td class="n">'+fmt(100*r.vecinos_mismo_grupo,1)+'%</td></tr>'}).join('');
   $('#trob tbody').innerHTML=TP.robustez.map(function(r){return '<tr><td>'+esc(r.variante)+'</td><td class="n">'+fmt(r.ari,2)+'</td></tr>'}).join('');
   $('#limTipo').innerHTML=[

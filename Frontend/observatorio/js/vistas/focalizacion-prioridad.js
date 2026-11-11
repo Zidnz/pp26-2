@@ -39,7 +39,7 @@
   /* ---------- Respuesta: tres tarjetas ---------- */
   var tiles=[
     {k:'Piloto · tipo de zona con más personas de 60+',v:'Tipo '+top.tipo+' · '+esc(top.nombre),v2:'Propuesta del notebook, sin decidir',fs:18,
-      det:'<div class="lbl">Vive aquí el '+fmt(top.pct_de_las_60)+' % de las personas de 60+ de la CDMX; el '+fmt(DEC[top.tipo].pct_viv_sin_int)+' % de sus viviendas no tiene internet. El equipo no ha decidido el piloto.</div>',fuente:'Censo 2020 por AGEB · CDMX · k-means, 4 tipos'},
+      det:'<div class="lbl">Vive aquí el '+fmt(top.pct_de_las_60)+' % de las personas de 60+ de la CDMX; el '+fmt(DEC[top.tipo].pct_viv_sin_int)+' % de sus viviendas no tiene internet. El equipo no ha decidido el piloto.</div><div class="lbl" style="margin-top:6px"><b>Ojo:</b> ahí vive también el '+fmt(top.pct_pob_cdmx)+' % de la población total, así que es el tipo más grande, no el más envejecido. Por sí solo casi no distingue dónde hacer el piloto.</div>',fuente:'Censo 2020 por AGEB · CDMX · k-means, 4 tipos'},
     {k:'Relevo · a quién se ofrece primero',v:'40 h o más por semana',v2:'Solo la regla, sin modelo',fs:20,est:true,
       det:'<div class="lbl">La regla elige al '+fmt(CUPO)+' % de las cuidadoras y encuentra al '+fmt(R.cobertura)+' % de quienes declaran daño en salud física, cansancio o sueño (IC 90 %: '+fmt(R.cob_li90,0)+' a '+fmt(R.cob_ls90,0)+').</div>',fuente:'ENASIC 2022 · nacional'},
     {k:'Zonas · alcaldías con nivel doble',v:esc(lista(n1.map(function(a){return a.alcaldia}))),v2:'Brecha alta en volumen y en concentración',fs:17,
@@ -168,7 +168,7 @@
     var s=svg(W,H,'Alcaldías según personas de 60+ en AGEB con brecha de oferta y porcentaje de sus 60+ que representan');
     for(var k=0;k<=xmax;k+=5000)s+='<line x1="'+X(k)+'" x2="'+X(k)+'" y1="'+tp+'" y2="'+(H-b)+'" stroke="'+HAIR+'" stroke-dasharray="2 4"/>'+txt(X(k),H-b+16,ent(k),{a:'middle',m:1,s:10,c:FAINT});
     for(k=0;k<=ymax;k+=10)s+='<line x1="'+l+'" x2="'+(W-r)+'" y1="'+Y(k)+'" y2="'+Y(k)+'" stroke="'+HAIR+'" stroke-dasharray="2 4"/>'+txt(l-8,Y(k)+4,k+'%',{a:'end',m:1,s:10,c:FAINT});
-    s+=txt((l+W-r)/2,H-8,'Volumen: personas de 60+ en AGEB con brecha →',{a:'middle',s:11,w:650})+'<text transform="translate(12 '+((tp+H-b)/2)+') rotate(-90)" text-anchor="middle" font-size="11" font-weight="650" fill="'+INK+'">Concentración: % de sus 60+ en esas AGEB →</text>';
+    s+=txt((l+W-r)/2,H-8,'Volumen: personas de 60+ en AGEB con brecha →',{a:'middle',s:11,w:650})+'<text transform="translate(12 '+((tp+H-b)/2)+') rotate(-90)" text-anchor="middle" font-size="11.5" font-weight="650" fill="'+INK+'">Concentración: % de sus 60+ en esas AGEB →</text>';
     var placed=[],cajas=PA.map(function(a){var x=X(a.n_60_brecha),y=Y(a.pct_60_brecha);return {n:a.alcaldia,x1:x-9,x2:x+9,y1:y-9,y2:y+9}});
     function libre(bx,own){var ob=placed.concat(cajas.filter(function(c){return c.n!==own}));return bx.x1>=0&&bx.x2<=W&&ob.every(function(p){return bx.x2<p.x1||bx.x1>p.x2||bx.y2<p.y1||bx.y1>p.y2})}
     PA.slice().sort(function(a,b){return b.n_60_brecha-a.n_60_brecha}).forEach(function(a){var x=X(a.n_60_brecha),y=Y(a.pct_60_brecha),w=cor(a.alcaldia).length*5.6;

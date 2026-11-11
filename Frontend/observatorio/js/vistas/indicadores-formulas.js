@@ -16,7 +16,7 @@
   function razon(e,n,d){return '≈ '+ent(e.total_expandido)+' ('+n+') ÷ ≈ '+mill(den(e))+' ('+d+') = '+fmt(e.pct)+' %'}
   function pisoRow(h){return D.relevo.filas.filter(function(r){return r.salario.indexOf('Piso')===0&&r.horas===h})[0]}
   var F={
-    'Hogares con necesidad de cuidado':function(){return {
+    'Hogares con persona de 60+ o con discapacidad':function(){return {
       op:'Hogares con al menos una persona con discapacidad o de 60 años y más ÷ total de hogares del país × 100',
       datos:'= '+fmt(D.tasa_necesidad_nal)+' % (tasa nacional, hogares expandidos)',
       nota:'Fuente: ENASIC 2022 (archivo 05, concepto «Tasa nacional de hogares con persona con discapacidad o 60+»). La ficha cita también el Censo 2020, pero esta cifra sale de la ENASIC.'}},
@@ -119,7 +119,7 @@
   var U='cuida a persona con discapacidad o 60+',HOG='hogar con persona con discapacidad o 60+';
   function leq20(costo,ing){return {m:'<mrow><mfrac>'+T(costo)+T(ing)+'</mfrac><mo>≤</mo><mn>20</mn><mo>%</mo></mrow>'}}
   var MM={
-    'Hogares con necesidad de cuidado':function(){return fr(T('hogares con al menos una persona con discapacidad o 60+'),T('total de hogares del país'),100)},
+    'Hogares con persona de 60+ o con discapacidad':function(){return fr(T('hogares con al menos una persona con discapacidad o 60+'),T('total de hogares del país'),100)},
     'Grupo del problema':function(){return R('FAC_CUI',[U,'horas ≥ 40','no tuve necesidad','algún daño'],[U])},
     'Cuidado de alta intensidad':function(){return R('FAC_CUI',[U,'horas ≥ 40'],[U])},
     'Preferencia por cuidado en casa':function(){return R('FAC_CUI',[U,'P6.46 = «en su casa»'],[U])},

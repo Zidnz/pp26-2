@@ -2531,3 +2531,40 @@ Sin revisión de otra persona. Revisor: _[pendiente]_.
 - **En «¿A quién primero?»** queda una línea con el enlace «ver en Método →», que abre el plegable. Al moverlo se quitó también una repetición: la pestaña tenía dos listas de «Qué no permite afirmar»; ahora tiene una.
 - **En Método** la tarjeta «¿A quién?» de «Cada modelo responde a una decisión» ya no repite las cifras del modelo: lo dice en palabras y remite al plegable.
 - Verificado: sin errores de JavaScript ni desplazamiento horizontal a 1440 y 390 px; en «¿A quién primero?» ya no hay «pp», «IC 90» ni «diferencia mínima detectable» a la vista; las gráficas del plegable se dibujan en Método. Trazabilidad sin cambios (12 cifras sin rastro de siempre).
+
+## 11 nov 2026 (mañana) — Observatorio: correcciones de la auditoría del 10 nov (pedido de Omar)
+
+**Por qué.** La auditoría del 10 nov encontró cifras de la CDMX obtenidas con tasas nacionales de la ENASIC, tres medidas de daño sin jerarquía en una pestaña, una gráfica sin origen, un indicador mal nombrado, color que exageraba diferencias y letra ilegible en proyector. Omar pidió corregirlo en los archivos vigentes.
+
+**Qué se hizo** (`Frontend/observatorio/`; sin versiones nuevas; respaldo en `_to_delete/backup_pre_auditoria_2026-11-11/`).
+1. **CDMX y ENASIC.** «¿Dónde?» conserva solo la tarjeta medida con la ENIGH (1,407,522 hogares); se retiraron las tres inferidas con tasas nacionales (1,099,461; 11,300; 86,193). En «¿Cuánto cuesta?» el subsidio se presenta por cada 1,000 hogares atendidos; el escenario con ≈70,557 hogares elegibles queda plegado y rotulado «supuesto, no medición».
+2. **Daño.** «¿Quién lo carga?» declara arriba la medida principal (salud física, cansancio o sueño) y la amplia («algún daño»); la tabla de segmentos, el pictograma y las clases latentes dicen «medida amplia». **No se recalcularon** con la principal: falta rehacer los scripts 12 y 23.
+3. **Gráfica retirada:** horas por sexo y edad (archivo sin productor ni año). El indicador «Brecha de horas por sexo» sigue en Indicadores como «desconocido».
+4. **Indicador renombrado:** «Hogares con necesidad de cuidado» pasa a «Hogares con persona de 60+ o con discapacidad» (`build_datos.py`, fórmulas). El valor no cambia (39.9 %).
+5. **Mapa de calor de segmentos:** el color usa una escala común de 0 a 100, ya no mínimo–máximo por renglón.
+6. **Tipología:** el texto de firmeza dice que la clasificación depende del método (coincidencia de 0.53 y 0.34 con otros algoritmos); la tarjeta del piloto dice que el tipo 2 reúne 43 % de los 60+ con 42 % de la población.
+7. **Trazabilidad.** Se volvió a correr `build_datos.py` (corrida 20 del ETL): el JSON solo cambió en el nombre del indicador del punto 4. `verificar_trazabilidad.py` declara en `DERIVADOS` la fórmula de las 12 cifras sin rastro y termina sin pendientes.
+8. **Letra:** mínimo de 12 px en CSS y 11.5 en las gráficas.
+9. **Sueltos:** etiquetas de la dispersión de alcaldías sin encimarse; título de la tabla de tipos; chips «precisión alta», «evidencia probable», «solo nacional»; botón de Método con texto «Qué no permite afirmar»; «pp» pasa a «puntos» en la página de evidencia; tarjetas de Indicadores más bajas.
+10. **Móvil:** el encabezado del embudo se apila, «51 de cada 100» ya no se corta y las tablas anchas se deslizan.
+11. **Largo de «¿Dónde?»:** se ocultaron las tres tarjetas por tipo de zona y las brechas por alcaldía, que repetían «¿A quién primero?»; queda un enlace.
+
+**Qué NO resuelve.** Los bloques con la medida amplia siguen sin recalcular. En móvil varias gráficas siguen con letra menor a 11 px. `Frontend/_publicar_web/` no se tocó y quedó desfasada. Sin doble revisión. No se hizo commit.
+
+## 11 nov 2026 (10:15) — «¿Quién lo carga?» recalculada con el daño principal (script 33)
+
+**Por qué.** La entrada anterior dejó tres bloques rotulados como «medida amplia» sin recalcular. Omar pidió rehacerlos con `DANO_SALUD3`.
+
+**Qué se hizo.** `Analysis/33_dano_salud3_segmentos_y_clases.py` recalcula la tabla de segmentos (script 12), el pictograma por horas (sección 12b) y el daño por clase latente (notebook 23, misma semilla). Antes de escribir reproduce con «algún daño» lo ya publicado: 28 filas del 12, 33 del 12b y 12 del 23; los cuatro controles pasaron. Escribe `resultados/33_*.csv` (4 archivos) y no toca los anteriores. `build_datos.py` los agrega a `seg`, `seg2` y `seg23`; la pestaña usa ahora el daño principal en los tres bloques y deja «algún daño» solo como opción en clases latentes.
+
+**Qué cambia en lo que se lee** (nacional, ENASIC 2022). Daño a la salud: 48.7 % de las cuidadoras del universo (antes, con la medida amplia, 62.2 %). Entre quienes dicen «no tuve necesidad» y cuidan 40 h o más: 58.2 % (antes 70.5 %). Por ingreso ya no hay diferencia clara en el daño (con la amplia, Q1–Q2 salía más alto): esa diferencia venía del daño laboral. Se mantienen las diferencias por sexo y por a quién se cuida. Clases latentes: con menos de 40 h, 71 % contra 31 %; con 40 h o más, 88 % contra 50 %.
+
+**Qué NO resuelve.** La prueba «40 h frente a menos de 20 h» del detalle del pictograma sigue hecha con la medida amplia (script 07) y así se rotula. El script 33 se corrió en el entorno de Claude con los microdatos de la carpeta porque el ajuste de clases tarda unos 4 minutos; no se ha corrido en la computadora de Omar. Sin doble revisión.
+
+## 11 nov 2026 (mediodía) — Daño principal en «¿Quién lo carga?» (script 33) y tres ajustes a RedCare
+
+**Script 33** (`Analysis/33_dano_salud3_segmentos_y_clases.py`). Recalcula con `DANO_SALUD3` la tabla de segmentos (antes script 12), el pictograma por horas (12b) y el corte por clase y horas (notebook 23). Antes de escribir reproduce con «algún daño» las filas publicadas de 12, 12b y 23 (28, 33, 6 y 8 filas); los cuatro controles pasaron. Salidas: `resultados/33_*.csv`. `build_datos.py` las agrega a `seg`, `seg2` y `seg23`; el verificador de trazabilidad termina sin pendientes.
+**Resultado.** Daño a la salud: 48.7 % de quienes cuidan a persona con discapacidad o 60+ (IC 90 % 44.9–52.6). Entre quienes dicen «no tuve necesidad»: 30.3 % con menos de 20 h, 41.4 % con 20 a 39 h y 58.2 % con 40 h o más. Con la clase «dificultad en la tarea»: 71 % contra 31 % con menos de 40 h, y 88 % contra 50 % con 40 h o más.
+**Qué NO cambia ni afirma.** La medida amplia sigue como opción en clases latentes y en el grupo del problema filtrado por segmento. Nacional; nada sobre la CDMX. Asociaciones, no causas. Sin doble revisión.
+
+**RedCare** (`Frontend/js/app.js`). (1) Quien queda fuera de la regla ya no ve «En espera de que el programa te asigne relevo» con 0 h: ve que su solicitud quedó registrada. (2) La etiqueta «datos simulados» aparece en los tres roles, no solo en Programa. (3) El alias rechaza teléfonos, correos y números (minimización de datos). La prueba `tests/prueba_asignacion.js` pasa.

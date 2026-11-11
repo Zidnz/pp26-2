@@ -27,7 +27,7 @@
         det:'<div class="chips">'+prec(r.precision)+(r.li90!=null?'<span class="chip">IC 90% '+fmt(r.li90)+'–'+fmt(r.ls90)+'%</span>':'')+(F.dim!=='Total'?'<span class="chip p-noest">total '+fmt(t.pct)+'%</span>':'')+'</div><div class="delta '+cls+'">'+msg+'</div>',fuente:'ENASIC 2022 · nacional'})}).join('');
   }
   /* Comparar segmentos: mapa de calor indicadores × segmentos (script 12). Sin selectores: todos los indicadores a la vista.
-     Color = % del segmento entre el mínimo y el máximo de su renglón. ▲▼ = diferencia significativa (IC 90%) contra el resto de su dimensión.
+     Color = % del segmento en escala común 0–100 (11 nov 2026; antes mínimo–máximo por renglón, que exageraba diferencias no significativas). ▲▼ = diferencia significativa (IC 90%) contra el resto de su dimensión.
      Rayado = precisión baja: no se compara. Clic en una columna filtra la pestaña; "Total" quita el filtro. */
   var SHORT={'Cuida discapacidad':'Discap.','Solo 60+ sin discapacidad':'Solo 60+','>=40 h':'≥ 40 h','<20 h':'< 20 h'};
   /* 3 nov 2026: «excl» quita dimensiones cuyas columnas repiten otra gráfica de la pestaña (en ¿Quién lo carga?, Intensidad
@@ -41,7 +41,7 @@
     var cw=(W-lab-pr-(groups.length-1)*gapG)/cols.length,x=lab,gi=-1,lastG=null;
     cols.forEach(function(c){if(c.gr!==lastG){if(lastG!==null)x+=gapG;lastG=c.gr;gi++;groups[gi].x0=x}c.x=x;x+=cw;groups[gi].x1=x});
     var H=hh+rows.length*rowH+34,s=svg(W,H,'Mapa de calor: indicadores por segmento')+'<defs>'+hatchDef('hmH','#b7aed0')+'</defs>';
-    groups.forEach(function(g){if(g.gr==='Total')return;s+='<text x="'+((g.x0+g.x1)/2)+'" y="13" text-anchor="middle" font-size="10" font-weight="700" fill="#77689d" letter-spacing="0">'+esc(g.gr.toUpperCase())+'</text><line x1="'+(g.x0+3)+'" x2="'+(g.x1-3)+'" y1="21" y2="21" stroke="rgba(63,71,96,.2)"/>'});
+    groups.forEach(function(g){if(g.gr==='Total')return;s+='<text x="'+((g.x0+g.x1)/2)+'" y="13" text-anchor="middle" font-size="11.5" font-weight="700" fill="#77689d" letter-spacing="0">'+esc(g.gr.toUpperCase())+'</text><line x1="'+(g.x0+3)+'" x2="'+(g.x1-3)+'" y1="21" y2="21" stroke="rgba(63,71,96,.2)"/>'});
     rows.forEach(function(k,ri){var y=hh+ri*rowH;
       s+='<text x="0" y="'+(y+rowH/2+4)+'" font-size="12.5" font-weight="600" fill="'+C_INK+'">'+esc(CMPL[k]||k)+'</text>'});
     cols.forEach(function(c){
@@ -52,24 +52,24 @@
       rows.forEach(function(k,ri){
         var r=SG(k,c.d,c.g),y=hh+ri*rowH,mxr=0,mnr=1e9;
         cols.forEach(function(c2){var q=SG(k,c2.d,c2.g);if(q&&q.pct!=null&&!isWeak(q.precision)){mxr=Math.max(mxr,q.pct);mnr=Math.min(mnr,q.pct)}});
-        if(!r||r.pct==null){s+='<text x="'+(c.x+cw/2)+'" y="'+(y+rowH/2+4)+'" text-anchor="middle" font-size="11" fill="'+FAINT+'" opacity=".6">—</text><title>No aplica</title>';return}
-        var weak=isWeak(r.precision),u=mxr>mnr?.06+.94*(r.pct-mnr)/(mxr-mnr):.5,sig=!weak&&c.d!=='Total'&&(r.dif_significativa===true||r.dif_significativa==='True'),dark=u>.55;
+        if(!r||r.pct==null){s+='<text x="'+(c.x+cw/2)+'" y="'+(y+rowH/2+4)+'" text-anchor="middle" font-size="11.5" fill="'+FAINT+'" opacity=".6">—</text><title>No aplica</title>';return}
+        var weak=isWeak(r.precision),u=.06+.94*Math.max(0,Math.min(100,r.pct))/100,sig=!weak&&c.d!=='Total'&&(r.dif_significativa===true||r.dif_significativa==='True'),dark=u>.55;
         s+='<rect x="'+(c.x+1.5)+'" y="'+(y+2)+'" width="'+(cw-3)+'" height="'+(rowH-4)+'" rx="5" fill="'+(weak?'url(#hmH)':ramp(u))+'"'+(weak?' stroke="#b7aed0"':'')+'><title>'+esc(CMPL[k]||k)+' · '+esc(c.d==='Total'?'Total':c.g)+': '+fmt(r.pct)+'% (IC 90%: '+fmt(r.li90)+'–'+fmt(r.ls90)+') · n = '+ent(r.n_muestra_dominio)+' · precisión '+esc(r.precision)+(weak?'. No se compara.':(c.d!=='Total'&&r.dif_pp!=null?'. Frente al resto: '+(r.dif_pp>0?'más alto':'más bajo')+' por '+fmt(Math.abs(r.dif_pp),0)+' de cada 100'+(sig?' (diferencia clara)':' (no es una diferencia clara)'):''))+'</title></rect>';
         s+='<text x="'+(c.x+cw/2)+'" y="'+(y+rowH/2+4.5)+'" text-anchor="middle" '+MONO+' font-size="12.5" font-weight="'+(sig||c.d==='Total'?700:500)+'" fill="'+(weak?FAINT:dark?'#fff':C_INK)+'">'+fmt(r.pct)+'</text>';
         if(sig){var up=r.dif_pp>0;s+='<circle cx="'+(c.x+cw-9)+'" cy="'+(y+10)+'" r="6.5" fill="#fff" stroke="'+(up?'#c0435a':'#23806f')+'" stroke-width="1.2"/><text x="'+(c.x+cw-9)+'" y="'+(y+13.2)+'" text-anchor="middle" font-size="8.5" font-weight="700" fill="'+(up?'#c0435a':'#23806f')+'">'+(up?'▲':'▼')+'</text>'}
       });
       if(sel)s+='<rect x="'+(c.x+.5)+'" y="'+(hh-1)+'" width="'+(cw-1)+'" height="'+(rows.length*rowH+2)+'" rx="6" fill="none" stroke="'+C_INK+'" stroke-width="2"/>';
       s+='</g>'});
-    s+='<text x="0" y="'+(H-6)+'" font-size="11" fill="'+FAINT+'">Más oscuro = más alto dentro de cada renglón (de mínimo a máximo)  ·  ▲ ▼ claramente más alto o más bajo que el resto de su dimensión (con 90 % de confianza)  ·  rayado = muy pocos casos, no se compara</text>';
+    s+='<text x="0" y="'+(H-6)+'" font-size="11.5" fill="'+FAINT+'">Más oscuro = porcentaje más alto, en la misma escala de 0 a 100 para toda la tabla  ·  ▲ ▼ claramente más alto o más bajo que el resto de su dimensión (con 90 % de confianza)  ·  rayado = muy pocos casos, no se compara</text>';
     $(el).innerHTML=s+'</svg>';
     // 14 oct 2026 (noche): clic en una columna = filtrar toda la pestaña (antes solo movía gráficas fuera de la vista)
     $$(el+' [data-d]').forEach(function(gx){gx.addEventListener('click',function(){F.dim=gx.dataset.d;F.seg=gx.dataset.g;refreshSeg()})});
   }
-  var CMP={nec:['dano','dano_sinnec','raz_necesidad'],   /* 3 nov 2026: sin «Cuida 40 h o más»: su total repetía la ficha de arriba y por segmento la da el filtro */
+  var CMP={nec:['dano_s3','dano_s3_sinnec','raz_necesidad'],   /* 11 nov 2026: daño principal DANO_SALUD3 (script 33); antes 'dano' y 'dano_sinnec' */   /* 3 nov 2026: sin «Cuida 40 h o más»: su total repetía la ficha de arriba y por segmento la da el filtro */
       bar:['raz_hogar','pref_casa','pref_no','norma_familia','unas_horas','no_residencia']};
-  var CMPL={horas40:'Cuida 40 h o más',dano:'Algún daño',dano_sinnec:'Daño entre "sin necesidad"',raz_necesidad:'"No tuve necesidad"',raz_hogar:'"El hogar cuida"',pref_casa:'Prefiere en casa',pref_no:'No contrataría',norma_familia:'La familia debe cuidar',unas_horas:'Acepta "unas horas"',no_residencia:'Rechaza residencia'};
+  var CMPL={horas40:'Cuida 40 h o más',dano:'Algún daño (medida amplia)',dano_sinnec:'Daño amplio entre "sin necesidad"',dano_s3:'Daño a la salud',dano_s3_sinnec:'Daño a la salud entre "sin necesidad"',raz_necesidad:'"No tuve necesidad"',raz_hogar:'"El hogar cuida"',pref_casa:'Prefiere en casa',pref_no:'No contrataría',norma_familia:'La familia debe cuidar',unas_horas:'Acepta "unas horas"',no_residencia:'Rechaza residencia'};
   function cmpDraw(t){comparador('#ch-cmp-'+t,CMP[t],t==='nec'?['Intensidad']:[])}
-  $$('.seg-src').forEach(function(x){x.innerHTML=dl({Universo:'Personas cuidadoras de persona con discapacidad o 60+, nacional',Método:'Diseño muestral, IC al 90%; diferencia de cada segmento contra el resto de su misma dimensión',Advertencia:'Una dimensión a la vez; los cruces dejan muestras demasiado chicas',Lectura:'Color: % del segmento relativo al máximo de su renglón. ▲▼ marcan diferencia significativa contra el resto de la misma dimensión (IC 90%). Sin diferencia significativa no significa igual: con muestras chicas el intervalo es ancho. Son varias comparaciones al 90%, así que alguna marca puede ser casualidad. En dimensiones de dos categorías las dos columnas son espejo y no cuentan como dos hallazgos.',Archivo:esc(D.seg_fuente)})});
+  $$('.seg-src').forEach(function(x){x.innerHTML=dl({Universo:'Personas cuidadoras de persona con discapacidad o 60+, nacional',Método:'Diseño muestral, IC al 90%; diferencia de cada segmento contra el resto de su misma dimensión',Advertencia:'Una dimensión a la vez; los cruces dejan muestras demasiado chicas',Lectura:'Color: % del segmento en una escala común de 0 a 100 (dos celdas con valores parecidos se ven parecidas). ▲▼ marcan diferencia significativa contra el resto de la misma dimensión (IC 90%). Sin diferencia significativa no significa igual: con muestras chicas el intervalo es ancho. Son varias comparaciones al 90%, así que alguna marca puede ser casualidad. En dimensiones de dos categorías las dos columnas son espejo y no cuentan como dos hallazgos.',Archivo:esc(D.seg_fuente)})});
   // Tamaño de muestra del segmento (para la barra)
   /* n: dominio = universo dentro del segmento */ function nSeg(){var r=OBS.S2('kpi','grupo');return r?'n = '+r.n_muestra_dominio.toLocaleString('es-MX')+' en la muestra':''}
   /* 14 oct 2026 (noche): cada tarjeta dice si su gráfica cambió con el filtro. 'si' = se re-estima; 'horas' = se re-estima salvo con

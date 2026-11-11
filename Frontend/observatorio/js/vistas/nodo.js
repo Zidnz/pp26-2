@@ -123,7 +123,7 @@
         (p.id === objetivo ? `<circle class="g-pulse" cx="${r1(x)}" cy="${r1(y)}" r="${radio + 4}"/>` : '') +
         `<circle class="g-c" cx="${r1(x)}" cy="${r1(y)}" r="${radio}"/>` +
         `<text class="g-i" x="${r1(x)}" y="${r1(y + (hub ? 5 : 4))}" text-anchor="middle" font-size="${hub ? 15 : 12}">${ini}</text>` +
-        `<text class="g-n" x="${r1(x)}" y="${r1(y + radio + 10)}" text-anchor="middle" font-size="9">${esc(corto(p.nombre, 10))}</text>` +
+        `<text class="g-n" x="${r1(x)}" y="${r1(y + radio + 10)}" text-anchor="middle" font-size="11.5">${esc(corto(p.nombre, 10))}</text>` +
         `<text class="g-s" x="${r1(x)}" y="${r1(y + radio + 19)}" text-anchor="middle" font-size="6.8">${esc(corto(sub, 16))}</text></g>`;
     });
     svg.innerHTML = aristas + particulas + etiquetas + nodos;

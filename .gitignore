@@ -53,3 +53,9 @@ _obs_snapshot*
 _to_delete/
 *.tgz
 pp26-2_dotgit.tar
+
+# Añadido 11 nov 2026: empaquetados, temporales y la copia desfasada del Observatorio
+*.tar
+_tmp_claude/
+Frontend/_publicar_web/
+.pytest_cache/

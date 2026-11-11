@@ -36,8 +36,9 @@
 
   function carga(){
     var on=aplica('horas'),LB=['Menos de 20 h','20 a 39 h','40 h o más'],nec,dan;
-    if(on){nec=S2L('carga_sinnec').map(nS);dan=S2L('carga_dano').map(nS)}else{nec=C.sin_necesidad;dan=C.dano}
-    $('#cargaFind').innerHTML=(on?pre():'')+'Con 40 h o más, <b>'+fmt(dan[2].pct)+'%</b> de quienes dicen "no tuve necesidad" declara daño; con menos de 20 h, '+fmt(dan[0].pct)+'%. Decir "no tuve necesidad" '+(nec[2].pct<nec[0].pct?'baja de ':'pasa de ')+fmt(nec[0].pct)+'% a '+fmt(nec[2].pct)+'%.';
+    /* 11 nov 2026: el daño del pictograma es el principal, DANO_SALUD3 (script 33, serie carga_dano_s3) */
+    if(on){nec=S2L('carga_sinnec').map(nS);dan=S2L('carga_dano_s3').map(nS)}else{nec=C.sin_necesidad;dan=S2L('carga_dano_s3','Total','Total').map(nS)}
+    $('#cargaFind').innerHTML=(on?pre():'')+'Con 40 h o más, <b>'+fmt(dan[2].pct)+'%</b> de quienes dicen "no tuve necesidad" declara daño a su salud; con menos de 20 h, '+fmt(dan[0].pct)+'%. Decir "no tuve necesidad" '+(nec[2].pct<nec[0].pct?'baja de ':'pasa de ')+fmt(nec[0].pct)+'% a '+fmt(nec[2].pct)+'%.';
     var cw0=document.getElementById('ch-carga').clientWidth;
     $('#ch-carga').innerHTML=iconosDano(LB.map(function(l,i){return {lbl:l,nec:nec[i],dano:dan[i]}}),cw0>0?Math.max(660,Math.min(980,cw0)):980);
     /* 3 nov 2026: la prueba 40 h vs. menos de 20 h vivía en su propia tarjeta («¿Cuánto cambia…?»), que repetía estas cifras. Queda aquí, para el equipo. */
@@ -46,7 +47,7 @@
     if(on){cmpTxt=['sinnec','hogar','dano'].map(function(k){var r=S2('dif',k);return r?pr(esc(r.etiqueta),r.pct,r.li90,r.ls90,sigOk(r.dif_significativa)):''}).filter(Boolean).join(' · ')}
     else{cmpTxt=C.diferencias.map(function(d){var inv=/<20 h menos >=40 h|Q1 menos Q4/.test(d.comparacion);
       return pr(esc(d.comparacion.split(':')[0])+(/Q[14]/.test(d.comparacion)?' (cuartil de horas más alto frente al más bajo)':''),inv?-d.dif_pp:d.dif_pp,inv?-d.ls90:d.li90,inv?-d.li90:d.ls90,d.excluye_cero===true||d.excluye_cero==='True')}).join(' · ')}
-    $('#src-carga').innerHTML=dl({Fuente:'INEGI, ENASIC 2022, microdatos (TPOB_CUI, FAC_CUI)',Cobertura:'Nacional',Preguntas:'P6.7, P6.26, P6.42, P6.45, P6.11–P6.12, P6.30–P6.31',Advertencia:'P6.45 pregunta por lugares. El INEGI rotula la opción "NO HA TENIDO NECESIDAD (NO HAY PERSONAS EN SU HOGAR QUE REQUIERAN CUIDADOS)": puede leerse como "no necesito un lugar" o como que la persona cuidada vive en otro hogar. Daños autodeclarados.',Comparación:'40 h o más frente a menos de 20 h, en puntos porcentuales: '+cmpTxt+'. Varias comparaciones al 90 % sin corrección por comparaciones múltiples.',Archivo:esc(on?D.seg2_fuente:C.fuente)+(on?'':' · Analysis/resultados/07_enasic_diferencias.csv')});
+    $('#src-carga').innerHTML=dl({Fuente:'INEGI, ENASIC 2022, microdatos (TPOB_CUI, FAC_CUI)',Cobertura:'Nacional',Preguntas:'P6.7, P6.26, P6.42, P6.45, P6.11–P6.12, P6.30–P6.31',Advertencia:'P6.45 pregunta por lugares. El INEGI rotula la opción "NO HA TENIDO NECESIDAD (NO HAY PERSONAS EN SU HOGAR QUE REQUIERAN CUIDADOS)": puede leerse como "no necesito un lugar" o como que la persona cuidada vive en otro hogar. Daños autodeclarados.','Comparación (hecha con la medida amplia, «algún daño»)':'40 h o más frente a menos de 20 h, en puntos porcentuales: '+cmpTxt+'. Varias comparaciones al 90 % sin corrección por comparaciones múltiples.',Archivo:esc(on?D.seg2_fuente:C.fuente)+(on?'':' · Analysis/resultados/07_enasic_diferencias.csv')});
   }
   /* ---- 3 nov 2026: afectaciones por horas de cuidado (notebook 31, D.afect_horas). Reemplaza «¿Cuánto cambia con más horas?».
      Responde al filtro de segmento; con Intensidad muestra el total (la gráfica ya está cortada por horas). Nada escrito a mano. ---- */
@@ -101,9 +102,10 @@
       (s3?'<div class="gp-side"><div class="gp-pct num">'+fmt(g.li90)+'–'+fmt(g.ls90)+'%</div><div class="lbl">rango probable de ese porcentaje</div></div>':tot?'<div class="gp-side"><div class="gp-pct num">'+fmt(C.nucleo_dano.pct)+'%</div><div class="lbl">declara algún daño (a su salud o a su trabajo) entre quienes además bañan, visten o dan de comer</div></div>'
           :'<div class="gp-side"><div class="gp-pct num">'+mill(G.total_expandido)+'</div><div class="lbl">en el total nacional, como referencia</div></div>')+
       '<p class="gp-desc">personas cuidadoras: cuidan 40 h o más, dicen "no tuve necesidad" y declaran '+(s3?'daño a su salud (salud física, cansancio o sueño)':'algún daño (a su salud o a su trabajo)')+'. Son el <b>'+fmt(g.pct)+'%</b> de quienes cuidan a una persona con discapacidad o 60+'+(tot?'':' en este segmento (IC 90% '+fmt(g.li90)+'–'+fmt(g.ls90)+'%)')+'.</p>'+
-      '<div class="chips gp-chips">'+prec(g.precision)+'<span class="chip ev">probable</span><span class="chip geo">nacional</span></div></div>';
+      '<div class="chips gp-chips">'+prec(g.precision)+'<span class="chip ev" title="La definición del grupo es del equipo y no tiene doble revisión">evidencia probable</span><span class="chip geo" title="La encuesta no permite bajar a estado ni alcaldía">solo nacional</span></div></div>';
   }
   (function(){
+    if(!$('#ch-sexo'))return; /* 11 nov 2026: la gráfica se retiró (archivo sin productor ni año) */
     var rows=D.brecha_sexo.filter(function(r){return r.h!=null&&r.m!=null}),r1829=D.brecha_sexo.filter(function(r){return r.edad==='18-29'})[0];
     $('#sexoFind').innerHTML='Entre los 18 y 29 años, las mujeres cuidan <b>'+fmt(r1829.razon,2)+' veces</b> las horas de los hombres. La brecha se cierra con la edad.';
     var mxs=Math.ceil(Math.max.apply(null,rows.map(function(r){return Math.max(r.h,r.m)}))/10)*10,tk=[];for(var q=0;q<=mxs;q+=10)tk.push(q);
@@ -127,16 +129,16 @@ var NQ={'Q1-Q2':'2 quintiles','Q3':'1 quintil','Q4-Q5':'2 quintiles'},CI=OBS.C_I
       var W=440,H=330,pl=34,pr=6,pt=30,pb=62,mx=100,n=L.length,gw=(W-pl-pr)/n,bw=Math.min(40,gw*.3);
       function Y(v){return pt+(H-pt-pb)*(1-Math.max(0,Math.min(v,mx))/mx)}
       var s=svg(W,H,'Composición del grupo del problema por '+d.toLowerCase());
-      [0,25,50,75,100].forEach(function(t){s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,'+(t?'.08':'.3')+')"/><text x="'+(pl-6)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="10" fill="'+FAINT+'">'+t+'%</text>'});
+      [0,25,50,75,100].forEach(function(t){s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,'+(t?'.08':'.3')+')"/><text x="'+(pl-6)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+t+'%</text>'});
       L.forEach(function(g,i){var u=pr_(d,g.segmento,'Universo'),cx=pl+gw*(i+.5),xg=cx-bw-2,xu=cx+2,weak=isWeak(g.precision),sd=g.segmento==='Sin dato',op=sd?' opacity=".45"':'',col=sd||weak?FAINT:CI;
         s+='<g><title>Grupo del problema: '+fmt(g.pct)+'% (IC '+fmt(g.li90)+'–'+fmt(g.ls90)+') · Todas las cuidadoras: '+fmt(u.pct)+'% · precisión '+g.precision+'</title>';
         s+='<rect x="'+xg+'" y="'+Y(g.pct)+'" width="'+bw+'" height="'+(Y(0)-Y(g.pct)).toFixed(1)+'" rx="3" fill="'+(weak?'#fff':'#c0435a')+'"'+(weak?' stroke="#c0435a"':'')+op+'/>';
         s+='<rect x="'+xu+'" y="'+Y(u.pct)+'" width="'+bw+'" height="'+(Y(0)-Y(u.pct)).toFixed(1)+'" rx="3" fill="#b8b3c9"'+op+'/>';
         var gx=xg+bw/2;s+='<g stroke="'+CI+'" stroke-width="1.2" opacity=".6"><line x1="'+gx+'" x2="'+gx+'" y1="'+Y(g.ls90)+'" y2="'+Y(g.li90)+'"/><line x1="'+(gx-4)+'" x2="'+(gx+4)+'" y1="'+Y(g.ls90)+'" y2="'+Y(g.ls90)+'"/><line x1="'+(gx-4)+'" x2="'+(gx+4)+'" y1="'+Y(g.li90)+'" y2="'+Y(g.li90)+'"/></g>';
         s+='<text x="'+gx+'" y="'+(Y(g.ls90)-7)+'" text-anchor="middle" '+MONO+' font-size="12" font-weight="700" fill="'+col+'">'+fmt(g.pct)+'</text>';
-        s+='<text x="'+(xu+bw/2)+'" y="'+(Y(u.pct)-6)+'" text-anchor="middle" '+MONO+' font-size="10" fill="'+FAINT+'">'+fmt(u.pct)+'</text>';
+        s+='<text x="'+(xu+bw/2)+'" y="'+(Y(u.pct)-6)+'" text-anchor="middle" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+fmt(u.pct)+'</text>';
         s+='<text x="'+cx+'" y="'+(H-pb+20)+'" text-anchor="middle" font-size="12.5" font-weight="650" fill="'+col+'">'+esc(LBLC[g.segmento]||g.segmento)+(g.dif_significativa===true?' ★':'')+'</text>';
-        var sub=NQ[g.segmento]||SUBC[g.segmento];if(sub)s+='<text x="'+cx+'" y="'+(H-pb+36)+'" text-anchor="middle" font-size="10.5" fill="'+FAINT+'">'+esc(sub)+'</text>';
+        var sub=NQ[g.segmento]||SUBC[g.segmento];if(sub)s+='<text x="'+cx+'" y="'+(H-pb+36)+'" text-anchor="middle" font-size="11.5" fill="'+FAINT+'">'+esc(sub)+'</text>';
         s+='</g>'});
       $('#ch-perfil').innerHTML=s+'</svg>';
     }
@@ -161,15 +163,15 @@ var NQ={'Q1-Q2':'2 quintiles','Q3':'1 quintil','Q4-Q5':'2 quintiles'},CI=OBS.C_I
     var W=560,H=230,pl=34,pb=34,pt=14,gw=(W-pl)/RG.length,bw=gw-10,mx=Math.ceil(Math.max.apply(null,RG.map(function(r){return r.ls90}))/5)*5+5;
     function Y(v){return pt+(H-pt-pb)*(1-v/mx)}
     var s=svg(W,H,'Distribución de horas de cuidado')+'<defs><pattern id="hh" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#e59aa8"/><line x1="0" y1="0" x2="0" y2="5" stroke="#fff" stroke-width="2"/></pattern></defs>';
-    for(var t=0;t<=mx;t+=5)s+='<line x1="'+pl+'" x2="'+W+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,.1)"/><text x="'+(pl-6)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="10" fill="'+FAINT+'">'+t+'%</text>';
+    for(var t=0;t<=mx;t+=5)s+='<line x1="'+pl+'" x2="'+W+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,.1)"/><text x="'+(pl-6)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+t+'%</text>';
     RG.forEach(function(r,i){var x=pl+gw*i+5,hi=r.desde>=40,weak=isWeak(r.precision);
       s+='<rect x="'+x+'" y="'+Y(r.pct)+'" width="'+bw+'" height="'+(Y(0)-Y(r.pct))+'" rx="3" fill="'+(weak?'url(#hh)':hi?'#c0435a':'#b09fd3')+'"><title>'+r.etiqueta+' h: '+fmt(r.pct)+'% (IC '+fmt(r.li90)+'–'+fmt(r.ls90)+') · precisión '+r.precision+'</title></rect>';
       s+='<line x1="'+(x+bw/2)+'" x2="'+(x+bw/2)+'" y1="'+Y(r.ls90)+'" y2="'+Y(Math.max(0,r.li90))+'" stroke="#2b3045" stroke-width="1.2" opacity=".55"/>';
-      s+='<text x="'+(x+bw/2)+'" y="'+(Y(r.ls90)-5)+'" text-anchor="middle" '+MONO+' font-size="10.5" font-weight="700" fill="#2b3045">'+fmt(r.pct)+'</text>';
-      s+='<text x="'+(x+bw/2)+'" y="'+(H-pb+15)+'" text-anchor="middle" '+MONO+' font-size="10" fill="rgba(43,48,69,.75)">'+r.etiqueta.replace('-','–')+'</text>'});
+      s+='<text x="'+(x+bw/2)+'" y="'+(Y(r.ls90)-5)+'" text-anchor="middle" '+MONO+' font-size="11.5" font-weight="700" fill="#2b3045">'+fmt(r.pct)+'</text>';
+      s+='<text x="'+(x+bw/2)+'" y="'+(H-pb+15)+'" text-anchor="middle" '+MONO+' font-size="11.5" fill="rgba(43,48,69,.75)">'+r.etiqueta.replace('-','–')+'</text>'});
     var xi=pl+gw*RG.filter(function(r){return r.desde<40}).length;
-    s+='<line x1="'+xi+'" x2="'+xi+'" y1="'+pt+'" y2="'+(H-pb)+'" stroke="#c0435a" stroke-dasharray="4 3"/><text x="'+(xi+4)+'" y="'+(pt+8)+'" font-size="11" font-weight="650" fill="#c0435a">40 h o más →</text>';
-    s+='<text x="'+(W)+'" y="'+(H-3)+'" text-anchor="end" font-size="11" fill="'+FAINT+'">horas a la semana</text>';
+    s+='<line x1="'+xi+'" x2="'+xi+'" y1="'+pt+'" y2="'+(H-pb)+'" stroke="#c0435a" stroke-dasharray="4 3"/><text x="'+(xi+4)+'" y="'+(pt+8)+'" font-size="11.5" font-weight="650" fill="#c0435a">40 h o más →</text>';
+    s+='<text x="'+(W)+'" y="'+(H-3)+'" text-anchor="end" font-size="11.5" fill="'+FAINT+'">horas a la semana</text>';
     $('#ch-horas').innerHTML=s+'</svg>';
     $('#src-horas').innerHTML=dl({Universo:(on?esc(segName())+' · ':'')+'Personas cuidadoras de persona con discapacidad o 60+, nacional (n = '+RG[0].n_muestra_dominio+')',Preguntas:'P6.7 + P6.26, tope de 168',Advertencia:'Cada bloque del cuestionario topa en \"98 o más\": los rangos altos están censurados. Barras rayadas: precisión baja.',Archivo:on?esc(D.seg2_fuente):esc(D.horas_dist.fuente.split(' y ')[1]?'Analysis/resultados/'+D.horas_dist.fuente.split(' y ')[1]:D.horas_dist.fuente)});
   }
@@ -177,8 +179,8 @@ var NQ={'Q1-Q2':'2 quintiles','Q3':'1 quintil','Q4-Q5':'2 quintiles'},CI=OBS.C_I
      Exploratoria y sin doble revisión; la tarjeta lo dice. Ninguna cifra escrita a mano. ---- */
   (function(){
     var S=D.seg23;if(!S||!document.getElementById('ch-s23'))return;
-    var ROSA='#c0435a',GRISL='#b8b3c9',CI=OBS.C_INK,yS='Algún daño por cuidar',bS='Todas';
-    var YS=[['Algún daño por cuidar','Algún daño'],['Salud física deteriorada','Salud física'],['Daño laboral (no puede, dejó o redujo trabajo)','Daño laboral']];
+    var ROSA='#c0435a',GRISL='#b8b3c9',CI=OBS.C_INK,yS='Daño a la salud (salud física, cansancio o sueño)',bS='Todas';
+    var YS=[['Daño a la salud (salud física, cansancio o sueño)','Daño a la salud'],['Algún daño por cuidar','Algún daño (amplia)'],['Salud física deteriorada','Salud física'],['Daño laboral (no puede, dejó o redujo trabajo)','Daño laboral']];
     var BS=[['Todas','Todas'],['Bloque discapacidad','Cuida discapacidad'],['Solo 60+ sin discapacidad','Solo 60+']];
     var dif=S.clases.filter(function(c){return c.nombre==='Dificultad en la tarea'})[0];
     function dh(h,y){return S.dano_horas.filter(function(r){return r.horas===h&&r.desenlace===y})[0]}
@@ -188,15 +190,15 @@ var NQ={'Q1-Q2':'2 quintiles','Q3':'1 quintil','Q4-Q5':'2 quintiles'},CI=OBS.C_I
       var r=bS==='Todas'?dh(h,yS):db(bS,h,yS);if(!r)return {h:h,na:true};
       return {h:h,c:r.con_dificultad,s:r.sin_dificultad,nc:r.n_con,ns:r.n_sin,d:r.dif_pp,li:r.dif_li90,ls:r.dif_ls90,ok:sig(r.significativa),
               int:r.interpretable===undefined?true:sig(r.interpretable)}})}
-    var r0=dh('Menos de 40 h','Algún daño por cuidar'),r0s=dh('Menos de 40 h','Salud física deteriorada');
+    var r0=dh('Menos de 40 h','Daño a la salud (salud física, cansancio o sueño)'),r0s=dh('40 h o más','Daño a la salud (salud física, cansancio o sueño)');
     $('#s23Find').innerHTML='Hay un perfil que no se define por las horas sino por la <b>dificultad con la tarea</b>: '+fmt(dif.pct)+'% de quienes cuidan (≈ '+mill(dif.total_expandido)+'). '+
-      'Con menos de 40 h a la semana, <b>'+fmt(r0.con_dificultad,0)+'%</b> de ese perfil declara algún daño (versión 1), contra '+fmt(r0.sin_dificultad,0)+'% del resto; en salud física, '+fmt(r0s.con_dificultad,0)+'% contra '+fmt(r0s.sin_dificultad,0)+'%.';
+      'Con menos de 40 h a la semana, <b>'+fmt(r0.con_dificultad,0)+'%</b> de ese perfil declara daño a su salud, contra '+fmt(r0.sin_dificultad,0)+'% del resto; con 40 h o más, '+fmt(r0s.con_dificultad,0)+'% contra '+fmt(r0s.sin_dificultad,0)+'%.';
     function draw(){
       var cw=document.getElementById('ch-s23').clientWidth||520,W=Math.max(320,Math.min(560,cw)),L=filas(),H=290,pl=34,pr=8,pt=40,pb=40,gw=(W-pl-pr)/2,bw=Math.min(58,gw*.32);
       if(L.every(function(r){return r.na})){$('#ch-s23').innerHTML='<p class="find">El daño laboral no se calculó por bloque del cuestionario. Elige «Todas».</p>';return}
       function Y(v){return pt+(H-pt-pb)*(1-v/100)}
       var s=svg(W,H,'Daño declarado por clase y horas de cuidado')+'<defs><pattern id="s23h" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" fill="#eee9f5"/><line x1="0" y1="0" x2="0" y2="5" stroke="#b8b3c9" stroke-width="2"/></pattern></defs>';
-      [0,25,50,75,100].forEach(function(t){s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,'+(t?'.08':'.3')+')"/><text x="'+(pl-6)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="10" fill="'+FAINT+'">'+t+'%</text>'});
+      [0,25,50,75,100].forEach(function(t){s+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,'+(t?'.08':'.3')+')"/><text x="'+(pl-6)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+t+'%</text>'});
       L.forEach(function(r,i){var cx=pl+gw*(i+.5);
         s+='<text x="'+cx+'" y="'+(H-pb+20)+'" text-anchor="middle" font-size="12.5" font-weight="650" fill="'+CI+'">'+r.h+'</text>';
         if(r.na)return;
@@ -207,7 +209,7 @@ var NQ={'Q1-Q2':'2 quintiles','Q3':'1 quintil','Q4-Q5':'2 quintiles'},CI=OBS.C_I
         var top=Y(Math.max(r.c,r.s))-26,txt;
         if(!r.int)txt='n = '+Math.min(r.nc,r.ns)+': no se compara';
         else txt=r.ok?(r.d>0?'más alto':'más bajo')+' con dificultad':'sin diferencia clara';
-        s+='<text x="'+cx+'" y="'+Math.max(14,top)+'" text-anchor="middle" '+MONO+' font-size="11" font-weight="700" fill="'+(r.int&&r.ok?ROSA:FAINT)+'">'+txt+'</text>'});
+        s+='<text x="'+cx+'" y="'+Math.max(14,top)+'" text-anchor="middle" '+MONO+' font-size="11.5" font-weight="700" fill="'+(r.int&&r.ok?ROSA:FAINT)+'">'+txt+'</text>'});
       $('#ch-s23').innerHTML=s+'</svg>';
     }
     $('#s23Y').innerHTML=YS.map(function(y,i){return '<button data-y="'+esc(y[0])+'" aria-pressed="'+(i===0)+'">'+y[1]+'</button>'}).join('');

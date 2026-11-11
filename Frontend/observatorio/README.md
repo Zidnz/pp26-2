@@ -258,3 +258,10 @@ La ficha «Lectura, fuente y precisión» de las tarjetas ya no es un plegable: 
 
 ## Cambio del 2 nov 2026 (noche): «¿A quién primero?» con las tres decisiones
 - Bloque nuevo al inicio de la pestaña, en `js/vistas/focalizacion-prioridad.js` (6 gráficas, sin cifras escritas a mano): decisión 1 (¿dónde hacer el piloto?: los 4 tipos del k-means en las 9 variables y su peso en la CDMX), decisión 2 (relevo: solo la regla «40 h o más», sin modelo de ML; horas y cobertura por grupo) y decisión 3 (orden de zonas: volumen y concentración por alcaldía, nivel y estabilidad). Las gráficas de modelos (partes 1 a 5) siguen debajo como evidencia de la regla. Lee `D.tipologia`, `D.horas_dist`, `D.modelo_v2` y `D.diagnostico_v2`. Respaldo previo: `_respaldo_pre_prioridad_2026-11-02/index.html` (raíz del repo).
+
+## Cambio del 11 nov 2026: embudo sin mapa
+- «¿Cuántas personas están en el problema?» ya no dibuja el mapa de México relleno en proporción: usaba un objeto geográfico para una cantidad que no lo es y necesitaba la nota «no indica ubicación». El escenario y la ficha ocupan las dos columnas.
+- El % de paso ya no flota entre retratos: va dentro de cada retrato y en la ficha, y nombra su etapa de origen («58% de la etapa 04 · «No tuve necesidad»»).
+- Se probaron dos variantes en el mismo archivo (a: sin mapa; b: embudo de barras) y Omar eligió la a; las ramas del mapa y de las barras se borraron de `js/vistas/inicio-seleccion.js` y `css/vistas.css`. Ninguna cifra cambió. Respaldo: `_to_delete/backup_pre_variantes_embudo_2026-11-11/`.
+- Verificado en Chromium a 1600 px sin errores de JS. A 390 px carga, pero la ficha queda apretada (el chip del IC se corta); pendiente.
+- Pendiente, sin corregir: el IC de la etapa 05 (9.8–15.1 %) es del grupo anterior (`grupo_problema`); el de `grupo_problema_salud3` es 7.9–12.7 %. El rótulo «DAÑO EN EL TRABAJO» de la figura ya no corresponde a la definición (solo salud).

@@ -10,12 +10,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Manrope:wght@500;600;700;800&display=swap">
-<link rel="stylesheet" href="css/base.css?v=20261103k">
-<link rel="stylesheet" href="css/layout.css?v=20261103k">
-<link rel="stylesheet" href="css/componentes.css?v=20261103k">
-<link rel="stylesheet" href="css/graficas.css?v=20261103k">
-<link rel="stylesheet" href="css/nodo.css?v=20261106a">
-<link rel="stylesheet" href="css/vistas.css?v=20261105d">
+<link rel="stylesheet" href="css/base.css?v=20261111b">
+<link rel="stylesheet" href="css/layout.css?v=20261111b">
+<link rel="stylesheet" href="css/componentes.css?v=20261111b">
+<link rel="stylesheet" href="css/graficas.css?v=20261111b">
+<link rel="stylesheet" href="css/nodo.css?v=20261111b">
+<link rel="stylesheet" href="css/vistas.css?v=20261111c">
 </head>
 <body>
 
@@ -83,6 +83,7 @@
     <p>"No tuve necesidad" casi no cambia con la intensidad del cuidado. El daño declarado sí.</p></div>
   <!-- 14 oct 2026 (noche): la barra «Segmentar por» vuelve y ahora filtra TODA la pestaña (sección 12b). La fila de KPI reacciona al filtro.
        Respaldo: _to_delete/backup_pre_filtro_pestana_2026-10-14/ -->
+  <div class="note" style="margin:0 0 14px"><span>ⓘ</span><span><b>«Daño» en esta pestaña es daño a la salud:</b> salud física, cansancio o sueño. Es la medida que define el grupo del problema y a quién se ofrece primero el relevo. La medida amplia («algún daño», que suma el daño al trabajo) solo queda como opción en la tarjeta de clases latentes.</span></div>
   <div class="fbar" data-fb></div>
   <div class="grid c3" id="kpi-nec"></div>
   <details class="src" style="margin-top:6px"><summary>Fuente y método de los indicadores</summary><dl id="src-kpi-nec"></dl></details>
@@ -139,7 +140,7 @@
       <details class="src"><summary>Fuente y precisión</summary><dl id="src-horas"></dl></details>
     </div>
   </div>
-  <div class="grid c12" style="margin-top:18px">
+  <div style="margin-top:18px">
     <div class="card">
       <h3>¿Quiénes forman el grupo del problema?</h3>
       <p class="find" id="perfFind"></p>
@@ -147,13 +148,6 @@
       <div class="chart" id="ch-perfil" data-chart></div>
       <div class="legend"><span><i style="background:#c0435a"></i>Grupo del problema</span><span><i style="background:#b8b3c9;height:6px"></i>Todas las cuidadoras</span><span>★ difiere del resto</span></div>
       <details class="src"><summary>Fuente y precisión</summary><dl id="src-perfil"></dl></details>
-    </div>
-    <div class="card">
-      <h3>Horas semanales de cuidado por sexo y edad</h3>
-      <p class="find" id="sexoFind"></p>
-      <div class="chips"><span class="chip p-noest">origen sin documentar</span></div>
-      <div class="chart" id="ch-sexo" data-chart></div>
-      <details class="src"><summary>Fuente y precisión</summary><dl><dt>Archivo</dt><dd>Analysis/resultados/08_brecha_cuidado_sexo.csv (script 08)</dd><dt>Advertencia</dt><dd>Productor y año del archivo sin documentar: sirve para ver la forma de la brecha, no para citar niveles.</dd></dl></details>
     </div>
   </div>
 </section>
@@ -243,8 +237,8 @@
   </div>
   <div style="margin-top:18px">
   <div class="card">
-    <div class="kicker">Actualizado 20 oct 2026 · script 20</div>
-    <h3>Si se subsidia el relevo: financiamiento anual en la CDMX contra la solicitud de cuidados</h3>
+    <div class="kicker">Sostenibilidad · escenario</div>
+    <h3>Si se subsidia el relevo, ¿cuánto cuesta por cada 1,000 hogares atendidos?</h3>
     <p class="find" id="subFind"></p>
     <div class="ctrls"><div class="seg" id="segOpex"><button data-o="0" aria-pressed="true">Operación $0</button><button data-o="250" aria-pressed="false">$250</button><button data-o="500" aria-pressed="false">$500</button><button data-o="1000" aria-pressed="false">$1,000 por hogar-mes</button></div></div>
     <div class="chart" id="ch-sub" data-chart></div>
@@ -272,7 +266,7 @@
   <div id="prD1">
   <div class="card fz-card" id="cPerfil" style="margin-top:18px">
     <div class="kicker">Decisión 1 · piloto · tipos de zona · CDMX</div>
-    <h3>¿Cómo se ven los 4 tipos de zona en las 9 variables?</h3>
+    <h3>¿Cómo se ven los 4 tipos de zona en las 9 variables y en la distancia a la oferta?</h3>
     <p class="fz-find" id="pr1Find"></p>
     <div class="ctrls fz-bar"><div class="fz-chips" id="pr1Chips"></div></div>
     <div class="chart" id="ch-pr1" data-chart></div>
@@ -345,7 +339,7 @@
 <section class="view" id="v-territorio" role="tabpanel">
   <div class="vhead"><div><div class="kicker">Territorio · CDMX · exploratorio</div><h2>Oferta, dependencia y vulnerabilidad por alcaldía</h2></div>
     <p>Fuentes distintas a la ENASIC. Ninguna capa mide cobertura; rezago y derechohabiencia son contexto, no necesidad.</p></div>
-  <div class="grid c4" id="dimTiles"></div>
+  <div class="grid c2" id="dimTiles"></div>
   <div class="card" style="margin-top:18px">
     <h3 id="tTitle"></h3>
     <div class="ctrls">
@@ -389,12 +383,13 @@
     </div>
     <details class="src"><summary>Fuente, universo y lectura</summary><dl id="src-tipo"></dl></details>
   </div>
-  <div class="grid c3" style="margin-top:18px;align-items:start">
+  <div class="note" style="margin-top:18px;background:var(--card);border-color:var(--hair);color:var(--ink-soft)"><span>→</span><span>Cuántas personas de 60+, viviendas sin internet y distancia a la oferta tiene cada tipo de zona, y las brechas por alcaldía, están en <button type="button" class="fr-go" data-goto="focalizacion" style="margin:0;display:inline">¿A quién primero?</button> (decisiones 1 y 3). Aquí se quitaron para no repetirlas.</span></div>
+  <div class="grid c3" style="margin-top:18px;align-items:start" hidden>
     <div class="card"><h3>¿Dónde viven las personas de 60+?</h3><p class="find" id="t60Find"></p><div class="chart" id="ch-t60" data-chart></div></div>
     <div class="card"><h3>¿La app llega a todas las viviendas?</h3><p class="find" id="tIntFind"></p><div class="chart" id="ch-tint" data-chart></div></div>
     <div class="card"><h3>¿Qué tan lejos queda la oferta formal?</h3><p class="find" id="tLejFind"></p><div class="chart" id="ch-tlej" data-chart></div></div>
   </div>
-  <div class="card" style="margin-top:18px">
+  <div class="card" style="margin-top:18px" hidden>
     <h3>Brechas de oferta por alcaldía: personas de 60+ en AGEB con brecha</h3>
     <p class="find" id="tBrFind"></p>
     <div class="chart" id="ch-tbrecha" data-chart></div>
@@ -468,36 +463,36 @@
 </div><!-- .content -->
 </div><!-- .shell -->
 
-<script src="js/datos/datos.js"></script>
-<script src="js/datos/geo.js"></script>
-<script src="js/datos/geo-estados.js"></script>
-<script src="js/datos/geo-ageb.js"></script>
-<script src="js/nucleo/obs.js"></script>
-<script src="js/nucleo/util.js?v=20261103g"></script>
-<script src="js/nucleo/alias.js"></script>
-<script src="js/nucleo/filtro-segmento.js"></script>
-<script src="js/graficas/componentes.js?v=20261105a"></script>
+<script src="js/datos/datos.js?v=20261111b"></script>
+<script src="js/datos/geo.js?v=20261111b"></script>
+<script src="js/datos/geo-estados.js?v=20261111b"></script>
+<script src="js/datos/geo-ageb.js?v=20261111b"></script>
+<script src="js/nucleo/obs.js?v=20261111b"></script>
+<script src="js/nucleo/util.js?v=20261111b"></script>
+<script src="js/nucleo/alias.js?v=20261111b"></script>
+<script src="js/nucleo/filtro-segmento.js?v=20261111b"></script>
+<script src="js/graficas/componentes.js?v=20261111b"></script>
 <script src="vendor/three.min.js"></script>
-<script src="js/graficas/motor-3d.js"></script>
-<script src="js/graficas/ilustraciones.js"></script>
-<script src="js/vistas/inicio.js?v=20261103c"></script>
-<script src="js/vistas/inicio-seleccion.js"></script>
-<script src="js/vistas/necesidad.js?v=20261105a"></script>
-<script src="js/vistas/barreras.js"></script>
-<script src="js/vistas/segmentacion.js?v=20261103k"></script>
-<script src="js/vistas/relevo.js?v=20261103l"></script>
-<script src="js/vistas/focalizacion-v2.js?v=20261103i"></script>
-<script src="js/vistas/focalizacion-prioridad.js?v=20261103c"></script>
-<script src="js/vistas/territorio.js"></script>
-<script src="js/vistas/territorio-estados.js"></script>
-<script src="js/vistas/territorio-tipologia.js?v=20261103c"></script>
-<script src="js/vistas/indicadores-formulas.js?v=20261023b"></script>
-<script src="js/vistas/indicadores.js?v=20261023b"></script>
-<script src="js/vistas/metodo.js?v=20261105a"></script>
-<script src="js/vistas/nodo.js?v=20261105b"></script>
-<script src="js/vistas/inicio-contadores.js"></script>
-<script src="js/app/coachmark.js"></script>
-<script src="js/app/plegables.js"></script>
-<script src="js/app/pestanas.js"></script>
+<script src="js/graficas/motor-3d.js?v=20261111b"></script>
+<script src="js/graficas/ilustraciones.js?v=20261111b"></script>
+<script src="js/vistas/inicio.js?v=20261111b"></script>
+<script src="js/vistas/inicio-seleccion.js?v=20261111c"></script>
+<script src="js/vistas/necesidad.js?v=20261111b"></script>
+<script src="js/vistas/barreras.js?v=20261111b"></script>
+<script src="js/vistas/segmentacion.js?v=20261111b"></script>
+<script src="js/vistas/relevo.js?v=20261111b"></script>
+<script src="js/vistas/focalizacion-v2.js?v=20261111b"></script>
+<script src="js/vistas/focalizacion-prioridad.js?v=20261111b"></script>
+<script src="js/vistas/territorio.js?v=20261111b"></script>
+<script src="js/vistas/territorio-estados.js?v=20261111b"></script>
+<script src="js/vistas/territorio-tipologia.js?v=20261111b"></script>
+<script src="js/vistas/indicadores-formulas.js?v=20261111b"></script>
+<script src="js/vistas/indicadores.js?v=20261111b"></script>
+<script src="js/vistas/metodo.js?v=20261111b"></script>
+<script src="js/vistas/nodo.js?v=20261111b"></script>
+<script src="js/vistas/inicio-contadores.js?v=20261111b"></script>
+<script src="js/app/coachmark.js?v=20261111b"></script>
+<script src="js/app/plegables.js?v=20261111b"></script>
+<script src="js/app/pestanas.js?v=20261111b"></script>
 </body>
 </html>

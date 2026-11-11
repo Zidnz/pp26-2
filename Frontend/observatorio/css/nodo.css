@@ -11,7 +11,7 @@
 .rc-card{background:#fff;border:0;border-radius:24px}
 .rc .panel{margin-top:14px;padding:16px}
 .rc-col>.panel:first-child{margin-top:0}
-.rc .eyebrow{font:800 10px/1 var(--mono);letter-spacing:.12em;color:var(--ink);text-transform:uppercase}
+.rc .eyebrow{font:800 12px/1 var(--mono);letter-spacing:.12em;color:var(--ink);text-transform:uppercase}
 .rc .sub{margin-top:4px;font:400 12px/1.5 var(--sans);color:var(--ink-soft)}
 
 /* Tarjeta del grafo */
@@ -41,16 +41,16 @@
 .rc .g-node.sel .g-c{stroke:#2b3045;stroke-width:3}
 .rc .g-pulse{fill:none;stroke:#77689d;stroke-width:2;transform-box:fill-box;transform-origin:center;animation:rc-gpulse 1.9s ease-out infinite}
 @keyframes rc-gpulse{0%{transform:scale(.8);opacity:.9}100%{transform:scale(1.6);opacity:0}}
-.rc .glegend{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;padding:2px 10px 10px;font:500 9.5px/1.5 var(--mono);color:var(--ink-faint)}
+.rc .glegend{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 14px;padding:2px 10px 10px;font:500 12px/1.5 var(--mono);color:var(--ink-faint)}
 .rc .glegend span{display:flex;align-items:center;gap:6px}
 .rc .lg{display:inline-block;width:18px;height:0;border-top:3px solid #aa95d1;border-radius:2px}
 .rc .lg.dashed{border-top-style:dashed}.rc .lg.pro{border-top-color:#3fae9b}
 
 /* Cabecera, ficha, indicadores, lista */
 .rc .ghead{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px 0;align-items:center}
-.rc .gh-n{font:600 11px var(--sans);color:var(--ink);background:#fff;border-radius:99px;padding:4px 10px}
+.rc .gh-n{font:600 12px var(--sans);color:var(--ink);background:#fff;border-radius:99px;padding:4px 10px}
 .rc .gh-n b{font:800 12px var(--display)}
-.rc .gh-t{margin-left:auto;font:800 11px var(--display);border-radius:99px;padding:4px 11px;color:var(--ink)}
+.rc .gh-t{margin-left:auto;font:800 12px var(--display);border-radius:99px;padding:4px 11px;color:var(--ink)}
 .rc .gh-t.t-r{background:#e5677f}.rc .gh-t.t-a{background:#f1d28a}.rc .gh-t.t-n{background:#7dd1c1}
 .rc .nodeinfo{display:flex;flex-direction:column;gap:12px}
 .rc .ni-top{display:flex;align-items:center;gap:10px}
@@ -59,11 +59,11 @@
 .rc .ni-av.pro{background:#7dd1c1;border-color:#fff}
 .rc .ni-id{display:flex;flex-direction:column;min-width:0}
 .rc .ni-id b{font:800 16px var(--display)}.rc .ni-id small{font:500 12px var(--sans);color:rgba(43,48,69,.65)}
-.rc .ni-tag{margin-left:auto;font:800 10.5px var(--display);background:#e6dff3;border-radius:99px;padding:4px 10px;white-space:nowrap}
+.rc .ni-tag{margin-left:auto;font:800 12px var(--display);background:#e6dff3;border-radius:99px;padding:4px 10px;white-space:nowrap}
 .rc .ni-tag.hub{background:#77689d;color:#fff}.rc .ni-tag.pro{background:#7dd1c1}.rc .ni-tag.off{background:#e5677f}
 .rc .ni-rows{display:flex;flex-direction:column;gap:8px}
 .rc .ni-rows>div{display:grid;grid-template-columns:74px 1fr;gap:8px;align-items:center}
-.rc .ni-rows i{font:600 11px var(--sans);font-style:normal;color:rgba(43,48,69,.62)}
+.rc .ni-rows i{font:600 12px var(--sans);font-style:normal;color:rgba(43,48,69,.62)}
 .rc .pills{display:flex;flex-wrap:wrap;gap:5px}.rc .pills em{font:500 12px var(--sans);color:rgba(43,48,69,.5)}
 .rc .pill{display:inline-flex;gap:6px;align-items:baseline;background:#f1eef8;border-radius:99px;padding:3px 10px;font:600 12px var(--sans)}
 .rc .pill b{font:800 12px var(--display);color:#77689d}
@@ -80,13 +80,13 @@
 .rc .redbar>div{background:#fff;border-radius:18px;padding:10px 12px;display:flex;flex-direction:column;gap:2px}
 .rc .redbar b{font:800 22px var(--display);line-height:1.1}
 .rc .redbar b.r{color:#c0435a}.rc .redbar b.a{color:#a8761a}.rc .redbar b.n{color:#23806f}
-.rc .redbar span{font:600 10.5px var(--sans);color:rgba(43,48,69,.7)}
+.rc .redbar span{font:600 12px var(--sans);color:rgba(43,48,69,.7)}
 .rc .dep{display:grid;grid-template-columns:minmax(70px,96px) 1fr auto;gap:10px;align-items:center;padding:8px 0}
 .rc .dep+.dep{border-top:1px solid var(--hair)}
-.rc .dn{display:flex;flex-direction:column;font:700 13px var(--display)}.rc .dn small{font:500 11px var(--sans);color:rgba(43,48,69,.6)}
+.rc .dn{display:flex;flex-direction:column;font:700 13px var(--display)}.rc .dn small{font:500 12px var(--sans);color:rgba(43,48,69,.6)}
 .rc .dep b{font:800 12px var(--display);white-space:nowrap}
 .rc .dep-card .eyebrow{margin-bottom:2px}
-.rc .rc-note{margin:8px 0 0;font:400 11.5px/1.55 var(--sans);color:var(--ink-soft)}
+.rc .rc-note{margin:8px 0 0;font:400 12px/1.55 var(--sans);color:var(--ink-soft)}
 .rc .rc-note.off{color:var(--alert)}
 /* Variante sin ficha de nodo: mismo lenguaje (tarjetas blancas, número grande, color por nivel) en otras cajas de Método */
 .rc.rc-flat{display:block;margin:0 0 10px}

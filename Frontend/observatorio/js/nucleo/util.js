@@ -10,7 +10,7 @@
   function mxn(x){return '$'+ent(x)}
   function mill(x){return x>=1e6?fmt(x/1e6,1)+' M':Math.round(x/1000).toLocaleString('es-MX')+' mil'}
   function isWeak(p){return p==='baja'||p==='no estimable'}
-  function prec(p){var c=p==='alta'?'p-alta':p==='moderada'?'p-moderada':(p&&p.indexOf('baja')===0)?'p-baja':'p-noest';return '<span class="chip '+c+'">'+(p||'s/d')+'</span>'}
+  function prec(p){var c=p==='alta'?'p-alta':p==='moderada'?'p-moderada':(p&&p.indexOf('baja')===0)?'p-baja':'p-noest';var t=p==='alta'?'El margen de error es chico: la cifra sirve como hallazgo':p==='moderada'?'Margen de error mediano: léase con cautela':(p&&p.indexOf('baja')===0)?'Margen de error grande: no cuenta como hallazgo':'Sin medida de precisión';return '<span class="chip '+c+'" title="'+t+'">precisión '+(p||'s/d')+'</span>'}
   function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
   /* «Archivo» → «Origen» (22–23 oct 2026): las fichas no muestran rutas ni nombres internos de análisis. Cada número de análisis se traduce
      a los datos públicos de los que sale; se agrega «cálculo del equipo». La ruta original queda en el title del renglón.

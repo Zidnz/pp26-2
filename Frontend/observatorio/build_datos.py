@@ -205,7 +205,14 @@ sg = leer(R / '12_segmentacion_estimaciones.csv')
 D['seg'] = [{k: nn(v) for k, v in r.items()} for r in
             sg[['dimension', 'segmento', 'clave', 'indicador', 'grupo', 'pct', 'cv', 'li90', 'ls90', 'n_muestra_dominio',
                 'precision', 'dif_pp', 'dif_li90', 'dif_ls90', 'dif_significativa']].to_dict('records')]
-D['seg_fuente'] = 'Analysis/resultados/12_segmentacion_estimaciones.csv (script 12)'
+# 11 nov 2026: mismos segmentos con el daño principal DANO_SALUD3 (script 33); se agregan como claves dano_s3 y dano_s3_sinnec
+sg33 = leer(R / '33_segmentacion_salud3.csv')
+if sorted(sg33.clave.unique()) != ['dano_s3', 'dano_s3_sinnec'] or len(sg33) != 28:
+    raise SystemExit('33_segmentacion_salud3.csv: se esperaban 28 filas con las claves dano_s3 y dano_s3_sinnec')
+D['seg'] += [{k: nn(v) for k, v in r.items()} for r in
+             sg33[['dimension', 'segmento', 'clave', 'indicador', 'grupo', 'pct', 'cv', 'li90', 'ls90', 'n_muestra_dominio',
+                   'precision', 'dif_pp', 'dif_li90', 'dif_ls90', 'dif_significativa']].to_dict('records')]
+D['seg_fuente'] = 'Analysis/resultados/12_segmentacion_estimaciones.csv (script 12) y 33_segmentacion_salud3.csv (script 33)'
 
 # Series completas por segmento (notebook B, sección 12b, 14 oct 2026): cada gráfica de Necesidad y Barreras que sale de
 # TPOB_CUI, re-estimada dentro de cada segmento. Alimenta el filtro de toda la pestaña y las filas de KPI.
@@ -218,7 +225,13 @@ if not ((s2.dimension == 'Total') & (s2.serie == 'kpi') & (s2.categoria == 'hora
 D['seg2'] = [{k: nn(v) for k, v in r.items()} for r in
              s2[['dimension', 'segmento', 'serie', 'categoria', 'etiqueta', 'pct', 'cv', 'li90', 'ls90', 'n_muestra_dominio',
                  'total_expandido', 'precision', 'dif_significativa']].to_dict('records')]
-D['seg2_fuente'] = 'Analysis/resultados/12b_segmentacion_series.csv (notebook B, sección 12b)'
+s33 = leer(R / '33_series_salud3.csv')       # 11 nov 2026: pictograma por horas con DANO_SALUD3 (serie carga_dano_s3)
+if set(s33.serie) != {'carga_dano_s3'} or len(s33) != 33:
+    raise SystemExit('33_series_salud3.csv: se esperaban 33 filas de la serie carga_dano_s3')
+D['seg2'] += [{k: nn(v) for k, v in r.items()} for r in
+              s33[['dimension', 'segmento', 'serie', 'categoria', 'etiqueta', 'pct', 'cv', 'li90', 'ls90', 'n_muestra_dominio',
+                   'total_expandido', 'precision', 'dif_significativa']].to_dict('records')]
+D['seg2_fuente'] = 'Analysis/resultados/12b_segmentacion_series.csv (notebook B, sección 12b) y 33_series_salud3.csv (script 33)'
 
 # Perfil del grupo del problema y distribución de horas (script 16)
 COLS_PF = ['dimension', 'segmento', 'poblacion', 'pct', 'cv', 'li90', 'ls90', 'n_muestra_dominio', 'precision',
@@ -262,12 +275,12 @@ D['seg23'] = {
                p2[p2.variable.isin(['fuerza', 'nocoopera', 'capacitacion', 'reqapoyo', 'insatisfecha']) |
                   ((p2.variable == 'horas') & (p2.categoria == '80 h o más')) |
                   ((p2.variable == 'motivo') & (p2.categoria == 'Obligación o «la única que podía»'))][COLS23].to_dict('records')],
-    'dano_horas': registros('23_seg_dano_por_horas.csv'),
-    'dano_bloque': registros('23_seg_dano_por_bloque_horas.csv'),
+    'dano_horas': registros('23_seg_dano_por_horas.csv') + registros('33_seg23_salud3_por_horas.csv'),
+    'dano_bloque': registros('23_seg_dano_por_bloque_horas.csv') + registros('33_seg23_salud3_por_bloque_horas.csv'),
     'fuera_regla': {k: nn(v) for k, v in fu23.iloc[0].items()},
     'estabilidad': [{'k': int(r.k), 'ari': nn(r.ARI_mediana), 'bic': nn(r.BIC), 'entropia': nn(r.entropia)} for r in sel23[sel23.k.between(2, 4)].itertuples()],
     'modelo_vs_regla_max_pp': float(pa23[pa23.comparacion == 'k=2 contra regla de dificultad (2)'].dif_media.abs().max()),
-    'fuente': 'Analysis/resultados/23_seg_*.csv (notebook 23, Analysis/23_segmentacion_cuidadoras.ipynb)',
+    'fuente': 'Analysis/resultados/23_seg_*.csv (notebook 23, Analysis/23_segmentacion_cuidadoras.ipynb) y 33_seg23_salud3_*.csv (script 33)',
 }
 
 # ---------------------------------------------------------------- Barreras (03, 04, 07)
@@ -711,7 +724,7 @@ if len(V2_REGLA) != 1:
     raise SystemExit('modelo_v2.global: falta la fila primaria de la regla')
 V2_REGLA = V2_REGLA[0]
 D['kpis'] = [
-    kpi('Demanda', 'Hogares con necesidad de cuidado', 'Hogares con al menos una persona con discapacidad o de 60 años y más',
+    kpi('Demanda', 'Hogares con persona de 60+ o con discapacidad', 'Hogares con al menos una persona con discapacidad o de 60 años y más',
         D['tasa_necesidad_nal'], '% de los hogares', 'Hogares, nacional', 'alta', 'confirmado', 'Analysis/resultados/05_tasas_y_anclajes.csv'),
     kpi('Demanda', 'Grupo del problema', 'Personas cuidadoras que cuidan 40 h o más, dicen "no tuve necesidad" y declaran daño a su salud (física, cansancio o sueño; DANO_SALUD3, objetivo primario). Con la definición de la versión 1, «algún daño» (salud o trabajo): ' + f"{K['grupo_problema']['pct']:.1f} %",
         K['grupo_problema_salud3']['pct'], '% del universo', 'Cuidadoras de persona con discapacidad o 60+, nacional',

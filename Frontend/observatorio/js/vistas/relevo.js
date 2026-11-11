@@ -34,35 +34,35 @@
     return {n:n,W:W,top:top,ph:ph,bot:bot,a0:a0,a1:a1,bw:52,H:bot+70,cx:function(i){return a0+sl*(i+.5)}};
   }
   function colEtiquetas(g,rows){var s='';rows.forEach(function(r,i){var nm=r.horas===40?'Jornada 40 h':r.horas+' h/sem',x=g.cx(i);
-    s+='<text x="'+x+'" y="'+(g.bot+20)+'" text-anchor="middle" font-size="12.5" font-weight="650" fill="#2b3045">'+esc(nm)+'</text><text x="'+x+'" y="'+(g.bot+35)+'" text-anchor="middle" '+MONO+' font-size="10.5" fill="'+FAINT+'">'+mxn(r.costo_mensual_2026)+'/mes</text>'});return s}
+    s+='<text x="'+x+'" y="'+(g.bot+20)+'" text-anchor="middle" font-size="12.5" font-weight="650" fill="#2b3045">'+esc(nm)+'</text><text x="'+x+'" y="'+(g.bot+35)+'" text-anchor="middle" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+mxn(r.costo_mensual_2026)+'/mes</text>'});return s}
   function svgHogares(rows){
     var u=+umb.slice(1),g=colBase(rows),ci=rows.every(function(r){return r[umb+'_li']!=null});
     function Y(v){return g.bot-g.ph*v/100}
     var s=svg(g.W,g.H,'Hogares que podrían pagar cada paquete');
-    s+='<text x="'+g.a0+'" y="14" font-size="10.5" fill="'+FAINT+'">Porcentaje de hogares con un tope de '+u+'% del ingreso</text>';
-    [0,25,50,75,100].forEach(function(t){s+='<line x1="'+g.a0+'" x2="'+g.a1+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,'+(t===0?.3:.1)+')"/><text x="'+(g.a0-8)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="10" fill="'+FAINT+'">'+t+'%</text>'});
+    s+='<text x="'+g.a0+'" y="14" font-size="11.5" fill="'+FAINT+'">Porcentaje de hogares con un tope de '+u+'% del ingreso</text>';
+    [0,25,50,75,100].forEach(function(t){s+='<line x1="'+g.a0+'" x2="'+g.a1+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,'+(t===0?.3:.1)+')"/><text x="'+(g.a0-8)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+t+'%</text>'});
     rows.forEach(function(r,i){
       var nm=r.horas===40?'Jornada 40 h':r.horas+' h/sem',v=r[umb],pq=r[umb+'_prec'],weak=pq!=null&&pq!=='alta',x=g.cx(i),y=Y(v),ty=y;
       s+='<g><title>'+esc(nm)+': '+fmt(v)+'% de los hogares'+(ci?' (IC 90%: '+fmt(r[umb+'_li'])+'–'+fmt(r[umb+'_ls'])+')':'')+(pq?' · precisión '+esc(pq):'')+'</title>';
       s+='<rect x="'+(x-g.bw/2)+'" y="'+y+'" width="'+g.bw+'" height="'+Math.max(1.5,g.bot-y).toFixed(1)+'" rx="3" fill="#77689d" '+(weak?'fill-opacity=".18" stroke="#77689d" stroke-width="1.8" stroke-dasharray="4 3"':'')+'/>';
       if(ci){var l=Y(r[umb+'_li']),h=Y(r[umb+'_ls']);ty=h;
         s+='<g stroke="#2b3045" stroke-width="1.3" opacity=".6"><line x1="'+x+'" x2="'+x+'" y1="'+l+'" y2="'+h+'"/><line x1="'+(x-6)+'" x2="'+(x+6)+'" y1="'+l+'" y2="'+l+'"/><line x1="'+(x-6)+'" x2="'+(x+6)+'" y1="'+h+'" y2="'+h+'"/></g>'}
-      s+='<text x="'+x+'" y="'+(ty-8)+'" text-anchor="middle" '+MONO+' font-size="13" font-weight="700" fill="'+(weak?FAINT:'#77689d')+'" style="paint-order:stroke;stroke:#fff;stroke-width:4px">'+fmt(v)+'%</text>'+(weak?'<text x="'+x+'" y="'+(ty-21)+'" text-anchor="middle" font-size="9.5" fill="#c0435a">precisión baja</text>':'')+'</g>'});
+      s+='<text x="'+x+'" y="'+(ty-8)+'" text-anchor="middle" '+MONO+' font-size="13" font-weight="700" fill="'+(weak?FAINT:'#77689d')+'" style="paint-order:stroke;stroke:#fff;stroke-width:4px">'+fmt(v)+'%</text>'+(weak?'<text x="'+x+'" y="'+(ty-21)+'" text-anchor="middle" font-size="11.5" fill="#c0435a">precisión baja</text>':'')+'</g>'});
     return s+colEtiquetas(g,rows)+'</svg>';
   }
   function svgIngreso(rows){
     var u=+umb.slice(1),g=colBase(rows),cap=60;
     function Y(v){return g.bot-g.ph*Math.min(v,cap)/cap}
     var s=svg(g.W,g.H,'Costo de cada paquete como porcentaje del ingreso del hogar mediano');
-    s+='<text x="'+g.a0+'" y="14" font-size="10.5" fill="'+FAINT+'">Costo del paquete ÷ ingreso mediano del hogar · la escala se corta en '+cap+'%</text>';
-    [0,10,20,30,40,50,60].forEach(function(t){var on=t===u;s+='<line x1="'+g.a0+'" x2="'+g.a1+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,'+(t===0?.3:.1)+')"/><text x="'+(g.a0-8)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="10" font-weight="'+(on?700:400)+'" fill="'+(on?'#2b3045':FAINT)+'">'+t+'%</text>'});
-    s+='<line x1="'+g.a0+'" x2="'+g.a1+'" y1="'+Y(u)+'" y2="'+Y(u)+'" stroke="#2b3045" stroke-width="1.6" stroke-dasharray="5 4"/><text x="'+(g.a0+4)+'" y="'+(Y(u)-6)+'" '+MONO+' font-size="10" font-weight="700" fill="#2b3045">tope '+u+'%</text>';
+    s+='<text x="'+g.a0+'" y="14" font-size="11.5" fill="'+FAINT+'">Costo del paquete ÷ ingreso mediano del hogar · la escala se corta en '+cap+'%</text>';
+    [0,10,20,30,40,50,60].forEach(function(t){var on=t===u;s+='<line x1="'+g.a0+'" x2="'+g.a1+'" y1="'+Y(t)+'" y2="'+Y(t)+'" stroke="rgba(63,71,96,'+(t===0?.3:.1)+')"/><text x="'+(g.a0-8)+'" y="'+(Y(t)+3.5)+'" text-anchor="end" '+MONO+' font-size="11.5" font-weight="'+(on?700:400)+'" fill="'+(on?'#2b3045':FAINT)+'">'+t+'%</text>'});
+    s+='<line x1="'+g.a0+'" x2="'+g.a1+'" y1="'+Y(u)+'" y2="'+Y(u)+'" stroke="#2b3045" stroke-width="1.6" stroke-dasharray="5 4"/><text x="'+(g.a0+4)+'" y="'+(Y(u)-6)+'" '+MONO+' font-size="11.5" font-weight="700" fill="#2b3045">tope '+u+'%</text>';
     rows.forEach(function(r,i){
       var nm=r.horas===40?'Jornada 40 h':r.horas+' h/sem',p=r.pct_ingreso_mediano,ok=p<=u,c=ok?'#77689d':'#c0435a',x=g.cx(i),y=Y(p);
       s+='<g><title>'+esc(nm)+': '+fmt(p)+'% del ingreso mediano ('+mxn(r.costo_mensual_2026)+'/mes)</title><rect x="'+(x-g.bw/2)+'" y="'+y+'" width="'+g.bw+'" height="'+Math.max(1.5,g.bot-y).toFixed(1)+'" rx="3" fill="'+c+'" opacity="'+(ok?1:.85)+'"/>';
       if(p>cap)s+='<path d="M'+(x-g.bw/2)+' '+(y+1)+' l'+(g.bw/2)+' -13 l'+(g.bw/2)+' 13 z" fill="'+c+'"/>';
       s+='<text x="'+x+'" y="'+(y-(p>cap?18:8))+'" text-anchor="middle" '+MONO+' font-size="13" font-weight="700" fill="'+c+'" style="paint-order:stroke;stroke:#fff;stroke-width:4px">'+fmt(p)+'%</text></g>'});
-    s+='<text x="'+g.a0+'" y="'+(g.H-4)+'" font-size="10.5" fill="'+FAINT+'">Morado: cabe en el tope de '+u+'% · rojo: lo rebasa.</text>';
+    s+='<text x="'+g.a0+'" y="'+(g.H-4)+'" font-size="11.5" fill="'+FAINT+'">Morado: cabe en el tope de '+u+'% · rojo: lo rebasa.</text>';
     return s+colEtiquetas(g,rows)+'</svg>';
   }
   function renderRelevo(){
@@ -88,24 +88,24 @@
     var W=520,top=30,rowH=78,x0=2,x1=W-8,max=160,H=top+SERV.length*rowH+24;
     function X(v){return x0+(x1-x0)*Math.min(v,max)/max}
     var s=svg(W,H,'Pago por hora observado por tipo de servicio, comparado con el piso legal y el tabulador CACEH')+'<defs>'+OBS.rayado('pgR')+'</defs>';
-    for(var t=0;t<=max;t+=40)s+='<line x1="'+X(t)+'" x2="'+X(t)+'" y1="'+top+'" y2="'+(top+SERV.length*rowH)+'" stroke="rgba(63,71,96,'+(t?'.08':'.3')+')"/><text x="'+X(t)+'" y="'+(H-6)+'" text-anchor="'+(t===max?'end':t?'middle':'start')+'" '+MONO+' font-size="10" fill="'+FAINT+'">$'+t+'</text>';
+    for(var t=0;t<=max;t+=40)s+='<line x1="'+X(t)+'" x2="'+X(t)+'" y1="'+top+'" y2="'+(top+SERV.length*rowH)+'" stroke="rgba(63,71,96,'+(t?'.08':'.3')+')"/><text x="'+X(t)+'" y="'+(H-6)+'" text-anchor="'+(t===max?'end':t?'middle':'start')+'" '+MONO+' font-size="11.5" fill="'+FAINT+'">$'+t+'</text>';
     function ref(v,l,c){s+='<line x1="'+X(v)+'" x2="'+X(v)+'" y1="'+(top-6)+'" y2="'+(top+SERV.length*rowH)+'" stroke="'+c+'" stroke-width="1.5" stroke-dasharray="4 3"/><text x="'+X(v)+'" y="'+(top-12)+'" text-anchor="middle" font-size="11.5" font-weight="650" fill="'+c+'">'+l+' $'+fmt(v,2)+'</text>'}
     ref(piso,'Piso legal','#77689d'); ref(caceh,'CACEH','#2b3045');
     SERV.forEach(function(k,i){var e=P[k[0]],y=top+i*rowH,weak=e.n<30,col=k[0]==='cuidadora'?'#77689d':'#9a93ad',d=100*(e.mediana/piso-1),cy=y+36,
         dt=Math.abs(d)<.5?'igual al piso':(d>0?'+':'−')+fmt(Math.abs(d),0)+'% '+(d>0?'sobre':'bajo')+' el piso';
       if(i>0)s+='<line x1="0" x2="'+W+'" y1="'+(y-2)+'" y2="'+(y-2)+'" stroke="rgba(63,71,96,.08)"/>';
       s+='<g><title>'+k[1]+': p25 $'+fmt(e.p25,2)+' · mediana $'+fmt(e.mediana,2)+' · p75 $'+fmt(e.p75,2)+' (n = '+e.n+', sin ponderar)</title>';
-      s+='<text x="'+x0+'" y="'+(y+16)+'" style="paint-order:stroke;stroke:#fff;stroke-width:4px" font-size="12.5" font-weight="'+(k[0]==='cuidadora'?700:600)+'" fill="#2b3045">'+k[1]+' <tspan '+MONO+' font-size="10" font-weight="400" fill="'+(weak?'#c0435a':FAINT)+'">n = '+e.n+(weak?' · precisión baja':'')+'</tspan></text>';
+      s+='<text x="'+x0+'" y="'+(y+16)+'" style="paint-order:stroke;stroke:#fff;stroke-width:4px" font-size="12.5" font-weight="'+(k[0]==='cuidadora'?700:600)+'" fill="#2b3045">'+k[1]+' <tspan '+MONO+' font-size="11.5" font-weight="400" fill="'+(weak?'#c0435a':FAINT)+'">n = '+e.n+(weak?' · precisión baja':'')+'</tspan></text>';
       s+='<text x="'+x1+'" y="'+(y+16)+'" text-anchor="end" '+MONO+' font-size="13" font-weight="700" fill="'+(weak?FAINT:'#2b3045')+'">$'+fmt(e.mediana,2)+'</text>';
       s+='<rect x="'+X(0)+'" y="'+(cy-8)+'" width="'+Math.max(1.5,X(e.mediana)-X(0)).toFixed(1)+'" height="16" rx="3" fill="'+(weak?'url(#pgR)':col)+'"'+(weak?' stroke="#b5afc6"':'')+'/>';
       var hi=Math.min(e.p75,max);
       s+='<g stroke="#2b3045" stroke-width="1.2" opacity=".6"><line x1="'+X(e.p25)+'" x2="'+X(hi)+'" y1="'+cy+'" y2="'+cy+'"/><line x1="'+X(e.p25)+'" x2="'+X(e.p25)+'" y1="'+(cy-4)+'" y2="'+(cy+4)+'"/>'+(e.p75>max?'<path d="M'+(X(max)-5)+' '+(cy-4)+'L'+X(max)+' '+cy+'L'+(X(max)-5)+' '+(cy+4)+'" fill="none"/>':'<line x1="'+X(e.p75)+'" x2="'+X(e.p75)+'" y1="'+(cy-4)+'" y2="'+(cy+4)+'"/>')+'</g>';
-      s+='<text x="'+x0+'" y="'+(y+60)+'" style="paint-order:stroke;stroke:#fff;stroke-width:4px" '+MONO+' font-size="10" fill="'+FAINT+'">'+dt+' · p25–p75: $'+fmt(e.p25,0)+' a $'+fmt(e.p75,0)+(e.p75>max?' (fuera del eje)':'')+'</text>';
+      s+='<text x="'+x0+'" y="'+(y+60)+'" style="paint-order:stroke;stroke:#fff;stroke-width:4px" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+dt+' · p25–p75: $'+fmt(e.p25,0)+' a $'+fmt(e.p75,0)+(e.p75>max?' (fuera del eje)':'')+'</text>';
       s+='</g>'});
     $('#ch-pago').innerHTML=s+'</svg><div class="legend"><span>Barra: mediana</span><span>Línea fina: percentiles 25 a 75</span><span>Rayado: menos de 30 casos</span><span>Pesos de 2026</span></div>';
   })();
   $('#src-pago').innerHTML=dl({Lectura:'Barra: mediana; el porcentaje es mediana ÷ piso − 1. Línea fina: percentiles 25 a 75 (la punta de flecha indica que sigue más allá del eje). Rayado: menos de 30 casos. Pesos de 2026 (INPC).',Muestra:'Hogares que reportan el pago y las horas, sin ponderar: cuidadora '+P.cuidadora.n+', trabajo doméstico entrada por salida '+P.domestica.n+', enfermería '+P.enfermeria.n+'. Cuidadora y enfermería quedan marcadas con precisión baja (menos de 30 casos).',Advertencia:'No controla horas ni tareas: la tarifa por hora suele bajar cuando se contratan más horas a la semana, y la diferencia entre servicios puede deberse a eso.',Archivo:esc(P.fuente)});
-  $('#relNo').innerHTML='<b>Poder pagar no es querer contratar.</b> Hoy contrata cuidado solo '+fmt(CT.cuidado.pct)+'% de los hogares con necesidad, y '+fmt(D.preferencia[1].pct)+'% no contrataría a nadie. Eso lo tiene que medir el piloto.';
+  $('#relNo').innerHTML='<b>Poder pagar no es querer contratar.</b> Hoy contrata cuidado solo '+fmt(CT.cuidado.pct)+'% de los hogares con una persona de 60+ o con discapacidad, y '+fmt(D.preferencia[1].pct)+'% no contrataría a nadie. Eso lo tiene que medir el piloto.';
   /* Financiamiento del relevo por horas en la CDMX (script 20, 15 oct 2026). Sustituye al cálculo de 20 h/40 h del script 06, que era de
      otro producto (media jornada) y usaba 1,099,461 hogares (cota inferior del script 05) en lugar de los 1,407,522 de la ENIGH 2022. */
   (function(){
@@ -115,15 +115,15 @@
     function render(){
       var rows=ESC.map(function(e,i){var f=S.financiamiento.filter(function(r){return r.escenario===e&&r.opex===oSel})[0],h=S.escala[i];return {l:NOM[i],ac:h.aceptacion,h:h.hogares,cl:h.costo_mdp,sb:h.sub_mdp,op:f.mdp-h.sub_mdp,v:f.mdp,pct:f.pct_solicitud}});
       var m=rows[1];
-      $('#subFind').innerHTML='Con 6 h/semana de relevo diurno, carga laboral del 22% y un tope de 20% del ingreso, el hogar promedio del grupo necesitaría <b>'+mxn(cop('ENASIC nacional'))+'</b> al mes de subsidio laboral con el ingreso de la ENASIC y <b>'+mxn(cop('ENIGH CDMX'))+'</b> con el de la ENIGH CDMX: la fuente del ingreso es una decisión pendiente del equipo. Si aceptara el 25% de los ≈'+ent(S.elegibles_cdmx)+' hogares elegibles de la CDMX (aceptación ilustrativa), el financiamiento sería de <b>'+fmt(m.v,1)+' mdp</b> al año con operación de '+mxn(oSel)+' por hogar-mes, <b>'+fmt(m.pct,1)+'%</b> de la solicitud del Sistema Público de Cuidados ('+ent(sol)+' mdp).';
-      var h='<div class="scroll-x"><table><thead><tr><th>Escenario</th><th class="n">Aceptación (ilustrativa)</th><th class="n">Hogares</th><th class="n">Costo laboral anual</th><th class="n">Subsidio laboral</th><th class="n">Operación</th><th class="n">Financiamiento anual</th><th class="n">% de la solicitud</th></tr></thead><tbody>';
+      $('#subFind').innerHTML='Con 6 h/semana de relevo diurno, carga laboral del 22% y un tope de 20% del ingreso, el hogar promedio del grupo necesitaría <b>'+mxn(cop('ENASIC nacional'))+'</b> al mes de subsidio laboral con el ingreso de la ENASIC y <b>'+mxn(cop('ENIGH CDMX'))+'</b> con el de la ENIGH CDMX: la fuente del ingreso es una decisión pendiente del equipo. Atender a <b>1,000 hogares</b> costaría <b>'+fmt(m.v/m.h*1000,1)+' mdp</b> al año con operación de '+mxn(oSel)+' por hogar-mes. Cuántos hogares lo pedirían en la CDMX no está medido.';
+      var h=OBS.tile({plano:true,k:'Financiamiento anual por cada 1,000 hogares atendidos',v:fmt(m.v/m.h*1000,1)+' mdp',fs:34,v2:'Subsidio laboral '+fmt(m.sb/m.h*1000,1)+' mdp + operación '+fmt(m.op/m.h*1000,1)+' mdp · 6 h/semana, jornada diurna, carga del 22 %, copago máximo de 20 % del ingreso'})+'<details class="mas" style="margin-top:14px"><summary>Escenario de escala para la CDMX · supuesto, no medición</summary><div class="mas-in"><p class="find" style="margin:0 0 10px">Supone ≈'+ent(S.elegibles_cdmx)+' hogares elegibles: la razón <b>nacional</b> de la ENASIC aplicada a los hogares de la CDMX. La ENASIC no representa a la ciudad, así que es un orden de magnitud para discutir presupuesto, no una estimación.</p><div class="scroll-x"><table><thead><tr><th>Escenario</th><th class="n">Aceptación (ilustrativa)</th><th class="n">Hogares</th><th class="n">Costo laboral anual</th><th class="n">Subsidio laboral</th><th class="n">Operación</th><th class="n">Financiamiento anual</th><th class="n">% de la solicitud</th></tr></thead><tbody>';
       rows.forEach(function(r){h+='<tr><td><b>'+esc(r.l)+'</b></td><td class="n">'+fmt(100*r.ac,(100*r.ac)%1?1:0)+' %</td><td class="n">'+ent(r.h)+'</td><td class="n">'+fmt(r.cl,1)+' mdp</td><td class="n">'+fmt(r.sb,1)+' mdp</td><td class="n">'+fmt(r.op,1)+' mdp</td><td class="n"><b>'+fmt(r.v,1)+' mdp</b></td><td class="n"'+(r.pct>100?' style="color:#c0435a;font-weight:700"':'')+'>'+fmt(r.pct,2)+'%</td></tr>'});
-      h+='<tr><td colspan="6"><b>Solicitud CDMX</b> (Sistema Público de Cuidados)</td><td class="n"><b>'+ent(sol)+' mdp</b></td><td class="n">100%</td></tr></tbody></table></div>';
+      h+='<tr><td colspan="6"><b>Solicitud CDMX</b> (Sistema Público de Cuidados)</td><td class="n"><b>'+ent(sol)+' mdp</b></td><td class="n">100%</td></tr></tbody></table></div></div></details>';
       $('#ch-sub').innerHTML=h;
     }
     seg('#segOpex','o',function(v){oSel=+v;render()}); render();
-    $('#src-sub').innerHTML=dl({Cálculo:'Hogares elegibles × (subsidio laboral promedio + costo de operación) × 12. Subsidio = costo laboral − copago, con copago máximo de 20% del ingreso (convención del equipo, no estándar oficial) y hogares tipo p25, mediana y p75 ponderados con el perfil de ingreso del grupo del problema.',
-      Hogares:'≈'+ent(S.elegibles_cdmx)+' hogares elegibles: es la razón nacional «grupo del problema ÷ hogares con necesidad» aplicada a los '+ent(D.relevo_enigh.necesidad_cdmx_det.total)+' hogares con persona con discapacidad o 60+ de la ENIGH 2022 en la CDMX. Es una inferencia con tasas nacionales, no una medición local.',
+    $('#src-sub').innerHTML=dl({Cálculo:'Hogares atendidos × (subsidio laboral promedio + costo de operación) × 12. Subsidio = costo laboral − copago, con copago máximo de 20% del ingreso (convención del equipo, no estándar oficial) y hogares tipo p25, mediana y p75 ponderados con el perfil de ingreso del grupo del problema.',
+      'Escala CDMX (supuesto)':'≈'+ent(S.elegibles_cdmx)+' hogares elegibles: es la razón nacional «grupo del problema ÷ hogares con persona de 60+ o con discapacidad» aplicada a los '+ent(D.relevo_enigh.necesidad_cdmx_det.total)+' hogares con persona con discapacidad o 60+ de la ENIGH 2022 en la CDMX. Es una inferencia con tasas nacionales, no una medición local.',
       Ilustrativo:'Aceptación (5% y 25%) y costo de operación ($0 a $1,000 por hogar-mes) no tienen fuente: los mide el piloto. El máximo (64.1%) es una cota, 1 − «no contrataría»; declarar que se contrataría no demuestra que se contrate.',
       'No permite afirmar':'Punto de equilibrio, disposición a pagar ni que el relevo reduzca el daño al trabajo. La carga del 22% (IMSS e Infonavit) y los artículos de la LFT siguen por confirmar.',
       Solicitud:'$'+ent(sol)+' mdp tomados de prensa, por contrastar con el decreto aprobado.',
@@ -143,10 +143,10 @@
       rows.forEach(function(r,i){var cy=top+i*rowH+rowH/2,c=COL[r.jornada];
         s+='<g><title>'+esc(r.jornada)+' ('+esc(r.horario)+', máx. '+fmt(r.horas_max,1)+' h): $'+fmt(r.hora,2)+'/h · '+mxn(r.costo_mensual_2026)+' al mes por '+hSel+' h/sem</title>';
         s+='<text x="0" y="'+(cy-2)+'" font-size="12.5" font-weight="650" fill="#2b3045">'+esc(r.jornada)+'</text>';
-        s+='<text x="0" y="'+(cy+13)+'" '+MONO+' font-size="10.5" fill="'+FAINT+'">$'+fmt(r.hora,2)+'/h · máx. '+fmt(r.horas_max,1)+' h</text>';
+        s+='<text x="0" y="'+(cy+13)+'" '+MONO+' font-size="11.5" fill="'+FAINT+'">$'+fmt(r.hora,2)+'/h · máx. '+fmt(r.horas_max,1)+' h</text>';
         s+='<rect x="'+X(0)+'" y="'+(cy-10)+'" width="'+(X(r.costo_mensual_2026)-X(0)).toFixed(1)+'" height="20" rx="3" fill="'+c+'"/>';
         s+='<text x="'+(X(r.costo_mensual_2026)+8)+'" y="'+(cy+5)+'" '+MONO+' font-size="12.5" font-weight="700" fill="#2b3045" style="paint-order:stroke;stroke:#fff;stroke-width:4px">'+mxn(r.costo_mensual_2026)+'/mes'+(r.dif_pct>0?' <tspan font-weight="400" fill="#c0435a">+'+fmt(r.dif_pct,1)+'%</tspan>':'')+'</text></g>'});
-      s+='<text x="0" y="'+(H-4)+'" font-size="11" fill="'+FAINT+'">Piso legal, '+({1:'sin carga',2:'carga 22%',3:'carga 30.2%'})[cSel]+'. Porcentaje: diferencia contra la jornada diurna.</text>';
+      s+='<text x="0" y="'+(H-4)+'" font-size="11.5" fill="'+FAINT+'">Piso legal, '+({1:'sin carga',2:'carga 22%',3:'carga 30.2%'})[cSel]+'. Porcentaje: diferencia contra la jornada diurna.</text>';
       $('#ch-jor').innerHTML=s+'</svg>';
       var d=rows[0],n=rows[2];
       var d0=SO.costo.filter(function(r){return r.jornada==='Diurna'&&r.horas===hSel&&r.carga===1})[0].costo_mensual;

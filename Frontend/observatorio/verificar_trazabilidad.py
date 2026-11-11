@@ -23,7 +23,17 @@ JSON = RAIZ / 'Frontend/observatorio/datos_observatorio.json'
 CARPETAS = ['Analysis/resultados', 'Analysis/outputs', 'Analysis/matrices', 'DW/marts']
 EXCLUIR = {'diccionario', 'diccionario_fuente'}          # texto y metadatos, no cifras
 # Bloques cuyas cifras se calculan a propósito en build_datos.py (cociente, suma, redondeo). Cada uno exige su justificación.
-DERIVADOS = {}
+DERIVADOS = {
+    # 11 nov 2026: cada bloque declara qué cifras calcula build_datos.py y con qué fórmula. Sin doble revisión.
+    'relevo_enigh': 'pct_ingreso_mediano = 100 × costo mensual (ago 2022) ÷ ingreso mediano del dominio, 1 decimal (script 14). '
+                    'necesidad_cdmx_det.total se lee del texto de la columna «nota» de 14_enigh_resumen.csv, no de una columna numérica.',
+    'sostenibilidad': 'elegibles_cdmx = hogares ÷ aceptación del último escenario de 20_sostenibilidad_escenarios.csv. '
+                      'Es un supuesto de escala con tasas nacionales, no una medición de la CDMX.',
+    'tipologia': 'dejar_fuera.coincidencia_ponderada = promedio de coincidencia_pct ponderado por n_ageb; frontera = conteo, % y población '
+                 'de las AGEB marcadas como frontera; brecha_total = suma de n_60 en AGEB con brecha; sin_internet_total = suma de '
+                 'viviendas sin internet y su % sobre las viviendas (script 18).',
+    'kpis': 'Los dos valores repiten tipologia.sin_internet_total.pct y tipologia.brecha_total.n_60.',
+}
 
 
 def valores_csv():
@@ -79,6 +89,9 @@ def main():
     if len(rep):
         r = rep.groupby('bloque').size().sort_values(ascending=False)
         print(r.to_string())
+    for b in rep.bloque.unique():
+        if b in DERIVADOS:
+            print(f'DERIVADO {b}: {DERIVADOS[b]}')
     pend = [b for b in rep.bloque.unique() if b not in DERIVADOS]
     if pend:
         print('\nBloques con cifras sin rastro y sin justificación en DERIVADOS:', ', '.join(sorted(pend)))

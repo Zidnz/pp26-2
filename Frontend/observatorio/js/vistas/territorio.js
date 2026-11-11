@@ -9,8 +9,7 @@
   var NC=D.relevo_enigh.necesidad_cdmx_det;
   $('#dimTiles').innerHTML=OBS.tile({k:'Hogares de la CDMX con persona de 60+ o con discapacidad',v:'≈ '+ent(NC.total),fs:30,color:'var(--teal)',borde:'var(--teal)',est:true,
       det:'<div class="lbl"><b>'+fmt(NC.pct)+'%</b> de los hogares de la CDMX (IC 90% '+fmt(NC.li90)+'–'+fmt(NC.ls90)+')</div><div class="chips"><span class="chip ev">confirmado</span><span class="chip">medición directa</span></div>',fuente:'ENIGH 2022'})
-    +DM.map(function(r,i){return OBS.tile({k:esc(r.nivel),v:(i?'≈ ':'≥ ')+ent(r.valor),v2:'inferido de tasas nacionales',fs:30,
-      det:(i?'':'<div class="lbl">La ENIGH mide '+fmt(NC.total/r.valor*100-100,0)+'% más.</div>')+'<div class="chips"><span class="chip ev">'+esc(r.evidencia)+'</span><span class="chip p-noest">inferido de tasas nacionales</span></div>'})}).join('');
+    +'<div class="note" style="margin:0;align-self:stretch"><span>ⓘ</span><span><b>Es la única cifra de escala que se mide en la CDMX.</b> Cuántos de esos hogares contratan cuidado o trabajo doméstico no se sabe para la ciudad: la ENASIC es nacional y aplicar sus tasas aquí sería suponer que la CDMX se comporta como el promedio del país. Las tres tarjetas que lo hacían se retiraron el 11 nov 2026.</span></div>';
   var T=D.territorio.alcaldias,TT=D.territorio.totales,key='idx_asilos',sel='Iztapalapa';
   var IDX=[[0.5,'#c0435a','< 0.5'],[0.9,'#e59aa8','0.5–0.9'],[1.1001,'#d9d3e6','0.9–1.1'],[1.75,'#9fd9cc','1.1–1.75'],[1e9,'#23806f','> 1.75']];
   var SEQ=['#efeaf7','#d3c8e8','#b09fd3','#8a76b8','#5d4d8f'];
@@ -58,18 +57,23 @@
     var W=440,H=330,pl=40,pb=36,pt=12,pr=12,mxX=Math.ceil(Math.max.apply(null,pts.map(function(p){return p.x}))/5)*5,mxY=df.sh?Math.max(mxX,Math.ceil(Math.max.apply(null,pts.map(function(p){return p.y}))/5)*5):Math.ceil(Math.max.apply(null,pts.map(function(p){return p.y}))*1.1*10)/10;
     function X(v){return pl+(W-pl-pr)*v/mxX} function Y(v){return pt+(H-pt-pb)*(1-v/mxY)}
     var g=svg(W,H,'Dispersión por alcaldía');
-    for(var t=0;t<=mxX;t+=5)g+='<line x1="'+X(t)+'" x2="'+X(t)+'" y1="'+pt+'" y2="'+(H-pb)+'" stroke="rgba(63,71,96,.08)"/><text x="'+X(t)+'" y="'+(H-pb+14)+'" text-anchor="middle" '+MONO+' font-size="10" fill="'+FAINT+'">'+t+'%</text>';
+    for(var t=0;t<=mxX;t+=5)g+='<line x1="'+X(t)+'" x2="'+X(t)+'" y1="'+pt+'" y2="'+(H-pb)+'" stroke="rgba(63,71,96,.08)"/><text x="'+X(t)+'" y="'+(H-pb+14)+'" text-anchor="middle" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+t+'%</text>';
     var stepY=df.sh?5:(mxY>10?10:mxY>2?0.5:0.25);
-    for(var u=0;u<=mxY+1e-9;u+=stepY)g+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(u)+'" y2="'+Y(u)+'" stroke="rgba(63,71,96,.08)"/><text x="'+(pl-6)+'" y="'+(Y(u)+3.5)+'" text-anchor="end" '+MONO+' font-size="10" fill="'+FAINT+'">'+(df.sh||df.pct?Math.round(u)+'%':fmt(u,2))+'</text>';
-    if(df.sh)g+='<line x1="'+X(0)+'" x2="'+X(Math.min(mxX,mxY))+'" y1="'+Y(0)+'" y2="'+Y(Math.min(mxX,mxY))+'" stroke="#23806f" stroke-dasharray="5 4" stroke-width="1.5"/><text x="'+X(Math.min(mxX,mxY))+'" y="'+(Y(Math.min(mxX,mxY))+14)+'" text-anchor="end" font-size="11" fill="#23806f">proporcional</text>';
+    for(var u=0;u<=mxY+1e-9;u+=stepY)g+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(u)+'" y2="'+Y(u)+'" stroke="rgba(63,71,96,.08)"/><text x="'+(pl-6)+'" y="'+(Y(u)+3.5)+'" text-anchor="end" '+MONO+' font-size="11.5" fill="'+FAINT+'">'+(df.sh||df.pct?Math.round(u)+'%':fmt(u,2))+'</text>';
+    if(df.sh)g+='<line x1="'+X(0)+'" x2="'+X(Math.min(mxX,mxY))+'" y1="'+Y(0)+'" y2="'+Y(Math.min(mxX,mxY))+'" stroke="#23806f" stroke-dasharray="5 4" stroke-width="1.5"/><text x="'+X(Math.min(mxX,mxY))+'" y="'+(Y(Math.min(mxX,mxY))+14)+'" text-anchor="end" font-size="11.5" fill="#23806f">proporcional</text>';
     else if(!df.pct)g+='<line x1="'+pl+'" x2="'+(W-pr)+'" y1="'+Y(1)+'" y2="'+Y(1)+'" stroke="#23806f" stroke-dasharray="5 4" stroke-width="1.5"/>';
-    var placed=[];
-    pts.slice().sort(function(a,b){return Y(a.y)-Y(b.y)}).forEach(function(p){var lx=X(p.x)+8,ly=Y(p.y)+3.5,tries=0;
-      while(tries<6&&placed.some(function(q){return Math.abs(q[0]-lx)<p.abr.length*6+4&&Math.abs(q[1]-ly)<10})){ly+=11;tries++}
-      placed.push([lx,ly]);p.lx=lx;p.ly=ly});
-    pts.forEach(function(p){var c=color(T[p.n][key],brk);g+='<circle cx="'+X(p.x)+'" cy="'+Y(p.y)+'" r="'+(p.n===sel?7:5.5)+'" fill="'+c+'" stroke="'+(p.n===sel?'#2b3045':'#fff')+'" stroke-width="1.5" data-n="'+esc(p.n)+'" style="cursor:pointer"><title>'+esc(p.n)+'</title></circle><text x="'+p.lx+'" y="'+p.ly+'" '+MONO+' font-size="9.5" fill="rgba(43,48,69,.7)">'+p.abr+'</text>'});
-    g+='<text x="'+(W-pr)+'" y="'+(H-4)+'" text-anchor="end" font-size="11" fill="'+FAINT+'">% de la población 60+ de la CDMX →</text>';
-    g+='<text x="'+pl+'" y="'+(pt-2)+'" font-size="11" fill="'+FAINT+'">↑ '+(df.sh?df.shl:df.cv)+'</text>';
+    /* 11 nov 2026: cada etiqueta prueba derecha, izquierda, arriba y abajo y se queda donde no pisa otra etiqueta ni otro punto. */
+    var placed=[],PX=pts.map(function(p){return [X(p.x),Y(p.y)]});
+    function caja(lx,ly,w,an){var x0=an==='end'?lx-w:an==='middle'?lx-w/2:lx;return [x0,ly-10,x0+w,ly+3]}
+    function choca(c,pn){return c[0]<pl||c[2]>W-2||c[1]<pt-2||c[3]>H-pb||placed.some(function(q){return c[0]<q[2]+2&&c[2]>q[0]-2&&c[1]<q[3]+1&&c[3]>q[1]-1})||PX.some(function(q,i){return pts[i].n!==pn&&q[0]>c[0]-6&&q[0]<c[2]+6&&q[1]>c[1]-6&&q[1]<c[3]+6})}
+    pts.slice().sort(function(a,b){return Y(a.y)-Y(b.y)}).forEach(function(p){var px=X(p.x),py=Y(p.y),w=p.abr.length*7+2,
+      op=[[px+9,py+4,'start'],[px-9,py+4,'end'],[px,py-10,'middle'],[px,py+18,'middle'],[px+9,py-7,'start'],[px+9,py+15,'start'],[px-9,py-7,'end'],[px-9,py+15,'end'],[px+9,py+26,'start'],[px-9,py+26,'end']],k=0;
+      while(k<op.length-1&&choca(caja(op[k][0],op[k][1],w,op[k][2]),p.n))k++;
+      if(choca(caja(op[k][0],op[k][1],w,op[k][2]),p.n))k=0;
+      placed.push(caja(op[k][0],op[k][1],w,op[k][2]));p.lx=op[k][0];p.ly=op[k][1];p.an=op[k][2]});
+    pts.forEach(function(p){var c=color(T[p.n][key],brk);g+='<circle cx="'+X(p.x)+'" cy="'+Y(p.y)+'" r="'+(p.n===sel?7:5.5)+'" fill="'+c+'" stroke="'+(p.n===sel?'#2b3045':'#fff')+'" stroke-width="1.5" data-n="'+esc(p.n)+'" style="cursor:pointer"><title>'+esc(p.n)+'</title></circle><text x="'+p.lx+'" y="'+p.ly+'" text-anchor="'+p.an+'" '+MONO+' font-size="11.5" fill="rgba(43,48,69,.8)" style="paint-order:stroke;stroke:#fff;stroke-width:3px"><title>'+esc(p.n)+'</title>'+p.abr+'</text>'});
+    g+='<text x="'+(W-pr)+'" y="'+(H-4)+'" text-anchor="end" font-size="11.5" fill="'+FAINT+'">% de la población 60+ de la CDMX →</text>';
+    g+='<text x="'+pl+'" y="'+(pt-2)+'" font-size="11.5" fill="'+FAINT+'">↑ '+(df.sh?df.shl:df.cv)+'</text>';
     $('#ch-scatter').innerHTML=g+'</svg>';
     $$('#ch-scatter circle').forEach(function(c){c.addEventListener('click',function(){sel=c.dataset.n;renderT()})});
     $('#scNote').textContent=df.sh?'Arriba de la diagonal: la alcaldía tiene más de lo que le tocaría por su población 60+.':(key==='ql_plazas'?'Línea: cociente igual a 1 (proporcional).':'Cada punto es una alcaldía.');
@@ -79,7 +83,7 @@
     $('#ext').innerHTML=[[hi,'Valor más alto'],[lo,'Valor más bajo']].map(function(e){return '<div><div class="hd"><div class="sil">'+silueta(e[0],color(T[e[0]][key],brk))+'</div><div><div class="kicker" style="margin:0 0 4px">'+e[1]+'</div><b class="num">'+fmt(T[e[0]][key],df.dig)+suf+'</b><div style="font-size:13px;margin-top:4px">'+esc(e[0])+'</div></div></div><div class="ext-fr">'+FR[key](e[0],T[e[0]])+(sd?' Entre '+nv+' alcaldías con dato.':'')+'</div></div>'}).join('');
     $('#thV').textContent=df.cv; $('#thC').textContent=df.cc;
     var rows=Object.keys(T).map(function(n){var a=T[n];return {n:n,v:a[key],c:df.c(a),p:a.pct_pob60}}).sort(function(a,b){return (b.v==null?-1e9:b.v)-(a.v==null?-1e9:a.v)});
-    $('#tterr tbody').innerHTML=rows.map(function(r){return '<tr data-n="'+esc(r.n)+'"'+(r.n===sel?' class="sel"':'')+'><td>'+esc(r.n)+'</td><td class="n">'+(r.v==null?'s/d':fmt(r.v,df.dig))+(key==='sds_pct'?'<div class="muted" style="font-size:10.5px">p10–p90: '+fmt(T[r.n].sds_p10)+'–'+fmt(T[r.n].sds_p90)+'</div>':'')+'</td><td class="n">'+(r.c==null?'s/d':ent(r.c))+'</td><td class="n">'+fmt(r.p)+'%</td></tr>'}).join('');
+    $('#tterr tbody').innerHTML=rows.map(function(r){return '<tr data-n="'+esc(r.n)+'"'+(r.n===sel?' class="sel"':'')+'><td>'+esc(r.n)+'</td><td class="n">'+(r.v==null?'s/d':fmt(r.v,df.dig))+(key==='sds_pct'?'<div class="muted" style="font-size:12px">p10–p90: '+fmt(T[r.n].sds_p10)+'–'+fmt(T[r.n].sds_p90)+'</div>':'')+'</td><td class="n">'+(r.c==null?'s/d':ent(r.c))+'</td><td class="n">'+fmt(r.p)+'%</td></tr>'}).join('');
     $$('#tterr tbody tr').forEach(function(tr){tr.addEventListener('click',function(){sel=tr.dataset.n;renderT()})});
     $('#src-terr').innerHTML=dl({Fuente:df.of,'Población 60+':'CSV por alcaldía (año no confirmado)',Advertencia:'Ningún par oferta–necesidad cumple la regla de compatibilidad; no es indicador de cobertura.',Archivo:esc(D.territorio.fuentes[df.f])});
   }

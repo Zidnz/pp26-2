@@ -1,0 +1,5 @@
+﻿bloque,horas,desenlace,con_dificultad,n_con,sin_dificultad,n_sin,dif_pp,dif_li90,dif_ls90,significativa,interpretable
+Bloque discapacidad,Menos de 40 h,"Daño a la salud (salud física, cansancio o sueño)",75.581,133,39.105,242,36.476,26.972,45.979,True,True
+Bloque discapacidad,40 h o más,"Daño a la salud (salud física, cansancio o sueño)",88.538,120,53.324,141,35.213,23.74,46.686,True,True
+Solo 60+ sin discapacidad,Menos de 40 h,"Daño a la salud (salud física, cansancio o sueño)",59.505,43,24.168,256,35.337,20.181,50.494,True,True
+Solo 60+ sin discapacidad,40 h o más,"Daño a la salud (salud física, cansancio o sueño)",82.437,17,45.843,91,36.594,15.05,58.139,True,False

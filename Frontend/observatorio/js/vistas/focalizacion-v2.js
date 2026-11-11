@@ -72,11 +72,11 @@
   var tiles=[
     ['Cobertura de la regla «40 h o más»',fmt(R.cobertura,1)+'%','de quienes tienen el daño',
       'La regla «40 h o más» encuentra al '+fmt(R.cobertura,1)+' % de las personas con el daño (IC 90 %: '+fmt(R.cob_li90,0)+' a '+fmt(R.cob_ls90,0)+').'+(hayAz?' Elegir al azar encontraría al '+fmt(AZAR,1)+' %.':''),true],
-    ['Modelo estadístico (regresión logística) contra la regla',sg(L.dif_vs_comparador_pp)+' pp','más o menos que la regla',
-      'Rango probable: de '+sg(L.dif_li90)+' a '+sg(L.dif_ls90)+' pp. '+(L.dif_li90<=0&&L.dif_ls90>=0?'Incluye el cero: no se nota diferencia.':'No incluye el cero: sí se nota diferencia.'),true],
-    ['Tarjeta de puntos contra la regla',sg(T.dif_vs_comparador_pp)+' pp','más o menos que la regla',
-      'Rango probable: de '+sg(T.dif_li90)+' a '+sg(T.dif_ls90)+' pp. La tarjeta se retiró del prototipo.',true],
-    ['La diferencia más pequeña que se nota','≈ '+fmt(DMD,1)+' pp','con esta muestra',
+    ['Modelo estadístico (regresión logística) contra la regla',sg(L.dif_vs_comparador_pp)+' puntos','más o menos que la regla',
+      'Rango probable: de '+sg(L.dif_li90)+' a '+sg(L.dif_ls90)+' puntos. '+(L.dif_li90<=0&&L.dif_ls90>=0?'Incluye el cero: no se nota diferencia.':'No incluye el cero: sí se nota diferencia.'),true],
+    ['Tarjeta de puntos contra la regla',sg(T.dif_vs_comparador_pp)+' puntos','más o menos que la regla',
+      'Rango probable: de '+sg(T.dif_li90)+' a '+sg(T.dif_ls90)+' puntos. La tarjeta se retiró del prototipo.',true],
+    ['La diferencia más pequeña que se nota','≈ '+fmt(DMD,1)+' puntos','con esta muestra',
       'Una diferencia menor que esa no se distingue de cero con esta muestra.',false]
   ];
   $('#v2Tiles').innerHTML=tiles.map(function(t){return OBS.tile({k:t[0],v:t[1],v2:t[2],fs:28,est:t[4],det:'<div class="lbl">'+t[3]+'</div>',fuente:FU})}).join('');
@@ -106,11 +106,11 @@
         +'<i class="ci" style="left:'+pos(r.cob_li90,cl,ch).toFixed(2)+'%;width:'+(pos(r.cob_ls90,cl,ch)-pos(r.cob_li90,cl,ch)).toFixed(2)+'%;--c:'+c+'"></i>'
         +'<b class="dt" style="left:'+x.toFixed(2)+'%;--c:'+c+'"'+ta(nom(r.puntaje)+': cobertura '+fmt(r.cobertura)+' % (IC 90 % '+fmt(r.cob_li90)+' a '+fmt(r.cob_ls90)+')')+'></b>'
         +'<em class="vl" style="left:'+x.toFixed(2)+'%">'+fmt(r.cobertura,1)+'%</em></div>'
-        +'<div class="tr" data-c="Diferencia contra la regla"><i class="band" style="left:'+pos(-DMD,lo,hi).toFixed(2)+'%;width:'+(pos(DMD,lo,hi)-pos(-DMD,lo,hi)).toFixed(2)+'%"'+ta('±'+fmt(DMD,1)+' pp: diferencia mínima detectable con esta muestra')+'></i>'+grid(lo,hi,5);
+        +'<div class="tr" data-c="Diferencia contra la regla"><i class="band" style="left:'+pos(-DMD,lo,hi).toFixed(2)+'%;width:'+(pos(DMD,lo,hi)-pos(-DMD,lo,hi)).toFixed(2)+'%"'+ta('±'+fmt(DMD,1)+' puntos: diferencia mínima detectable con esta muestra')+'></i>'+grid(lo,hi,5);
       if(cmp)h+='<span class="cmp">comparador</span>';
       else{var xd=pos(r.dif_vs_comparador_pp,lo,hi);
         h+='<i class="ci" style="left:'+pos(r.dif_li90,lo,hi).toFixed(2)+'%;width:'+(pos(r.dif_ls90,lo,hi)-pos(r.dif_li90,lo,hi)).toFixed(2)+'%;--c:'+c+'"></i>'
-          +'<b class="dt" style="left:'+xd.toFixed(2)+'%;--c:'+c+'"'+ta(nom(r.puntaje)+': '+sg(r.dif_vs_comparador_pp)+' pp (IC 90 % '+sg(r.dif_li90)+' a '+sg(r.dif_ls90)+')')+'></b><em class="vl" style="left:'+xd.toFixed(2)+'%">'+sg(r.dif_vs_comparador_pp)+'</em>'}
+          +'<b class="dt" style="left:'+xd.toFixed(2)+'%;--c:'+c+'"'+ta(nom(r.puntaje)+': '+sg(r.dif_vs_comparador_pp)+' puntos (IC 90 % '+sg(r.dif_li90)+' a '+sg(r.dif_ls90)+')')+'></b><em class="vl" style="left:'+xd.toFixed(2)+'%">'+sg(r.dif_vs_comparador_pp)+'</em>'}
       h+='</div></div>'});
     h+='<div class="q-r q-ax"><span></span><div class="tx">'+ticks(cl,ch,10,function(k){return k+'%'})+'</div><div class="tx">'+ticks(lo,hi,5,function(k){return (k>0?'+':'')+k})+'</div></div></div>';
     $('#ch-q1').innerHTML=h;
@@ -131,7 +131,7 @@
       h+='<div class="q-r q2r"><div class="q-l'+(i===0?' on':'')+'">'+esc(c[1])+'</div><div class="tr" style="height:'+(14+rs.length*11)+'px">'+grid(lo,hi,5);
       rs.forEach(function(r,j){var yy=50+(j-(rs.length-1)/2)*(100/(rs.length+1)),cc=COL[r.puntaje];tot++;if(r.dif_li90>0||r.dif_ls90<0)fuera++;
         h+='<i class="ci" style="left:'+pos(r.dif_li90,lo,hi).toFixed(2)+'%;width:'+(pos(r.dif_ls90,lo,hi)-pos(r.dif_li90,lo,hi)).toFixed(2)+'%;top:'+yy+'%;--c:'+cc+'"></i>'
-          +'<b class="dt sm" style="left:'+pos(r.dif_vs_comparador_pp,lo,hi).toFixed(2)+'%;top:'+yy+'%;--c:'+cc+'"'+ta(c[1]+' · '+nom(r.puntaje)+': '+sg(r.dif_vs_comparador_pp)+' pp (IC 90 % '+sg(r.dif_li90)+' a '+sg(r.dif_ls90)+')')+'></b>'});
+          +'<b class="dt sm" style="left:'+pos(r.dif_vs_comparador_pp,lo,hi).toFixed(2)+'%;top:'+yy+'%;--c:'+cc+'"'+ta(c[1]+' · '+nom(r.puntaje)+': '+sg(r.dif_vs_comparador_pp)+' puntos (IC 90 % '+sg(r.dif_li90)+' a '+sg(r.dif_ls90)+')')+'></b>'});
       h+='</div></div>'});
     h+='<div class="q-r q-ax q2r"><span></span><div class="tx">'+ticks(lo,hi,5,function(k){return (k>0?'+':'')+k})+'</div></div><div class="ax-t">Diferencia de cobertura contra el comparador (pp)</div></div>';
     $('#ch-q2').innerHTML=h;
@@ -154,14 +154,14 @@
           +'<div class="tr">'+grid(0,100,25)+'<i class="seg2" style="left:'+a.toFixed(2)+'%;width:'+(b-a).toFixed(2)+'%"></i>'
           +'<b class="dt" style="left:'+pos(r.cobertura_comparador,0,100).toFixed(2)+'%;--c:'+INK+'"'+ta('Regla: '+fmt(r.cobertura_comparador)+' %')+'></b>'
           +'<b class="dt" style="left:'+pos(r.cobertura,0,100).toFixed(2)+'%;--c:'+COL[m]+'"'+ta(nom(m)+': '+fmt(r.cobertura)+' %')+'></b></div>'
-          +'<div class="chg'+(big?' big':'')+'">'+sg(dd,0)+' pp</div></div>'})});
+          +'<div class="chg'+(big?' big':'')+'">'+sg(dd,0)+' puntos</div></div>'})});
     h+='<div class="q-r q3r q-ax"><span></span><div class="tx">'+ticks(0,100,25,function(k){return k+'%'})+'</div><span></span></div></div>';
     $('#ch-q3').innerHTML=h;
     var rl=rows.slice().sort(function(a,b){return a.cobertura_comparador-b.cobertura_comparador}),ch=rows.slice().sort(function(a,b){return a.cambio_pp-b.cambio_pp}),
         lo=rl[0],hi=rl[rl.length-1],pe=ch[0],ga=ch[ch.length-1];
     function gn(r){return lc(EQ_LBL[r.grupo]||r.grupo)}
     $('#q3Find').innerHTML='La regla cubre de <b>'+fmt(lo.cobertura_comparador,0)+' %</b> ('+esc(gn(lo))+') a <b>'+fmt(hi.cobertura_comparador,0)+' %</b> ('+esc(gn(hi))+'). '
-      +'Con '+esc(m==='Logística'?'la regresión logística':'la tarjeta')+', cada grupo cambia entre <b>'+sg(pe.cambio_pp,0)+'</b> y <b>'+sg(ga.cambio_pp,0)+' pp</b>.';
+      +'Con '+esc(m==='Logística'?'la regresión logística':'la tarjeta')+', cada grupo cambia entre <b>'+sg(pe.cambio_pp,0)+'</b> y <b>'+sg(ga.cambio_pp,0)+' puntos</b>.';
   }
   seg('#segEq','m',renderEq); renderEq('Logística');
 
@@ -201,7 +201,7 @@
   V.global.forEach(function(r){
     var cmp=r.veredicto==='comparador';
     h+='<tr><td>'+esc(r.configuracion.replace('PRIMARIO: ','Primario: '))+(r.cupo&&r.cupo!=='40.7 % (regla)'?' <span class="muted">(cupo '+esc(r.cupo)+')</span>':'')+'</td><td><b>'+nom(r.puntaje)+'</b></td><td class="n">'+fmt(r.cobertura,1)+'%</td>'
-      +'<td class="n">'+(cmp?'—':sg(r.dif_vs_comparador_pp)+' <span class="muted">('+sg(r.dif_li90)+' a '+sg(r.dif_ls90)+')</span>')+'</td><td class="n">'+(cmp?'—':fmt(r.dif_minima_detectable_pp,1)+' pp')+'</td><td>'+(cmp?'<span class="muted">comparador</span>':esc(r.veredicto))+'</td></tr>';
+      +'<td class="n">'+(cmp?'—':sg(r.dif_vs_comparador_pp)+' <span class="muted">('+sg(r.dif_li90)+' a '+sg(r.dif_ls90)+')</span>')+'</td><td class="n">'+(cmp?'—':fmt(r.dif_minima_detectable_pp,1)+' puntos')+'</td><td>'+(cmp?'<span class="muted">comparador</span>':esc(r.veredicto))+'</td></tr>';
   });
   $('#v2Tabla').innerHTML=h+'</tbody></table>';
   var b='<table><thead><tr><th>Bloque</th><th>Método</th><th class="n">Selecciona</th><th class="n">Cobertura</th><th class="n">Diferencia vs. regla (IC 90 %)</th><th>Veredicto</th></tr></thead><tbody>';

@@ -789,10 +789,10 @@
       h = `<h3>Registro</h3><p class="sub">Solo lo necesario. Sin CURP, diagnósticos ni domicilio.</p>
         <div class="eyebrow sep">Quien cuida</div>
         <div class="row-sx"><div class="chips radio">${['M', 'H'].map((v) => `<label class="chip ico"><input type="radio" name="sexo" value="${v}"${d.sexo === v ? ' checked' : ''}><span>${SX[v]}${SEXO_TXT[v]}</span></label>`).join('')}</div>
-          <input name="alias" maxlength="24" autocomplete="off" placeholder="Alias" aria-label="Alias de quien cuida" value="${esc(d.alias)}"></div>
+          <input name="alias" maxlength="24" autocomplete="off" placeholder="Alias o apodo (sin apellidos)" aria-label="Alias de quien cuida" value="${esc(d.alias)}"></div>
         <div class="eyebrow sep">Persona cuidada</div>
         <div class="row-sx"><div class="chips radio">${['M', 'H'].map((v) => `<label class="chip ico"><input type="radio" name="psexo" value="${v}"${d.psexo === v ? ' checked' : ''}><span>${SX[v]}${SEXO_TXT[v]}</span></label>`).join('')}</div>
-          <input name="palias" maxlength="24" autocomplete="off" placeholder="Alias" aria-label="Alias de la persona cuidada" value="${esc(d.palias)}"></div>
+          <input name="palias" maxlength="24" autocomplete="off" placeholder="Alias o apodo (sin apellidos)" aria-label="Alias de la persona cuidada" value="${esc(d.palias)}"></div>
         <label class="fld">Alcaldía (para asignar relevo cerca)<select name="alcaldia"><option value="">Elige…</option>${options(Object.keys(ZONAS), d.alcaldia)}</select></label>`;
     } else if (paso.id === 'consentimiento') {
       h = `<h3>Consentimiento</h3>
@@ -870,6 +870,7 @@
       if (d.canal === 'referencia' && (!d.institucion || d.quien.length < 3 || !d.presente)) return 'La referencia necesita institución, cargo de quien refiere y que la persona esté presente.';
     } else if (id === 'registro') {
       if (!d.sexo || !d.alias || !d.palias || !d.alcaldia) return 'Faltan datos del registro.';
+      if (/\d{3,}|@/.test(d.alias + ' ' + d.palias)) return 'El alias no lleva teléfono, correo ni números: usa un apodo.';   // 11 nov 2026: minimización de datos
     } else if (id === 'consentimiento') {
       if (!d.aviso || !d.expreso) return 'Sin consentimiento expreso no se puede hacer la entrevista.';
     } else if (id === 'modelo') {
@@ -1030,7 +1031,7 @@
     }
     const v = valDe(c), hz = horasDe(c);
     const r = c.estado === 'activo' && c.asignacion && relById(c.asignacion.relevoId);
-    const estado = r ? `Con relevo: <b>${esc(r.nombre)}</b>` : c.estado === 'espera' ? (hz.cola ? 'En espera: este mes no alcanzó la bolsa de horas' : 'En espera de que el programa te asigne relevo') : ESTADO[c.estado];
+    const estado = r ? `Con relevo: <b>${esc(r.nombre)}</b>` : c.estado === 'espera' ? (hz.cola ? 'En espera: este mes no alcanzó la bolsa de horas' : hz.mes === 0 ? 'Tu solicitud quedó registrada. Este mes las horas son para quien cuida 40 h o más.' : 'En espera de que el programa te asigne relevo') : ESTADO[c.estado];
     $('#mia-body').innerHTML = `<div class="card panel mia">
         <div class="mia-top"><span>Tu solicitud · ${esc(c.alcaldia)}</span><span class="mono">${esc(c.folio)}</span></div>
         <h2>${NIVEL_TXT[v.nivel]}</h2>
@@ -1090,7 +1091,7 @@
     $('.tabbar').hidden = ui.rol !== 'programa';
     $$('.tabbtn').forEach((t) => { const on = t.dataset.view === ui.view; t.classList.toggle('on', on); t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
     $('#topTitle').textContent = TITULOS[ui.view];
-    $('#topTag').textContent = ui.view === 'seguimiento' ? { prog: 'programa · simulado', hoy: 'visitas', caso: 'datos simulados', mapa: 'territorio' }[ui.segSub] : '';
+    $('#topTag').textContent = ui.view === 'seguimiento' ? { prog: 'programa · simulado', hoy: 'visitas · simulado', caso: 'datos simulados', mapa: 'territorio · simulado' }[ui.segSub] : 'datos simulados';   // 11 nov 2026: la etiqueta se ve en todos los roles
     renderAjustes();
     if (ui.view === 'mia') renderMia();
     else if (ui.view === 'yo') renderYo();

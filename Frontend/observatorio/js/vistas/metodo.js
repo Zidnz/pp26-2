@@ -120,7 +120,7 @@
       '<button type="button" class="fr-go" data-goto="'+C[i].t+'">'+C[i].b+'</button></section>'}).join('');
     cont.innerHTML='<div class="mdec-sel"><div class="mdec-tabs" role="tablist" aria-label="Decisiones que informa cada modelo">'+tabs+'<span class="mdec-ind" aria-hidden="true"></span></div>'+
       '<div class="mdec-stage"><div class="mdec-scene"><div class="mdec-tilt">'+imgs+'</div><span class="mdec-cnt" aria-hidden="true"><b>1</b>/'+O.length+'</span>'+
-      '<button type="button" class="mdec-warn" aria-label="Qué no permite afirmar" aria-expanded="false" aria-controls="mdec-pop">!</button><div class="mdec-pop" id="mdec-pop" role="region" aria-label="Qué no permite afirmar" hidden></div>'+
+      '<button type="button" class="mdec-warn" aria-label="Qué no permite afirmar" aria-expanded="false" aria-controls="mdec-pop"><b>!</b><span>Qué no permite afirmar</span></button><div class="mdec-pop" id="mdec-pop" role="region" aria-label="Qué no permite afirmar" hidden></div>'+
       '<div class="mdec-nav"><button type="button" class="mdec-ar" data-d="-1" aria-label="Decisión anterior">‹</button><button type="button" class="mdec-ar" data-d="1" aria-label="Decisión siguiente">›</button></div></div>'+
       '<div class="mdec-pw">'+panels+'</div></div></div>';
     var root=cont.querySelector('.mdec-sel'), T=[].slice.call(root.querySelectorAll('.mdec-tab')), M=[].slice.call(root.querySelectorAll('.mdec-im')), P=[].slice.call(root.querySelectorAll('.mdec-pn')),

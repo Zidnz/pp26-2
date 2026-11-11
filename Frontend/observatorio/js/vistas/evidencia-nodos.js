@@ -79,14 +79,14 @@
     rows.forEach(function(r){var p=P[r.puntaje];
       nodes.push({id:r.puntaje,x:p[0],y:p[1],r:rad(r.cobertura),c:COLP[r.puntaje],v:fmt(r.cobertura,1)+'%',label:nomT(r.puntaje),sub:r.veredicto==='comparador'?'comparador':'modelo',lab:'below',halo:[rad(r.cob_li90),rad(r.cob_ls90)],aria:nomT(r.puntaje)});
       edges.push({a:'obj',b:r.puntaje,c:COLP[r.puntaje],w:1.4+r.cobertura/22});
-      if(r.veredicto!=='comparador')edges.push({a:'Regla >= 40 h',b:r.puntaje,c:cero(r)?C.gris:C.sube,dash:true,flow:false,curve:r.puntaje==='Logística'?-16:16,label:sg(r.dif_vs_comparador_pp)+' pp'});
+      if(r.veredicto!=='comparador')edges.push({a:'Regla >= 40 h',b:r.puntaje,c:cero(r)?C.gris:C.sube,dash:true,flow:false,curve:r.puntaje==='Logística'?-16:16,label:sg(r.dif_vs_comparador_pp)+' puntos'});
     });
     if(hayAz){nodes.push({id:'azar',x:745,y:112,r:rad(AZAR),c:C.azar,v:fmt(AZAR,1)+'%',label:'Elegir al azar',sub:'misma fracción de personas',lab:'below'});edges.push({a:'obj',b:'azar',c:C.azar,dash:true,w:1.4})}
     function info(id){
       if(id==='obj')return {av:'◎',c:C.obj,name:'Objetivo',small:'Lo que se busca encontrar',tag:['','Daño a la salud'],rows:[['Personas en la muestra',pl(g[0].n_muestra)],['Con el daño',pl(g[0].n_con_objetivo)],['Qué incluye','salud física, cansancio o sueño']],nota:'Solo con datos nacionales (ENASIC 2022): no permite concluir por alcaldía.'};
       if(id==='azar')return {av:'?',c:C.azar,name:'Elegir al azar',small:'Línea de referencia',tag:['alerta','Referencia'],rows:[['Encontraría a',pl(fmt(AZAR,1)+' %')+' <small>de quienes tienen el daño</small>']],nota:'Es lo que lograría elegir al azar a la misma fracción de personas que la regla.'};
       var r=pick(id),cmp=r.veredicto==='comparador',rr=[['Encuentra a',pl(fmt(r.cobertura,1)+' %')+' <small>de quienes tienen el daño</small>'],['Rango probable (IC 90 %)',pl(fmt(r.cob_li90,0)+' a '+fmt(r.cob_ls90,0)+' %')]];
-      if(!cmp){rr.push(['Contra la regla',pl(sg(r.dif_vs_comparador_pp)+' pp')]);rr.push(['Rango probable',pl(sg(r.dif_li90)+' a '+sg(r.dif_ls90)+' pp')]);rr.push(['Lectura',cero(r)?'Incluye el cero: no se nota diferencia':'No incluye el cero: sí se nota diferencia'])}
+      if(!cmp){rr.push(['Contra la regla',pl(sg(r.dif_vs_comparador_pp)+' puntos')]);rr.push(['Rango probable',pl(sg(r.dif_li90)+' a '+sg(r.dif_ls90)+' puntos')]);rr.push(['Lectura',cero(r)?'Incluye el cero: no se nota diferencia':'No incluye el cero: sí se nota diferencia'])}
       return {av:r.puntaje.charAt(0),c:COLP[id],name:nomT(id),small:cmp?'Regla actual':'Modelo estadístico',tag:cmp?['','Comparador']:cero(r)?['ok','Sin diferencia notable']:['alerta','Se separa de la regla'],rows:rr,nota:id==='Tarjeta de puntos'?'La tarjeta se retiró del prototipo.':(cmp?'Todo se compara contra esta regla.':'')};
     }
     return {G:{nodes:nodes,edges:edges},info:info,sel0:'Regla >= 40 h',find:q('q1Find'),
@@ -107,7 +107,7 @@
       if(id==='reg')return {av:'40',c:C.regla,name:'Regla de 40 horas',small:'Comparador en todas las configuraciones',tag:['','Comparador'],rows:[['Comparaciones',pl(data.length)+' <small>modelo contra regla</small>']],nota:'Cada nodo es una forma de cambiar los supuestos. El número dentro: modelos que se separan de la regla / modelos comparados.'};
       var o=RS[id];
       return {av:String(o.fuera)+'/'+o.rs.length,c:o.fuera?C.sube:C.obj,name:o.nom,small:'Configuración',tag:o.fuera?['alerta','Alguno se separa']:['ok','Ninguno se separa'],
-        rows:o.rs.map(function(r){return [esc(nomT(r.puntaje)),pl(sg(r.dif_vs_comparador_pp)+' pp')+' <small>('+sg(r.dif_li90)+' a '+sg(r.dif_ls90)+')</small>']}),nota:'Diferencia de cobertura contra la regla, con rango probable (IC 90 %).'};
+        rows:o.rs.map(function(r){return [esc(nomT(r.puntaje)),pl(sg(r.dif_vs_comparador_pp)+' puntos')+' <small>('+sg(r.dif_li90)+' a '+sg(r.dif_ls90)+')</small>']}),nota:'Diferencia de cobertura contra la regla, con rango probable (IC 90 %).'};
     }
     return {G:{nodes:nodes,edges:edges},info:info,sel0:'reg',find:q('q2Find'),
       leg:'<span><i class="o" style="--c:'+C.obj+'"></i>Ningún modelo se distingue de la regla</span><span><i class="o" style="--c:'+C.sube+'"></i>Al menos uno se distingue</span>'};
@@ -128,12 +128,12 @@
       if(id==='ctr')return {av:m.charAt(0),c:COLP[m],name:nomT(m),small:'Método elegido',tag:['','Todos los grupos'],rows:[['Encuentra a',pl(fmt(P.cobertura,1)+' %')],['La regla encuentra a',pl(fmt(R.cobertura,1)+' %')]],nota:'Cada nodo es un grupo. El número dentro es el cambio, en puntos, frente a la regla; el tamaño es cuántas personas con el daño hay en el grupo.'};
       var r=list[+id.slice(1)],big=Math.abs(r.cambio_pp)>=10,poco=r.n_con_objetivo<100;
       return {av:(EQ_LBL[r.grupo]||r.grupo).charAt(0),c:big?C.sube:C.neu,name:EQ_LBL[r.grupo]||r.grupo,small:(EQ_DIM.filter(function(d){return d[0]===r.dimension})[0]||[0,r.dimension])[1],tag:big?['alerta','Cambio grande']:['ok','Cambio pequeño'],
-        rows:[['La regla encuentra a',pl(fmt(r.cobertura_comparador,1)+' %')],[esc(nomT(m))+' encuentra a',pl(fmt(r.cobertura,1)+' %')],['Cambio',pl(sg(r.cambio_pp,0)+' pp')],['Personas con el daño',pl(r.n_con_objetivo)]],
+        rows:[['La regla encuentra a',pl(fmt(r.cobertura_comparador,1)+' %')],[esc(nomT(m))+' encuentra a',pl(fmt(r.cobertura,1)+' %')],['Cambio',pl(sg(r.cambio_pp,0)+' puntos')],['Personas con el daño',pl(r.n_con_objetivo)]],
         nota:(poco?'Menos de 100 casos: léelo como orientación, no como cifra firme. ':'')+(big?'Cambio de 10 puntos o más. ':'')+'Sin intervalos.'};
     }
     var rl=rows.slice().sort(function(a,b){return a.cobertura_comparador-b.cobertura_comparador}),ch=rows.slice().sort(function(a,b){return a.cambio_pp-b.cambio_pp}),lo=rl[0],hi=rl[rl.length-1],pe=ch[0],ga=ch[ch.length-1];
     function gn(r){return lc(EQ_LBL[r.grupo]||r.grupo)}
-    var find='La regla cubre de <b>'+fmt(lo.cobertura_comparador,0)+' %</b> ('+esc(gn(lo))+') a <b>'+fmt(hi.cobertura_comparador,0)+' %</b> ('+esc(gn(hi))+'). Con '+esc(m==='Logística'?'la regresión logística':'la tarjeta')+', cada grupo cambia entre <b>'+sg(pe.cambio_pp,0)+'</b> y <b>'+sg(ga.cambio_pp,0)+' pp</b>.';
+    var find='La regla cubre de <b>'+fmt(lo.cobertura_comparador,0)+' %</b> ('+esc(gn(lo))+') a <b>'+fmt(hi.cobertura_comparador,0)+' %</b> ('+esc(gn(hi))+'). Con '+esc(m==='Logística'?'la regresión logística':'la tarjeta')+', cada grupo cambia entre <b>'+sg(pe.cambio_pp,0)+'</b> y <b>'+sg(ga.cambio_pp,0)+' puntos</b>.';
     return {G:{nodes:nodes,edges:edges},info:info,sel0:'ctr',find:find,
       ctrl:'<div class="ev-seg"><button type="button" data-m="Logística" aria-pressed="'+(m==='Logística')+'">Regresión logística</button><button type="button" data-m="Tarjeta de puntos" aria-pressed="'+(m==='Tarjeta de puntos')+'">Tarjeta de puntos</button></div>',
       leg:'<span><i class="o" style="--c:'+C.sube+'"></i>Cambio de 10 puntos o más</span><span><i class="o" style="--c:'+C.neu+'"></i>Cambio menor</span><span>Tamaño = personas con el daño · atenuado: menos de 100 casos</span>'};
@@ -180,9 +180,9 @@
   var TABS=[['¿Quién encuentra más?',vista1],['¿Cambia con otros supuestos?',vista2],['¿A quién deja fuera?',vista3],['¿Por qué 40 horas?',vista4],['¿Qué pesa en la fila?',vista5]];
   var tiles=[
     ['Cobertura de la regla «40 h o más»',fmt(R.cobertura,1)+'%','de quienes tienen el daño (IC 90 %: '+fmt(R.cob_li90,0)+' a '+fmt(R.cob_ls90,0)+')',C.regla],
-    ['Regresión logística contra la regla',sg(L.dif_vs_comparador_pp)+' pp','Rango probable: '+sg(L.dif_li90)+' a '+sg(L.dif_ls90)+(cero(L)?'. Incluye el cero.':'. No incluye el cero.'),C.log],
-    ['Tarjeta de puntos contra la regla',sg(T.dif_vs_comparador_pp)+' pp','Rango probable: '+sg(T.dif_li90)+' a '+sg(T.dif_ls90)+(cero(T)?'. Incluye el cero.':'. No incluye el cero.'),C.tar],
-    ['La diferencia más pequeña que se nota','≈ '+fmt(DMD,1)+' pp','con esta muestra',C.obj]];
+    ['Regresión logística contra la regla',sg(L.dif_vs_comparador_pp)+' puntos','Rango probable: '+sg(L.dif_li90)+' a '+sg(L.dif_ls90)+(cero(L)?'. Incluye el cero.':'. No incluye el cero.'),C.log],
+    ['Tarjeta de puntos contra la regla',sg(T.dif_vs_comparador_pp)+' puntos','Rango probable: '+sg(T.dif_li90)+' a '+sg(T.dif_ls90)+(cero(T)?'. Incluye el cero.':'. No incluye el cero.'),C.tar],
+    ['La diferencia más pequeña que se nota','≈ '+fmt(DMD,1)+' puntos','con esta muestra',C.obj]];
   var pills=[].map.call(document.querySelectorAll('#v2Pills .fz-pill'),function(el){return '<span class="ev-pill'+(el.classList.contains('amb')?' amb':el.classList.contains('rojo')?' rojo':'')+'">'+el.innerHTML+'</span>'}).join('');
   host.innerHTML=
     '<div class="ev-head"><div class="ev-kick">Evidencia del modelo · mapa de nodos</div><h3>¿Un modelo estadístico ordena mejor que la regla de 40 horas?</h3>'+

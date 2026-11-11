@@ -1,0 +1,29 @@
+﻿dimension,segmento,clave,indicador,grupo,pct,cv,li90,ls90,n_muestra_dominio,n_muestra_si,total_expandido,precision,dif_pp,dif_li90,dif_ls90,dif_significativa
+Total,Total,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,48.73,4.85,44.85,52.62,1043,495,3033040.0,alta,,,,
+Total,Total,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,43.76,6.55,39.05,48.48,556,239,1311622.0,alta,,,,
+Sexo,Mujer,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,55.4,4.74,51.09,59.72,710,388,2371583.0,alta,21.36,13.33,29.4,True
+Sexo,Mujer,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,48.56,7.0,42.97,54.15,372,185,959803.0,alta,14.09,4.77,23.41,True
+Sexo,Hombre,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,34.04,13.01,26.76,41.32,333,107,661457.0,alta,-21.36,-29.4,-13.33,True
+Sexo,Hombre,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,34.47,13.83,26.62,42.31,184,54,351819.0,alta,-14.09,-23.41,-4.77,True
+Edad,15-39,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,41.67,8.03,36.16,47.18,310,130,719773.0,alta,-9.78,-17.11,-2.45,True
+Edad,15-39,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,45.23,10.79,37.21,53.26,165,75,394699.0,alta,2.08,-7.73,11.89,False
+Edad,40-59,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,51.59,6.26,46.28,56.9,385,202,1068537.0,alta,4.28,-3.72,12.28,False
+Edad,40-59,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,42.58,9.55,35.89,49.27,204,92,463640.0,alta,-1.86,-10.62,6.9,False
+Edad,60+,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,51.33,10.16,42.75,59.91,348,163,1244730.0,alta,4.25,-5.46,13.96,False
+Edad,60+,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,43.76,12.37,34.86,52.67,187,72,453283.0,alta,0.01,-9.99,10.0,False
+Ingreso,Q1-Q2,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,49.43,6.35,44.26,54.59,321,155,827554.0,alta,1.94,-4.89,8.76,False
+Ingreso,Q1-Q2,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,47.59,9.23,40.37,54.81,178,77,437963.0,alta,8.1,-1.91,18.11,False
+Ingreso,Q3,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,51.09,10.12,42.58,59.59,179,90,502855.0,alta,3.67,-8.08,15.42,False
+Ingreso,Q3,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,45.81,13.23,35.85,55.78,93,46,238157.0,alta,4.15,-7.63,15.92,False
+Ingreso,Q4-Q5,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,46.06,10.67,37.98,54.14,359,165,1140679.0,alta,-3.98,-13.46,5.5,False
+Ingreso,Q4-Q5,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,36.18,14.56,27.52,44.85,174,67,359465.0,alta,-10.77,-20.89,-0.65,True
+A quién cuida,Cuida discapacidad,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,58.91,4.76,54.3,63.53,636,362,2069820.0,alta,23.38,13.28,33.47,True
+A quién cuida,Cuida discapacidad,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,54.23,7.11,47.88,60.57,305,160,892809.0,alta,23.23,13.55,32.9,True
+A quién cuida,Solo 60+ sin discapacidad,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,35.54,13.15,27.85,43.22,407,133,963220.0,alta,-23.38,-33.47,-13.28,True
+A quién cuida,Solo 60+ sin discapacidad,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,31.0,13.25,24.25,37.76,251,79,418813.0,alta,-23.23,-32.9,-13.55,True
+Intensidad,<20 h,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,35.77,9.88,29.96,41.58,374,139,703907.0,alta,-18.96,-27.02,-10.9,True
+Intensidad,<20 h,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,30.26,15.17,22.71,37.81,209,69,310179.0,moderada,-20.52,-30.41,-10.63,True
+Intensidad,20-39 h,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,45.75,9.48,38.61,52.88,300,133,787371.0,alta,-4.13,-11.77,3.52,False
+Intensidad,20-39 h,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,41.39,12.25,33.05,49.74,162,63,360862.0,alta,-3.34,-14.14,7.46,False
+Intensidad,>=40 h,dano_s3,"Declara daño a su salud (salud física, cansancio o sueño)",carga,60.83,6.52,54.31,67.35,369,223,1541762.0,alta,20.41,13.38,27.44,True
+Intensidad,>=40 h,dano_s3_sinnec,"Declara daño a su salud, entre quienes dicen ""no tuve necesidad""",carga,58.21,8.75,49.84,66.59,185,107,640581.0,alta,22.84,12.78,32.89,True
