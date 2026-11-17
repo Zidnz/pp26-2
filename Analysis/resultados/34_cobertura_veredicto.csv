@@ -1,0 +1,9 @@
+﻿criterio,valor,umbral,cumple,lectura
+"Primario (R = 1 km, k = 5): ganancia del óptimo exacto sobre la mejor regla simple, %",70.17443445080403,>= 10,True,
+Combinaciones de sensibilidad (de 9) con ganancia >= 10 %,9.0,>= 7,True,
+"Ganancia mínima en las 9 combinaciones, %",31.18140262533917,descriptivo,,
+"Ganancia máxima en las 9 combinaciones, %",70.17443445080403,descriptivo,,
+"Distancia máxima del voraz al exacto en las 9 combinaciones, %",2.89830590279454,< 1,False,
+"Zonas en común entre el óptimo para 60+ y el óptimo para discapacidad (primario, de 5)",2.0,descriptivo,,
+"Personas de 60+ que cubre el óptimo para discapacidad, como % del óptimo para 60+ (primario)",97.14111824719318,descriptivo,,
+VEREDICTO,,regla del 11 nov 2026,True,la optimización aporta frente a la regla simple; el voraz no alcanza al exacto en todas: se usa el exacto

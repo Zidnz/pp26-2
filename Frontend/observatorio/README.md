@@ -265,3 +265,7 @@ La ficha «Lectura, fuente y precisión» de las tarjetas ya no es un plegable: 
 - Se probaron dos variantes en el mismo archivo (a: sin mapa; b: embudo de barras) y Omar eligió la a; las ramas del mapa y de las barras se borraron de `js/vistas/inicio-seleccion.js` y `css/vistas.css`. Ninguna cifra cambió. Respaldo: `_to_delete/backup_pre_variantes_embudo_2026-11-11/`.
 - Verificado en Chromium a 1600 px sin errores de JS. A 390 px carga, pero la ficha queda apretada (el chip del IC se corta); pendiente.
 - Pendiente, sin corregir: el IC de la etapa 05 (9.8–15.1 %) es del grupo anterior (`grupo_problema`); el de `grupo_problema_salud3` es 7.9–12.7 %. El rótulo «DAÑO EN EL TRABAJO» de la figura ya no corresponde a la definición (solo salud).
+
+## Cambio del 11 nov 2026: fondo de página con la red (en prueba)
+- El fondo liso `--paper` de la página pasa a llevar la red de nodos y el degradado lavanda/verde agua del mapa de nodos de evidencia. Es una sola regla, `body::before` en `css/base.css`, fija detrás de todo; no entra en tarjetas ni gráficas. `--paper` sigue siendo el color base. También aplica a `evidencia_modelo.html`, que usa el mismo `base.css`.
+- Visto en Chromium a 1600 px (Inicio, ¿Quién lo carga?, ¿A quién primero?, ¿Dónde?) sin errores de JS. Observado: las líneas pasan por detrás de los avisos translúcidos y de los textos sueltos sobre el fondo («Cómo leer esta pestaña», «Fuente y método»). Pendiente de decisión de Omar. Para revertir: borrar la regla `body::before`. Respaldo: `_to_delete/backup_pre_fondo_red_2026-11-11/`.

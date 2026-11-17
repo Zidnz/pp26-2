@@ -2568,3 +2568,42 @@ Sin revisión de otra persona. Revisor: _[pendiente]_.
 **Qué NO cambia ni afirma.** La medida amplia sigue como opción en clases latentes y en el grupo del problema filtrado por segmento. Nacional; nada sobre la CDMX. Asociaciones, no causas. Sin doble revisión.
 
 **RedCare** (`Frontend/js/app.js`). (1) Quien queda fuera de la regla ya no ve «En espera de que el programa te asigne relevo» con 0 h: ve que su solicitud quedó registrada. (2) La etiqueta «datos simulados» aparece en los tres roles, no solo en Programa. (3) El alias rechaza teléfonos, correos y números (minimización de datos). La prueba `tests/prueba_asignacion.js` pasa.
+
+## 11 nov 2026 (10:48, hora CDMX) — Registro previo: optimización de cobertura para «¿En qué orden las zonas?» (script 34)
+
+**Pedido de Omar.** El modelo de focalización (v2) no aporta frente a la regla de 40 h. Pidió definir «la opción óptima», hacer el análisis completo y cambiar lo necesario en «¿A quién primero?». **Decide el problema y ejecuta:** Claude, por encargo. **Sin revisión de otra persona.** Revisor: _[pendiente]_.
+
+**Por qué este problema y no otro modelo sobre la ENASIC.** La decisión 2 (a quién) ya tiene resultado preregistrado y se queda la regla; abrir otro objetivo u otros predictores sobre los mismos 1,043 casos sería buscar hasta encontrar. La decisión 3 (en qué orden las zonas) hoy es una regla sin pesos por alcaldía (script 24) y se declaró «sin modelo» porque no hay variable de resultado. Un problema de optimización no necesita variable de resultado: dada una función objetivo declarada, se puede comprobar si una selección de zonas cubre a más personas que otra. Usa conteos censales por AGEB (sin error de muestreo). Cabe en la UCA (optimización).
+
+**Límite honesto.** No es un preregistro limpio: ya se conocen los resultados de los scripts 18, 24 y 25 (qué alcaldías concentran la brecha). Lo que se fija aquí, antes de calcular ninguna cobertura, es el problema, los parámetros, las alternativas simples y la regla de decisión.
+
+**Problema (cobertura máxima).** Elegir k zonas de arranque. Una zona es un círculo de radio R con centro en el centroide de una AGEB urbana de la CDMX (2,371 candidatas, `18_tipologia_ageb.csv`). Demanda: personas de 60+ de las AGEB cuyo centroide está a más de R km del establecimiento núcleo más cercano (`18_oferta_nucleo_puntos.csv`, DENUE 05/2026); es la misma idea de «a más de 1 km de la oferta» del notebook D. Una AGEB queda cubierta si su centroide cae dentro de alguna zona elegida. Objetivo: máximo de personas de 60+ cubiertas.
+
+**Parámetros.** Primario: R = 1 km, k = 5. Sensibilidad: R ∈ {0.75, 1, 1.5} × k ∈ {3, 5, 10} (9 combinaciones) y demanda alternativa = personas con discapacidad (`n_disc`). Curva k = 1 a 10 con R = 1 km, solo descriptiva.
+
+**Métodos.** A0 azar (media de 500 sorteos, semilla 20261111). A1 regla simple: las k AGEB sin oferta cerca con más personas de 60+. A2 seguir la tabla del script 24: en cada una de las primeras k alcaldías del orden de presentación, la AGEB sin oferta cerca con más personas de 60+. M1 voraz (en cada paso, la zona que más personas nuevas cubre). M2 óptimo exacto (programación entera, HiGHS).
+
+**Regla de decisión (fijada antes de correr).**
+- La optimización **aporta** si M2 cubre al menos 10 % más personas que la mejor de A1 y A2 en el primario, **y** en al menos 7 de las 9 combinaciones de sensibilidad.
+- Si no, el resultado es «la regla simple basta para elegir zonas» y así se publica.
+- Si M1 queda a menos de 1 % de M2 en las 9 combinaciones, se recomienda M1 (se explica sin programa de optimización) y M2 queda como certificado.
+- M2 no puede perder contra A1 por construcción: la pregunta es por cuánto gana, no si gana.
+
+**Control antes de escribir.** Los centroides se calculan de `18_tipologia_contornos.geojson` (simplificado a 15 m). El script reproduce `dist_oferta_km` del notebook D; si la diferencia mediana supera 20 m o el máximo 100 m, no escribe resultados.
+
+**Qué NO podrá afirmar, salga lo que salga.** Que estar lejos de un asilo o centro de día equivalga a necesitar relevo en casa (es un indicador aproximado de oferta formal cercana); que el radio de una zona de relevo sea 1 km (es un supuesto, no una medición); acceso real (línea recta, sin transporte, precio ni cupo); nada sobre personas cuidadoras (la ENASIC no tiene AGEB); nada posterior a marzo de 2020 en la demanda.
+
+## 17 nov 2026 (10:20, hora CDMX) — Limpieza del repositorio al cambiar de computadora
+
+**Decisión de Omar.** Se retiran del repositorio `PowerBI/` y `Observatorio_streamlit/` («se quedan fuera»), además de `Frontend/_publicar_web/` (copia desfasada del Observatorio, ya ignorada desde el 11 nov), `Fotos/observatorio/` (8 imágenes idénticas byte a byte a las de `Frontend/observatorio/ilustraciones/`) y `scripts/` (`app.py` apuntaba a una carpeta `ERP/` inexistente; el parche del comparador ya se había aplicado el 7 oct). También se quitan `focalizacion.js`, `focalizacion-ampliado.js` e `inicio-3d.js`, que ninguna página carga. Todo sigue en el historial de git.
+
+**Se sube en el mismo commit** el script 34 (`Analysis/34_cobertura_zonas.py`) con sus 6 resultados `34_cobertura_*`, el fondo de red de `base.css` y la nota del README del Observatorio (11 nov), que estaban en la carpeta sin commit.
+
+**Consecuencias que quedan abiertas (no se resuelven aquí).**
+- Inteligencia de Negocios pide aplicar mínimo dos herramientas de IN (40 % de la calificación). Con Power BI y Streamlit fuera, falta decir cuáles son las dos.
+- La vista de Indicadores del Observatorio cita medidas DAX «copiadas de `PowerBI/generar_pbip.py`»: ese archivo ya no está en la rama.
+- `DW/docs/etl_especificacion.md` cita `Observatorio_streamlit/tests/test_dw_modelos.py` como la prueba de reconciliación de los marts; esa prueba ya no está en la rama.
+- El script 34 tiene registro previo (11 nov, 10:48) y resultados en `resultados/`, pero la bitácora no tiene todavía la entrada de resultado.
+- `README.md` raíz todavía menciona `scripts/`, `Fotos/` y `Observatorio_streamlit/`.
+
+**No se retiran** `.gitattributes` ni `requirements.txt`, aunque estaban en `_borrados.txt`: el primero evita diffs falsos por finales de línea entre Windows y Linux, y el segundo es el único registro de `scikit-learn==1.7.2`, la versión con la que se reprodujo el modelo.

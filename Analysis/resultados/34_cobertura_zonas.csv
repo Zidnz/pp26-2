@@ -1,0 +1,581 @@
+﻿rol,demanda,R_km,k,demanda_total,ageb_con_demanda,metodo,orden,CVEGEO_centro,alcaldia,tipo,tipo_nombre,personas_en_la_zona,personas_que_agrega,ageb_con_demanda_en_la_zona,dist_oferta_km_del_centro
+sensibilidad,n_60,0.75,3,860224.0,1387,A1 regla simple: las k AGEB con más personas,1,0900300011162,Coyoacán,2,Consolidada de transición,8686.0,8686.0,6,1.352481416534295
+sensibilidad,n_60,0.75,3,860224.0,1387,A1 regla simple: las k AGEB con más personas,2,0901600011349,Miguel Hidalgo,2,Consolidada de transición,6854.0,6854.0,5,0.9961997391813948
+sensibilidad,n_60,0.75,3,860224.0,1387,A1 regla simple: las k AGEB con más personas,3,0901200012121,Tlalpan,2,Consolidada de transición,2977.0,2977.0,3,1.2604923989539545
+sensibilidad,n_60,0.75,3,860224.0,1387,A2 seguir la tabla del script 24,1,0900600010310,Iztacalco,2,Consolidada de transición,6275.0,6275.0,7,2.144659395528131
+sensibilidad,n_60,0.75,3,860224.0,1387,A2 seguir la tabla del script 24,2,0900200010186,Azcapotzalco,2,Consolidada de transición,5637.0,5637.0,7,2.4468423604195317
+sensibilidad,n_60,0.75,3,860224.0,1387,A2 seguir la tabla del script 24,3,0901500010574,Cuauhtémoc,2,Consolidada de transición,5261.0,5261.0,4,0.9687021655483437
+sensibilidad,n_60,0.75,3,860224.0,1387,M1 voraz,1,0901500010273,Cuauhtémoc,3,Envejecida de escolaridad media-alta,9461.0,9461.0,24,1.6745473462464096
+sensibilidad,n_60,0.75,3,860224.0,1387,M1 voraz,2,0900300010624,Coyoacán,1,Periferia joven con carencias,9390.0,9390.0,6,1.5700277564162024
+sensibilidad,n_60,0.75,3,860224.0,1387,M1 voraz,3,0901000012165,Álvaro Obregón,2,Consolidada de transición,9326.0,9326.0,14,1.725950876459427
+sensibilidad,n_60,0.75,3,860224.0,1387,M2 óptimo exacto,1,0901500010273,Cuauhtémoc,3,Envejecida de escolaridad media-alta,9461.0,9461.0,24,1.6745473462464096
+sensibilidad,n_60,0.75,3,860224.0,1387,M2 óptimo exacto,2,0900300010624,Coyoacán,1,Periferia joven con carencias,9390.0,9390.0,6,1.5700277564162024
+sensibilidad,n_60,0.75,3,860224.0,1387,M2 óptimo exacto,3,0901000012165,Álvaro Obregón,2,Consolidada de transición,9326.0,9326.0,14,1.725950876459427
+sensibilidad,n_60,0.75,5,860224.0,1387,A1 regla simple: las k AGEB con más personas,1,0900300011162,Coyoacán,2,Consolidada de transición,8686.0,8686.0,6,1.352481416534295
+sensibilidad,n_60,0.75,5,860224.0,1387,A1 regla simple: las k AGEB con más personas,2,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,7496.0,7496.0,6,2.092456884572827
+sensibilidad,n_60,0.75,5,860224.0,1387,A1 regla simple: las k AGEB con más personas,3,0901600011349,Miguel Hidalgo,2,Consolidada de transición,6854.0,6854.0,5,0.9961997391813948
+sensibilidad,n_60,0.75,5,860224.0,1387,A1 regla simple: las k AGEB con más personas,4,0901600010444,Miguel Hidalgo,4,Central de alta escolaridad,3140.0,3140.0,3,0.8633531632455935
+sensibilidad,n_60,0.75,5,860224.0,1387,A1 regla simple: las k AGEB con más personas,5,0901200012121,Tlalpan,2,Consolidada de transición,2977.0,2977.0,3,1.2604923989539545
+sensibilidad,n_60,0.75,5,860224.0,1387,A2 seguir la tabla del script 24,1,0900600010310,Iztacalco,2,Consolidada de transición,6275.0,6275.0,7,2.144659395528131
+sensibilidad,n_60,0.75,5,860224.0,1387,A2 seguir la tabla del script 24,2,0900200010186,Azcapotzalco,2,Consolidada de transición,5637.0,5637.0,7,2.4468423604195317
+sensibilidad,n_60,0.75,5,860224.0,1387,A2 seguir la tabla del script 24,3,0901500010574,Cuauhtémoc,2,Consolidada de transición,5261.0,5261.0,4,0.9687021655483437
+sensibilidad,n_60,0.75,5,860224.0,1387,A2 seguir la tabla del script 24,4,0900700010036,Iztapalapa,2,Consolidada de transición,3964.0,3964.0,4,0.8574302659908853
+sensibilidad,n_60,0.75,5,860224.0,1387,A2 seguir la tabla del script 24,5,0900400010195,Cuajimalpa de Morelos,2,Consolidada de transición,2623.0,2623.0,2,0.7891729000029949
+sensibilidad,n_60,0.75,5,860224.0,1387,M1 voraz,1,0901500010273,Cuauhtémoc,3,Envejecida de escolaridad media-alta,9461.0,9461.0,24,1.6745473462464096
+sensibilidad,n_60,0.75,5,860224.0,1387,M1 voraz,2,0900300010624,Coyoacán,1,Periferia joven con carencias,9390.0,9390.0,6,1.5700277564162024
+sensibilidad,n_60,0.75,5,860224.0,1387,M1 voraz,3,0901000012165,Álvaro Obregón,2,Consolidada de transición,9326.0,9326.0,14,1.725950876459427
+sensibilidad,n_60,0.75,5,860224.0,1387,M1 voraz,4,0901500011233,Cuauhtémoc,2,Consolidada de transición,8597.0,8597.0,8,1.6725867869811182
+sensibilidad,n_60,0.75,5,860224.0,1387,M1 voraz,5,0901600010270,Miguel Hidalgo,2,Consolidada de transición,8310.0,8310.0,6,1.1540913883882749
+sensibilidad,n_60,0.75,5,860224.0,1387,M2 óptimo exacto,1,0901500010273,Cuauhtémoc,3,Envejecida de escolaridad media-alta,9461.0,9461.0,24,1.6745473462464096
+sensibilidad,n_60,0.75,5,860224.0,1387,M2 óptimo exacto,2,0900300010624,Coyoacán,1,Periferia joven con carencias,9390.0,9390.0,6,1.5700277564162024
+sensibilidad,n_60,0.75,5,860224.0,1387,M2 óptimo exacto,3,0901000012165,Álvaro Obregón,2,Consolidada de transición,9326.0,9326.0,14,1.725950876459427
+sensibilidad,n_60,0.75,5,860224.0,1387,M2 óptimo exacto,4,0901500011233,Cuauhtémoc,2,Consolidada de transición,8597.0,8597.0,8,1.6725867869811182
+sensibilidad,n_60,0.75,5,860224.0,1387,M2 óptimo exacto,5,0901600010270,Miguel Hidalgo,2,Consolidada de transición,8310.0,8310.0,6,1.1540913883882749
+sensibilidad,n_60,0.75,10,860224.0,1387,A1 regla simple: las k AGEB con más personas,1,0900300011162,Coyoacán,2,Consolidada de transición,8686.0,8686.0,6,1.352481416534295
+sensibilidad,n_60,0.75,10,860224.0,1387,A1 regla simple: las k AGEB con más personas,2,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,7496.0,7496.0,6,2.092456884572827
+sensibilidad,n_60,0.75,10,860224.0,1387,A1 regla simple: las k AGEB con más personas,3,0901600010393,Miguel Hidalgo,4,Central de alta escolaridad,6862.0,6862.0,5,1.5246488529322146
+sensibilidad,n_60,0.75,10,860224.0,1387,A1 regla simple: las k AGEB con más personas,4,0901600011349,Miguel Hidalgo,2,Consolidada de transición,6854.0,509.0,5,0.9961997391813948
+sensibilidad,n_60,0.75,10,860224.0,1387,A1 regla simple: las k AGEB con más personas,5,0901500010574,Cuauhtémoc,2,Consolidada de transición,5261.0,5261.0,4,0.9687021655483437
+sensibilidad,n_60,0.75,10,860224.0,1387,A1 regla simple: las k AGEB con más personas,6,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,4491.0,4491.0,4,1.2292008831248242
+sensibilidad,n_60,0.75,10,860224.0,1387,A1 regla simple: las k AGEB con más personas,7,0901500010678,Cuauhtémoc,4,Central de alta escolaridad,4355.0,4355.0,4,0.8629619478640886
+sensibilidad,n_60,0.75,10,860224.0,1387,A1 regla simple: las k AGEB con más personas,8,0901200011072,Tlalpan,2,Consolidada de transición,3694.0,3694.0,5,1.3390402110280546
+sensibilidad,n_60,0.75,10,860224.0,1387,A1 regla simple: las k AGEB con más personas,9,0901600010444,Miguel Hidalgo,4,Central de alta escolaridad,3140.0,3140.0,3,0.8633531632455935
+sensibilidad,n_60,0.75,10,860224.0,1387,A1 regla simple: las k AGEB con más personas,10,0901200012121,Tlalpan,2,Consolidada de transición,2977.0,2977.0,3,1.2604923989539545
+sensibilidad,n_60,0.75,10,860224.0,1387,A2 seguir la tabla del script 24,1,0900300011162,Coyoacán,2,Consolidada de transición,8686.0,8686.0,6,1.352481416534295
+sensibilidad,n_60,0.75,10,860224.0,1387,A2 seguir la tabla del script 24,2,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,7496.0,7496.0,6,2.092456884572827
+sensibilidad,n_60,0.75,10,860224.0,1387,A2 seguir la tabla del script 24,3,0901000010563,Álvaro Obregón,2,Consolidada de transición,6794.0,6794.0,9,1.9986195004345004
+sensibilidad,n_60,0.75,10,860224.0,1387,A2 seguir la tabla del script 24,4,0900600010310,Iztacalco,2,Consolidada de transición,6275.0,6275.0,7,2.144659395528131
+sensibilidad,n_60,0.75,10,860224.0,1387,A2 seguir la tabla del script 24,5,0900200010186,Azcapotzalco,2,Consolidada de transición,5637.0,5637.0,7,2.4468423604195317
+sensibilidad,n_60,0.75,10,860224.0,1387,A2 seguir la tabla del script 24,6,0901500010574,Cuauhtémoc,2,Consolidada de transición,5261.0,5261.0,4,0.9687021655483437
+sensibilidad,n_60,0.75,10,860224.0,1387,A2 seguir la tabla del script 24,7,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,4491.0,4491.0,4,1.2292008831248242
+sensibilidad,n_60,0.75,10,860224.0,1387,A2 seguir la tabla del script 24,8,0900700010036,Iztapalapa,2,Consolidada de transición,3964.0,3964.0,4,0.8574302659908853
+sensibilidad,n_60,0.75,10,860224.0,1387,A2 seguir la tabla del script 24,9,0901200012121,Tlalpan,2,Consolidada de transición,2977.0,2977.0,3,1.2604923989539545
+sensibilidad,n_60,0.75,10,860224.0,1387,A2 seguir la tabla del script 24,10,0900400010195,Cuajimalpa de Morelos,2,Consolidada de transición,2623.0,2623.0,2,0.7891729000029949
+sensibilidad,n_60,0.75,10,860224.0,1387,M1 voraz,1,0901500010273,Cuauhtémoc,3,Envejecida de escolaridad media-alta,9461.0,9461.0,24,1.6745473462464096
+sensibilidad,n_60,0.75,10,860224.0,1387,M1 voraz,2,0900300010624,Coyoacán,1,Periferia joven con carencias,9390.0,9390.0,6,1.5700277564162024
+sensibilidad,n_60,0.75,10,860224.0,1387,M1 voraz,3,0901000012165,Álvaro Obregón,2,Consolidada de transición,9326.0,9326.0,14,1.725950876459427
+sensibilidad,n_60,0.75,10,860224.0,1387,M1 voraz,4,0901500011233,Cuauhtémoc,2,Consolidada de transición,8597.0,8597.0,8,1.6725867869811182
+sensibilidad,n_60,0.75,10,860224.0,1387,M1 voraz,5,0901600010270,Miguel Hidalgo,2,Consolidada de transición,8310.0,8310.0,6,1.1540913883882749
+sensibilidad,n_60,0.75,10,860224.0,1387,M1 voraz,6,0901700010225,Venustiano Carranza,2,Consolidada de transición,8145.0,8145.0,10,2.1307107265894283
+sensibilidad,n_60,0.75,10,860224.0,1387,M1 voraz,7,0900700010055,Iztapalapa,3,Envejecida de escolaridad media-alta,8006.0,8006.0,10,2.3187297017959034
+sensibilidad,n_60,0.75,10,860224.0,1387,M1 voraz,8,0900500012697,Gustavo A. Madero,2,Consolidada de transición,7832.0,7832.0,12,1.3100991882389672
+sensibilidad,n_60,0.75,10,860224.0,1387,M1 voraz,9,0900200010260,Azcapotzalco,2,Consolidada de transición,7827.0,7827.0,8,2.2416056754361207
+sensibilidad,n_60,0.75,10,860224.0,1387,M1 voraz,10,090060001058A,Iztacalco,2,Consolidada de transición,7661.0,7661.0,10,1.5421813799829327
+sensibilidad,n_60,0.75,10,860224.0,1387,M2 óptimo exacto,1,0900300010624,Coyoacán,1,Periferia joven con carencias,9390.0,9390.0,6,1.5700277564162024
+sensibilidad,n_60,0.75,10,860224.0,1387,M2 óptimo exacto,2,0901500010269,Cuauhtémoc,3,Envejecida de escolaridad media-alta,9376.0,9376.0,23,1.5548747091589257
+sensibilidad,n_60,0.75,10,860224.0,1387,M2 óptimo exacto,3,0901000012165,Álvaro Obregón,2,Consolidada de transición,9326.0,9326.0,14,1.725950876459427
+sensibilidad,n_60,0.75,10,860224.0,1387,M2 óptimo exacto,4,0901500011233,Cuauhtémoc,2,Consolidada de transición,8597.0,8597.0,8,1.6725867869811182
+sensibilidad,n_60,0.75,10,860224.0,1387,M2 óptimo exacto,5,0901600010270,Miguel Hidalgo,2,Consolidada de transición,8310.0,8310.0,6,1.1540913883882749
+sensibilidad,n_60,0.75,10,860224.0,1387,M2 óptimo exacto,6,0901700010225,Venustiano Carranza,2,Consolidada de transición,8145.0,8145.0,10,2.1307107265894283
+sensibilidad,n_60,0.75,10,860224.0,1387,M2 óptimo exacto,7,0900700010055,Iztapalapa,3,Envejecida de escolaridad media-alta,8006.0,8006.0,10,2.3187297017959034
+sensibilidad,n_60,0.75,10,860224.0,1387,M2 óptimo exacto,8,0900500012697,Gustavo A. Madero,2,Consolidada de transición,7832.0,7832.0,12,1.3100991882389672
+sensibilidad,n_60,0.75,10,860224.0,1387,M2 óptimo exacto,9,0900200010260,Azcapotzalco,2,Consolidada de transición,7827.0,7827.0,8,2.2416056754361207
+sensibilidad,n_60,0.75,10,860224.0,1387,M2 óptimo exacto,10,0901500010540,Cuauhtémoc,1,Periferia joven con carencias,7791.0,7791.0,9,1.250040189278287
+sensibilidad,n_60,1.0,3,618543.0,1010,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+sensibilidad,n_60,1.0,3,618543.0,1010,A1 regla simple: las k AGEB con más personas,2,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,6446.0,4,1.352481416534295
+sensibilidad,n_60,1.0,3,618543.0,1010,A1 regla simple: las k AGEB con más personas,3,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+sensibilidad,n_60,1.0,3,618543.0,1010,A2 seguir la tabla del script 24,1,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,9317.0,9317.0,9,1.6401893702719368
+sensibilidad,n_60,1.0,3,618543.0,1010,A2 seguir la tabla del script 24,2,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+sensibilidad,n_60,1.0,3,618543.0,1010,A2 seguir la tabla del script 24,3,0900600010310,Iztacalco,2,Consolidada de transición,8021.0,8021.0,9,2.144659395528131
+sensibilidad,n_60,1.0,3,618543.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+sensibilidad,n_60,1.0,3,618543.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+sensibilidad,n_60,1.0,3,618543.0,1010,M1 voraz,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+sensibilidad,n_60,1.0,3,618543.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+sensibilidad,n_60,1.0,3,618543.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+sensibilidad,n_60,1.0,3,618543.0,1010,M2 óptimo exacto,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+primario,n_60,1.0,5,618543.0,1010,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+primario,n_60,1.0,5,618543.0,1010,A1 regla simple: las k AGEB con más personas,2,0901600010393,Miguel Hidalgo,4,Central de alta escolaridad,7344.0,7344.0,7,1.5246488529322146
+primario,n_60,1.0,5,618543.0,1010,A1 regla simple: las k AGEB con más personas,3,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,6689.0,6689.0,7,1.2292008831248242
+primario,n_60,1.0,5,618543.0,1010,A1 regla simple: las k AGEB con más personas,4,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,6446.0,4,1.352481416534295
+primario,n_60,1.0,5,618543.0,1010,A1 regla simple: las k AGEB con más personas,5,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+primario,n_60,1.0,5,618543.0,1010,A2 seguir la tabla del script 24,1,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,9317.0,9317.0,9,1.6401893702719368
+primario,n_60,1.0,5,618543.0,1010,A2 seguir la tabla del script 24,2,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+primario,n_60,1.0,5,618543.0,1010,A2 seguir la tabla del script 24,3,0900600010310,Iztacalco,2,Consolidada de transición,8021.0,8021.0,9,2.144659395528131
+primario,n_60,1.0,5,618543.0,1010,A2 seguir la tabla del script 24,4,0900700010731,Iztapalapa,1,Periferia joven con carencias,3704.0,3704.0,3,1.1277762808528815
+primario,n_60,1.0,5,618543.0,1010,A2 seguir la tabla del script 24,5,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,3644.0,3644.0,3,1.5825606470359923
+primario,n_60,1.0,5,618543.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+primario,n_60,1.0,5,618543.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+primario,n_60,1.0,5,618543.0,1010,M1 voraz,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+primario,n_60,1.0,5,618543.0,1010,M1 voraz,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+primario,n_60,1.0,5,618543.0,1010,M1 voraz,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+primario,n_60,1.0,5,618543.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+primario,n_60,1.0,5,618543.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+primario,n_60,1.0,5,618543.0,1010,M2 óptimo exacto,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+primario,n_60,1.0,5,618543.0,1010,M2 óptimo exacto,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+primario,n_60,1.0,5,618543.0,1010,M2 óptimo exacto,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+sensibilidad,n_60,1.0,10,618543.0,1010,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+sensibilidad,n_60,1.0,10,618543.0,1010,A1 regla simple: las k AGEB con más personas,2,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,9317.0,9317.0,9,1.6401893702719368
+sensibilidad,n_60,1.0,10,618543.0,1010,A1 regla simple: las k AGEB con más personas,3,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+sensibilidad,n_60,1.0,10,618543.0,1010,A1 regla simple: las k AGEB con más personas,4,0901600010181,Miguel Hidalgo,4,Central de alta escolaridad,7928.0,7928.0,6,1.5527552011802823
+sensibilidad,n_60,1.0,10,618543.0,1010,A1 regla simple: las k AGEB con más personas,5,0900300010639,Coyoacán,2,Consolidada de transición,7845.0,7845.0,5,1.2560624525598798
+sensibilidad,n_60,1.0,10,618543.0,1010,A1 regla simple: las k AGEB con más personas,6,0901600010393,Miguel Hidalgo,4,Central de alta escolaridad,7344.0,1553.0,7,1.5246488529322146
+sensibilidad,n_60,1.0,10,618543.0,1010,A1 regla simple: las k AGEB con más personas,7,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,6689.0,6689.0,7,1.2292008831248242
+sensibilidad,n_60,1.0,10,618543.0,1010,A1 regla simple: las k AGEB con más personas,8,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,0.0,4,1.352481416534295
+sensibilidad,n_60,1.0,10,618543.0,1010,A1 regla simple: las k AGEB con más personas,9,0901200011072,Tlalpan,2,Consolidada de transición,6035.0,6035.0,8,1.3390402110280546
+sensibilidad,n_60,1.0,10,618543.0,1010,A1 regla simple: las k AGEB con más personas,10,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+sensibilidad,n_60,1.0,10,618543.0,1010,A2 seguir la tabla del script 24,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+sensibilidad,n_60,1.0,10,618543.0,1010,A2 seguir la tabla del script 24,2,0901000010563,Álvaro Obregón,2,Consolidada de transición,9741.0,9741.0,15,1.9986195004345004
+sensibilidad,n_60,1.0,10,618543.0,1010,A2 seguir la tabla del script 24,3,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,9317.0,9317.0,9,1.6401893702719368
+sensibilidad,n_60,1.0,10,618543.0,1010,A2 seguir la tabla del script 24,4,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+sensibilidad,n_60,1.0,10,618543.0,1010,A2 seguir la tabla del script 24,5,0900600010310,Iztacalco,2,Consolidada de transición,8021.0,8021.0,9,2.144659395528131
+sensibilidad,n_60,1.0,10,618543.0,1010,A2 seguir la tabla del script 24,6,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,6689.0,6689.0,7,1.2292008831248242
+sensibilidad,n_60,1.0,10,618543.0,1010,A2 seguir la tabla del script 24,7,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,6446.0,4,1.352481416534295
+sensibilidad,n_60,1.0,10,618543.0,1010,A2 seguir la tabla del script 24,8,0900700010731,Iztapalapa,1,Periferia joven con carencias,3704.0,3704.0,3,1.1277762808528815
+sensibilidad,n_60,1.0,10,618543.0,1010,A2 seguir la tabla del script 24,9,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,3644.0,3644.0,3,1.5825606470359923
+sensibilidad,n_60,1.0,10,618543.0,1010,A2 seguir la tabla del script 24,10,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+sensibilidad,n_60,1.0,10,618543.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+sensibilidad,n_60,1.0,10,618543.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+sensibilidad,n_60,1.0,10,618543.0,1010,M1 voraz,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+sensibilidad,n_60,1.0,10,618543.0,1010,M1 voraz,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+sensibilidad,n_60,1.0,10,618543.0,1010,M1 voraz,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+sensibilidad,n_60,1.0,10,618543.0,1010,M1 voraz,6,090150001113A,Cuauhtémoc,2,Consolidada de transición,11786.0,11786.0,10,1.5183349963401929
+sensibilidad,n_60,1.0,10,618543.0,1010,M1 voraz,7,090150001024A,Cuauhtémoc,3,Envejecida de escolaridad media-alta,10865.0,10201.0,26,1.4298676310573877
+sensibilidad,n_60,1.0,10,618543.0,1010,M1 voraz,8,0900600010594,Iztacalco,2,Consolidada de transición,10836.0,10836.0,15,1.325752411425369
+sensibilidad,n_60,1.0,10,618543.0,1010,M1 voraz,9,0900700012780,Iztapalapa,1,Periferia joven con carencias,10387.0,10387.0,14,1.924780149826796
+sensibilidad,n_60,1.0,10,618543.0,1010,M1 voraz,10,0900500013182,Gustavo A. Madero,2,Consolidada de transición,10328.0,10328.0,14,1.5846716133301944
+sensibilidad,n_60,1.0,10,618543.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+sensibilidad,n_60,1.0,10,618543.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+sensibilidad,n_60,1.0,10,618543.0,1010,M2 óptimo exacto,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+sensibilidad,n_60,1.0,10,618543.0,1010,M2 óptimo exacto,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+sensibilidad,n_60,1.0,10,618543.0,1010,M2 óptimo exacto,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+sensibilidad,n_60,1.0,10,618543.0,1010,M2 óptimo exacto,6,090150001113A,Cuauhtémoc,2,Consolidada de transición,11786.0,11786.0,10,1.5183349963401929
+sensibilidad,n_60,1.0,10,618543.0,1010,M2 óptimo exacto,7,090150001024A,Cuauhtémoc,3,Envejecida de escolaridad media-alta,10865.0,10201.0,26,1.4298676310573877
+sensibilidad,n_60,1.0,10,618543.0,1010,M2 óptimo exacto,8,0900600010594,Iztacalco,2,Consolidada de transición,10836.0,10836.0,15,1.325752411425369
+sensibilidad,n_60,1.0,10,618543.0,1010,M2 óptimo exacto,9,0900700012780,Iztapalapa,1,Periferia joven con carencias,10387.0,10387.0,14,1.924780149826796
+sensibilidad,n_60,1.0,10,618543.0,1010,M2 óptimo exacto,10,0900500013182,Gustavo A. Madero,2,Consolidada de transición,10328.0,10328.0,14,1.5846716133301944
+sensibilidad,n_60,1.5,3,270218.0,450,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,13687.0,13687.0,20,2.092456884572827
+sensibilidad,n_60,1.5,3,270218.0,450,A1 regla simple: las k AGEB con más personas,2,0901600010393,Miguel Hidalgo,4,Central de alta escolaridad,3378.0,3378.0,2,1.5246488529322146
+sensibilidad,n_60,1.5,3,270218.0,450,A1 regla simple: las k AGEB con más personas,3,0901600010181,Miguel Hidalgo,4,Central de alta escolaridad,3378.0,0.0,2,1.5527552011802823
+sensibilidad,n_60,1.5,3,270218.0,450,A2 seguir la tabla del script 24,1,0900200010186,Azcapotzalco,2,Consolidada de transición,16226.0,16226.0,21,2.4468423604195317
+sensibilidad,n_60,1.5,3,270218.0,450,A2 seguir la tabla del script 24,2,0900600010310,Iztacalco,2,Consolidada de transición,15840.0,15840.0,21,2.144659395528131
+sensibilidad,n_60,1.5,3,270218.0,450,A2 seguir la tabla del script 24,3,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,8843.0,8843.0,9,1.6401893702719368
+sensibilidad,n_60,1.5,3,270218.0,450,M1 voraz,1,0900200010167,Azcapotzalco,2,Consolidada de transición,21256.0,21256.0,27,2.936021774685456
+sensibilidad,n_60,1.5,3,270218.0,450,M1 voraz,2,0901700010174,Venustiano Carranza,2,Consolidada de transición,16244.0,16244.0,23,1.5706055434527473
+sensibilidad,n_60,1.5,3,270218.0,450,M1 voraz,3,0900600010522,Iztacalco,2,Consolidada de transición,16165.0,16165.0,18,1.7688680180286112
+sensibilidad,n_60,1.5,3,270218.0,450,M2 óptimo exacto,1,0900200010167,Azcapotzalco,2,Consolidada de transición,21256.0,21256.0,27,2.936021774685456
+sensibilidad,n_60,1.5,3,270218.0,450,M2 óptimo exacto,2,090170001023A,Venustiano Carranza,2,Consolidada de transición,16244.0,16244.0,23,1.7215554967460251
+sensibilidad,n_60,1.5,3,270218.0,450,M2 óptimo exacto,3,0900600010522,Iztacalco,2,Consolidada de transición,16165.0,16165.0,18,1.7688680180286112
+sensibilidad,n_60,1.5,5,270218.0,450,A1 regla simple: las k AGEB con más personas,1,0900200010186,Azcapotzalco,2,Consolidada de transición,16226.0,16226.0,21,2.4468423604195317
+sensibilidad,n_60,1.5,5,270218.0,450,A1 regla simple: las k AGEB con más personas,2,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,13687.0,13687.0,20,2.092456884572827
+sensibilidad,n_60,1.5,5,270218.0,450,A1 regla simple: las k AGEB con más personas,3,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,8843.0,8843.0,9,1.6401893702719368
+sensibilidad,n_60,1.5,5,270218.0,450,A1 regla simple: las k AGEB con más personas,4,0901600010393,Miguel Hidalgo,4,Central de alta escolaridad,3378.0,3378.0,2,1.5246488529322146
+sensibilidad,n_60,1.5,5,270218.0,450,A1 regla simple: las k AGEB con más personas,5,0901600010181,Miguel Hidalgo,4,Central de alta escolaridad,3378.0,0.0,2,1.5527552011802823
+sensibilidad,n_60,1.5,5,270218.0,450,A2 seguir la tabla del script 24,1,0900200010186,Azcapotzalco,2,Consolidada de transición,16226.0,16226.0,21,2.4468423604195317
+sensibilidad,n_60,1.5,5,270218.0,450,A2 seguir la tabla del script 24,2,0900600010310,Iztacalco,2,Consolidada de transición,15840.0,15840.0,21,2.144659395528131
+sensibilidad,n_60,1.5,5,270218.0,450,A2 seguir la tabla del script 24,3,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,8843.0,8843.0,9,1.6401893702719368
+sensibilidad,n_60,1.5,5,270218.0,450,A2 seguir la tabla del script 24,4,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,4627.0,4627.0,4,1.5825606470359923
+sensibilidad,n_60,1.5,5,270218.0,450,A2 seguir la tabla del script 24,5,0900700011566,Iztapalapa,2,Consolidada de transición,1998.0,1998.0,2,1.6356323097476135
+sensibilidad,n_60,1.5,5,270218.0,450,M1 voraz,1,0900200010167,Azcapotzalco,2,Consolidada de transición,21256.0,21256.0,27,2.936021774685456
+sensibilidad,n_60,1.5,5,270218.0,450,M1 voraz,2,0901700010174,Venustiano Carranza,2,Consolidada de transición,16244.0,16244.0,23,1.5706055434527473
+sensibilidad,n_60,1.5,5,270218.0,450,M1 voraz,3,0900600010522,Iztacalco,2,Consolidada de transición,16165.0,16165.0,18,1.7688680180286112
+sensibilidad,n_60,1.5,5,270218.0,450,M1 voraz,4,0901000010563,Álvaro Obregón,2,Consolidada de transición,11540.0,11540.0,20,1.9986195004345004
+sensibilidad,n_60,1.5,5,270218.0,450,M1 voraz,5,090070001376A,Iztapalapa,2,Consolidada de transición,10749.0,10749.0,15,2.1714367104556307
+sensibilidad,n_60,1.5,5,270218.0,450,M2 óptimo exacto,1,0900200010928,Azcapotzalco,2,Consolidada de transición,18200.0,18200.0,25,3.1386170699616005
+sensibilidad,n_60,1.5,5,270218.0,450,M2 óptimo exacto,2,090170001023A,Venustiano Carranza,2,Consolidada de transición,16244.0,16244.0,23,1.7215554967460251
+sensibilidad,n_60,1.5,5,270218.0,450,M2 óptimo exacto,3,0900600010522,Iztacalco,2,Consolidada de transición,16165.0,16165.0,18,1.7688680180286112
+sensibilidad,n_60,1.5,5,270218.0,450,M2 óptimo exacto,4,0900200011095,Azcapotzalco,2,Consolidada de transición,15788.0,14060.0,20,2.839740673603027
+sensibilidad,n_60,1.5,5,270218.0,450,M2 óptimo exacto,5,0901000010563,Álvaro Obregón,2,Consolidada de transición,11540.0,11540.0,20,1.9986195004345004
+sensibilidad,n_60,1.5,10,270218.0,450,A1 regla simple: las k AGEB con más personas,1,0900200010186,Azcapotzalco,2,Consolidada de transición,16226.0,16226.0,21,2.4468423604195317
+sensibilidad,n_60,1.5,10,270218.0,450,A1 regla simple: las k AGEB con más personas,2,0901500010358,Cuauhtémoc,2,Consolidada de transición,13794.0,13794.0,22,1.8262399045278883
+sensibilidad,n_60,1.5,10,270218.0,450,A1 regla simple: las k AGEB con más personas,3,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,13687.0,1036.0,20,2.092456884572827
+sensibilidad,n_60,1.5,10,270218.0,450,A1 regla simple: las k AGEB con más personas,4,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,8843.0,8843.0,9,1.6401893702719368
+sensibilidad,n_60,1.5,10,270218.0,450,A1 regla simple: las k AGEB con más personas,5,090150001113A,Cuauhtémoc,2,Consolidada de transición,7648.0,0.0,6,1.5183349963401929
+sensibilidad,n_60,1.5,10,270218.0,450,A1 regla simple: las k AGEB con más personas,6,0901500011233,Cuauhtémoc,2,Consolidada de transición,7648.0,0.0,6,1.6725867869811182
+sensibilidad,n_60,1.5,10,270218.0,450,A1 regla simple: las k AGEB con más personas,7,0900300011213,Coyoacán,3,Envejecida de escolaridad media-alta,5054.0,5054.0,6,1.6688870745199265
+sensibilidad,n_60,1.5,10,270218.0,450,A1 regla simple: las k AGEB con más personas,8,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,4627.0,4627.0,4,1.5825606470359923
+sensibilidad,n_60,1.5,10,270218.0,450,A1 regla simple: las k AGEB con más personas,9,0901600010393,Miguel Hidalgo,4,Central de alta escolaridad,3378.0,3378.0,2,1.5246488529322146
+sensibilidad,n_60,1.5,10,270218.0,450,A1 regla simple: las k AGEB con más personas,10,0901600010181,Miguel Hidalgo,4,Central de alta escolaridad,3378.0,0.0,2,1.5527552011802823
+sensibilidad,n_60,1.5,10,270218.0,450,A2 seguir la tabla del script 24,1,0900200010186,Azcapotzalco,2,Consolidada de transición,16226.0,16226.0,21,2.4468423604195317
+sensibilidad,n_60,1.5,10,270218.0,450,A2 seguir la tabla del script 24,2,0900600010310,Iztacalco,2,Consolidada de transición,15840.0,15840.0,21,2.144659395528131
+sensibilidad,n_60,1.5,10,270218.0,450,A2 seguir la tabla del script 24,3,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,13687.0,13687.0,20,2.092456884572827
+sensibilidad,n_60,1.5,10,270218.0,450,A2 seguir la tabla del script 24,4,0901000010563,Álvaro Obregón,2,Consolidada de transición,11540.0,11540.0,20,1.9986195004345004
+sensibilidad,n_60,1.5,10,270218.0,450,A2 seguir la tabla del script 24,5,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,8843.0,8843.0,9,1.6401893702719368
+sensibilidad,n_60,1.5,10,270218.0,450,A2 seguir la tabla del script 24,6,0900300011213,Coyoacán,3,Envejecida de escolaridad media-alta,5054.0,5054.0,6,1.6688870745199265
+sensibilidad,n_60,1.5,10,270218.0,450,A2 seguir la tabla del script 24,7,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,4627.0,4627.0,4,1.5825606470359923
+sensibilidad,n_60,1.5,10,270218.0,450,A2 seguir la tabla del script 24,8,0901200012441,Tlalpan,1,Periferia joven con carencias,3361.0,3361.0,8,3.151590012544879
+sensibilidad,n_60,1.5,10,270218.0,450,A2 seguir la tabla del script 24,9,0900500010366,Gustavo A. Madero,4,Central de alta escolaridad,2728.0,2728.0,3,2.5183324330732533
+sensibilidad,n_60,1.5,10,270218.0,450,A2 seguir la tabla del script 24,10,0900700011566,Iztapalapa,2,Consolidada de transición,1998.0,1998.0,2,1.6356323097476135
+sensibilidad,n_60,1.5,10,270218.0,450,M1 voraz,1,0900200010167,Azcapotzalco,2,Consolidada de transición,21256.0,21256.0,27,2.936021774685456
+sensibilidad,n_60,1.5,10,270218.0,450,M1 voraz,2,0901700010174,Venustiano Carranza,2,Consolidada de transición,16244.0,16244.0,23,1.5706055434527473
+sensibilidad,n_60,1.5,10,270218.0,450,M1 voraz,3,0900600010522,Iztacalco,2,Consolidada de transición,16165.0,16165.0,18,1.7688680180286112
+sensibilidad,n_60,1.5,10,270218.0,450,M1 voraz,4,0901700010441,Venustiano Carranza,4,Central de alta escolaridad,13085.0,7995.0,21,1.625560489835582
+sensibilidad,n_60,1.5,10,270218.0,450,M1 voraz,5,0901000010563,Álvaro Obregón,2,Consolidada de transición,11540.0,11540.0,20,1.9986195004345004
+sensibilidad,n_60,1.5,10,270218.0,450,M1 voraz,6,090070001376A,Iztapalapa,2,Consolidada de transición,10749.0,10749.0,15,2.1714367104556307
+sensibilidad,n_60,1.5,10,270218.0,450,M1 voraz,7,0900200011042,Azcapotzalco,2,Consolidada de transición,10041.0,10041.0,13,2.3445758534455723
+sensibilidad,n_60,1.5,10,270218.0,450,M1 voraz,8,0900700014077,Iztapalapa,1,Periferia joven con carencias,9338.0,9338.0,15,1.9467264566038984
+sensibilidad,n_60,1.5,10,270218.0,450,M1 voraz,9,0901500011549,Cuauhtémoc,4,Central de alta escolaridad,9054.0,9054.0,11,1.6354374750449865
+sensibilidad,n_60,1.5,10,270218.0,450,M1 voraz,10,0901200011161,Tlalpan,2,Consolidada de transición,8329.0,8329.0,12,2.339285940032557
+sensibilidad,n_60,1.5,10,270218.0,450,M2 óptimo exacto,1,0900200010928,Azcapotzalco,2,Consolidada de transición,18200.0,18200.0,25,3.1386170699616005
+sensibilidad,n_60,1.5,10,270218.0,450,M2 óptimo exacto,2,0900600010522,Iztacalco,2,Consolidada de transición,16165.0,16165.0,18,1.7688680180286112
+sensibilidad,n_60,1.5,10,270218.0,450,M2 óptimo exacto,3,0900200011095,Azcapotzalco,2,Consolidada de transición,15788.0,14060.0,20,2.839740673603027
+sensibilidad,n_60,1.5,10,270218.0,450,M2 óptimo exacto,4,0901500010358,Cuauhtémoc,2,Consolidada de transición,13794.0,13794.0,22,1.8262399045278883
+sensibilidad,n_60,1.5,10,270218.0,450,M2 óptimo exacto,5,0901700010441,Venustiano Carranza,4,Central de alta escolaridad,13085.0,13085.0,21,1.625560489835582
+sensibilidad,n_60,1.5,10,270218.0,450,M2 óptimo exacto,6,0901000010563,Álvaro Obregón,2,Consolidada de transición,11540.0,11540.0,20,1.9986195004345004
+sensibilidad,n_60,1.5,10,270218.0,450,M2 óptimo exacto,7,090070001376A,Iztapalapa,2,Consolidada de transición,10749.0,10749.0,15,2.1714367104556307
+sensibilidad,n_60,1.5,10,270218.0,450,M2 óptimo exacto,8,0900700014077,Iztapalapa,1,Periferia joven con carencias,9338.0,9338.0,15,1.9467264566038984
+sensibilidad,n_60,1.5,10,270218.0,450,M2 óptimo exacto,9,0901500011549,Cuauhtémoc,4,Central de alta escolaridad,9054.0,9054.0,11,1.6354374750449865
+sensibilidad,n_60,1.5,10,270218.0,450,M2 óptimo exacto,10,0901200011161,Tlalpan,2,Consolidada de transición,8329.0,8329.0,12,2.339285940032557
+curva (descriptiva),n_60,1.0,1,618543.0,1010,A1 regla simple: las k AGEB con más personas,1,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+curva (descriptiva),n_60,1.0,1,618543.0,1010,A2 seguir la tabla del script 24,1,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+curva (descriptiva),n_60,1.0,1,618543.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,1,618543.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,2,618543.0,1010,A1 regla simple: las k AGEB con más personas,1,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,6446.0,4,1.352481416534295
+curva (descriptiva),n_60,1.0,2,618543.0,1010,A1 regla simple: las k AGEB con más personas,2,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+curva (descriptiva),n_60,1.0,2,618543.0,1010,A2 seguir la tabla del script 24,1,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,9317.0,9317.0,9,1.6401893702719368
+curva (descriptiva),n_60,1.0,2,618543.0,1010,A2 seguir la tabla del script 24,2,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+curva (descriptiva),n_60,1.0,2,618543.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,2,618543.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,2,618543.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,2,618543.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,4,618543.0,1010,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+curva (descriptiva),n_60,1.0,4,618543.0,1010,A1 regla simple: las k AGEB con más personas,2,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,6689.0,6689.0,7,1.2292008831248242
+curva (descriptiva),n_60,1.0,4,618543.0,1010,A1 regla simple: las k AGEB con más personas,3,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,6446.0,4,1.352481416534295
+curva (descriptiva),n_60,1.0,4,618543.0,1010,A1 regla simple: las k AGEB con más personas,4,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+curva (descriptiva),n_60,1.0,4,618543.0,1010,A2 seguir la tabla del script 24,1,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,9317.0,9317.0,9,1.6401893702719368
+curva (descriptiva),n_60,1.0,4,618543.0,1010,A2 seguir la tabla del script 24,2,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+curva (descriptiva),n_60,1.0,4,618543.0,1010,A2 seguir la tabla del script 24,3,0900600010310,Iztacalco,2,Consolidada de transición,8021.0,8021.0,9,2.144659395528131
+curva (descriptiva),n_60,1.0,4,618543.0,1010,A2 seguir la tabla del script 24,4,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,3644.0,3644.0,3,1.5825606470359923
+curva (descriptiva),n_60,1.0,4,618543.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,4,618543.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,4,618543.0,1010,M1 voraz,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+curva (descriptiva),n_60,1.0,4,618543.0,1010,M1 voraz,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+curva (descriptiva),n_60,1.0,4,618543.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,4,618543.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,4,618543.0,1010,M2 óptimo exacto,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+curva (descriptiva),n_60,1.0,4,618543.0,1010,M2 óptimo exacto,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A1 regla simple: las k AGEB con más personas,2,0901600010393,Miguel Hidalgo,4,Central de alta escolaridad,7344.0,7344.0,7,1.5246488529322146
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A1 regla simple: las k AGEB con más personas,3,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,6689.0,6689.0,7,1.2292008831248242
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A1 regla simple: las k AGEB con más personas,4,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,6446.0,4,1.352481416534295
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A1 regla simple: las k AGEB con más personas,5,0901200011072,Tlalpan,2,Consolidada de transición,6035.0,6035.0,8,1.3390402110280546
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A1 regla simple: las k AGEB con más personas,6,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A2 seguir la tabla del script 24,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A2 seguir la tabla del script 24,2,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,9317.0,9317.0,9,1.6401893702719368
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A2 seguir la tabla del script 24,3,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A2 seguir la tabla del script 24,4,0900600010310,Iztacalco,2,Consolidada de transición,8021.0,8021.0,9,2.144659395528131
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A2 seguir la tabla del script 24,5,0900700010731,Iztapalapa,1,Periferia joven con carencias,3704.0,3704.0,3,1.1277762808528815
+curva (descriptiva),n_60,1.0,6,618543.0,1010,A2 seguir la tabla del script 24,6,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,3644.0,3644.0,3,1.5825606470359923
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M1 voraz,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M1 voraz,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M1 voraz,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M1 voraz,6,090150001113A,Cuauhtémoc,2,Consolidada de transición,11786.0,11786.0,10,1.5183349963401929
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M2 óptimo exacto,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M2 óptimo exacto,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M2 óptimo exacto,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+curva (descriptiva),n_60,1.0,6,618543.0,1010,M2 óptimo exacto,6,090150001113A,Cuauhtémoc,2,Consolidada de transición,11786.0,11786.0,10,1.5183349963401929
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A1 regla simple: las k AGEB con más personas,2,0900300010639,Coyoacán,2,Consolidada de transición,7845.0,7845.0,5,1.2560624525598798
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A1 regla simple: las k AGEB con más personas,3,0901600010393,Miguel Hidalgo,4,Central de alta escolaridad,7344.0,7344.0,7,1.5246488529322146
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A1 regla simple: las k AGEB con más personas,4,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,6689.0,6689.0,7,1.2292008831248242
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A1 regla simple: las k AGEB con más personas,5,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,0.0,4,1.352481416534295
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A1 regla simple: las k AGEB con más personas,6,0901200011072,Tlalpan,2,Consolidada de transición,6035.0,6035.0,8,1.3390402110280546
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A1 regla simple: las k AGEB con más personas,7,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A2 seguir la tabla del script 24,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A2 seguir la tabla del script 24,2,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,9317.0,9317.0,9,1.6401893702719368
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A2 seguir la tabla del script 24,3,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A2 seguir la tabla del script 24,4,0900600010310,Iztacalco,2,Consolidada de transición,8021.0,8021.0,9,2.144659395528131
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A2 seguir la tabla del script 24,5,0900700010731,Iztapalapa,1,Periferia joven con carencias,3704.0,3704.0,3,1.1277762808528815
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A2 seguir la tabla del script 24,6,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,3644.0,3644.0,3,1.5825606470359923
+curva (descriptiva),n_60,1.0,7,618543.0,1010,A2 seguir la tabla del script 24,7,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M1 voraz,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M1 voraz,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M1 voraz,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M1 voraz,6,090150001113A,Cuauhtémoc,2,Consolidada de transición,11786.0,11786.0,10,1.5183349963401929
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M1 voraz,7,0900600010594,Iztacalco,2,Consolidada de transición,10836.0,10836.0,15,1.325752411425369
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M2 óptimo exacto,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M2 óptimo exacto,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M2 óptimo exacto,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M2 óptimo exacto,6,090150001113A,Cuauhtémoc,2,Consolidada de transición,11786.0,11786.0,10,1.5183349963401929
+curva (descriptiva),n_60,1.0,7,618543.0,1010,M2 óptimo exacto,7,0900600010594,Iztacalco,2,Consolidada de transición,10836.0,10836.0,15,1.325752411425369
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A1 regla simple: las k AGEB con más personas,2,0901600010181,Miguel Hidalgo,4,Central de alta escolaridad,7928.0,7928.0,6,1.5527552011802823
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A1 regla simple: las k AGEB con más personas,3,0900300010639,Coyoacán,2,Consolidada de transición,7845.0,7845.0,5,1.2560624525598798
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A1 regla simple: las k AGEB con más personas,4,0901600010393,Miguel Hidalgo,4,Central de alta escolaridad,7344.0,1553.0,7,1.5246488529322146
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A1 regla simple: las k AGEB con más personas,5,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,6689.0,6689.0,7,1.2292008831248242
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A1 regla simple: las k AGEB con más personas,6,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,0.0,4,1.352481416534295
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A1 regla simple: las k AGEB con más personas,7,0901200011072,Tlalpan,2,Consolidada de transición,6035.0,6035.0,8,1.3390402110280546
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A1 regla simple: las k AGEB con más personas,8,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A2 seguir la tabla del script 24,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A2 seguir la tabla del script 24,2,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,9317.0,9317.0,9,1.6401893702719368
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A2 seguir la tabla del script 24,3,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A2 seguir la tabla del script 24,4,0900600010310,Iztacalco,2,Consolidada de transición,8021.0,8021.0,9,2.144659395528131
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A2 seguir la tabla del script 24,5,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,6446.0,4,1.352481416534295
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A2 seguir la tabla del script 24,6,0900700010731,Iztapalapa,1,Periferia joven con carencias,3704.0,3704.0,3,1.1277762808528815
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A2 seguir la tabla del script 24,7,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,3644.0,3644.0,3,1.5825606470359923
+curva (descriptiva),n_60,1.0,8,618543.0,1010,A2 seguir la tabla del script 24,8,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M1 voraz,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M1 voraz,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M1 voraz,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M1 voraz,6,090150001113A,Cuauhtémoc,2,Consolidada de transición,11786.0,11786.0,10,1.5183349963401929
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M1 voraz,7,0900600010594,Iztacalco,2,Consolidada de transición,10836.0,10836.0,15,1.325752411425369
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M1 voraz,8,0900700012780,Iztapalapa,1,Periferia joven con carencias,10387.0,10387.0,14,1.924780149826796
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M2 óptimo exacto,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M2 óptimo exacto,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M2 óptimo exacto,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M2 óptimo exacto,6,090150001113A,Cuauhtémoc,2,Consolidada de transición,11786.0,11786.0,10,1.5183349963401929
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M2 óptimo exacto,7,0900600010594,Iztacalco,2,Consolidada de transición,10836.0,10836.0,15,1.325752411425369
+curva (descriptiva),n_60,1.0,8,618543.0,1010,M2 óptimo exacto,8,0900700012780,Iztapalapa,1,Periferia joven con carencias,10387.0,10387.0,14,1.924780149826796
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A1 regla simple: las k AGEB con más personas,2,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A1 regla simple: las k AGEB con más personas,3,0901600010181,Miguel Hidalgo,4,Central de alta escolaridad,7928.0,7928.0,6,1.5527552011802823
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A1 regla simple: las k AGEB con más personas,4,0900300010639,Coyoacán,2,Consolidada de transición,7845.0,7845.0,5,1.2560624525598798
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A1 regla simple: las k AGEB con más personas,5,0901600010393,Miguel Hidalgo,4,Central de alta escolaridad,7344.0,1553.0,7,1.5246488529322146
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A1 regla simple: las k AGEB con más personas,6,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,6689.0,6689.0,7,1.2292008831248242
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A1 regla simple: las k AGEB con más personas,7,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,0.0,4,1.352481416534295
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A1 regla simple: las k AGEB con más personas,8,0901200011072,Tlalpan,2,Consolidada de transición,6035.0,6035.0,8,1.3390402110280546
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A1 regla simple: las k AGEB con más personas,9,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A2 seguir la tabla del script 24,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,12673.0,12673.0,14,2.092456884572827
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A2 seguir la tabla del script 24,2,0901000010563,Álvaro Obregón,2,Consolidada de transición,9741.0,9741.0,15,1.9986195004345004
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A2 seguir la tabla del script 24,3,0901500011125,Cuauhtémoc,4,Central de alta escolaridad,9317.0,9317.0,9,1.6401893702719368
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A2 seguir la tabla del script 24,4,0900200010186,Azcapotzalco,2,Consolidada de transición,8882.0,8882.0,11,2.4468423604195317
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A2 seguir la tabla del script 24,5,0900600010310,Iztacalco,2,Consolidada de transición,8021.0,8021.0,9,2.144659395528131
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A2 seguir la tabla del script 24,6,0900300011162,Coyoacán,2,Consolidada de transición,6446.0,6446.0,4,1.352481416534295
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A2 seguir la tabla del script 24,7,0900700010731,Iztapalapa,1,Periferia joven con carencias,3704.0,3704.0,3,1.1277762808528815
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A2 seguir la tabla del script 24,8,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,3644.0,3644.0,3,1.5825606470359923
+curva (descriptiva),n_60,1.0,9,618543.0,1010,A2 seguir la tabla del script 24,9,0901200012121,Tlalpan,2,Consolidada de transición,3538.0,3538.0,3,1.2604923989539545
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M1 voraz,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M1 voraz,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M1 voraz,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M1 voraz,6,090150001113A,Cuauhtémoc,2,Consolidada de transición,11786.0,11786.0,10,1.5183349963401929
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M1 voraz,7,0900600010594,Iztacalco,2,Consolidada de transición,10836.0,10836.0,15,1.325752411425369
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M1 voraz,8,0900700012780,Iztapalapa,1,Periferia joven con carencias,10387.0,10387.0,14,1.924780149826796
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M1 voraz,9,0900500013182,Gustavo A. Madero,2,Consolidada de transición,10328.0,10328.0,14,1.5846716133301944
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,13690.0,13690.0,20,1.4959034132818176
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,13042.0,13042.0,20,1.672646343053029
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M2 óptimo exacto,3,0901700010263,Venustiano Carranza,2,Consolidada de transición,11937.0,11937.0,21,2.1138908561177794
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M2 óptimo exacto,4,0900200010260,Azcapotzalco,2,Consolidada de transición,11904.0,11904.0,14,2.2416056754361207
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M2 óptimo exacto,5,0900600010359,Iztacalco,2,Consolidada de transición,11864.0,11864.0,14,2.004388117559992
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M2 óptimo exacto,6,090150001113A,Cuauhtémoc,2,Consolidada de transición,11786.0,11786.0,10,1.5183349963401929
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M2 óptimo exacto,7,0900600010594,Iztacalco,2,Consolidada de transición,10836.0,10836.0,15,1.325752411425369
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M2 óptimo exacto,8,0900700012780,Iztapalapa,1,Periferia joven con carencias,10387.0,10387.0,14,1.924780149826796
+curva (descriptiva),n_60,1.0,9,618543.0,1010,M2 óptimo exacto,9,0900500013182,Gustavo A. Madero,2,Consolidada de transición,10328.0,10328.0,14,1.5846716133301944
+demanda alternativa,n_disc,0.75,3,298015.0,1387,A1 regla simple: las k AGEB con más personas,1,0900300011162,Coyoacán,2,Consolidada de transición,3547.0,3547.0,6,1.352481416534295
+demanda alternativa,n_disc,0.75,3,298015.0,1387,A1 regla simple: las k AGEB con más personas,2,0900300010639,Coyoacán,2,Consolidada de transición,3373.0,1347.0,5,1.2560624525598798
+demanda alternativa,n_disc,0.75,3,298015.0,1387,A1 regla simple: las k AGEB con más personas,3,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,3317.0,3317.0,10,1.7992146818588384
+demanda alternativa,n_disc,0.75,3,298015.0,1387,A2 seguir la tabla del script 24,1,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,3317.0,3317.0,10,1.7992146818588384
+demanda alternativa,n_disc,0.75,3,298015.0,1387,A2 seguir la tabla del script 24,2,0900600010344,Iztacalco,2,Consolidada de transición,2634.0,2634.0,7,2.1068483795486475
+demanda alternativa,n_disc,0.75,3,298015.0,1387,A2 seguir la tabla del script 24,3,0900200010114,Azcapotzalco,2,Consolidada de transición,1110.0,1110.0,3,2.218860784405633
+demanda alternativa,n_disc,0.75,3,298015.0,1387,M1 voraz,1,0900300010624,Coyoacán,1,Periferia joven con carencias,4022.0,4022.0,6,1.5700277564162024
+demanda alternativa,n_disc,0.75,3,298015.0,1387,M1 voraz,2,0901000011966,Álvaro Obregón,2,Consolidada de transición,3755.0,3755.0,13,1.904897192669443
+demanda alternativa,n_disc,0.75,3,298015.0,1387,M1 voraz,3,0900700013238,Iztapalapa,1,Periferia joven con carencias,3422.0,3422.0,11,1.4889165762900916
+demanda alternativa,n_disc,0.75,3,298015.0,1387,M2 óptimo exacto,1,0900300010624,Coyoacán,1,Periferia joven con carencias,4022.0,4022.0,6,1.5700277564162024
+demanda alternativa,n_disc,0.75,3,298015.0,1387,M2 óptimo exacto,2,0901000011966,Álvaro Obregón,2,Consolidada de transición,3755.0,3755.0,13,1.904897192669443
+demanda alternativa,n_disc,0.75,3,298015.0,1387,M2 óptimo exacto,3,0900700013238,Iztapalapa,1,Periferia joven con carencias,3422.0,3422.0,11,1.4889165762900916
+demanda alternativa,n_disc,0.75,5,298015.0,1387,A1 regla simple: las k AGEB con más personas,1,0900300011162,Coyoacán,2,Consolidada de transición,3547.0,3547.0,6,1.352481416534295
+demanda alternativa,n_disc,0.75,5,298015.0,1387,A1 regla simple: las k AGEB con más personas,2,0900300010639,Coyoacán,2,Consolidada de transición,3373.0,1347.0,5,1.2560624525598798
+demanda alternativa,n_disc,0.75,5,298015.0,1387,A1 regla simple: las k AGEB con más personas,3,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,3317.0,3317.0,10,1.7992146818588384
+demanda alternativa,n_disc,0.75,5,298015.0,1387,A1 regla simple: las k AGEB con más personas,4,0900300010802,Coyoacán,1,Periferia joven con carencias,3021.0,1057.0,5,0.9628942675511656
+demanda alternativa,n_disc,0.75,5,298015.0,1387,A1 regla simple: las k AGEB con más personas,5,0901600011349,Miguel Hidalgo,2,Consolidada de transición,1951.0,1951.0,5,0.9961997391813948
+demanda alternativa,n_disc,0.75,5,298015.0,1387,A2 seguir la tabla del script 24,1,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,3317.0,3317.0,10,1.7992146818588384
+demanda alternativa,n_disc,0.75,5,298015.0,1387,A2 seguir la tabla del script 24,2,0900600010344,Iztacalco,2,Consolidada de transición,2634.0,2634.0,7,2.1068483795486475
+demanda alternativa,n_disc,0.75,5,298015.0,1387,A2 seguir la tabla del script 24,3,0900700013327,Iztapalapa,1,Periferia joven con carencias,1798.0,1798.0,6,1.079734201378884
+demanda alternativa,n_disc,0.75,5,298015.0,1387,A2 seguir la tabla del script 24,4,0900200010114,Azcapotzalco,2,Consolidada de transición,1110.0,1110.0,3,2.218860784405633
+demanda alternativa,n_disc,0.75,5,298015.0,1387,A2 seguir la tabla del script 24,5,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,587.0,587.0,1,1.5825606470359923
+demanda alternativa,n_disc,0.75,5,298015.0,1387,M1 voraz,1,0900300010624,Coyoacán,1,Periferia joven con carencias,4022.0,4022.0,6,1.5700277564162024
+demanda alternativa,n_disc,0.75,5,298015.0,1387,M1 voraz,2,0901000011966,Álvaro Obregón,2,Consolidada de transición,3755.0,3755.0,13,1.904897192669443
+demanda alternativa,n_disc,0.75,5,298015.0,1387,M1 voraz,3,0900700013238,Iztapalapa,1,Periferia joven con carencias,3422.0,3422.0,11,1.4889165762900916
+demanda alternativa,n_disc,0.75,5,298015.0,1387,M1 voraz,4,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,3415.0,3415.0,6,2.092456884572827
+demanda alternativa,n_disc,0.75,5,298015.0,1387,M1 voraz,5,0901500010273,Cuauhtémoc,3,Envejecida de escolaridad media-alta,3265.0,3265.0,24,1.6745473462464096
+demanda alternativa,n_disc,0.75,5,298015.0,1387,M2 óptimo exacto,1,0900300010624,Coyoacán,1,Periferia joven con carencias,4022.0,4022.0,6,1.5700277564162024
+demanda alternativa,n_disc,0.75,5,298015.0,1387,M2 óptimo exacto,2,0901000011966,Álvaro Obregón,2,Consolidada de transición,3755.0,3755.0,13,1.904897192669443
+demanda alternativa,n_disc,0.75,5,298015.0,1387,M2 óptimo exacto,3,0900700013238,Iztapalapa,1,Periferia joven con carencias,3422.0,3422.0,11,1.4889165762900916
+demanda alternativa,n_disc,0.75,5,298015.0,1387,M2 óptimo exacto,4,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,3415.0,3415.0,6,2.092456884572827
+demanda alternativa,n_disc,0.75,5,298015.0,1387,M2 óptimo exacto,5,0901500010273,Cuauhtémoc,3,Envejecida de escolaridad media-alta,3265.0,3265.0,24,1.6745473462464096
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A1 regla simple: las k AGEB con más personas,1,0900300011162,Coyoacán,2,Consolidada de transición,3547.0,3547.0,6,1.352481416534295
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A1 regla simple: las k AGEB con más personas,2,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,3415.0,3415.0,6,2.092456884572827
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A1 regla simple: las k AGEB con más personas,3,0900300010639,Coyoacán,2,Consolidada de transición,3373.0,1347.0,5,1.2560624525598798
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A1 regla simple: las k AGEB con más personas,4,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,3317.0,1145.0,10,1.7992146818588384
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A1 regla simple: las k AGEB con más personas,5,0900300010802,Coyoacán,1,Periferia joven con carencias,3021.0,1057.0,5,0.9628942675511656
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A1 regla simple: las k AGEB con más personas,6,0900600010344,Iztacalco,2,Consolidada de transición,2634.0,2634.0,7,2.1068483795486475
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A1 regla simple: las k AGEB con más personas,7,090030001061A,Coyoacán,2,Consolidada de transición,2490.0,0.0,4,1.2910571274966576
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A1 regla simple: las k AGEB con más personas,8,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,1985.0,1985.0,4,1.2292008831248242
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A1 regla simple: las k AGEB con más personas,9,0901600011349,Miguel Hidalgo,2,Consolidada de transición,1951.0,1951.0,5,0.9961997391813948
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A1 regla simple: las k AGEB con más personas,10,0901100211003,Tláhuac,1,Periferia joven con carencias,816.0,816.0,2,0.8967282035493342
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A2 seguir la tabla del script 24,1,0900300011162,Coyoacán,2,Consolidada de transición,3547.0,3547.0,6,1.352481416534295
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A2 seguir la tabla del script 24,2,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,3415.0,3415.0,6,2.092456884572827
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A2 seguir la tabla del script 24,3,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,3317.0,1145.0,10,1.7992146818588384
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A2 seguir la tabla del script 24,4,0900600010344,Iztacalco,2,Consolidada de transición,2634.0,2634.0,7,2.1068483795486475
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A2 seguir la tabla del script 24,5,0901000010563,Álvaro Obregón,2,Consolidada de transición,2595.0,2595.0,9,1.9986195004345004
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A2 seguir la tabla del script 24,6,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,1985.0,1985.0,4,1.2292008831248242
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A2 seguir la tabla del script 24,7,0900700013327,Iztapalapa,1,Periferia joven con carencias,1798.0,1798.0,6,1.079734201378884
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A2 seguir la tabla del script 24,8,0900200010114,Azcapotzalco,2,Consolidada de transición,1110.0,1110.0,3,2.218860784405633
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A2 seguir la tabla del script 24,9,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,587.0,587.0,1,1.5825606470359923
+demanda alternativa,n_disc,0.75,10,298015.0,1387,A2 seguir la tabla del script 24,10,0901200011462,Tlalpan,2,Consolidada de transición,507.0,507.0,1,0.8497078106754525
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M1 voraz,1,0900300010624,Coyoacán,1,Periferia joven con carencias,4022.0,4022.0,6,1.5700277564162024
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M1 voraz,2,0901000011966,Álvaro Obregón,2,Consolidada de transición,3755.0,3755.0,13,1.904897192669443
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M1 voraz,3,0900700013238,Iztapalapa,1,Periferia joven con carencias,3422.0,3422.0,11,1.4889165762900916
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M1 voraz,4,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,3415.0,3415.0,6,2.092456884572827
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M1 voraz,5,0901500010273,Cuauhtémoc,3,Envejecida de escolaridad media-alta,3265.0,3265.0,24,1.6745473462464096
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M1 voraz,6,0900600010537,Iztacalco,2,Consolidada de transición,3121.0,3121.0,9,1.5713283185423366
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M1 voraz,7,0900700012780,Iztapalapa,1,Periferia joven con carencias,3000.0,3000.0,8,1.924780149826796
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M1 voraz,8,0901500011233,Cuauhtémoc,2,Consolidada de transición,2863.0,2863.0,8,1.6725867869811182
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M1 voraz,9,0900500010169,Gustavo A. Madero,1,Periferia joven con carencias,2780.0,2780.0,7,1.7886741241713533
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M1 voraz,10,0900500013163,Gustavo A. Madero,2,Consolidada de transición,2751.0,2751.0,10,1.07077924971782
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M2 óptimo exacto,1,0900300010624,Coyoacán,1,Periferia joven con carencias,4022.0,4022.0,6,1.5700277564162024
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M2 óptimo exacto,2,0901000011966,Álvaro Obregón,2,Consolidada de transición,3755.0,3755.0,13,1.904897192669443
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M2 óptimo exacto,3,0900700013238,Iztapalapa,1,Periferia joven con carencias,3422.0,3422.0,11,1.4889165762900916
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M2 óptimo exacto,4,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,3317.0,3317.0,10,1.7992146818588384
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M2 óptimo exacto,5,0901500010269,Cuauhtémoc,3,Envejecida de escolaridad media-alta,3224.0,3224.0,23,1.5548747091589257
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M2 óptimo exacto,6,0901700010367,Venustiano Carranza,2,Consolidada de transición,3219.0,3219.0,9,1.4983032377305223
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M2 óptimo exacto,7,0900600010537,Iztacalco,2,Consolidada de transición,3121.0,3121.0,9,1.5713283185423366
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M2 óptimo exacto,8,0900700012780,Iztapalapa,1,Periferia joven con carencias,3000.0,3000.0,8,1.924780149826796
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M2 óptimo exacto,9,0901500011233,Cuauhtémoc,2,Consolidada de transición,2863.0,2863.0,8,1.6725867869811182
+demanda alternativa,n_disc,0.75,10,298015.0,1387,M2 óptimo exacto,10,0900500010169,Gustavo A. Madero,1,Periferia joven con carencias,2780.0,2780.0,7,1.7886741241713533
+demanda alternativa,n_disc,1.0,3,220898.0,1010,A1 regla simple: las k AGEB con más personas,1,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4480.0,4480.0,17,1.7992146818588384
+demanda alternativa,n_disc,1.0,3,220898.0,1010,A1 regla simple: las k AGEB con más personas,2,0900300010639,Coyoacán,2,Consolidada de transición,3279.0,3279.0,5,1.2560624525598798
+demanda alternativa,n_disc,1.0,3,220898.0,1010,A1 regla simple: las k AGEB con más personas,3,0900300011162,Coyoacán,2,Consolidada de transición,2725.0,0.0,4,1.352481416534295
+demanda alternativa,n_disc,1.0,3,220898.0,1010,A2 seguir la tabla del script 24,1,0900600010344,Iztacalco,2,Consolidada de transición,4497.0,4497.0,13,2.1068483795486475
+demanda alternativa,n_disc,1.0,3,220898.0,1010,A2 seguir la tabla del script 24,2,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4480.0,4480.0,17,1.7992146818588384
+demanda alternativa,n_disc,1.0,3,220898.0,1010,A2 seguir la tabla del script 24,3,0900200010114,Azcapotzalco,2,Consolidada de transición,3064.0,3064.0,10,2.218860784405633
+demanda alternativa,n_disc,1.0,3,220898.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,5497.0,5497.0,20,1.4959034132818176
+demanda alternativa,n_disc,1.0,3,220898.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,5246.0,5246.0,20,1.672646343053029
+demanda alternativa,n_disc,1.0,3,220898.0,1010,M1 voraz,3,0900700012780,Iztapalapa,1,Periferia joven con carencias,5131.0,5131.0,14,1.924780149826796
+demanda alternativa,n_disc,1.0,3,220898.0,1010,M2 óptimo exacto,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,5497.0,5497.0,20,1.4959034132818176
+demanda alternativa,n_disc,1.0,3,220898.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,5246.0,5246.0,20,1.672646343053029
+demanda alternativa,n_disc,1.0,3,220898.0,1010,M2 óptimo exacto,3,0900700012780,Iztapalapa,1,Periferia joven con carencias,5131.0,5131.0,14,1.924780149826796
+demanda alternativa,n_disc,1.0,5,220898.0,1010,A1 regla simple: las k AGEB con más personas,1,0900600010344,Iztacalco,2,Consolidada de transición,4497.0,4497.0,13,2.1068483795486475
+demanda alternativa,n_disc,1.0,5,220898.0,1010,A1 regla simple: las k AGEB con más personas,2,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4480.0,4480.0,17,1.7992146818588384
+demanda alternativa,n_disc,1.0,5,220898.0,1010,A1 regla simple: las k AGEB con más personas,3,0900300010639,Coyoacán,2,Consolidada de transición,3279.0,3279.0,5,1.2560624525598798
+demanda alternativa,n_disc,1.0,5,220898.0,1010,A1 regla simple: las k AGEB con más personas,4,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,2855.0,2855.0,7,1.2292008831248242
+demanda alternativa,n_disc,1.0,5,220898.0,1010,A1 regla simple: las k AGEB con más personas,5,0900300011162,Coyoacán,2,Consolidada de transición,2725.0,0.0,4,1.352481416534295
+demanda alternativa,n_disc,1.0,5,220898.0,1010,A2 seguir la tabla del script 24,1,0900600010344,Iztacalco,2,Consolidada de transición,4497.0,4497.0,13,2.1068483795486475
+demanda alternativa,n_disc,1.0,5,220898.0,1010,A2 seguir la tabla del script 24,2,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4480.0,4480.0,17,1.7992146818588384
+demanda alternativa,n_disc,1.0,5,220898.0,1010,A2 seguir la tabla del script 24,3,0900200010114,Azcapotzalco,2,Consolidada de transición,3064.0,3064.0,10,2.218860784405633
+demanda alternativa,n_disc,1.0,5,220898.0,1010,A2 seguir la tabla del script 24,4,0900700013327,Iztapalapa,1,Periferia joven con carencias,2918.0,2918.0,9,1.079734201378884
+demanda alternativa,n_disc,1.0,5,220898.0,1010,A2 seguir la tabla del script 24,5,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,1260.0,1260.0,3,1.5825606470359923
+demanda alternativa,n_disc,1.0,5,220898.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,5497.0,5497.0,20,1.4959034132818176
+demanda alternativa,n_disc,1.0,5,220898.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,5246.0,5246.0,20,1.672646343053029
+demanda alternativa,n_disc,1.0,5,220898.0,1010,M1 voraz,3,0900700012780,Iztapalapa,1,Periferia joven con carencias,5131.0,5131.0,14,1.924780149826796
+demanda alternativa,n_disc,1.0,5,220898.0,1010,M1 voraz,4,0900600010359,Iztacalco,2,Consolidada de transición,4617.0,4617.0,14,2.004388117559992
+demanda alternativa,n_disc,1.0,5,220898.0,1010,M1 voraz,5,0901700010263,Venustiano Carranza,2,Consolidada de transición,4238.0,4238.0,21,2.1138908561177794
+demanda alternativa,n_disc,1.0,5,220898.0,1010,M2 óptimo exacto,1,0901700010225,Venustiano Carranza,2,Consolidada de transición,5400.0,5400.0,16,2.1307107265894283
+demanda alternativa,n_disc,1.0,5,220898.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,5246.0,5246.0,20,1.672646343053029
+demanda alternativa,n_disc,1.0,5,220898.0,1010,M2 óptimo exacto,3,0900700012780,Iztapalapa,1,Periferia joven con carencias,5131.0,5131.0,14,1.924780149826796
+demanda alternativa,n_disc,1.0,5,220898.0,1010,M2 óptimo exacto,4,0900600010359,Iztacalco,2,Consolidada de transición,4617.0,4617.0,14,2.004388117559992
+demanda alternativa,n_disc,1.0,5,220898.0,1010,M2 óptimo exacto,5,0901500010292,Cuauhtémoc,3,Envejecida de escolaridad media-alta,4394.0,4394.0,28,1.7137515079945187
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,5479.0,5479.0,14,2.092456884572827
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A1 regla simple: las k AGEB con más personas,2,0901500010358,Cuauhtémoc,2,Consolidada de transición,5076.0,727.0,14,1.8262399045278883
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A1 regla simple: las k AGEB con más personas,3,0900600010344,Iztacalco,2,Consolidada de transición,4497.0,4497.0,13,2.1068483795486475
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A1 regla simple: las k AGEB con más personas,4,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4480.0,420.0,17,1.7992146818588384
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A1 regla simple: las k AGEB con más personas,5,0900300010639,Coyoacán,2,Consolidada de transición,3279.0,3279.0,5,1.2560624525598798
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A1 regla simple: las k AGEB con más personas,6,090030001061A,Coyoacán,2,Consolidada de transición,3279.0,0.0,5,1.2910571274966576
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A1 regla simple: las k AGEB con más personas,7,0900700013327,Iztapalapa,1,Periferia joven con carencias,2918.0,2918.0,9,1.079734201378884
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A1 regla simple: las k AGEB con más personas,8,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,2855.0,2855.0,7,1.2292008831248242
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A1 regla simple: las k AGEB con más personas,9,0900300011162,Coyoacán,2,Consolidada de transición,2725.0,0.0,4,1.352481416534295
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A1 regla simple: las k AGEB con más personas,10,0901300010692,Xochimilco,1,Periferia joven con carencias,1228.0,1228.0,3,1.8792797109699055
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A2 seguir la tabla del script 24,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,5479.0,5479.0,14,2.092456884572827
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A2 seguir la tabla del script 24,2,0900600010344,Iztacalco,2,Consolidada de transición,4497.0,4497.0,13,2.1068483795486475
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A2 seguir la tabla del script 24,3,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4480.0,1147.0,17,1.7992146818588384
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A2 seguir la tabla del script 24,4,0901000010563,Álvaro Obregón,2,Consolidada de transición,3722.0,3722.0,15,1.9986195004345004
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A2 seguir la tabla del script 24,5,0900200010114,Azcapotzalco,2,Consolidada de transición,3064.0,3064.0,10,2.218860784405633
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A2 seguir la tabla del script 24,6,0900700013327,Iztapalapa,1,Periferia joven con carencias,2918.0,2918.0,9,1.079734201378884
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A2 seguir la tabla del script 24,7,0900500013093,Gustavo A. Madero,1,Periferia joven con carencias,2855.0,2855.0,7,1.2292008831248242
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A2 seguir la tabla del script 24,8,0900300011162,Coyoacán,2,Consolidada de transición,2725.0,2725.0,4,1.352481416534295
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A2 seguir la tabla del script 24,9,0901200011072,Tlalpan,2,Consolidada de transición,1914.0,1914.0,8,1.3390402110280546
+demanda alternativa,n_disc,1.0,10,220898.0,1010,A2 seguir la tabla del script 24,10,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,1260.0,1260.0,3,1.5825606470359923
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M1 voraz,1,0901500010165,Cuauhtémoc,2,Consolidada de transición,5497.0,5497.0,20,1.4959034132818176
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M1 voraz,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,5246.0,5246.0,20,1.672646343053029
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M1 voraz,3,0900700012780,Iztapalapa,1,Periferia joven con carencias,5131.0,5131.0,14,1.924780149826796
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M1 voraz,4,0900600010359,Iztacalco,2,Consolidada de transición,4617.0,4617.0,14,2.004388117559992
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M1 voraz,5,0901700010263,Venustiano Carranza,2,Consolidada de transición,4238.0,4238.0,21,2.1138908561177794
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M1 voraz,6,0900500013182,Gustavo A. Madero,2,Consolidada de transición,3989.0,3989.0,14,1.5846716133301944
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M1 voraz,7,0900200010260,Azcapotzalco,2,Consolidada de transición,3976.0,3976.0,14,2.2416056754361207
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M1 voraz,8,0900600010594,Iztacalco,2,Consolidada de transición,3975.0,3975.0,15,1.325752411425369
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M1 voraz,9,090150001113A,Cuauhtémoc,2,Consolidada de transición,3875.0,3875.0,10,1.5183349963401929
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M1 voraz,10,0900700014062,Iztapalapa,1,Periferia joven con carencias,3753.0,3753.0,13,1.2496319185096636
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M2 óptimo exacto,1,0901700010225,Venustiano Carranza,2,Consolidada de transición,5400.0,5400.0,16,2.1307107265894283
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M2 óptimo exacto,2,0901000011985,Álvaro Obregón,1,Periferia joven con carencias,5246.0,5246.0,20,1.672646343053029
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M2 óptimo exacto,3,0900700012780,Iztapalapa,1,Periferia joven con carencias,5131.0,5131.0,14,1.924780149826796
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M2 óptimo exacto,4,0900600010359,Iztacalco,2,Consolidada de transición,4617.0,4617.0,14,2.004388117559992
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M2 óptimo exacto,5,0901500010292,Cuauhtémoc,3,Envejecida de escolaridad media-alta,4394.0,4394.0,28,1.7137515079945187
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M2 óptimo exacto,6,0900500013182,Gustavo A. Madero,2,Consolidada de transición,3989.0,3989.0,14,1.5846716133301944
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M2 óptimo exacto,7,0900200010260,Azcapotzalco,2,Consolidada de transición,3976.0,3976.0,14,2.2416056754361207
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M2 óptimo exacto,8,0900600010594,Iztacalco,2,Consolidada de transición,3975.0,3975.0,15,1.325752411425369
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M2 óptimo exacto,9,090150001113A,Cuauhtémoc,2,Consolidada de transición,3875.0,3875.0,10,1.5183349963401929
+demanda alternativa,n_disc,1.0,10,220898.0,1010,M2 óptimo exacto,10,0900700014062,Iztapalapa,1,Periferia joven con carencias,3753.0,3753.0,13,1.2496319185096636
+demanda alternativa,n_disc,1.5,3,99912.0,450,A1 regla simple: las k AGEB con más personas,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,5689.0,5689.0,20,2.092456884572827
+demanda alternativa,n_disc,1.5,3,99912.0,450,A1 regla simple: las k AGEB con más personas,2,0900600010344,Iztacalco,2,Consolidada de transición,5567.0,5567.0,17,2.1068483795486475
+demanda alternativa,n_disc,1.5,3,99912.0,450,A1 regla simple: las k AGEB con más personas,3,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4978.0,579.0,21,1.7992146818588384
+demanda alternativa,n_disc,1.5,3,99912.0,450,A2 seguir la tabla del script 24,1,0900600010344,Iztacalco,2,Consolidada de transición,5567.0,5567.0,17,2.1068483795486475
+demanda alternativa,n_disc,1.5,3,99912.0,450,A2 seguir la tabla del script 24,2,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4978.0,4978.0,21,1.7992146818588384
+demanda alternativa,n_disc,1.5,3,99912.0,450,A2 seguir la tabla del script 24,3,0900200010114,Azcapotzalco,2,Consolidada de transición,4136.0,4136.0,15,2.218860784405633
+demanda alternativa,n_disc,1.5,3,99912.0,450,M1 voraz,1,0900200010167,Azcapotzalco,2,Consolidada de transición,7066.0,7066.0,27,2.936021774685456
+demanda alternativa,n_disc,1.5,3,99912.0,450,M1 voraz,2,0901700010174,Venustiano Carranza,2,Consolidada de transición,6389.0,6389.0,23,1.5706055434527473
+demanda alternativa,n_disc,1.5,3,99912.0,450,M1 voraz,3,0900600010522,Iztacalco,2,Consolidada de transición,5703.0,5703.0,18,1.7688680180286112
+demanda alternativa,n_disc,1.5,3,99912.0,450,M2 óptimo exacto,1,0900200010167,Azcapotzalco,2,Consolidada de transición,7066.0,7066.0,27,2.936021774685456
+demanda alternativa,n_disc,1.5,3,99912.0,450,M2 óptimo exacto,2,090170001023A,Venustiano Carranza,2,Consolidada de transición,6389.0,6389.0,23,1.7215554967460251
+demanda alternativa,n_disc,1.5,3,99912.0,450,M2 óptimo exacto,3,0900600010522,Iztacalco,2,Consolidada de transición,5703.0,5703.0,18,1.7688680180286112
+demanda alternativa,n_disc,1.5,5,99912.0,450,A1 regla simple: las k AGEB con más personas,1,0901500010358,Cuauhtémoc,2,Consolidada de transición,5760.0,5760.0,22,1.8262399045278883
+demanda alternativa,n_disc,1.5,5,99912.0,450,A1 regla simple: las k AGEB con más personas,2,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,5689.0,379.0,20,2.092456884572827
+demanda alternativa,n_disc,1.5,5,99912.0,450,A1 regla simple: las k AGEB con más personas,3,0900600010344,Iztacalco,2,Consolidada de transición,5567.0,5567.0,17,2.1068483795486475
+demanda alternativa,n_disc,1.5,5,99912.0,450,A1 regla simple: las k AGEB con más personas,4,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4978.0,129.0,21,1.7992146818588384
+demanda alternativa,n_disc,1.5,5,99912.0,450,A1 regla simple: las k AGEB con más personas,5,0901300010692,Xochimilco,1,Periferia joven con carencias,1530.0,1530.0,5,1.8792797109699055
+demanda alternativa,n_disc,1.5,5,99912.0,450,A2 seguir la tabla del script 24,1,0900600010344,Iztacalco,2,Consolidada de transición,5567.0,5567.0,17,2.1068483795486475
+demanda alternativa,n_disc,1.5,5,99912.0,450,A2 seguir la tabla del script 24,2,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4978.0,4978.0,21,1.7992146818588384
+demanda alternativa,n_disc,1.5,5,99912.0,450,A2 seguir la tabla del script 24,3,0900200010114,Azcapotzalco,2,Consolidada de transición,4136.0,4136.0,15,2.218860784405633
+demanda alternativa,n_disc,1.5,5,99912.0,450,A2 seguir la tabla del script 24,4,0900700010746,Iztapalapa,1,Periferia joven con carencias,2417.0,2417.0,8,1.8145345076633808
+demanda alternativa,n_disc,1.5,5,99912.0,450,A2 seguir la tabla del script 24,5,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,1521.0,1521.0,4,1.5825606470359923
+demanda alternativa,n_disc,1.5,5,99912.0,450,M1 voraz,1,0900200010167,Azcapotzalco,2,Consolidada de transición,7066.0,7066.0,27,2.936021774685456
+demanda alternativa,n_disc,1.5,5,99912.0,450,M1 voraz,2,0901700010174,Venustiano Carranza,2,Consolidada de transición,6389.0,6389.0,23,1.5706055434527473
+demanda alternativa,n_disc,1.5,5,99912.0,450,M1 voraz,3,0900600010522,Iztacalco,2,Consolidada de transición,5703.0,5703.0,18,1.7688680180286112
+demanda alternativa,n_disc,1.5,5,99912.0,450,M1 voraz,4,0900700014077,Iztapalapa,1,Periferia joven con carencias,4657.0,4657.0,15,1.9467264566038984
+demanda alternativa,n_disc,1.5,5,99912.0,450,M1 voraz,5,0901000011966,Álvaro Obregón,2,Consolidada de transición,4501.0,4501.0,18,1.904897192669443
+demanda alternativa,n_disc,1.5,5,99912.0,450,M2 óptimo exacto,1,0900200010167,Azcapotzalco,2,Consolidada de transición,7066.0,7066.0,27,2.936021774685456
+demanda alternativa,n_disc,1.5,5,99912.0,450,M2 óptimo exacto,2,090170001023A,Venustiano Carranza,2,Consolidada de transición,6389.0,6389.0,23,1.7215554967460251
+demanda alternativa,n_disc,1.5,5,99912.0,450,M2 óptimo exacto,3,0900600010522,Iztacalco,2,Consolidada de transición,5703.0,5703.0,18,1.7688680180286112
+demanda alternativa,n_disc,1.5,5,99912.0,450,M2 óptimo exacto,4,0900700014077,Iztapalapa,1,Periferia joven con carencias,4657.0,4657.0,15,1.9467264566038984
+demanda alternativa,n_disc,1.5,5,99912.0,450,M2 óptimo exacto,5,0901000011966,Álvaro Obregón,2,Consolidada de transición,4501.0,4501.0,18,1.904897192669443
+demanda alternativa,n_disc,1.5,10,99912.0,450,A1 regla simple: las k AGEB con más personas,1,0901700010225,Venustiano Carranza,2,Consolidada de transición,6298.0,6298.0,22,2.1307107265894283
+demanda alternativa,n_disc,1.5,10,99912.0,450,A1 regla simple: las k AGEB con más personas,2,0901500010358,Cuauhtémoc,2,Consolidada de transición,5760.0,809.0,22,1.8262399045278883
+demanda alternativa,n_disc,1.5,10,99912.0,450,A1 regla simple: las k AGEB con más personas,3,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,5689.0,0.0,20,2.092456884572827
+demanda alternativa,n_disc,1.5,10,99912.0,450,A1 regla simple: las k AGEB con más personas,4,0900600010344,Iztacalco,2,Consolidada de transición,5567.0,5567.0,17,2.1068483795486475
+demanda alternativa,n_disc,1.5,10,99912.0,450,A1 regla simple: las k AGEB con más personas,5,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4978.0,129.0,21,1.7992146818588384
+demanda alternativa,n_disc,1.5,10,99912.0,450,A1 regla simple: las k AGEB con más personas,6,0901000010563,Álvaro Obregón,2,Consolidada de transición,4355.0,4355.0,20,1.9986195004345004
+demanda alternativa,n_disc,1.5,10,99912.0,450,A1 regla simple: las k AGEB con más personas,7,0900200010114,Azcapotzalco,2,Consolidada de transición,4136.0,4136.0,15,2.218860784405633
+demanda alternativa,n_disc,1.5,10,99912.0,450,A1 regla simple: las k AGEB con más personas,8,0901500011233,Cuauhtémoc,2,Consolidada de transición,2430.0,2430.0,6,1.6725867869811182
+demanda alternativa,n_disc,1.5,10,99912.0,450,A1 regla simple: las k AGEB con más personas,9,090080001057A,La Magdalena Contreras,1,Periferia joven con carencias,1935.0,1935.0,5,1.5856912740949247
+demanda alternativa,n_disc,1.5,10,99912.0,450,A1 regla simple: las k AGEB con más personas,10,0901300010692,Xochimilco,1,Periferia joven con carencias,1530.0,1530.0,5,1.8792797109699055
+demanda alternativa,n_disc,1.5,10,99912.0,450,A2 seguir la tabla del script 24,1,0901700010210,Venustiano Carranza,1,Periferia joven con carencias,5689.0,5689.0,20,2.092456884572827
+demanda alternativa,n_disc,1.5,10,99912.0,450,A2 seguir la tabla del script 24,2,0900600010344,Iztacalco,2,Consolidada de transición,5567.0,5567.0,17,2.1068483795486475
+demanda alternativa,n_disc,1.5,10,99912.0,450,A2 seguir la tabla del script 24,3,0901500010343,Cuauhtémoc,1,Periferia joven con carencias,4978.0,579.0,21,1.7992146818588384
+demanda alternativa,n_disc,1.5,10,99912.0,450,A2 seguir la tabla del script 24,4,0901000010563,Álvaro Obregón,2,Consolidada de transición,4355.0,4355.0,20,1.9986195004345004
+demanda alternativa,n_disc,1.5,10,99912.0,450,A2 seguir la tabla del script 24,5,0900200010114,Azcapotzalco,2,Consolidada de transición,4136.0,4136.0,15,2.218860784405633
+demanda alternativa,n_disc,1.5,10,99912.0,450,A2 seguir la tabla del script 24,6,0900700010746,Iztapalapa,1,Periferia joven con carencias,2417.0,2417.0,8,1.8145345076633808
+demanda alternativa,n_disc,1.5,10,99912.0,450,A2 seguir la tabla del script 24,7,0900400010091,Cuajimalpa de Morelos,2,Consolidada de transición,1521.0,1521.0,4,1.5825606470359923
+demanda alternativa,n_disc,1.5,10,99912.0,450,A2 seguir la tabla del script 24,8,0900300011092,Coyoacán,3,Envejecida de escolaridad media-alta,1368.0,1368.0,6,1.5546331807969165
+demanda alternativa,n_disc,1.5,10,99912.0,450,A2 seguir la tabla del script 24,9,0901200012441,Tlalpan,1,Periferia joven con carencias,1329.0,1329.0,8,3.151590012544879
+demanda alternativa,n_disc,1.5,10,99912.0,450,A2 seguir la tabla del script 24,10,0900500010366,Gustavo A. Madero,4,Central de alta escolaridad,849.0,849.0,3,2.5183324330732533
+demanda alternativa,n_disc,1.5,10,99912.0,450,M1 voraz,1,0900200010167,Azcapotzalco,2,Consolidada de transición,7066.0,7066.0,27,2.936021774685456
+demanda alternativa,n_disc,1.5,10,99912.0,450,M1 voraz,2,0901700010174,Venustiano Carranza,2,Consolidada de transición,6389.0,6389.0,23,1.5706055434527473
+demanda alternativa,n_disc,1.5,10,99912.0,450,M1 voraz,3,0900600010522,Iztacalco,2,Consolidada de transición,5703.0,5703.0,18,1.7688680180286112
+demanda alternativa,n_disc,1.5,10,99912.0,450,M1 voraz,4,0900700014077,Iztapalapa,1,Periferia joven con carencias,4657.0,4657.0,15,1.9467264566038984
+demanda alternativa,n_disc,1.5,10,99912.0,450,M1 voraz,5,0901000011966,Álvaro Obregón,2,Consolidada de transición,4501.0,4501.0,18,1.904897192669443
+demanda alternativa,n_disc,1.5,10,99912.0,450,M1 voraz,6,090070001376A,Iztapalapa,2,Consolidada de transición,3743.0,3743.0,15,2.1714367104556307
+demanda alternativa,n_disc,1.5,10,99912.0,450,M1 voraz,7,0900200011042,Azcapotzalco,2,Consolidada de transición,3544.0,3544.0,13,2.3445758534455723
+demanda alternativa,n_disc,1.5,10,99912.0,450,M1 voraz,8,0901200011161,Tlalpan,2,Consolidada de transición,3234.0,3234.0,12,2.339285940032557
+demanda alternativa,n_disc,1.5,10,99912.0,450,M1 voraz,9,0900500010205,Gustavo A. Madero,1,Periferia joven con carencias,2979.0,2979.0,10,1.8538180533230124
+demanda alternativa,n_disc,1.5,10,99912.0,450,M1 voraz,10,0900700012507,Iztapalapa,2,Consolidada de transición,2794.0,2794.0,14,1.630365211433607
+demanda alternativa,n_disc,1.5,10,99912.0,450,M2 óptimo exacto,1,0900200010928,Azcapotzalco,2,Consolidada de transición,5761.0,5761.0,25,3.1386170699616005
+demanda alternativa,n_disc,1.5,10,99912.0,450,M2 óptimo exacto,2,0901500010358,Cuauhtémoc,2,Consolidada de transición,5760.0,5760.0,22,1.8262399045278883
+demanda alternativa,n_disc,1.5,10,99912.0,450,M2 óptimo exacto,3,0900600010522,Iztacalco,2,Consolidada de transición,5703.0,5703.0,18,1.7688680180286112
+demanda alternativa,n_disc,1.5,10,99912.0,450,M2 óptimo exacto,4,0900200011095,Azcapotzalco,2,Consolidada de transición,5690.0,5137.0,20,2.839740673603027
+demanda alternativa,n_disc,1.5,10,99912.0,450,M2 óptimo exacto,5,0900700014077,Iztapalapa,1,Periferia joven con carencias,4657.0,4657.0,15,1.9467264566038984
+demanda alternativa,n_disc,1.5,10,99912.0,450,M2 óptimo exacto,6,0901000011966,Álvaro Obregón,2,Consolidada de transición,4501.0,4501.0,18,1.904897192669443
+demanda alternativa,n_disc,1.5,10,99912.0,450,M2 óptimo exacto,7,0901700010437,Venustiano Carranza,2,Consolidada de transición,4205.0,4205.0,22,1.4455234979982206
+demanda alternativa,n_disc,1.5,10,99912.0,450,M2 óptimo exacto,8,090070001376A,Iztapalapa,2,Consolidada de transición,3743.0,3743.0,15,2.1714367104556307
+demanda alternativa,n_disc,1.5,10,99912.0,450,M2 óptimo exacto,9,0901200011161,Tlalpan,2,Consolidada de transición,3234.0,3234.0,12,2.339285940032557
+demanda alternativa,n_disc,1.5,10,99912.0,450,M2 óptimo exacto,10,0900500010205,Gustavo A. Madero,1,Periferia joven con carencias,2979.0,2979.0,10,1.8538180533230124

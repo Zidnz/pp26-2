@@ -18,7 +18,14 @@
   --max:1240px;
 }
 *{box-sizing:border-box}
-body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
+/* 11 nov 2026 · fondo de página con la red (mismos tonos que el mapa de nodos de evidencia). Va fijo detrás de todo y solo se ve fuera de los contenedores;
+   --paper sigue siendo el color base. Para volver al fondo liso basta borrar la regla body::before. */
+html{background:var(--paper)}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1992 1126' preserveAspectRatio='xMidYMid slice'><g fill='none' stroke='%23aa95d1' stroke-opacity='.6' stroke-width='1.6'><path d='M88 178L410 90M410 90L689 281M410 90L528 486M689 281L528 486M689 281L1027 149M1027 149L1364 310M1027 149L939 589M1364 310L939 589M528 486L939 589M1364 310L1687 134M1687 134L1908 295M1908 295L1614 706M1614 706L1262 882M939 589L1262 882M1262 882L821 1088M821 1088L293 1000M293 1000L88 765M88 765L528 486'/></g><g fill='%23f6f4fb' stroke='%23aa95d1' stroke-opacity='.75' stroke-width='2.4'><circle cx='88' cy='178' r='7'/><circle cx='410' cy='90' r='9'/><circle cx='689' cy='281' r='11'/><circle cx='528' cy='486' r='9'/><circle cx='1027' cy='149' r='7'/><circle cx='1364' cy='310' r='11'/><circle cx='939' cy='589' r='12'/><circle cx='1687' cy='134' r='7'/><circle cx='1908' cy='295' r='7'/><circle cx='1614' cy='706' r='7'/><circle cx='1262' cy='882' r='10'/><circle cx='821' cy='1088' r='7'/><circle cx='293' cy='1000' r='7'/><circle cx='88' cy='765' r='7'/></g></svg>") center/cover no-repeat,
+    radial-gradient(60vw 55vh at 0% 100%,rgba(125,209,193,.30),transparent 65%),radial-gradient(65vw 60vh at 100% 8%,rgba(170,149,209,.26),transparent 62%)}
+@media print{body::before{display:none}}
+body{margin:0;color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased}
 p{margin:0} h1,h2,h3,h4{margin:0;text-wrap:balance}
 button{font-family:inherit;cursor:pointer;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}

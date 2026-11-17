@@ -1,0 +1,17 @@
+﻿alcaldia,combinaciones_con_zona,zonas_en_total,combinaciones_total,con_zona_en_el_primario,nivel_modal,orden_presentacion
+Álvaro Obregón,8,8,9,True,3,9
+Cuauhtémoc,7,13,9,True,1,2
+Venustiano Carranza,7,7,9,True,3,6
+Azcapotzalco,6,8,9,True,1,1
+Iztacalco,5,6,9,True,1,3
+Iztapalapa,3,4,9,False,2,5
+Coyoacán,3,3,9,False,3,8
+Gustavo A. Madero,2,2,9,False,3,10
+Miguel Hidalgo,2,2,9,False,3,12
+Tlalpan,1,1,9,False,3,7
+Cuajimalpa de Morelos,0,0,9,False,2,4
+Xochimilco,0,0,9,False,3,11
+La Magdalena Contreras,0,0,9,False,3,13
+Milpa Alta,0,0,9,False,3,14
+Tláhuac,0,0,9,False,3,15
+Benito Juárez,0,0,9,False,4,16

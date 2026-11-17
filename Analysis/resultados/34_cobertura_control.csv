@@ -1,0 +1,2 @@
+﻿chequeo,n_ageb,dif_mediana_abs_m,dif_p99_abs_m,dif_max_abs_m,tolerancia_mediana_m,tolerancia_max_m,ageb_que_cambian_de_lado_a_1km,pasa
+distancia al establecimiento núcleo más cercano: este script contra notebook D,2371,2.8806956636753256,13.267818659250775,25.109907809745202,20,100,2,True
