@@ -91,15 +91,28 @@ Cada cifra del tablero lleva su fuente, su precisión (intervalo de confianza) y
 
 ## Arquitectura
 
-```
-Microdatos y fuentes abiertas      Analysis/                DW/                      Frontend/observatorio/
-(ENASIC, ENUT, DENUE, Censo,   ─►  notebooks A–D,       ─►  ETL ─► SQLite       ─►  build_datos.py ─► página estática
- CONEVAL, Marco Geoestadístico)    scripts 19–34            (esquema estrella,       (sin servidor, abre con
-                                   resultados/*.csv          marts, pruebas DQ)       doble clic)
-                                                                  │
-                                                                  └─► Backend/ (FastAPI, solo lectura)
+```mermaid
+flowchart LR
+    F["<b>Fuentes</b><br/>ENASIC · ENUT · DENUE<br/>Censo 2020 · CONEVAL<br/>Marco Geoestadístico"]
+    A["<b>Analysis/</b><br/>notebooks A–D<br/>scripts 19–34<br/>resultados/*.csv"]
+    D[("<b>DW/</b><br/>ETL + SQLite<br/>esquema estrella<br/>marts · pruebas de calidad")]
+    B["<b>build_datos.py</b>"]
+    O["<b>Observatorio</b><br/>página estática<br/>abre con doble clic"]
+    API["<b>Backend/</b><br/>FastAPI<br/>solo lectura"]
+    R["<b>RedCare</b><br/>prioridad.js<br/>puntaje y bolsa de horas"]
+    P["<b>prioridad.py</b><br/>servicio /puntaje"]
 
-Frontend/ (RedCare) ── puntaje y bolsa de horas ──► prioridad.js  ≡  Backend/app/prioridad.py (prueba de paridad)
+    F --> A --> D --> B --> O
+    D --> API
+    R <-. "prueba de paridad" .-> P
+    API --- P
+
+    classDef fuente fill:#fff4e0,stroke:#e0a030,color:#222
+    classDef proceso fill:#e8f1fb,stroke:#3b78c4,color:#222
+    classDef salida fill:#e6f5ea,stroke:#3a9a5b,color:#222
+    class F fuente
+    class A,D,B proceso
+    class O,API,R,P salida
 ```
 
 ## Estructura del repositorio
