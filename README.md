@@ -1,79 +1,186 @@
-# Observatorio de Datos para la Economía del Cuidado — PP 26-2
+<div align="center">
+<img src="Frontend/observatorio/ilustraciones/cuidadoraSilla.png" alt="Ilustración del Observatorio del Cuidado" width="220"/>
 
-Proyecto integrador del 7.º semestre, Licenciatura en Ciencia de Datos para el Negocio (UNRC), semestre 2026-2.
-Equipo: Omar Gutiérrez Escoto (líder), Daniel Cureño Martínez y Alondra Danae Madrigal García.
+<h1>Observatorio de Datos para la Economía del Cuidado</h1>
+<h3>Quién cuida, quién no puede cubrir ese cuidado y dónde — Ciudad de México · PP 26-2</h3>
 
-## Cambios desde el 20 oct (comprobado el 2 nov 2026)
+<p>
+  <img src="https://img.shields.io/badge/estado-prototipo%20acad%C3%A9mico-orange?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/Python-pandas%20%C2%B7%20scikit--learn-3776AB?style=for-the-badge&logo=python&logoColor=white"/>
+  <img src="https://img.shields.io/badge/FastAPI-0.1.0-009688?style=for-the-badge&logo=fastapi&logoColor=white"/>
+  <img src="https://img.shields.io/badge/SQLite-data%20warehouse-003B57?style=for-the-badge&logo=sqlite&logoColor=white"/>
+</p>
+<p>
+  <img src="https://img.shields.io/badge/JavaScript-sin%20build-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"/>
+  <img src="https://img.shields.io/badge/D3.js-mapas-F9A03C?style=for-the-badge&logo=d3dotjs&logoColor=white"/>
+  <img src="https://img.shields.io/badge/three.js-escenas%203D-000000?style=for-the-badge&logo=threedotjs&logoColor=white"/>
+  <img src="https://img.shields.io/badge/R-verificaci%C3%B3n%20de%20encuesta-276DC3?style=for-the-badge&logo=r&logoColor=white"/>
+</p>
+<p>
+  <img src="https://img.shields.io/badge/GitHub%20Pages-publicado-222222?style=for-the-badge&logo=github&logoColor=white"/>
+  <img src="https://img.shields.io/badge/datos-reales%20agregados-4CAF50?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/app-datos%20simulados-lightgrey?style=for-the-badge"/>
+</p>
 
-Lo siguiente **corrige o completa** el estado de abajo, que se conserva por historia. Detalle y motivos: bitácora.
+<p>
+  <a href="https://zidnz.github.io/pp26-2/Frontend/observatorio/"><strong>Ver el Observatorio</strong></a> ·
+  <a href="https://zidnz.github.io/pp26-2/Frontend/"><strong>Probar RedCare</strong></a>
+</p>
 
-- **Objetivo primario del modelo de focalización:** vigente DEC-OBJ-002 (1 nov, 10:30): `DANO_SALUD3`; preregistro en `Documentos/`. Hay un **conflicto abierto** (Omar dijo «algún daño» en otro chat; no se registró como reversión). La línea de abajo sobre `DANO_ALGUNO` quedó superada.
-- **Resultado de la v2 (script 27):** no concluyente; se queda la regla ≥ 40 h. Scripts 26 a 28 y el preregistro sin doble revisión.
-- **App:** se llama **RedCare** desde el 26 oct (antes «Mientras»).
-- **Carpetas nuevas o no documentadas antes:** `Observatorio_streamlit/` (Observatorio en Streamlit, 29 oct; sin comprobar aquí de dónde lee los datos), `_entrega_2026-10-29/` y `_respaldo_graficas_*` (raíz).
-- **Repositorio:** existe `https://github.com/Zidnz/pp26-2` (no es el de MILPÍN). La carpeta local sigue **sin `.git`** (comprobado el 2 nov).
-- **Segunda revisión:** 2 al 6 nov 2026, en curso.
-- **Archivos fuera de la carpeta:** versiones 2.1 de los documentos del segundo avance y una presentación de 13 diapositivas existen solo en chats (bitácora, 2 nov).
+<blockquote>
+<strong>Pregunta central:</strong> ¿a qué cuidadoras familiares de alta intensidad conviene ofrecer primero un <em>relevo por horas</em> (3 a 12 h/semana), y en qué zonas de la CDMX hace falta la oferta?
+</blockquote>
+</div>
 
-## Estado (20 oct 2026, 11:10 h CDMX)
+---
 
-Inventario hecho contra la carpeta `Downloads\pp26-2` el 20 oct 2026. Lo que dice este README se comprobó listando los archivos. Las decisiones y sus motivos están en la bitácora, no aquí.
+> **Proyecto académico.** Lo hizo el equipo del 7.º semestre de la Licenciatura en Ciencia de Datos para el Negocio (UNRC), semestre 2026-2.
+> El Observatorio usa **datos reales y agregados** (ENASIC 2022, ENUT 2024, DENUE, Censo 2020, CONEVAL). La app RedCare usa **datos simulados**, declarados como tales.
+> No se sube ningún dato personal, ni siquiera seudonimizado.
 
-- **Programa:** opción C, relevo por horas (3 a 12 h/semana) para cuidadoras familiares de alta intensidad. La eligió Omar el 5 oct 2026 (bitácora). Si el equipo la confirmó, la bitácora no lo registra.
-- **Objetivo general:** candidato del 20 sept (bitácora). No hay entrada posterior que registre su confirmación por el equipo: **desconocido**.
-- **Objetivo primario del modelo de focalización:** «algún daño» (`DANO_ALGUNO`). Salud física queda como sensibilidad exploratoria (DEC-OBJ-001, 20 oct, 11:05). Decisión de Omar, sin confirmación del equipo.
-- **Doble revisión:** ningún entregable técnico la tiene registrada: notebooks A–D, scripts 19–21, DW, Observatorio, animación, ENUT 2024 ni documento técnico. Sus cifras no deben citarse como aprobadas.
-- **Próxima fecha:** 2.ª revisión del 2 al 6 nov 2026. La 1.ª revisión fue el 26 sept.
+## Tabla de contenidos
 
-## Dónde está cada cosa
+- [Qué es](#qué-es)
+- [Componentes](#componentes)
+- [Qué responde el Observatorio](#qué-responde-el-observatorio)
+- [Arquitectura](#arquitectura)
+- [Estructura del repositorio](#estructura-del-repositorio)
+- [Cómo correrlo](#cómo-correrlo)
+- [Reglas del proyecto](#reglas-del-proyecto)
+- [Documentación](#documentación)
+- [Equipo](#equipo)
 
-| Carpeta | Contenido | Estado |
+---
+
+## Qué es
+
+Un **observatorio de datos** sobre la economía del cuidado en la Ciudad de México, con tres piezas que comparten los mismos datos y las mismas reglas:
+
+1. **Análisis reproducible** (notebooks y scripts) que estima la necesidad de cuidado, las barreras de uso, el costo de un programa de relevo y la brecha entre oferta y población por zona.
+2. **Un almacén de datos** (esquema estrella + ETL) que integra los resultados y hace cumplir las reglas de calidad en código.
+3. **Dos interfaces:** el **Observatorio** (tablero para quien decide) y **RedCare** (prototipo móvil del programa de relevo).
+
+El programa que se evalúa es la **opción C: relevo por horas** para cuidadoras familiares de alta intensidad. Se eligió el 5 de octubre de 2026 y el motivo está en la bitácora.
+
+## Componentes
+
+| Componente | Carpeta | Qué hace |
 |---|---|---|
-| `Documentos/bitacora-decisiones.md` | Registro de decisiones, append-only. Es la fuente canónica. | Al día al 2 nov 2026 |
-| `Documentos/` | Informes Word/PDF, sus generadores (`build_*.js`, `generar_valores*.py`), documento técnico y referencias. Ver `Documentos/README.md` para saber qué versión rige. | Hay versiones superadas sin archivar. El proyecto C++ ajeno se borró el 20 oct |
-| `Data/investigacion/` | 11 CSV de origen (de varios no está documentado el productor ni el año) | Sin cambios desde el 14 sept |
-| `Data/ref/`, `Data/raw/` | Copias de referencia; DENUE 05_2026 CDMX (260 MB, git lo ignora) | Ver `Data/README_notebook01.md` |
-| `Analysis/` | 4 notebooks (A–D), scripts 19–21, modelo de sostenibilidad (20, `.py` + `.ipynb`), 88 archivos en `resultados/`, 25 figuras (f1–f25) | Ver `Analysis/README.md` |
-| `Analysis/enut2024_participacion_laboral/` | Subproyecto ENUT 2024 (Python + R/Quarto): participación laboral de mujeres de 25 a 54 años | **No registrado en la bitácora** (15 oct 2026) |
-| `Analysis/animaciones/` | Video regla contra modelo (ManimGX) para la presentación | **No registrado en la bitácora** (15–16 oct 2026) |
-| `Analysis/matrices/` | Inventario de fuentes, matrices de tipología y referencias, `diccionario_observatorio.csv` | Borradores sin doble revisión |
-| `ML/` | Índice de modelos, sin código (el código vive en `Analysis/`) | Actualizado el 20 oct 2026 |
-| `DW/` | Data warehouse (SQLite): esquema estrella, 3 data marts y ETL (UCA Inteligencia de Negocios, 20 oct 2026). Ver `DW/README.md` | Corrida 6 (21 oct); sin doble revisión. El Observatorio lee del almacén territorio y asequibilidad del relevo; el resto de sus bloques, todavía de `Analysis/` |
-| `Frontend/observatorio/` | **Observatorio** en HTML (tablero de la UCA Inteligencia de Negocios) con datos reales agregados. Lo genera `build_datos.py` a partir de `Analysis/` y, para territorio y asequibilidad del relevo, del almacén `DW/` (21 oct 2026) | Ver su `README.md` (al día al 20 oct) |
-| `Frontend/` (raíz) | Prototipo móvil de la app **Mientras** (relevo por horas; nombre provisional) con **datos simulados** | Reestructurado el 8 oct para la opción C; priorización con puntaje, niveles y bolsa de horas el 20 oct (bitácora, 23:10) |
-| `Backend/` | API FastAPI (0.1.0): lectura del DW en solo lectura (`/dw/*`) y puntaje de Mientras sin estado (`/puntaje/*`). No guarda datos. Ver `Backend/README.md` | Creado el 21 oct 2026; sin doble revisión. Ni el Observatorio ni la app lo necesitan: el Observatorio lee el almacén al construirse, sin servidor |
-| `scripts/` | `app.py` (asistente de voz Flask que apunta a una carpeta `ERP/` que **ya no existe**), `danita.html` y `parche_comparador_2026-10-07/` | Pendiente decidir si son del proyecto (bitácora, 22 sept) |
-| `Fotos/` | Capturas del Observatorio (9) | — |
-| `Claude outputs/` | `Omar_Tema3_I_Care_a_Lot.docx` (9 sept) | Parece ajeno al Observatorio; pendiente decidir |
-| `_to_delete/` | Existe de nuevo (respaldos posteriores al 20 oct; por ejemplo `backup_pre_registro_2026-11-02/`) | **Borrada el 20 oct 2026 (11:35)** por decisión de Omar, con todos sus respaldos. Las referencias a `_to_delete/…` en la bitácora y en `Frontend/observatorio/README.md` son históricas: esos archivos ya no existen |
+| **Observatorio** | [`Frontend/observatorio/`](Frontend/observatorio) | Tablero HTML de una sola página, con nueve pestañas y mapas por alcaldía, estado y AGEB. Abre con doble clic, sin servidor. |
+| **RedCare** | [`Frontend/`](Frontend) | App móvil en HTML/CSS/JS puro: entrevista, puntaje, nivel de prioridad, bolsa de horas y asignación de relevo. Una vista por rol (cuidadora, relevo, programa). |
+| **Análisis** | [`Analysis/`](Analysis) | Cuatro notebooks (A–D) y los scripts 19 a 34: oferta, ENASIC, asequibilidad, tipología de AGEB, focalización y cobertura. |
+| **Data warehouse** | [`DW/`](DW) | SQLite con 13 dimensiones, 5 hechos, 4 data marts, ETL con 30 pruebas de calidad y consultas OLAP. |
+| **Backend** | [`Backend/`](Backend) | API FastAPI de solo lectura sobre el DW (`/dw/*`) y servicio de puntaje sin estado (`/puntaje/*`). No guarda datos. |
+| **Documentos** | [`Documentos/`](Documentos) | Bitácora de decisiones, preregistro del modelo de focalización, documento técnico e informes. |
 
-En la raíz también están `denue_09_csv.zip` y `denue_09_0525_csv.zip` (45 MB cada uno; git los ignora por `*.zip`). El segundo lo usa `Analysis/reproduccion_colmex_2026-09-22/`. `_obs_snapshot.tgz` y `app_matching_relevo_frontend.zip` se borraron el 20 oct (21:50).
+## Qué responde el Observatorio
 
-## Orden para reproducir
+| Pestaña | Pregunta |
+|---|---|
+| **Inicio** | ¿Qué encontramos, en tres marcos con escenas 3D? |
+| **Necesidad** | ¿Quién carga el cuidado y qué afectaciones suben con más horas? |
+| **Barreras** | ¿Por qué quien necesita cuidado no usa servicios? |
+| **Segmentación** | ¿Qué perfiles de cuidadoras hay? |
+| **Relevo** | ¿Cuánto cuesta la hora y es asequible para las familias? |
+| **Focalización** | ¿La regla de 40 h o más sirve para elegir a quién atender? ¿Un modelo lo hace mejor? |
+| **¿Dónde?** | ¿Qué alcaldías, entidades y AGEB tienen mayor brecha entre población y oferta? |
+| **Indicadores** | ¿Qué tan precisa es cada cifra y con qué fuente? |
+| **Método** | ¿Cómo se hizo, y qué sigue sin revisar? |
 
-1. `Analysis/`: A → C → B → D (B lee resultados de A y C). Después `19_costo_hora_por_jornada.py`, `20_modelo_sostenibilidad.py` (o su `.ipynb`) y `21_priorizacion_cuidadoras.py`. Todos se ejecutan desde `Analysis/`.
-2. `python -B DW/etl/run_etl.py` (desde la raíz).
-3. `python Frontend/observatorio/build_datos.py` (desde la raíz). Desde el 21 oct 2026 va **después** del ETL: territorio y asequibilidad del relevo se leen del almacén, y el script se detiene si el almacén falta o está desfasado.
+Cada cifra del tablero lleva su fuente, su precisión (intervalo de confianza) y su estado de revisión.
 
-Los microdatos (ENASIC, DENUE, Censo 2020 por AGEB, ENUT 2024) tienen que estar en disco aunque git los ignore. Los README de cada carpeta dicen de dónde se descargan.
+## Arquitectura
 
-## Pendientes de repositorio (20 oct 2026)
+```
+Microdatos y fuentes abiertas      Analysis/                DW/                      Frontend/observatorio/
+(ENASIC, ENUT, DENUE, Censo,   ─►  notebooks A–D,       ─►  ETL ─► SQLite       ─►  build_datos.py ─► página estática
+ CONEVAL, Marco Geoestadístico)    scripts 19–34            (esquema estrella,       (sin servidor, abre con
+                                   resultados/*.csv          marts, pruebas DQ)       doble clic)
+                                                                  │
+                                                                  └─► Backend/ (FastAPI, solo lectura)
 
-1. **No existe `.git`** en `Downloads\pp26-2`. El remoto `Zidnz/Proyecto-Protot-pico-2026` es de MILPÍN y no debe usarse (bitácora, 22 sept). Mientras no haya git, no hay historial que respalde fechas ni versiones. Desde el 20 oct tampoco quedan los respaldos de `_to_delete/`: la bitácora es la única evidencia de las versiones anteriores.
-2. `.gitignore` no cubre `*.tgz` (`_obs_snapshot.tgz`, 7.5 MB). Decidir antes del primer commit.
-3. El Project de claude.ai está **desfasado** respecto a esta carpeta y **por encima de su límite de conocimiento**. Ver `ESTADO_SINCRONIZACION.md` (actualización del 20 oct).
+Frontend/ (RedCare) ── puntaje y bolsa de horas ──► prioridad.js  ≡  Backend/app/prioridad.py (prueba de paridad)
+```
 
-## Reglas que aplican a todo el repositorio
-- Toda cifra publicada se rastrea hasta un notebook o un archivo de resultados; nunca nace en Word ni en la presentación.
-- Cada afirmación se etiqueta como confirmada, probable o desconocida.
-- Todo dato simulado se declara como tal.
-- No se suben datos personales (ni seudonimizados), credenciales ni microdatos grandes. Se versiona el procedimiento para reconstruirlos.
+## Estructura del repositorio
 
-## Historial de este archivo
-- 21 sept 2026: versión con el estado al 21 sept (etapa de diseño desde el 18 sept, componente territorial en exploración, `ERP/` listada como carpeta). (El respaldo que se hizo en `_to_delete/` se borró junto con esa carpeta.)
-- 20 oct 2026 (10:30): se agregó la fila de `DW/`.
-- 20 oct 2026 (11:10): se rehizo el estado y la tabla según el inventario de la carpeta. Se quitó `ERP/` porque no existe. Se agregaron `Frontend/observatorio/`, `enut2024_participacion_laboral/`, `animaciones/`, `Claude outputs/`, `_to_delete/` y los archivos sueltos de la raíz.
-- 20 oct 2026 (11:35): se borraron `_to_delete/` completa, las carpetas `__pycache__` y el proyecto C++ de 2015 de `Documentos/`.
-- 21 oct 2026 (10:55): fila de `Backend/` actualizada (backend 0.1.0; bitácora del 21 oct, 10:55).
-- 21 oct 2026 (22:30): orden de reproducción (ETL antes que `build_datos.py`) y filas de `DW/`, `Backend/` y Observatorio (bitácora del 21 oct, 22:30).
-- 2 nov 2026: sección «Cambios desde el 20 oct», fila de la bitácora y de `_to_delete/` (bitácora, 2 nov). La tabla y el resto del estado del 20 oct no se revisaron línea por línea.
+```
+pp26-2/
+├── Analysis/            notebooks A–D, scripts 19–34, resultados/, figuras/, matrices/
+│   └── enut2024_participacion_laboral/   subproyecto ENUT 2024 (Python y R/Quarto)
+├── DW/                  esquema estrella, ETL, marts y consultas OLAP
+├── Backend/             API FastAPI (+ pruebas, incluida la de paridad con el JS)
+├── Frontend/            RedCare (app móvil)
+│   └── observatorio/    el Observatorio (tablero) y su generador de datos
+├── Data/                insumos de referencia (los microdatos grandes no se suben)
+├── Documentos/          bitácora, preregistro, documento técnico, informes
+├── index.html           entrada de GitHub Pages
+└── requirements.txt
+```
+
+## Cómo correrlo
+
+**Solo ver el Observatorio:** abre [`Frontend/observatorio/index.html`](Frontend/observatorio/index.html) con doble clic, o entra a la [versión publicada](https://zidnz.github.io/pp26-2/Frontend/observatorio/).
+
+**Reconstruir todo desde el análisis** (requiere Python 3.10+ y los microdatos en disco; git los ignora):
+
+```bash
+pip install -r requirements.txt
+```
+
+1. Ejecuta los notebooks A → C → B → D y los scripts 19 a 34, desde `Analysis/`.
+2. Reconstruye el almacén, desde la raíz:
+
+```bash
+python -B DW/etl/run_etl.py
+```
+
+3. Genera los datos de la página (siempre después del ETL):
+
+```bash
+python Frontend/observatorio/build_datos.py
+```
+
+**RedCare** (prototipo, datos simulados):
+
+```bash
+cd Frontend && python -m http.server 8000
+```
+
+**API:**
+
+```bash
+pip install -r Backend/requirements.txt
+python -m uvicorn Backend.app.main:app --port 8001
+```
+
+La documentación interactiva queda en `http://127.0.0.1:8001/docs`.
+
+## Reglas del proyecto
+
+Estas reglas se hacen cumplir en código, no solo en el texto:
+
+- **Desconocido no es cero.** Los valores sin dato salen como `null`.
+- **Una encuesta nacional no sustenta cifras por alcaldía.** Si el DW viola esa regla, la API responde 503 y el tablero no se construye.
+- **Sin dos periodos no hay tendencia.** Ninguna fuente permite hoy una serie de tiempo.
+- **Toda cifra se rastrea** hasta un notebook o un archivo de resultados; nunca nace en Word ni en la presentación.
+- **Todo dato simulado se declara como tal.**
+- **Doble revisión:** los entregables técnicos aún no la tienen; sus cifras no deben citarse como aprobadas.
+
+## Documentación
+
+- [`Documentos/bitacora-decisiones.md`](Documentos/bitacora-decisiones.md): decisiones y sus motivos (fuente canónica).
+- [`Documentos/estado-del-repositorio.md`](Documentos/estado-del-repositorio.md): inventario detallado carpeta por carpeta.
+- [`Analysis/README.md`](Analysis/README.md), [`DW/README.md`](DW/README.md), [`Backend/README.md`](Backend/README.md), [`Frontend/README.md`](Frontend/README.md), [`Frontend/observatorio/README.md`](Frontend/observatorio/README.md).
+
+## Equipo
+
+| Integrante | Rol |
+|---|---|
+| **Omar Gutiérrez Escoto** | Líder del proyecto |
+| Daniel Cureño Martínez | Análisis |
+| Alondra Danae Madrigal García | Análisis |
+
+<div align="center">
+<sub>Licenciatura en Ciencia de Datos para el Negocio · UNRC · 7.º semestre · 2026-2</sub>
+</div>
