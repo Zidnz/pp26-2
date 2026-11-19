@@ -29,7 +29,8 @@
     lftMenores: { norma: 'Ley Federal del Trabajo, art. 22', tema: 'Restricciones al trabajo de menores de edad.' },
     salario: { norma: 'Resolución CONASAMI (DOF 09-dic-2025)', tema: 'Salario mínimo profesional de personas trabajadoras del hogar como piso de la remuneración.' },
     imss: { norma: 'Ley del Seguro Social', tema: 'Aseguramiento de las personas trabajadoras del hogar (verificar artículos y vigencia).' },
-    datos: { norma: 'Ley de protección de datos personales aplicable (particulares o sujetos obligados, según la institución)', tema: 'Aviso de privacidad. La ayuda en actividades básicas y los daños a la salud son datos sensibles: consentimiento expreso. Verificar la ley vigente tras la reforma de 2025.' },
+    datos: { norma: 'Ley Federal de Protección de Datos Personales en Posesión de los Particulares (DOF 20-mar-2025), arts. 8, 15 y 16', tema: 'RedCare es del sector privado. Aviso de privacidad. La ayuda en actividades básicas y los daños a la salud son datos sensibles: consentimiento expreso y por escrito.' },
+    plataformas: { norma: 'Ley Federal del Trabajo, Título Sexto, Cap. IX Bis (arts. 291-A a 291-U)', tema: 'Trabajo en plataformas digitales: relación laboral y política de gestión algorítmica por escrito.' },
   };
 
   const DOCS_ID = ['INE/IFE vigente', 'Pasaporte vigente', 'Tarjeta de residente'];

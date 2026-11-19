@@ -1,7 +1,9 @@
 /* Interfaz de RedCare: casos (con solicitud, entrevista y resultado), personas de relevo, seguimiento
  * (programa, visitas, red, mapa, KPI) y ajustes. Listas de una mirada; el detalle se abre al tocar cada tarjeta.
  * Cambio 20 oct 2026: la canalización con 3 preguntas y la regla de 40 h se sustituyen por solicitud con dos vías
- * de entrada, entrevista de valoración, puntaje provisional, tres niveles y reparto de una bolsa de horas. */
+ * de entrada, entrevista de valoración, puntaje provisional, tres niveles y reparto de una bolsa de horas.
+ * Cambio 18 nov 2026: aviso de privacidad (LFPDPPP, sector privado) y firma de contrato al terminar cada registro
+ * («Necesito cuidado»: acuerdo de servicio; «Puedo cuidar»: contrato en plataforma). Textos en js/contratos.js. */
 (function () {
   'use strict';
 
@@ -260,6 +262,7 @@
         ${r && c.estado === 'activo' ? `<div class="slot ok">${quien(r.sexo, r.nombre, 'desde ' + c.asignacion.fecha.slice(5))}</div>` : '<div class="slot">El programa todavía no asigna relevo</div>'}
         ${hist.map((h) => `<p class="wk-n">Antes ${esc((relById(h.relevoId) || {}).nombre || '')}: ${esc(h.motivo)}</p>`).join('')}
       </section>
+      ${bloqueContrato(c.contrato, c.id, 'servicio')}
       ${c.cierre ? `<p class="wk-n">Cerrado: ${esc(c.cierre.motivo)}</p>` : ''}`;
     const A = (act, txt, cls) => `<button type="button" class="${cls || 'btn-ghost'} sm" data-action="${act}" data-id="${esc(c.id)}">${txt}</button>`;
     let acc = '';
@@ -269,6 +272,14 @@
     else acc += A('del-caso', 'Eliminar', 'btn-ghost danger');
     $('#det-acciones').innerHTML = acc;
     $('#dlg-det').showModal(); $('#dlg-det').scrollTop = 0;
+  }
+
+  /* Contrato firmado (o su ausencia en los datos de ejemplo anteriores al 18 nov 2026). */
+  function bloqueContrato(k, id, tipo) {
+    if (!k) return `<section class="blk"><h5>Contrato</h5><div class="slot">Sin contrato firmado (registro de ejemplo anterior al 18 nov 2026)</div></section>`;
+    return `<section class="blk"><h5>Contrato firmado</h5>
+      <p class="wk-n">${esc(k.titulo)} · ${esc(k.fecha.slice(0, 10))} · ${k.firmantes.map((s) => esc(s.nombre)).join(', ')}</p>
+      <button type="button" class="btn-ghost sm" data-action="ver-contrato" data-tipo="${tipo}" data-id="${esc(id)}">Ver contrato</button></section>`;
   }
 
   /* ---------- Asignación ---------- */
@@ -376,7 +387,8 @@
       <section class="blk"><h5>Disponibilidad</h5>${semana(r.dias, `<b>${esc(r.desde)}-${esc(r.hasta)}</b>`)}</section>
       <section class="blk"><h5>Puede hacer</h5><div class="tags">${tags(r.tareas, 'alt')}</div></section>
       ${enRev ? `<section class="blk"><h5>Documentos</h5><div class="docs"><span>CURP <b class="mono">${esc(legal.enmascarar(L.curp))}</b></span><span>${esc(L.docId || 'sin identificación')}</span><span>Carta ${esc(L.antecedentesFecha || '—')}</span></div>${v.estado === 'rechazada' ? `<p class="wk-n">Motivo: ${esc(v.motivo)}</p>` : ''}</section>` : ''}
-      ${!enRev && r.certificacion !== 'certificada' ? '<div class="slot">Sin certificación vigente: no recibe asignaciones</div>' : ''}`;
+      ${!enRev && r.certificacion !== 'certificada' ? '<div class="slot">Sin certificación vigente: no recibe asignaciones</div>' : ''}
+      ${bloqueContrato(r.contrato, r.id, 'relevo')}`;
     const A = (act, txt, cls) => `<button type="button" class="${cls || 'btn-ghost'} sm" data-action="${act}" data-id="${esc(r.id)}">${txt}</button>`;
     let acc = A('del-relevo', 'Eliminar', 'btn-ghost danger');
     if (enRev && v.estado !== 'rechazada') acc += A('rechazar', 'Rechazar', 'btn-ghost danger') + A('aprobar', 'Aprobar', 'btn-primary');
@@ -752,7 +764,7 @@
   ];
   const nuevaSol = () => ({
     canal: '', institucion: '', quien: '', presente: false, alias: '', sexo: '', palias: '', psexo: '', alcaldia: '',
-    aviso: false, expreso: false, modelo: { horas: '', abvd: [], clin: [] }, zarit: {}, barthel: {},
+    aviso: false, expreso: false, observatorio: false, modelo: { horas: '', abvd: [], clin: [] }, zarit: {}, barthel: {},
     pref: { dias: [], inicio: '09:00', tareas: [] }, apelacion: null,
   });
   const radio = (name, val, lab, on) => `<label class="chip"><input type="radio" name="${name}" value="${esc(val)}"${on ? ' checked' : ''}><span>${lab}</span></label>`;
@@ -767,7 +779,7 @@
     $('#sol-paso').textContent = `${ui.sol.paso + 1}/${PASOS.length} · ${paso.t}`;
     $('#sol-bar').style.width = Math.round(((ui.sol.paso + 1) / PASOS.length) * 100) + '%';
     $('#sol-atras').textContent = ui.sol.paso ? 'Atrás' : 'Cancelar';
-    $('#sol-sig').textContent = paso.id === 'resultado' ? 'Enviar solicitud' : paso.id === 'consentimiento' ? 'Acepto y sigo' : 'Siguiente';
+    $('#sol-sig').textContent = paso.id === 'resultado' ? 'Firmar acuerdo y enviar' : paso.id === 'consentimiento' ? 'Acepto y sigo' : 'Siguiente';
     $('#sol-err').textContent = '';
     let h = '';
     if (paso.id === 'entrada') {
@@ -799,7 +811,9 @@
         <p class="sub">Te preguntaremos cuánto cuidas y cómo está la persona que cuidas. Son <b>datos sensibles</b>: se usan solo para tu prioridad y para asignar relevo. Puedes retirar tu consentimiento cuando quieras.</p>
         <button type="button" class="link" data-action="ver-aviso">Leer el aviso de privacidad</button>
         <label class="check"><input type="checkbox" name="aviso"${d.aviso ? ' checked' : ''}><span>Leí el aviso de privacidad</span></label>
-        <label class="check"><input type="checkbox" name="expreso"${d.expreso ? ' checked' : ''}><span>Acepto de forma expresa que se registren datos sobre mi salud, mi carga de cuidado y la dependencia de la persona que cuido</span></label>`;
+        <label class="check"><input type="checkbox" name="expreso"${d.expreso ? ' checked' : ''}><span>Acepto de forma expresa que se registren datos sobre mi salud, mi carga de cuidado y la dependencia de la persona que cuido</span></label>
+        <label class="check"><input type="checkbox" name="observatorio"${d.observatorio ? ' checked' : ''}><span><b>Opcional.</b> Autorizo que mis datos, sin nombre ni domicilio, se usen para estadísticas del Observatorio del Cuidado. Si no lo marco, mi servicio no cambia.</span></label>
+        <p class="sub">Al terminar la solicitud firmarás el acuerdo de servicio. La persona que cuidas (o quien la apoye) también firma.</p>`;
     } else if (paso.id === 'modelo') {
       const m = d.modelo;
       h = `<h3>Tu cuidado</h3>        <label class="fld">${esc(PR.PREGUNTAS_MODELO[0].txt)} ${codigo('P6_7 + P6_26')}<input name="horas" type="number" min="0" max="168" inputmode="numeric" value="${esc(m.horas)}"></label>
@@ -855,7 +869,7 @@
     const marcados = (n) => $$(`input[name="${n}"]:checked`, f).map((i) => i.value);
     if (id === 'entrada') { d.canal = val('canal'); d.institucion = val('institucion'); d.quien = val('quien').trim(); d.presente = !!(e.presente && e.presente.checked); $('#sol-ref').hidden = d.canal !== 'referencia'; }
     else if (id === 'registro') { d.sexo = val('sexo'); d.psexo = val('psexo'); d.alias = val('alias').trim(); d.palias = val('palias').trim(); d.alcaldia = val('alcaldia'); }
-    else if (id === 'consentimiento') { d.aviso = e.aviso.checked; d.expreso = e.expreso.checked; }
+    else if (id === 'consentimiento') { d.aviso = e.aviso.checked; d.expreso = e.expreso.checked; d.observatorio = e.observatorio.checked; }
     else if (id === 'modelo') {
       d.modelo.horas = val('horas'); d.modelo.abvd = marcados('abvd'); d.modelo.clin = marcados('clin');
     } else if (id === 'zarit') { PR.reactivosZarit(CP).forEach((it) => { const v = val(it.id); if (v !== '') d.zarit[it.id] = +v; }); }
@@ -891,7 +905,7 @@
     $('#dlg-sol').showModal();
     pintaPaso();
   }
-  function guardarSol() {
+  function guardarSol(firma) {
     const d = ui.sol.d, hoy = F.hoyISO(), ent = entrevistaDe(d);
     const ch = PR.chequeos(ent, CP);
     const caso = {
@@ -900,7 +914,8 @@
       cuidadora: { alias: d.alias, sexo: d.sexo, horas: ent.modelo.horas, abvd: ent.modelo.abvd.length > 0 },
       persona: { alias: d.palias, sexo: d.psexo || null },
       entrevista: ent,
-      consentimiento: { expreso: true, aviso: 'pendiente revisión legal', fecha: hoy },
+      consentimiento: { expreso: true, observatorio: !!d.observatorio, aviso: Care.contratos.VERSION, fecha: hoy },
+      contrato: firma,
       hogar: Care.buildHogar({ cuidadora: { nombre: d.alias, rol: 'cuidadora', horas: ent.modelo.horas }, cuidada: { nombre: d.palias, rol: 'familiar' } }),
       preferencias: { dias: d.pref.dias.slice(), inicio: d.pref.inicio, tareas: d.pref.tareas.slice() },
       pagador: 'subsidio', pctSubsidio: 0, asignacion: null,
@@ -923,7 +938,13 @@
     leerPaso();
     const err = errorPaso();
     if (err) { $('#sol-err').textContent = err; return; }
-    if (PASOS[ui.sol.paso].id === 'resultado') { guardarSol(); return; }
+    if (PASOS[ui.sol.paso].id === 'resultado') {
+      Care.contratos.firmar('servicio', { cuidadora: ui.sol.d.alias, cuidada: ui.sol.d.palias }).then((firma) => {
+        if (firma) guardarSol(firma);
+        else $('#sol-err').textContent = 'Sin el acuerdo firmado la solicitud no se envía. Puedes firmarlo cuando quieras.';
+      });
+      return;
+    }
     ui.sol.paso++; pintaPaso();
   });
   $('#sol-atras').addEventListener('click', () => { if (!ui.sol.paso) { $('#dlg-sol').close(); return; } leerPaso(); ui.sol.paso--; pintaPaso(); });
@@ -957,20 +978,28 @@
   $('#form-relevo').addEventListener('submit', (e) => {
     e.preventDefault();
     if ($('#rel-ok').disabled) return;
-    const d = datosRelevo(), nuevoId = store.uid('r');
+    const d = datosRelevo();
+    Care.contratos.firmar('relevo', { nombre: d.nombre }).then((firma) => {
+      if (!firma) { $('.form-error', $('#form-relevo')).textContent = 'Sin el contrato firmado el registro no se envía.'; return; }
+      guardarRelevo(d, firma);
+    });
+  });
+  function guardarRelevo(d, firma) {
+    const nuevoId = store.uid('r');
     store.update((s) => s.relevos.unshift({
       id: nuevoId, nombre: d.nombre, sexo: d.sexo || null, alcaldia: d.alcaldia, dias: d.diasSel, desde: d.desde, hasta: d.hasta, horasMax: d.horasMax,
       tareas: d.tareas, certificacion: d.certificacion, experiencia: d.experiencia,
       legal: { curp: d.curp, docId: d.docId, antecedentesFecha: d.antecedentesFecha, referencia: { nombre: d.refNombre.trim(), tel: d.refTel.replace(/\D/g, '') }, aceptado: new Date().toISOString() },
+      contrato: firma,
       verificacion: { estado: 'pendiente', fecha: F.hoyISO() },
     }));
     $('#dlg-relevo').close();
-    if (ui.rol === 'relevo') { guardarId('mientras-mi-relevo', nuevoId); show('yo'); toast('Enviado a revisión'); return; }
+    if (ui.rol === 'relevo') { guardarId('mientras-mi-relevo', nuevoId); show('yo'); toast('Contrato firmado · enviado a revisión'); return; }
     ui.relFiltro = 'revision';
     $$('#rel-filter button').forEach((x) => x.classList.toggle('on', x.dataset.val === 'revision'));
     render();
-    toast('Enviado a revisión');
-  });
+    toast('Contrato firmado · enviado a revisión');
+  }
 
   /* ================= Acciones (delegación) ================= */
   const cerrarDet = () => { if ($('#dlg-det').open) $('#dlg-det').close(); };
@@ -985,7 +1014,9 @@
       case 'ver-caso': abrirCaso(id); break;
       case 'ver-relevo': abrirRelevo(id); break;
       case 'new-sol': openSol(); break;
-      case 'ver-aviso': await pedir(CP.aviso_privacidad + ' Datos que se recogen: horas de cuidado, actividades y tareas de salud, dependencia de la persona cuidada (Barthel) y cómo te has sentido (cansancio, sueño, ánimo). Sin CURP ni diagnósticos.', { ok: 'Entendido' }); break;
+      case 'ver-aviso': Care.contratos.verAviso(); break;
+      case 'ver-contrato': { const x = b.dataset.tipo === 'relevo' ? relById(id) : casoById(id); if (x && x.contrato) { cerrarDet(); Care.contratos.verFirmado(x.contrato); } break; }
+      case 'mis-datos': await pedir('Tus derechos ARCO: puedes pedir acceso, rectificación, cancelación u oposición al uso de tus datos, y revocar tu consentimiento. Es gratuito: la persona de datos personales de RedCare responde en 20 días y lo hace efectivo en 15 (LFPDPPP, arts. 27 a 34). En este prototipo los datos son simulados y viven solo en este navegador.', { ok: 'Entendido' }); break;
       case 'sol-apelar': { const m = await pedir('¿Por qué crees que tu valoración no refleja tu situación?', { input: true, min: 5, ok: 'Registrar' }); if (m) { ui.sol.d.apelacion = m; pintaPaso(); } break; }
       case 'revisado': { cerrarDet(); const m = await pedir('Nota de la revisión (qué se verificó):', { input: true, min: 5, ok: 'Marcar revisado' }); if (m) { store.resolverRevision(id, m); toast('Revisión registrada; el puntaje no cambia'); } break; }
       case 'resolver-ap': { cerrarDet(); const apId = b.dataset.ap; const m = await pedir('Resolución (si cambia una respuesta, se vuelve a entrevistar):', { input: true, min: 5, ok: 'Resolver' }); if (m) { store.resolverApelacion(id, apId, m); toast('Solicitud de revisión resuelta'); } break; }
@@ -1026,6 +1057,7 @@
         <h2>¿Cuidas a alguien muchas horas a la semana?</h2>
         <p>Una persona capacitada cuida a tu familiar mientras tú descansas.</p>
         <button type="button" class="btn-primary wide" data-action="new-sol">Solicitar relevo</button>
+        <button type="button" class="link" data-action="ver-aviso">Aviso de privacidad</button>
         <p class="complementario">${esc(CP.aviso_complementario)}</p></div>`;
       return;
     }
@@ -1039,6 +1071,7 @@
         <div class="tiles dos">${dato(hz.mes + '<small>h</small>', 'de relevo al mes')}${dato('≈ ' + hz.sem + '<small>h</small>', 'a la semana')}</div>
         ${enRevision(c) ? '<p class="sub">Una persona revisará algunas respuestas. Tu lugar no cambia.</p>' : ''}
       </div>
+      <div class="btn-row">${c.contrato ? `<button type="button" class="btn-ghost sm" data-action="ver-contrato" data-tipo="servicio" data-id="${esc(c.id)}">Mi acuerdo firmado</button>` : ''}<button type="button" class="btn-ghost sm" data-action="ver-aviso">Aviso de privacidad</button><button type="button" class="btn-ghost sm" data-action="mis-datos">Mis datos</button></div>
       <button type="button" class="btn-ghost wide" data-action="mia-nueva">Hacer otra solicitud (demostración)</button>`;
   }
   function renderYo() {
@@ -1047,7 +1080,8 @@
       $('#yo-body').innerHTML = `<div class="hero-rol">${personaje('relevo', 'hero-img')}
         <h2>¿Quieres trabajar dando relevo?</h2>
         <p>Registra tus días, horario y zona. El programa te asigna casos. Con contrato, IMSS y pago justo.</p>
-        <button type="button" class="btn-primary wide" data-action="new-relevo">Registrarme</button></div>`;
+        <button type="button" class="btn-primary wide" data-action="new-relevo">Registrarme</button>
+        <button type="button" class="link" data-action="ver-aviso">Aviso de privacidad</button></div>`;
       return;
     }
     const aprob = store.aprobado(r), carga = RV.cargaDe(r.id, store.state);
@@ -1060,6 +1094,7 @@
         <p class="sub">${estado}</p>
         <div class="tiles dos">${dato(carga + '<small>/' + r.horasMax + ' h</small>', 'por semana')}${dato(casos.length, casos.length === 1 ? 'caso' : 'casos')}</div>
       </div>
+      <div class="btn-row">${r.contrato ? `<button type="button" class="btn-ghost sm" data-action="ver-contrato" data-tipo="relevo" data-id="${esc(r.id)}">Mi contrato firmado</button>` : ''}<button type="button" class="btn-ghost sm" data-action="ver-aviso">Aviso de privacidad</button><button type="button" class="btn-ghost sm" data-action="mis-datos">Mis datos</button></div>
       <button type="button" class="btn-ghost wide" data-action="yo-nuevo">Registrar a otra persona (demostración)</button>`;
   }
 

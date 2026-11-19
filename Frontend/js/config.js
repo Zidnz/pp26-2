@@ -57,7 +57,7 @@
     nombre: 'RedCare',
     eslogan: 'Una red que cuida a quienes cuidan',
     aviso_complementario: 'RedCare es un componente complementario del Sistema Público de Cuidados. Las horas dependen del presupuesto del programa.',
-    aviso_privacidad: '[Aviso de privacidad — pendiente revisión legal, Daniel]',
+    aviso_privacidad: 'RedCare (organización privada por constituir) es responsable de tus datos conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Borrador sin revisión jurídica final; texto completo en js/contratos.js.',
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = CONFIG_PROGRAMA;

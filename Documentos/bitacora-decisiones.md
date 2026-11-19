@@ -2607,3 +2607,22 @@ Sin revisión de otra persona. Revisor: _[pendiente]_.
 - `README.md` raíz todavía menciona `scripts/`, `Fotos/` y `Observatorio_streamlit/`.
 
 **No se retiran** `.gitattributes` ni `requirements.txt`, aunque estaban en `_borrados.txt`: el primero evita diffs falsos por finales de línea entre Windows y Linux, y el segundo es el único registro de `scikit-learn==1.7.2`, la versión con la que se reprodujo el modelo.
+
+
+## 18 nov 2026 (20:40, hora CDMX) — Aviso de privacidad y firma de contrato en RedCare; sector privado
+
+**Pedido de Omar.** Que el aviso de privacidad y las cláusulas existan en la app, y que al terminar «Necesito cuidado» o «Puedo cuidar» se firme un contrato.
+
+**Decisión previa (18 nov, clase de Leyes).** RedCare se trata como proyecto del **sector privado**: la organización que la opere es la responsable y aplica la LFPDPPP (DOF 20-mar-2025). Sustituye al escenario de institución pública que se usó en la mañana. Queda registrado en `Documentos/Observatorio_Cuidado_Proteccion_de_Datos.docx` (versión 5), que se sube en este commit junto con su PDF.
+
+**Qué se hizo en `Frontend/`.**
+- `js/contratos.js` (nuevo): aviso simplificado e integral, acuerdo de servicio (12 cláusulas), contrato de trabajo en plataforma digital con convenio de confidencialidad y política de gestión algorítmica (10 cláusulas), pad de firma y huella.
+- `js/app.js`: tercera casilla opcional de consentimiento (Observatorio); la solicitud y el registro de relevo solo se guardan con contrato firmado; contrato visible en los detalles y en las vistas propias; botón «Mis datos».
+- `index.html`, `css/app.css`, `js/config.js`, `js/legal.js`: diálogos, estilos y referencias a la LFPDPPP y a la LFT de plataformas.
+- `tests/prueba_contratos.js` (nuevo).
+
+**Verificación.** `node tests/prueba_contratos.js` y `node tests/prueba_asignacion.js` pasan. Prueba en Chromium sin interfaz (420 px): solicitud completa con firma de dos personas (persona cuidada con apoyo), registro de relevo con firma, contrato visible después; sin errores de JavaScript.
+
+**Qué NO resuelve.** Validez legal: los textos son borradores sin revisión jurídica final (Daniel). La organización privada no existe. La firma es simulada (no es firma electrónica avanzada). Quién es patrón de las personas de relevo sigue pendiente (LFT, cap. IX Bis). El Segundo avance todavía dice que los datos quedan en la institución receptora.
+
+**Pendiente.** Doble revisión de `js/contratos.js` (Daniel, textos; Alondra Danae, flujo).

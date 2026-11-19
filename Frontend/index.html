@@ -245,7 +245,8 @@
         <label class="fld">Referencia<input name="refNombre" maxlength="60" autocomplete="off"></label>
         <label class="fld">Teléfono<input name="refTel" type="tel" inputmode="numeric" maxlength="14" autocomplete="off"></label>
       </div>
-      <label class="check"><input type="checkbox" name="contrato"><span>Contrato, IMSS y pago al piso legal</span></label>
+      <label class="check"><input type="checkbox" name="contrato"><span>Firmaré el contrato de trabajo en plataforma: IMSS y pago al piso legal</span></label>
+      <button type="button" class="link" data-action="ver-aviso">Leer el aviso de privacidad</button>
       <label class="check"><input type="checkbox" name="privacidad"><span>Aviso de privacidad leído</span></label>
       <label class="check"><input type="checkbox" name="veracidad"><span>Mis datos son ciertos</span></label>
       <ul class="reqs compact" id="rel-reqs" aria-live="polite"></ul>
@@ -253,7 +254,32 @@
       <p class="form-error" role="alert"></p>
       <div class="btn-row end sticky">
         <button type="button" class="btn-ghost" data-close>Cancelar</button>
-        <button type="submit" class="btn-primary" id="rel-ok" disabled>Enviar a revisión</button>
+        <button type="submit" class="btn-primary" id="rel-ok" disabled>Firmar contrato y enviar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ============ Aviso de privacidad (también muestra contratos firmados) ============ -->
+  <dialog id="dlg-aviso">
+    <form method="dialog">
+      <div class="handle" aria-hidden="true"></div>
+      <h3>Aviso de privacidad</h3>
+      <div id="aviso-body"></div>
+      <div class="btn-row end sticky"><button type="submit" class="btn-primary">Entendido</button></div>
+    </form>
+  </dialog>
+
+  <!-- ============ Contrato: se firma al terminar «Necesito cuidado» o «Puedo cuidar» ============ -->
+  <dialog id="dlg-contrato">
+    <form id="form-contrato" novalidate>
+      <div class="handle" aria-hidden="true"></div>
+      <div class="eyebrow">Contrato · <span id="ctr-version"></span></div>
+      <h3 id="ctr-titulo"></h3>
+      <div id="ctr-body"></div>
+      <p class="form-error" role="alert" id="ctr-err"></p>
+      <div class="btn-row end sticky">
+        <button type="button" class="btn-ghost" id="ctr-cancelar">Cancelar</button>
+        <button type="submit" class="btn-primary" id="ctr-firmar" disabled>Firmar</button>
       </div>
     </form>
   </dialog>
@@ -346,13 +372,14 @@
 
 <script src="vendor/d3.min.js"></script>
 <script src="js/cdmx-alcaldias.js?v=20261102"></script>
-<script src="js/config.js?v=20261102"></script>
+<script src="js/config.js?v=20261118"></script>
 <script src="js/prioridad.js?v=20261102"></script>
 <script src="js/data.js?v=20261102"></script>
-<script src="js/legal.js?v=20261102"></script>
+<script src="js/legal.js?v=20261118"></script>
+<script src="js/contratos.js?v=20261118"></script>
 <script src="js/relevo.js?v=20261102"></script>
 <script src="js/red.js?v=20261102"></script>
-<script src="js/app.js?v=20261111a"></script>
+<script src="js/app.js?v=20261118"></script>
 <script src="js/interaccion.js?v=20261105j"></script>
 </body>
 </html>

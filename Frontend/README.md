@@ -8,6 +8,20 @@ python -m http.server 8000   # desde Frontend/, o abrir index.html con doble cli
 
 **Datos simulados.** Casos, personas de relevo, visitas, incidentes y respuestas semanales vienen de `seed()` en `js/data.js` y se guardan en `localStorage` (clave `mientras-v3`; antes `care-relevo-v2`). No hay backend. Demuestran que el flujo funciona; **no validan la hipótesis ni miden impacto.** Las respuestas semanales de ejemplo se generan sin tendencia a propósito.
 
+## Qué cambió (2026-11-18): aviso de privacidad y firma de contrato
+
+RedCare se trata como proyecto del **sector privado**: la organización que la opere es la responsable de los datos y aplica la **LFPDPPP** (DOF 20-mar-2025). Textos en `js/contratos.js`, tomados de `Documentos/Observatorio_Cuidado_Proteccion_de_Datos.docx` (anexos A y B).
+
+- **Aviso de privacidad** simplificado e integral (10 apartados). Se abre desde el paso de consentimiento, el registro de relevo y las vistas «Necesito relevo» y «Puedo cuidar».
+- **Tres consentimientos separados** en la solicitud: aviso, datos sensibles (expreso) y uso estadístico para el Observatorio (**opcional**, no cambia el servicio).
+- **Contrato al terminar cada registro.** «Necesito cuidado»: acuerdo de servicio de 12 cláusulas, firmado por la persona cuidadora y por la persona cuidada (ella misma, con su apoyo, con apoyo designado por un juez o, si es menor, quien ejerce la patria potestad). «Puedo cuidar»: contrato de trabajo en plataforma digital (LFT, cap. IX Bis) con convenio de confidencialidad y política de gestión algorítmica. **Sin firma, la solicitud o el registro no se envían.**
+- **Firma electrónica simulada.** Se dibuja con el dedo o el ratón; se guarda fecha, nombres, modalidad y una **huella** (hash) de la firma, **no la imagen**.
+- El contrato firmado se consulta en el detalle del caso o de la persona de relevo y en «Mi acuerdo firmado» / «Mi contrato firmado». Botón «Mis datos» con los derechos ARCO.
+- Los casos de ejemplo anteriores aparecen como «Sin contrato firmado».
+- Prueba: `node tests/prueba_contratos.js`.
+
+**Límites.** Son borradores académicos sin revisión jurídica final (Daniel) y sin validez legal. La organización privada no existe todavía: el responsable aparece como «RedCare (organización privada por constituir)».
+
 ## Qué cambió (2026-10-24): una vista por rol y bienvenida
 
 - **Bienvenida** la primera vez: logo con barra de carga y «¿Cómo vas a usar RedCare?» (cuidadora · relevo · programa). Se repite con `index.html?intro` o desde Ajustes.
@@ -96,7 +110,7 @@ El JSON exportado (`operacion_agregados_SIMULADO.json`) trae solo totales: sin f
 - La familia no captura CURP ni nombre completo: la institución valida identidad y legitimación fuera de la app.
 - Ayuda en actividades básicas y daños a la salud son datos sensibles: la canalización exige consentimiento expreso.
 - "Exportar todo" (Ajustes) incluye alias y respuestas sobre salud. Con datos reales, ese archivo no sale de la institución.
-- Qué ley aplica (particulares o sujetos obligados) depende de la institución receptora y de la reforma de 2025: **pendiente con Daniel**.
+- Ley aplicable: LFPDPPP 2025 (sector privado, decisión del 18 nov 2026). Aviso y contratos en `js/contratos.js`.
 
 ## Lo que la app no resuelve
 - **Quién paga.** La app muestra el costo y lo que le toca a la familia, pero la fuente del subsidio no existe todavía.
@@ -104,7 +118,7 @@ El JSON exportado (`operacion_agregados_SIMULADO.json`) trae solo totales: sin f
 - **El efecto.** Las 2 preguntas semanales no son un instrumento validado y no hay grupo de comparación. La escala corta de Zarit es candidata; su validación en México está por confirmar.
 
 ## Archivos
-`index.html` · `css/app.css` · `js/config.js` (parámetros de priorización) · `js/prioridad.js` (puntaje, niveles, reparto, instrumentos, chequeos) · `js/data.js` (catálogos, datos simulados, almacenamiento) · `js/legal.js` (parámetros legales y requisitos) · `js/relevo.js` (focalización, paquetes, jornada, costo, asignación) · `js/red.js` (red del hogar) · `js/app.js` (interfaz) · `js/cdmx-alcaldias.js` (límites de alcaldías) · `vendor/d3.min.js` (d3 7.9.0) · `tests/prueba_asignacion.js`.
+`index.html` · `css/app.css` · `js/config.js` (parámetros de priorización) · `js/prioridad.js` (puntaje, niveles, reparto, instrumentos, chequeos) · `js/data.js` (catálogos, datos simulados, almacenamiento) · `js/legal.js` (parámetros legales y requisitos) · `js/contratos.js` (aviso de privacidad, acuerdo de servicio, contrato de relevo y firma) · `js/relevo.js` (focalización, paquetes, jornada, costo, asignación) · `js/red.js` (red del hogar) · `js/app.js` (interfaz) · `js/cdmx-alcaldias.js` (límites de alcaldías) · `vendor/d3.min.js` (d3 7.9.0) · `tests/prueba_asignacion.js` · `tests/prueba_contratos.js`.
 
 **Fuente de los límites:** INEGI, Marco Geoestadístico 2020, publicado en el Portal de Datos Abiertos de la CDMX (https://datos.cdmx.gob.mx/dataset/alcaldias). Simplificados para visualización.
 
