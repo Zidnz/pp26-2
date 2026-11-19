@@ -146,7 +146,6 @@
       <details class="aviso-int"><summary>Aviso de privacidad integral</summary>
         ${AVISO_INTEGRAL.map(([t, x]) => `<p><b>${esc(t)}.</b> ${md(x)}</p>`).join('')}
       </details>
-      <p class="doc-nota">Borrador ${esc(VERSION)}. Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Sin revisión jurídica final.</p>
     </div>`;
   }
   function verAviso() {
