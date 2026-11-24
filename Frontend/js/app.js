@@ -1,14 +1,12 @@
 /* Interfaz de RedCare: casos (con solicitud, entrevista y resultado), personas de relevo, seguimiento
- * (programa, visitas, red, mapa, KPI) y ajustes. Listas de una mirada; el detalle se abre al tocar cada tarjeta.
+ * (programa, visitas, red, KPI) y ajustes. Listas de una mirada; el detalle se abre al tocar cada tarjeta.
  * Cambio 20 oct 2026: la canalización con 3 preguntas y la regla de 40 h se sustituyen por solicitud con dos vías
- * de entrada, entrevista de valoración, puntaje provisional, tres niveles y reparto de una bolsa de horas.
- * Cambio 18 nov 2026: aviso de privacidad (LFPDPPP, sector privado) y firma de contrato al terminar cada registro
- * («Necesito cuidado»: acuerdo de servicio; «Puedo cuidar»: contrato en plataforma). Textos en js/contratos.js. */
+ * de entrada, entrevista de valoración, puntaje provisional, tres niveles y reparto de una bolsa de horas. */
 (function () {
   'use strict';
 
   Care.store.load();
-  const { ZONAS, TIPOS_INCIDENTE, store, red, legal, relevo: RV, fechas: F, prioridad: PR, CONFIG_PROGRAMA: CP } = Care;
+  const { ZONAS, TIPOS_INCIDENTE, store, red, legal, relevo: RV, fechas: F, prioridad: PR, CONFIG_PROGRAMA: CP, contrato: CT, huella: HU } = Care;
   const $ = (sel, root) => (root || document).querySelector(sel);
   const $$ = (sel, root) => Array.from((root || document).querySelectorAll(sel));
   const ESC = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
@@ -123,6 +121,11 @@
     baja: ILU + 'resultado_baja.webp', dentro: ILU + 'resultado_alta.webp', fuera: ILU + 'resultado_baja.webp', relevo: ILU + 'relevo_equipo.webp',
   };
   const personaje = (k, cls) => `<img class="personaje ${cls || ''}" src="${PERSONAJE[k]}" alt="" loading="lazy">`;
+  /* 21 nov 2026: la ilustración pasa a ser una «marca de agua» de un solo color, como el Ángel en los carteles de la CDMX. */
+  const MONO = { bienvenida: 'bienvenida_relevo', alta: 'resultado_alta', media: 'resultado_media', baja: 'resultado_baja', dentro: 'resultado_alta', fuera: 'resultado_baja', relevo: 'relevo_equipo', puedo: 'puedo_cuidar' };
+  /* 24 nov 2026: versiones de un solo color (lavanda sobre fondo claro, blanco sobre fondo oscuro), generadas desde las ilustraciones. */
+  const fantasma = (k, tono) => `<img class="ghost" src="img/marca_agua/${MONO[k] || MONO.bienvenida}_${tono || 'lavanda'}.webp" alt="" aria-hidden="true">`;
+  const banner = (k, inner, cls) => `<div class="gbanner ${cls || ''}">${fantasma(k)}<div class="gb-in">${inner}</div></div>`;
 
   /* ================= Navegación ================= */
   /* Cada rol ve solo lo suyo (24 oct 2026). La cuidadora no ve casos de otras familias; la persona de relevo
@@ -240,6 +243,10 @@
         ${tile(v.barthel == null ? '—' : String(v.barthel), 'Barthel', '', `<em>${esc(PR.nivelBarthel(v.barthel))}</em>`)}
       </div>
 
+      ${PR.requiereEnfermeria(c.entrevista && c.entrevista.modelo) ? '<div class="slot">Requiere enfermería: orientar a un servicio de salud (el relevo no hace tareas clínicas)</div>' : ''}
+      <p class="wk-n">Convenio: ${esc(firmaTxt(c.contrato))}<br>Consentimiento de ${esc(c.persona.alias)}: ${esc(c.consentimientoPersona ? CP_ESTADO[c.consentimientoPersona.estado] + (c.consentimientoPersona.tipo ? ' (' + c.consentimientoPersona.tipo + ')' : '') : 'sin registro')}</p>
+      ${c.domicilio ? `<p class="wk-n">Domicilio (ficticio): ${esc(c.domicilio.texto)} · se borra al cerrar el caso</p>` : ''}
+      ${(c.contactos || []).length ? `<p class="wk-n">Contactos: ${c.contactos.map((k) => `${k.tipo === 'emergencia' ? 'emergencia' : 'autorizada'} · ${esc(k.parentesco)}`).join('; ')}</p>` : ''}
       ${enRevision(c) ? `<p class="wk-n">En revisión: ${c.revision.motivos.map((m) => esc(m.txt.replace(/[.\s]+$/, ''))).join('; ')}.</p>` : ''}
       ${c.revision && c.revision.estado === 'revisada' ? `<p class="wk-n">Revisado ${esc(c.revision.fechaResolucion)}: ${esc(c.revision.nota)}</p>` : ''}
 
@@ -262,24 +269,16 @@
         ${r && c.estado === 'activo' ? `<div class="slot ok">${quien(r.sexo, r.nombre, 'desde ' + c.asignacion.fecha.slice(5))}</div>` : '<div class="slot">El programa todavía no asigna relevo</div>'}
         ${hist.map((h) => `<p class="wk-n">Antes ${esc((relById(h.relevoId) || {}).nombre || '')}: ${esc(h.motivo)}</p>`).join('')}
       </section>
-      ${bloqueContrato(c.contrato, c.id, 'servicio')}
       ${c.cierre ? `<p class="wk-n">Cerrado: ${esc(c.cierre.motivo)}</p>` : ''}`;
     const A = (act, txt, cls) => `<button type="button" class="${cls || 'btn-ghost'} sm" data-action="${act}" data-id="${esc(c.id)}">${txt}</button>`;
     let acc = '';
     if (enRevision(c)) acc += A('revisado', 'Marcar revisado');
+    if (c.estado !== 'cerrado' && !cpOk(c)) acc += A('cp-registrar', c.consentimientoPersona && c.consentimientoPersona.estado === 'por_acreditar' ? 'Acreditar representación' : 'Registrar consentimiento');
     if (c.estado === 'espera') acc += A('cerrar', 'Cerrar caso') + (hz.cola ? '' : A('proponer', 'Asignar relevo', 'btn-primary'));
     else if (c.estado === 'activo') acc += A('reasignar', 'Cambiar relevo') + A('seguir', 'Seguimiento', 'btn-primary');
     else acc += A('del-caso', 'Eliminar', 'btn-ghost danger');
     $('#det-acciones').innerHTML = acc;
     $('#dlg-det').showModal(); $('#dlg-det').scrollTop = 0;
-  }
-
-  /* Contrato firmado (o su ausencia en los datos de ejemplo anteriores al 18 nov 2026). */
-  function bloqueContrato(k, id, tipo) {
-    if (!k) return `<section class="blk"><h5>Contrato</h5><div class="slot">Sin contrato firmado (registro de ejemplo anterior al 18 nov 2026)</div></section>`;
-    return `<section class="blk"><h5>Contrato firmado</h5>
-      <p class="wk-n">${esc(k.titulo)} · ${esc(k.fecha.slice(0, 10))} · ${k.firmantes.map((s) => esc(s.nombre)).join(', ')}</p>
-      <button type="button" class="btn-ghost sm" data-action="ver-contrato" data-tipo="${tipo}" data-id="${esc(id)}">Ver contrato</button></section>`;
   }
 
   /* ---------- Asignación ---------- */
@@ -309,6 +308,11 @@
       const d = Object.keys(res.descartes).sort((a, b) => res.descartes[b] - res.descartes[a]).slice(0, 3).map((k) => `${res.descartes[k]} ${RV.ETIQUETA_DESCARTE[k]}`).join(' · ');
       h += `<div class="warnbox"><b>Nadie cumple.</b> ${esc(d)}.<br>Ajusta horario o distancia, o certifica a alguien.</div>`;
     }
+    if (res.propuesta) {
+      const rp = res.propuesta.r;
+      h += `<p class="wk-n">Convenio del hogar: ${esc(firmaTxt(c.contrato))}<br>Contrato de ${esc(rp.nombre)}: ${esc(firmaTxt(rp.contrato))}<br>Consentimiento de ${esc(c.persona.alias)}: ${esc(c.consentimientoPersona ? CP_ESTADO[c.consentimientoPersona.estado] : 'sin registro')}</p>`;
+      if (!cpOk(c)) h += '<div class="warnbox">Falta el consentimiento de la persona cuidada o acreditar a su representante: regístralo desde el detalle del caso.</div>';
+    }
     $('#asig-body').innerHTML = h;
     $('#asig-formal').hidden = !res.propuesta;
     $('#asig-ok').hidden = !res.propuesta;
@@ -319,7 +323,10 @@
   function datosAsig() {
     const e = $('#form-asig').elements;
     const c = casoById(ui.asig.casoId);
-    return { jornadaOk: evalDe(c).ok, escrito: e.escrito.checked, imss: e.imss.checked, pagadorOk: !!RV.PAGADORES[c.pagador], motivo: e.motivo.value.trim() };
+    const r = relById(ui.asig.relevoId);
+    // 20 nov 2026: «por escrito» ya no es una casilla: se comprueba que los dos contratos estén firmados.
+    return { jornadaOk: evalDe(c).ok, escrito: !!(c.contrato && r && r.contrato), imss: e.imss.checked, pagadorOk: !!RV.PAGADORES[c.pagador], motivo: e.motivo.value.trim(),
+      personaOk: cpOk(c), acepta: e.acepta.checked };
   }
   function refreshAsig() {
     if (!ui.asig || !ui.asig.relevoId) return;
@@ -368,6 +375,10 @@
   }
   segmento('#rel-filter', 'relFiltro', renderRelevos);
 
+  // La referencia se muestra para llamarle mientras el registro está en revisión; al resolverlo se borra (matriz D24).
+  const refTxt = (ref) => (!ref ? '' : ref.nombre
+    ? `<p class="wk-n">Referencia por verificar: <b>${esc(ref.nombre)}</b> · ${esc(ref.tel)}. Se borra al aprobar o rechazar.</p>`
+    : `<p class="wk-n">Referencia ${ref.estado === 'verificada' ? 'verificada' : 'descartada'} ${esc(ref.fecha || '')}: nombre y teléfono borrados.</p>`);
   function abrirRelevo(id) {
     const r = relById(id); if (!r) return;
     const enRev = !store.aprobado(r), v = r.verificacion || {}, L = r.legal || {};
@@ -386,9 +397,10 @@
       </div>
       <section class="blk"><h5>Disponibilidad</h5>${semana(r.dias, `<b>${esc(r.desde)}-${esc(r.hasta)}</b>`)}</section>
       <section class="blk"><h5>Puede hacer</h5><div class="tags">${tags(r.tareas, 'alt')}</div></section>
-      ${enRev ? `<section class="blk"><h5>Documentos</h5><div class="docs"><span>CURP <b class="mono">${esc(legal.enmascarar(L.curp))}</b></span><span>${esc(L.docId || 'sin identificación')}</span><span>Carta ${esc(L.antecedentesFecha || '—')}</span></div>${v.estado === 'rechazada' ? `<p class="wk-n">Motivo: ${esc(v.motivo)}</p>` : ''}</section>` : ''}
-      ${!enRev && r.certificacion !== 'certificada' ? '<div class="slot">Sin certificación vigente: no recibe asignaciones</div>' : ''}
-      ${bloqueContrato(r.contrato, r.id, 'relevo')}`;
+      ${L.curp ? `<section class="blk"><h5>Documentos</h5><div class="docs"><span>CURP <b class="mono">••••••••••••••${esc(L.curp.ultimos4 || '')}</b></span><span>${esc(L.docId || 'sin identificación')}</span></div>
+        ${refTxt(L.referencia)}${v.estado === 'rechazada' ? `<p class="wk-n">Motivo: ${esc(v.motivo)}</p>` : ''}</section>` : ''}
+      <p class="wk-n">Contrato: ${esc(firmaTxt(r.contrato))}</p>
+      ${!enRev && r.certificacion !== 'certificada' ? '<div class="slot">Sin certificación vigente: no recibe asignaciones</div>' : ''}`;
     const A = (act, txt, cls) => `<button type="button" class="${cls || 'btn-ghost'} sm" data-action="${act}" data-id="${esc(r.id)}">${txt}</button>`;
     let acc = A('del-relevo', 'Eliminar', 'btn-ghost danger');
     if (enRev && v.estado !== 'rechazada') acc += A('rechazar', 'Rechazar', 'btn-ghost danger') + A('aprobar', 'Aprobar', 'btn-primary');
@@ -405,8 +417,7 @@
     $$('#seg-sub button').forEach((b) => b.classList.toggle('on', b.dataset.sub === ui.segSub));
     if (ui.segSub === 'prog') renderPrograma();
     else if (ui.segSub === 'hoy') renderDia();
-    else if (ui.segSub === 'caso') renderSegCaso();
-    else drawTerritorio();
+    else renderSegCaso(); // 21 nov 2026: se quitó la pestaña Mapa
   }
   segmento('#seg-sub', 'segSub', () => render());
 
@@ -481,6 +492,7 @@
       <form id="form-q" class="card panel" novalidate>
         <div class="eyebrow">Semana · ${esc(c.cuidadora.alias)}</div>
         <div class="qrow"><span>Cansancio</span><div class="chips radio">${[0, 1, 2, 3, 4].map((n) => `<label class="chip"><input type="radio" name="cansancio" value="${n}"${ya && ya.cansancio === n ? ' checked' : ''}><span>${n}</span></label>`).join('')}</div></div>
+        <div class="qrow"><span>Trabajo o estudio</span><div class="chips radio">${[['si', 'Sí pude'], ['parcial', 'En parte'], ['no', 'No pude']].map(([k, t]) => `<label class="chip"><input type="radio" name="empleo" value="${k}"${ya && ya.empleo === k ? ' checked' : ''}><span>${t}</span></label>`).join('')}</div></div>
         <div class="qrow"><span>Noches mal</span><input name="noches" type="number" min="0" max="7" inputmode="numeric" value="${ya ? ya.malasNoches : ''}" aria-label="Noches que durmió mal"><button class="btn-primary sm" type="submit">${ya ? 'Actualizar' : 'Guardar'}</button></div>
         ${qs.length ? `<div class="spark">${qs.slice(-10).map((q) => `<span title="${esc(q.semana)}"><i style="height:${6 + q.cansancio * 8}px"></i><small>${q.cansancio}</small></span>`).join('')}</div>` : ''}
       </form>
@@ -509,9 +521,9 @@
     e.preventDefault();
     const f = e.target;
     if (f.id === 'form-q') {
-      const c = f.elements.cansancio.value, n = f.elements.noches.value;
-      if (c === '' || n === '' || +n < 0 || +n > 7) { toast('Responde las dos'); return; }
-      store.addCheckin(ui.scCaso, +c, +n); toast('Guardado');
+      const c = f.elements.cansancio.value, n = f.elements.noches.value, emp = f.elements.empleo.value;
+      if (c === '' || n === '' || !emp || +n < 0 || +n > 7) { toast('Responde las tres'); return; }
+      store.addCheckin(ui.scCaso, +c, +n, emp); toast('Guardado');
     } else if (f.id === 'form-inc') {
       const nota = f.elements.nota.value.trim();
       if (nota.length < 4) { toast('Describe qué pasó'); return; }
@@ -594,77 +606,7 @@
   gs.addEventListener('focusout', () => resalta(null));
   $('#graphSvg').addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); elegirNodo(e.target.closest('.g-node')); } });
 
-  /* ---------- Mapa (Seguimiento › Mapa) ---------- */
-  const COLOR_FRAG = { r: '#e5677f', a: '#d09a35', n: '#7dd1c1' };
-  let mapa = null;
-  function construirMapa() {
-    const el = $('#map');
-    const w = el.clientWidth, h = el.clientHeight;
-    if (w < 50 || h < 50) return false;
-    if (mapa && mapa.w === w && mapa.h === h) return true;
-    const geo = window.CDMX_GEO;
-    const proj = d3.geoMercator().fitExtent([[12, 12], [w - 12, h - 12]], geo);
-    const path = d3.geoPath(proj);
-    const svg = d3.select(el).attr('viewBox', `0 0 ${w} ${h}`);
-    svg.selectAll('*').remove();
-    const root = svg.append('g');
-    const alcs = root.append('g'), nomb = root.append('g'), puntos = root.append('g');
-    alcs.selectAll('path').data(geo.features).join('path').attr('class', 'alc').attr('d', path).append('title').text((f) => f.properties.nombre);
-    const centros = {};
-    geo.features.forEach((f) => { centros[f.properties.nombre] = proj(d3.geoCentroid(f)); });
-    nomb.selectAll('text').data(geo.features).join('text').attr('class', 'alcname')
-      .attr('x', (f) => centros[f.properties.nombre][0]).attr('y', (f) => centros[f.properties.nombre][1] + 2)
-      .text((f) => f.properties.nombre.replace(' de Morelos', '').replace('La Magdalena Contreras', 'Magdalena C.'));
-    const zoom = d3.zoom().scaleExtent([1, 10]).translateExtent([[0, 0], [w, h]]).on('zoom', (e) => { root.attr('transform', e.transform); mapa.k = e.transform.k; escalarMapa(); });
-    svg.call(zoom).on('dblclick.zoom', null);
-    svg.on('click', (e) => { if (!e.target.closest('.dot')) $('#mapCard').hidden = true; });
-    mapa = { w, h, svg, root, alcs, nombres: nomb, puntos, centros, zoom, k: 1, conCasos: new Set() };
-    return true;
-  }
-  function escalarMapa() {
-    const k = mapa.k;
-    mapa.puntos.selectAll('.dot').attr('r', 7 / k);
-    mapa.puntos.selectAll('.halo').attr('r', 15 / k);
-    mapa.nombres.selectAll('text').style('font-size', 7 / k + 'px').style('display', (f) => (k >= 2.2 || mapa.conCasos.has(f.properties.nombre) ? null : 'none'));
-  }
-  function mostrarTarjeta(d) {
-    const c = $('#mapCard');
-    c.innerHTML = `<button type="button" class="x" data-action="map-close" aria-label="Cerrar">×</button>
-      <div class="f">${esc(d.c.folio)} · ${esc(d.c.alcaldia)} · ${ESTADO[d.c.estado]}</div><b>${esc(d.c.cuidadora.alias)} → ${esc(d.c.persona.alias)}</b>
-      <div class="m"><span>Fragilidad</span><span class="mono" style="color:${COLOR_FRAG[fragClase(d.F)]}">${f2(d.F)}</span></div>
-      <button type="button" data-action="see-red" data-id="${esc(d.c.id)}">Ver red</button>`;
-    c.hidden = false;
-  }
-  function drawTerritorio() {
-    const cs = store.state.casos.filter((c) => c.estado !== 'cerrado');
-    const datos = cs.map((c) => ({ c, F: analisisHogar(c).fragilidad }));
-    $('#terrPct').textContent = cs.length ? pct(datos.filter((d) => d.F >= 0.85).length, cs.length) + '%' : '—';
-    $('#terrSub').textContent = `${cs.length} casos`;
-    const el = $('#map');
-    if (!window.d3 || !window.CDMX_GEO) { el.outerHTML = '<div class="maperr" id="map">No se pudo cargar el mapa.</div>'; return; }
-    if (!construirMapa()) return;
-    $('#mapCard').hidden = true;
-    mapa.conCasos = new Set(datos.map((d) => d.c.alcaldia));
-    mapa.alcs.selectAll('path').classed('con', (f) => mapa.conCasos.has(f.properties.nombre));
-    const pts = [];
-    Object.keys(ZONAS).forEach((z) => {
-      const grupo = datos.filter((d) => d.c.alcaldia === z);
-      const ce = mapa.centros[z]; if (!ce) return;
-      grupo.forEach((d, i) => {
-        const ang = (2 * Math.PI * i) / grupo.length - Math.PI / 2, r = grupo.length > 1 ? 11 : 0;
-        pts.push({ d, x: ce[0] + r * Math.cos(ang), y: ce[1] + r * Math.sin(ang), color: COLOR_FRAG[fragClase(d.F)] });
-      });
-    });
-    mapa.puntos.selectAll('*').remove();
-    const g = mapa.puntos.selectAll('g').data(pts).join('g');
-    g.append('circle').attr('class', 'halo').attr('cx', (p) => p.x).attr('cy', (p) => p.y).attr('fill', (p) => p.color);
-    g.append('circle').attr('class', 'dot').attr('cx', (p) => p.x).attr('cy', (p) => p.y).attr('fill', (p) => p.color)
-      .attr('tabindex', 0).attr('role', 'button').attr('aria-label', (p) => `${p.d.c.folio}, fragilidad ${f2(p.d.F)}`)
-      .on('click', (e, p) => { e.stopPropagation(); mostrarTarjeta(p.d); })
-      .on('keydown', (e, p) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); mostrarTarjeta(p.d); } });
-    escalarMapa();
-  }
-  $('#mapReset').addEventListener('click', () => { if (mapa) mapa.svg.transition().duration(300).call(mapa.zoom.transform, d3.zoomIdentity); });
+  /* 21 nov 2026: se quitó el mapa de Seguimiento (y su código). */
 
   function descargar(obj, nombre) {
     const txt = JSON.stringify(obj, null, 2);
@@ -748,11 +690,22 @@
     chips($('#form-relevo [data-name="dias"]'), RV.DIAS, (d) => d);
     chips($('#form-relevo [data-name="tareas"]'), RV.TAREAS);
     $$('#form-relevo .sxpick').forEach(sxPick);
-    const fa = $('#form-relevo').elements.antecedentesFecha;
-    fa.max = F.hoyISO(); fa.min = F.sumaDias(F.hoyISO(), -legal.VIGENCIA_ANTECEDENTES_DIAS);
     $$('dialog [data-close]').forEach((b) => b.addEventListener('click', () => b.closest('dialog').close()));
     $$('dialog').forEach((d) => d.addEventListener('click', (e) => { if (e.target === d) d.close(); }));
   }
+
+  /* ================= Contratos (20 nov 2026; texto en js/contrato.js) =================
+   * Primero un resumen de una pantalla; el texto completo va plegado. Se guarda solo el registro de la firma. */
+  function contratoHTML(doc) {
+    return `<div class="ct">
+      <p class="ct-tit"><b>${esc(doc.titulo)}</b><small class="mono">${esc(doc.version)}</small></p>
+      <dl class="ct-res">${doc.resumen.map(([k, v]) => `<div><dt>${esc(k)}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
+      <details class="ct-full"><summary>Leer el texto completo (${doc.clausulas.length} cláusulas)</summary>
+        ${doc.clausulas.map((c) => `<p><b>${esc(c.t)}.</b> ${esc(c.txt)}</p>`).join('')}
+        <p class="wk-n">Borrador para el prototipo. No está dictaminado jurídicamente.</p>
+      </details></div>`;
+  }
+  const firmaTxt = (f) => (f ? `${f.metodo === 'simulado' ? 'Firma simulada' : 'Firmado'} por ${f.firmante} · ${String(f.fecha).slice(0, 10)} · ${f.version}${f.huellaTexto ? ' · huella ' + f.huellaTexto.slice(0, 8) : ''}` : 'Sin firma');
 
   /* ================= Solicitud de relevo ("Necesito cuidado") =================
    * Entrada (autorregistro o referencia) → Registro → Consentimiento → Entrevista (3 bloques) → Resultado
@@ -760,18 +713,33 @@
    * Minimización: solo se pide lo que usa el puntaje o la asignación. Sin CURP, sin diagnósticos, sin edad. */
   const PASOS = [
     { id: 'entrada', t: 'Cómo llega' }, { id: 'registro', t: 'Registro' }, { id: 'consentimiento', t: 'Consentimiento' },
+    { id: 'persona', t: 'Persona cuidada' }, // 20 nov 2026: consentimiento de la persona cuidada (matriz D20)
     { id: 'modelo', t: 'Entrevista 1/3' }, { id: 'zarit', t: 'Entrevista 2/3' }, { id: 'barthel', t: 'Entrevista 3/3' }, { id: 'resultado', t: 'Resultado' },
+    { id: 'contrato', t: 'Convenio' }, // 20 nov 2026: se firma al terminar el registro
   ];
   const nuevaSol = () => ({
     canal: '', institucion: '', quien: '', presente: false, alias: '', sexo: '', palias: '', psexo: '', alcaldia: '',
-    aviso: false, expreso: false, observatorio: false, modelo: { horas: '', abvd: [], clin: [] }, zarit: {}, barthel: {},
-    pref: { dias: [], inicio: '09:00', tareas: [] }, apelacion: null,
+    aviso: false, expreso: false, modelo: { horas: '', enfermeria: null }, zarit: {}, barthel: {},
+    pref: { dias: [], inicio: '09:00', tareas: [] }, apelacion: null, firma: false,
+    cp: { via: '', acepta: false, tipo: '', acredita: false },
   });
+  const CP_TIPOS = ['Representación legal o tutela', 'Persona de apoyo designada', 'Poder notarial'];
+  /** Estado del consentimiento de la persona cuidada que se guarda en el caso (sin identidad del representante). */
+  const cpEstado = (cp, hoy) => ({ via: cp.via, tipo: cp.via === 'representante' ? cp.tipo : null,
+    estado: cp.via === 'propio' ? 'otorgado' : cp.via === 'representante' ? 'por_acreditar' : 'pendiente', fecha: hoy });
+  const CP_ESTADO = { otorgado: 'Otorgado por la persona cuidada', acreditado: 'Representación acreditada', por_acreditar: 'Representación por acreditar', pendiente: 'Pendiente: se pide en la primera visita' };
+  const cpOk = (c) => !!(c.consentimientoPersona && ['otorgado', 'acreditado'].includes(c.consentimientoPersona.estado));
+  /** Sin consentimiento de la persona cuidada no se pregunta el Barthel: el paso se salta. */
+  const saltar = (id) => id === 'barthel' && ui.sol && ui.sol.d.cp.via === 'pendiente';
+  function mover(dir) {
+    do { ui.sol.paso += dir; } while (ui.sol.paso > 0 && ui.sol.paso < PASOS.length - 1 && saltar(PASOS[ui.sol.paso].id));
+  }
   const radio = (name, val, lab, on) => `<label class="chip"><input type="radio" name="${name}" value="${esc(val)}"${on ? ' checked' : ''}><span>${lab}</span></label>`;
   const check = (name, val, lab, on) => `<label class="chip"><input type="checkbox" name="${name}" value="${esc(val)}"${on ? ' checked' : ''}><span>${esc(lab)}</span></label>`;
   const sinoChips = (name, v) => radio(name, 'si', 'Sí', v === true) + radio(name, 'no', 'No', v === false);
   const codigo = () => '';
-  const entrevistaDe = (d) => ({ modelo: { horas: +d.modelo.horas, abvd: d.modelo.abvd.slice(), clin: d.modelo.clin.slice() },
+  // 20 nov 2026: la entrevista guarda solo horas y «requiere enfermería» (sin actividades básicas ni lista de tareas de salud).
+  const entrevistaDe = (d) => ({ modelo: PR.minimizarModelo(d.modelo),
     zarit: PR.totalZarit(d.zarit, CP) == null ? null : Object.assign({}, d.zarit), barthel: Object.assign({}, d.barthel) });
 
   function pintaPaso() {
@@ -779,12 +747,11 @@
     $('#sol-paso').textContent = `${ui.sol.paso + 1}/${PASOS.length} · ${paso.t}`;
     $('#sol-bar').style.width = Math.round(((ui.sol.paso + 1) / PASOS.length) * 100) + '%';
     $('#sol-atras').textContent = ui.sol.paso ? 'Atrás' : 'Cancelar';
-    $('#sol-sig').textContent = paso.id === 'resultado' ? 'Firmar acuerdo y enviar' : paso.id === 'consentimiento' ? 'Acepto y sigo' : 'Siguiente';
+    $('#sol-sig').textContent = paso.id === 'contrato' ? 'Firmar y enviar' : paso.id === 'consentimiento' ? 'Acepto y sigo' : 'Siguiente';
     $('#sol-err').textContent = '';
     let h = '';
     if (paso.id === 'entrada') {
-      h = `${personaje('bienvenida', 'hero-img')}
-        <h3 class="marca">${esc(CP.nombre)}</h3><p class="eslogan">${esc(CP.eslogan)}</p>
+      h = `${banner('bienvenida', `<span class="rx-kick">Necesito relevo</span><h3 class="marca">${esc(CP.nombre)}</h3><p class="eslogan">${esc(CP.eslogan)}</p>`)}
         <p class="complementario">${esc(CP.aviso_complementario)}</p>
         <div class="eyebrow sep">¿Cómo llega esta solicitud?</div>
         <div class="vias">
@@ -811,14 +778,12 @@
         <p class="sub">Te preguntaremos cuánto cuidas y cómo está la persona que cuidas. Son <b>datos sensibles</b>: se usan solo para tu prioridad y para asignar relevo. Puedes retirar tu consentimiento cuando quieras.</p>
         <button type="button" class="link" data-action="ver-aviso">Leer el aviso de privacidad</button>
         <label class="check"><input type="checkbox" name="aviso"${d.aviso ? ' checked' : ''}><span>Leí el aviso de privacidad</span></label>
-        <label class="check"><input type="checkbox" name="expreso"${d.expreso ? ' checked' : ''}><span>Acepto de forma expresa que se registren datos sobre mi salud, mi carga de cuidado y la dependencia de la persona que cuido</span></label>
-        <label class="check"><input type="checkbox" name="observatorio"${d.observatorio ? ' checked' : ''}><span><b>Opcional.</b> Autorizo que mis datos, sin nombre ni domicilio, se usen para estadísticas del Observatorio del Cuidado. Si no lo marco, mi servicio no cambia.</span></label>
-        <p class="sub">Al terminar la solicitud firmarás el acuerdo de servicio. La persona que cuidas (o quien la apoye) también firma.</p>`;
+        <label class="check"><input type="checkbox" name="expreso"${d.expreso ? ' checked' : ''}><span>Acepto de forma expresa que se registren datos sobre mi salud, mi carga de cuidado y la dependencia de la persona que cuido</span></label>`;
     } else if (paso.id === 'modelo') {
       const m = d.modelo;
       h = `<h3>Tu cuidado</h3>        <label class="fld">${esc(PR.PREGUNTAS_MODELO[0].txt)} ${codigo('P6_7 + P6_26')}<input name="horas" type="number" min="0" max="168" inputmode="numeric" value="${esc(m.horas)}"></label>
-        <div class="fld">${esc(PR.PREGUNTAS_MODELO[1].txt)} ${codigo('P6_2 · ABVD')}<div class="chips">${PR.ABVD.map((o) => check('abvd', o.id, o.txt, m.abvd.includes(o.id))).join('')}</div></div>
-        <div class="fld">${esc(PR.PREGUNTAS_MODELO[2].txt)} ${codigo('P6_2 · clínicas')}<div class="chips">${PR.CLIN.map((o) => check('clin', o.id, o.txt, m.clin.includes(o.id))).join('')}</div></div>`;
+        <div class="fld">${esc(PR.PREGUNTAS_MODELO[1].txt)} ${codigo('P6_2 · salud')}<div class="chips radio">${sinoChips('enfermeria', m.enfermeria)}</div>
+          <small class="hint">Solo se guarda sí o no. La persona de relevo no hace tareas de salud: si dices que sí, te orientamos a enfermería.</small></div>`;
     } else if (paso.id === 'zarit') {
       h = `<h3>Cómo te has sentido</h3>
         <p class="sub">Pensando en el último mes. Es opcional y no cambia tu prioridad.</p>
@@ -827,27 +792,41 @@
     } else if (paso.id === 'barthel') {
       h = `<h3>La persona que cuidas</h3>        ${PR.BARTHEL.map((it) => `<div class="fld">${esc(it.txt)}<div class="chips radio">${it.niveles.map(([p, t]) => radio(it.id, p, esc(t), String(d.barthel[it.id]) === String(p))).join('')}</div></div>`).join('')}
         <p class="sub" id="barthel-total"></p>`;
+    } else if (paso.id === 'persona') {
+      const p = esc(d.palias), cp = d.cp;
+      h = `<h3>${p}</h3>
+        <p class="sub">El Barthel y el relevo son sobre ${p} y ocurren en su casa. Por eso también necesitamos su consentimiento, no solo el tuyo.</p>
+        <div class="vias">
+          <label class="via"><input type="radio" name="cpvia" value="propio"${cp.via === 'propio' ? ' checked' : ''}><span><b>${p} está aquí y decide</b><small>Lo marca ella o él</small></span></label>
+          <label class="via"><input type="radio" name="cpvia" value="representante"${cp.via === 'representante' ? ' checked' : ''}><span><b>${p} no puede expresar su voluntad</b><small>Yo la o lo represento</small></span></label>
+          <label class="via"><input type="radio" name="cpvia" value="pendiente"${cp.via === 'pendiente' ? ' checked' : ''}><span><b>${p} no está ahora</b><small>Se le pregunta en la primera visita</small></span></label>
+        </div>
+        ${cp.via === 'propio' ? `<button type="button" class="link" data-action="ver-aviso">Leer el aviso de privacidad</button>
+          <label class="check"><input type="checkbox" name="cpacepta"${cp.acepta ? ' checked' : ''}><span>Soy ${p}. Acepto recibir relevo en mi casa y que se registre cómo hago mis actividades diarias. Puedo retirar mi consentimiento cuando quiera.</span></label>` : ''}
+        ${cp.via === 'representante' ? `<label class="fld">Tipo de representación<select name="cptipo"><option value="">Elige…</option>${options(CP_TIPOS, cp.tipo)}</select></label>
+          <label class="check"><input type="checkbox" name="cpacredita"${cp.acredita ? ' checked' : ''}><span>Mostraré el documento en la primera visita. Sin él no se asigna relevo.</span></label>` : ''}
+        ${cp.via === 'pendiente' ? `<p class="wk-n">No te preguntaremos por la dependencia de ${p} (Barthel) hasta tener su consentimiento, y no se asigna relevo antes.</p>` : ''}`;
+    } else if (paso.id === 'contrato') {
+      h = `<h3>Convenio</h3>
+        <p class="sub">Lee el resumen. Al firmar aceptas el convenio con el alias «${esc(d.alias)}»; la identidad se verifica en la primera visita.</p>
+        ${contratoHTML(docConvenio(d))}
+        <label class="check"><input type="checkbox" name="firma"${d.firma ? ' checked' : ''}><span>Leí el convenio y lo firmo como «${esc(d.alias)}»</span></label>`;
     } else {
       const ent = entrevistaDe(d);
       const v = valorar(ent, d.sexo, F.hoyISO());
       const est = calcularPlan(v.nivel === 'dentro' ? { id: '__nuevo', efectivo: v.efectivo } : null);
       const hMes = est.horas.__nuevo || 0;
       const ch = PR.chequeos(ent, CP);
-      h = `${personaje(v.nivel, 'hero-img')}
-        ${ui.rol === 'programa'
-          ? `<div class="resnivel nv-${v.nivel}"><span>Nivel</span><b>${PR.NIVEL[v.nivel]}</b><small class="mono">${pts(v.base)} h/semana</small></div>`
-          : `<div class="resnivel neutro"><span>Prioridad</span><b>${PR.NIVEL[v.nivel]}</b></div>`}
-        <section class="blk"><h5>Horas asignadas</h5>
-          <div class="bolsa"><b class="mono">${hMes}</b><span>h al mes · ≈ ${PR.horasSemana(hMes, CP)} h por semana</span></div>
-          <p class="wk-n">${hMes ? 'Estimado con la bolsa actual. Se confirma en el ciclo del mes.' : (v.nivel === 'fuera' ? 'Este mes las horas son para quien cuida 40 h o más. Tu solicitud queda registrada.' : 'Entras a la cola: tu lugar sube cada semana.')}</p>
-        </section>
-        ${v.nivel === 'fuera' ? `<section class="blk alterno"><h5>Además de tus horas</h5>
-          <ul class="motivos"><li>Redes de apoyo para personas cuidadoras cerca de ${esc(d.alcaldia || 'tu alcaldía')}</li><li>Centros de día públicos para personas mayores o con discapacidad</li><li>Módulo del Sistema Público de Cuidados más cercano</li></ul></section>` : ''}
-        ${ch.length ? `<section class="blk nota-humana"><h5>Una persona revisará tu caso</h5><ul class="motivos">${ch.map((x) => `<li>${esc(x.txt)}</li>`).join('')}</ul></section>` : ''}
-        <section class="blk"><h5>¿No estás de acuerdo?</h5>
-          ${d.apelacion ? `<p class="sub">Registrada: «${esc(d.apelacion)}».</p>` : ''}
-          <button type="button" class="btn-ghost sm" data-action="sol-apelar">${d.apelacion ? 'Cambiar motivo' : 'Solicitar revisión'}</button>
-        </section>
+      const st = estadoSimple(v.nivel, hMes, !hMes && v.nivel === 'dentro');
+      const tec = ui.rol === 'programa' ? `<p class="rx-tec">${v.nivel === 'dentro' ? 'Entra a la bolsa' : 'No entra a la bolsa'} · cuida ${pts(v.base)} h a la semana</p>` : '';
+      const notas = [];
+      if (ent.modelo.enfermeria) notas.push(['salud', 'Tareas de salud', 'El relevo no da medicinas ni hace curaciones: te orientamos a enfermería.']);
+      if (ch.length) notas.push(['rev', 'Una persona revisará tu caso', ch.map((x) => x.txt).join(' ')]);
+      if (v.nivel === 'fuera') notas.push(['apoyo', 'Apoyo cerca de ti', `Redes de personas cuidadoras y centros de día públicos en ${d.alcaldia || 'tu alcaldía'}, y el módulo del Sistema Público de Cuidados.`]);
+      h = `${heroRes(st, hMes, PR.horasSemana(hMes, CP), fantasma(v.nivel, 'blanco'), tec)}
+        ${notas.map(([k, t, x]) => `<div class="rx-note rx-${k}"><b>${esc(t)}</b><span>${esc(x)}</span></div>`).join('')}
+        <div class="rx-apela">${d.apelacion ? `<span>Revisión solicitada: «${esc(d.apelacion)}»</span>` : '<span>¿No estás de acuerdo con el resultado?</span>'}
+          <button type="button" class="link" data-action="sol-apelar">${d.apelacion ? 'Cambiar motivo' : 'Pedir revisión'}</button></div>
         <div class="eyebrow sep">¿Cuándo te sirve el relevo?</div>
         <div class="chips">${RV.DIAS.map((t, i) => check('pdias', i, t, d.pref.dias.includes(i))).join('')}</div>
         <label class="fld">Desde las<input name="pinicio" type="time" step="1800" value="${esc(d.pref.inicio)}"></label>
@@ -869,11 +848,18 @@
     const marcados = (n) => $$(`input[name="${n}"]:checked`, f).map((i) => i.value);
     if (id === 'entrada') { d.canal = val('canal'); d.institucion = val('institucion'); d.quien = val('quien').trim(); d.presente = !!(e.presente && e.presente.checked); $('#sol-ref').hidden = d.canal !== 'referencia'; }
     else if (id === 'registro') { d.sexo = val('sexo'); d.psexo = val('psexo'); d.alias = val('alias').trim(); d.palias = val('palias').trim(); d.alcaldia = val('alcaldia'); }
-    else if (id === 'consentimiento') { d.aviso = e.aviso.checked; d.expreso = e.expreso.checked; d.observatorio = e.observatorio.checked; }
+    else if (id === 'consentimiento') { d.aviso = e.aviso.checked; d.expreso = e.expreso.checked; }
     else if (id === 'modelo') {
-      d.modelo.horas = val('horas'); d.modelo.abvd = marcados('abvd'); d.modelo.clin = marcados('clin');
+      d.modelo.horas = val('horas'); const enf = val('enfermeria'); d.modelo.enfermeria = enf === 'si' ? true : enf === 'no' ? false : null;
     } else if (id === 'zarit') { PR.reactivosZarit(CP).forEach((it) => { const v = val(it.id); if (v !== '') d.zarit[it.id] = +v; }); }
     else if (id === 'barthel') { PR.BARTHEL.forEach((it) => { const v = val(it.id); if (v === '') delete d.barthel[it.id]; else d.barthel[it.id] = +v; }); }
+    else if (id === 'contrato') { d.firma = !!(e.firma && e.firma.checked); }
+    else if (id === 'persona') {
+      const via = val('cpvia'), cambio = via !== d.cp.via;
+      d.cp.via = via; d.cp.acepta = !!(e.cpacepta && e.cpacepta.checked); d.cp.tipo = val('cptipo'); d.cp.acredita = !!(e.cpacredita && e.cpacredita.checked);
+      if (via === 'pendiente') d.barthel = {};
+      if (cambio) pintaPaso(); // muestra las casillas de la opción elegida
+    }
     else { d.pref.dias = marcados('pdias').map(Number); d.pref.inicio = val('pinicio') || '09:00'; d.pref.tareas = marcados('ptareas'); }
     totalesSol();
   }
@@ -890,11 +876,18 @@
     } else if (id === 'modelo') {
       const h = d.modelo.horas;
       if (h === '' || isNaN(+h) || +h < 0 || +h > 168) return 'Escribe las horas a la semana (0 a 168).';
+      if (typeof d.modelo.enfermeria !== 'boolean') return 'Responde si haces alguna tarea de salud.';
     } else if (id === 'zarit') {
       const n = Object.keys(d.zarit).length;
       if (n && n < CP.zarit.n_reactivos) return `Responde las ${CP.zarit.n_reactivos} preguntas o deja el bloque vacío.`;
     } else if (id === 'barthel') {
-      if (PR.totalBarthel(d.barthel) == null) return 'Responde las 10 actividades.';
+      if (d.cp.via !== 'pendiente' && PR.totalBarthel(d.barthel) == null) return 'Responde las 10 actividades.';
+    } else if (id === 'contrato') {
+      if (!d.firma) return 'Para enviar la solicitud hay que firmar el convenio.';
+    } else if (id === 'persona') {
+      if (!d.cp.via) return 'Elige una opción.';
+      if (d.cp.via === 'propio' && !d.cp.acepta) return 'La persona cuidada tiene que marcar que acepta.';
+      if (d.cp.via === 'representante' && (!d.cp.tipo || !d.cp.acredita)) return 'Elige el tipo de representación y confirma que la acreditarás.';
     } else {
       if (!d.pref.dias.length || !d.pref.tareas.length) return 'Elige al menos un día y una tarea para el relevo.';
     }
@@ -905,17 +898,26 @@
     $('#dlg-sol').showModal();
     pintaPaso();
   }
-  function guardarSol(firma) {
+  /** Convenio con los datos de esta solicitud: horas estimadas, tareas y días preferidos. */
+  function docConvenio(d) {
+    const ent = entrevistaDe(d), v = valorar(ent, d.sexo, F.hoyISO());
+    const est = calcularPlan(v.nivel === 'dentro' ? { id: '__nuevo', efectivo: v.efectivo } : null);
+    const hMes = est.horas.__nuevo || 0;
+    return CT.convenioServicio({ folio: null, alias: d.alias, palias: d.palias, alcaldia: d.alcaldia, horasMes: hMes, horasSemana: PR.horasSemana(hMes, CP),
+      dentro: v.nivel === 'dentro', enfermeria: ent.modelo.enfermeria, consentimientoPersona: d.cp.via, tareas: d.pref.tareas, dias: d.pref.dias.map((i) => RV.DIAS[i]), inicio: d.pref.inicio });
+  }
+  function guardarSol() {
     const d = ui.sol.d, hoy = F.hoyISO(), ent = entrevistaDe(d);
     const ch = PR.chequeos(ent, CP);
     const caso = {
       id: store.uid('k'), folio: store.nextFolio(), fecha: hoy, alcaldia: d.alcaldia, estado: 'espera',
       canal_origen: d.canal, referencia: d.canal === 'referencia' ? { institucion: d.institucion, quien: d.quien, fecha: hoy } : null,
-      cuidadora: { alias: d.alias, sexo: d.sexo, horas: ent.modelo.horas, abvd: ent.modelo.abvd.length > 0 },
+      cuidadora: { alias: d.alias, sexo: d.sexo, horas: ent.modelo.horas },
       persona: { alias: d.palias, sexo: d.psexo || null },
       entrevista: ent,
-      consentimiento: { expreso: true, observatorio: !!d.observatorio, aviso: Care.contratos.VERSION, fecha: hoy },
-      contrato: firma,
+      consentimiento: { expreso: true, aviso: CP.version_aviso || '2026-11-21', fecha: hoy },
+      contrato: CT.firmar(docConvenio(d), d.alias, Care),
+      consentimientoPersona: cpEstado(d.cp, hoy),
       hogar: Care.buildHogar({ cuidadora: { nombre: d.alias, rol: 'cuidadora', horas: ent.modelo.horas }, cuidada: { nombre: d.palias, rol: 'familiar' } }),
       preferencias: { dias: d.pref.dias.slice(), inicio: d.pref.inicio, tareas: d.pref.tareas.slice() },
       pagador: 'subsidio', pctSubsidio: 0, asignacion: null,
@@ -938,20 +940,15 @@
     leerPaso();
     const err = errorPaso();
     if (err) { $('#sol-err').textContent = err; return; }
-    if (PASOS[ui.sol.paso].id === 'resultado') {
-      Care.contratos.firmar('servicio', { cuidadora: ui.sol.d.alias, cuidada: ui.sol.d.palias }).then((firma) => {
-        if (firma) guardarSol(firma);
-        else $('#sol-err').textContent = 'Sin el acuerdo firmado la solicitud no se envía. Puedes firmarlo cuando quieras.';
-      });
-      return;
-    }
-    ui.sol.paso++; pintaPaso();
+    if (PASOS[ui.sol.paso].id === 'contrato') { guardarSol(); return; }
+    mover(1); pintaPaso();
   });
-  $('#sol-atras').addEventListener('click', () => { if (!ui.sol.paso) { $('#dlg-sol').close(); return; } leerPaso(); ui.sol.paso--; pintaPaso(); });
+  $('#sol-atras').addEventListener('click', () => { if (!ui.sol.paso) { $('#dlg-sol').close(); return; } leerPaso(); mover(-1); pintaPaso(); });
 
   /* ---------- Registrar persona de relevo ---------- */
   function openRelevo() {
     const f = $('#form-relevo'); f.reset(); $('.form-error', f).textContent = '';
+    ui.relFirma = null;
     $('#dlg-relevo').showModal(); $('#dlg-relevo').scrollTop = 0;
     refreshRelevo();
   }
@@ -962,12 +959,18 @@
     return {
       nombre: e.nombre.value.trim(), sexo: e.sexo.value, alcaldia: e.alcaldia.value, certificacion: e.certificacion.value, experiencia: 0,
       diasSel: checked(f, 'dias').map(Number), dias: checked(f, 'dias').length, desde: e.desde.value, hasta: e.hasta.value, horasMax: +e.horasMax.value || 0,
-      tareas: checked(f, 'tareas'), curp, docId: e.docId.value, antecedentesFecha: e.antecedentesFecha.value, refNombre: e.refNombre.value, refTel: e.refTel.value,
-      contrato: e.contrato.checked, privacidad: e.privacidad.checked, veracidad: e.veracidad.checked, duplicada: v.ok && store.existeRelevoCURP(v.curp),
+      tareas: checked(f, 'tareas'), curp, docId: e.docId.value, refNombre: e.refNombre.value, refTel: e.refTel.value,
+      privacidad: e.privacidad.checked, veracidad: e.veracidad.checked, duplicada: v.ok && store.existeRelevoCURP(v.curp), curpOk: v.ok, edad: v.edad,
     };
   }
+  /** Contrato de trabajo con los datos que lleva capturados el registro. */
+  const docTrabajo = (d) => CT.contratoTrabajo({ nombre: d.nombre, alcaldia: d.alcaldia, dias: d.diasSel.map((i) => RV.DIAS[i]), desde: d.desde, hasta: d.hasta, horasMax: d.horasMax, tareas: d.tareas });
   function refreshRelevo() {
     const d = datosRelevo();
+    // La firma vale solo para el texto que se firmó: si cambian nombre, horario, días o tareas, hay que volver a firmar.
+    d.contrato = !!(ui.relFirma && CT.verificar(ui.relFirma, docTrabajo(d), Care));
+    const est = $('#rel-ct-estado');
+    if (est) est.textContent = d.contrato ? firmaTxt(ui.relFirma) : ui.relFirma ? 'Cambiaste datos del contrato: vuelve a firmarlo' : 'Sin firmar';
     const reqs = legal.requisitosRelevo(d);
     if (!d.nombre) reqs.unshift({ ok: false, txt: 'Nombre' });
     if (!d.tareas.length) reqs.push({ ok: false, txt: 'Al menos una tarea' });
@@ -975,31 +978,43 @@
     $('#rel-ok').disabled = legal.pendientes(reqs).length > 0;
   }
   ['input', 'change'].forEach((ev) => $('#form-relevo').addEventListener(ev, refreshRelevo));
+  // Firma del contrato de trabajo: se lee el resumen y se firma escribiendo el mismo nombre del registro.
+  $('#rel-ct-btn').addEventListener('click', () => {
+    const d = datosRelevo();
+    if (!d.nombre || !d.diasSel.length || !d.tareas.length) { $('.form-error', $('#form-relevo')).textContent = 'Antes de firmar: nombre, días y tareas.'; return; }
+    $('.form-error', $('#form-relevo')).textContent = '';
+    ui.relDoc = docTrabajo(d);
+    $('#ct-body').innerHTML = contratoHTML(ui.relDoc);
+    $('#form-contrato').reset(); $('#ct-err').textContent = '';
+    $('#dlg-contrato').showModal(); $('#dlg-contrato').scrollTop = 0;
+  });
+  $('#form-contrato').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nombre = datosRelevo().nombre, escrito = e.target.elements.firmaNombre.value;
+    if (!CT.firmaCoincide(escrito, nombre)) { $('#ct-err').textContent = `Escribe «${nombre}», igual que en el registro.`; return; }
+    ui.relFirma = CT.firmar(ui.relDoc, nombre, Care);
+    $('#dlg-contrato').close();
+    refreshRelevo();
+  });
   $('#form-relevo').addEventListener('submit', (e) => {
     e.preventDefault();
     if ($('#rel-ok').disabled) return;
-    const d = datosRelevo();
-    Care.contratos.firmar('relevo', { nombre: d.nombre }).then((firma) => {
-      if (!firma) { $('.form-error', $('#form-relevo')).textContent = 'Sin el contrato firmado el registro no se envía.'; return; }
-      guardarRelevo(d, firma);
-    });
-  });
-  function guardarRelevo(d, firma) {
-    const nuevoId = store.uid('r');
+    const d = datosRelevo(), nuevoId = store.uid('r');
     store.update((s) => s.relevos.unshift({
       id: nuevoId, nombre: d.nombre, sexo: d.sexo || null, alcaldia: d.alcaldia, dias: d.diasSel, desde: d.desde, hasta: d.hasta, horasMax: d.horasMax,
       tareas: d.tareas, certificacion: d.certificacion, experiencia: d.experiencia,
-      legal: { curp: d.curp, docId: d.docId, antecedentesFecha: d.antecedentesFecha, referencia: { nombre: d.refNombre.trim(), tel: d.refTel.replace(/\D/g, '') }, aceptado: new Date().toISOString() },
-      contrato: firma,
+      // 20 nov 2026: la CURP se validó y se descarta; se guarda solo su huella y los últimos 4 caracteres (js/huella.js).
+      legal: { curp: HU.curp(d.curp), mayorDeEdad: d.edad >= legal.EDAD_MIN, docId: d.docId, referencia: { nombre: d.refNombre.trim(), tel: d.refTel.replace(/\D/g, '') }, aceptado: new Date().toISOString() },
+      contrato: ui.relFirma,
       verificacion: { estado: 'pendiente', fecha: F.hoyISO() },
     }));
     $('#dlg-relevo').close();
-    if (ui.rol === 'relevo') { guardarId('mientras-mi-relevo', nuevoId); show('yo'); toast('Contrato firmado · enviado a revisión'); return; }
+    if (ui.rol === 'relevo') { guardarId('mientras-mi-relevo', nuevoId); show('yo'); toast('Enviado a revisión'); return; }
     ui.relFiltro = 'revision';
     $$('#rel-filter button').forEach((x) => x.classList.toggle('on', x.dataset.val === 'revision'));
     render();
-    toast('Contrato firmado · enviado a revisión');
-  }
+    toast('Enviado a revisión');
+  });
 
   /* ================= Acciones (delegación) ================= */
   const cerrarDet = () => { if ($('#dlg-det').open) $('#dlg-det').close(); };
@@ -1014,9 +1029,7 @@
       case 'ver-caso': abrirCaso(id); break;
       case 'ver-relevo': abrirRelevo(id); break;
       case 'new-sol': openSol(); break;
-      case 'ver-aviso': Care.contratos.verAviso(); break;
-      case 'ver-contrato': { const x = b.dataset.tipo === 'relevo' ? relById(id) : casoById(id); if (x && x.contrato) { cerrarDet(); Care.contratos.verFirmado(x.contrato); } break; }
-      case 'mis-datos': await pedir('Tus derechos ARCO: puedes pedir acceso, rectificación, cancelación u oposición al uso de tus datos, y revocar tu consentimiento. Es gratuito: la persona de datos personales de RedCare responde en 20 días y lo hace efectivo en 15 (LFPDPPP, arts. 27 a 34). En este prototipo los datos son simulados y viven solo en este navegador.', { ok: 'Entendido' }); break;
+      case 'ver-aviso': await pedir(CP.aviso_privacidad.replace('{operador}', CP.operador).replace('{contacto}', CP.contacto_datos), { ok: 'Entendido' }); break;
       case 'sol-apelar': { const m = await pedir('¿Por qué crees que tu valoración no refleja tu situación?', { input: true, min: 5, ok: 'Registrar' }); if (m) { ui.sol.d.apelacion = m; pintaPaso(); } break; }
       case 'revisado': { cerrarDet(); const m = await pedir('Nota de la revisión (qué se verificó):', { input: true, min: 5, ok: 'Marcar revisado' }); if (m) { store.resolverRevision(id, m); toast('Revisión registrada; el puntaje no cambia'); } break; }
       case 'resolver-ap': { cerrarDet(); const apId = b.dataset.ap; const m = await pedir('Resolución (si cambia una respuesta, se vuelve a entrevistar):', { input: true, min: 5, ok: 'Resolver' }); if (m) { store.resolverApelacion(id, apId, m); toast('Solicitud de revisión resuelta'); } break; }
@@ -1027,14 +1040,26 @@
       }
       case 'new-relevo': openRelevo(); break;
       case 'mia-nueva': guardarId('mientras-mi-caso', ''); render(); break;
+      case 'mia-convenio': { const c = casoById(leerId('mientras-mi-caso')); if (c) await pedir(`${firmaTxt(c.contrato)}. Guardamos la huella del texto que firmaste, no una copia: si el texto cambia, la huella deja de coincidir.`, { ok: 'Entendido' }); break; }
+      case 'mia-datos': { const c = casoById(leerId('mientras-mi-caso')); if (c) await pedir(`Lo que guardamos de ti: alias «${c.cuidadora.alias}», sexo, alcaldía ${c.alcaldia}, ${c.cuidadora.horas} h de cuidado a la semana, si haces tareas de salud (sí/no), tus respuestas de la entrevista y, cada semana, cansancio, noches de mal sueño y si pudiste trabajar o estudiar. De la persona cuidada: alias, sexo, su Barthel y su consentimiento.${c.domicilio ? ' Domicilio para las visitas (ficticio en este prototipo); se borra al cerrar el caso.' : ' Tu domicilio se pide solo cuando se te asigna relevo.'} Contactos registrados: ${(c.contactos || []).length}. Sin CURP ni nombre completo. Para acceder, corregir, cancelar u oponerte: ${CP.contacto_datos}.`, { ok: 'Entendido' }); break; }
+      case 'mia-contactos': abrirContactos(); break;
       case 'yo-nuevo': guardarId('mientras-mi-relevo', ''); render(); break;
       case 'proponer': abrirAsignacion(id, false); break;
       case 'reasignar': abrirAsignacion(id, true); break;
       case 'seguir': case 'see-red': cerrarDet(); ui.scCaso = id; ui.segSub = 'caso'; ui.objetivo = null; ui.apagado = false; show('seguimiento'); break;
-      case 'map-close': $('#mapCard').hidden = true; break;
+      case 'cp-registrar': {
+        cerrarDet();
+        const c = casoById(id), rep = c.consentimientoPersona && c.consentimientoPersona.estado === 'por_acreditar';
+        const txt = rep ? `¿Viste el documento de ${c.consentimientoPersona.tipo || 'representación'}? No se guarda copia.` : `¿${c.persona.alias} dio su consentimiento en persona? Después se captura su Barthel en la visita.`;
+        if (await pedir(txt, { ok: rep ? 'Acreditada' : 'Sí, lo dio' })) {
+          store.update(() => { c.consentimientoPersona = Object.assign({}, c.consentimientoPersona, { estado: rep ? 'acreditado' : 'otorgado', via: rep ? 'representante' : 'propio', fechaRegistro: F.hoyISO() }); });
+          toast('Consentimiento registrado');
+        }
+        break;
+      }
       case 'cerrar': { cerrarDet(); const m = await pedir('Motivo del cierre:', { input: true, ok: 'Cerrar caso' }); if (m) { store.cerrarCaso(id, m); toast('Caso cerrado'); } break; }
       case 'del-caso': cerrarDet(); if (await pedir('Eliminar el caso y su historial.', { ok: 'Eliminar', peligro: true })) store.removeCaso(id); break;
-      case 'aprobar': cerrarDet(); if (await pedir('¿Identidad, carta y referencia revisadas?', { ok: 'Aprobar' })) { store.resolverRelevo(id, true); toast('Aprobada'); } break;
+      case 'aprobar': cerrarDet(); if (await pedir('¿Identidad y referencia revisadas, y entrevista de verificación hecha? Al aprobar se borran el nombre y el teléfono de la referencia.', { ok: 'Aprobar' })) { store.resolverRelevo(id, true); toast('Aprobada'); } break;
       case 'rechazar': { cerrarDet(); const m = await pedir('Motivo del rechazo:', { input: true, ok: 'Rechazar', peligro: true }); if (m) { store.resolverRelevo(id, false, m); toast('Rechazada'); } break; }
       case 'certificar': cerrarDet(); store.update(() => { relById(id).certificacion = 'certificada'; }); toast('Certificación registrada'); break;
       case 'del-relevo': cerrarDet(); if (await pedir('Eliminar este registro.', { ok: 'Eliminar', peligro: true }) && !store.removeRelevo(id)) toast('Tiene casos activos: cámbialos primero'); break;
@@ -1049,65 +1074,179 @@
 
   /* ================= Vistas propias de la cuidadora y de la persona de relevo ================= */
   const NIVEL_TXT = { dentro: 'Dentro de la regla de entrada', fuera: 'Fuera de la regla de entrada' };
+  /* Rediseño del resultado (20 nov 2026): una cifra grande, un estado en palabras simples y el recorrido en 4 pasos.
+   * Lo técnico (regla ≥ 40 h, horas declaradas) solo se muestra en la vista Programa. */
+  function estadoSimple(nivel, hMes, cola) {
+    if (nivel === 'fuera') return { k: 'reg', kick: 'Ya estás en la red', big: 'Te acompañamos', s: 'Las horas de relevo son para quien cuida 40 horas o más a la semana. Quedas registrada: si tus horas cambian, actualízalas. Mientras, te conectamos con apoyo cerca de ti.' };
+    if (cola || !hMes) return { k: 'cola', kick: 'Estás en la lista', big: 'Tu turno viene', s: 'Este mes no alcanzaron las horas. Tu lugar sube cada semana que esperas.' };
+    return { k: 'ok', kick: 'Tu tiempo para ti', s: 'Úsalo para descansar, ir al médico o hacer algo para ti. Una persona del programa lo confirma antes de asignarte relevo.' };
+  }
+  /* Rediseño 21 nov 2026: «pase de tiempo». Una cifra, las semanas del mes y para qué sirve; sin lenguaje técnico. */
+  function semanasDe(hMes) {
+    const b = Math.floor(hMes / 4), r = hMes - b * 4;
+    return [0, 1, 2, 3].map((i) => b + (i < r ? 1 : 0));
+  }
+  function heroRes(st, hMes, sem, img, extra) {
+    const cuerpo = st.k === 'ok'
+      ? `<div class="rx-big"><b>${hMes}</b><span>horas<br>este mes</span></div>
+         <div class="rx-weeks">${semanasDe(hMes).map((x, i) => `<span><i>Semana ${i + 1}</i><b>${x} h</b></span>`).join('')}</div>`
+      : `<div class="rx-big rx-word"><b>${esc(st.big)}</b></div>
+         ${st.k === 'cola' ? '<div class="rx-bar"><i></i></div>' : ''}`;
+    return `<div class="rx-pass rx-${st.k}">${img}
+      <div class="rx-top"><span class="rx-kick">${esc(st.kick || st.t || '')}</span></div>
+      ${cuerpo}
+      <p class="rx-msg">${esc(st.s)}</p>${extra || ''}
+    </div>`;
+  }
+  /** Recorrido: firmado → consentimiento → relevo → primera visita. */
+  function pasosRes(c) {
+    const cp = c ? ['otorgado', 'acreditado'].includes((c.consentimientoPersona || {}).estado) : false;
+    const asig = c && c.estado === 'activo';
+    const visita = asig && store.state.visitas.some((v) => v.casoId === c.id && v.estado === 'realizada');
+    const P = [['Convenio firmado', !c || !!c.contrato], ['Consentimiento de la persona cuidada', cp], ['Relevo asignado', asig], ['Primera visita', visita]];
+    let actual = P.findIndex(([, ok]) => !ok);
+    return `<ol class="rx-steps">${P.map(([t, ok], i) => `<li class="${ok ? 'ok' : i === actual ? 'now' : ''}"><i>${ok ? '✓' : i + 1}</i><span>${esc(t)}</span></li>`).join('')}</ol>`;
+  }
   const dato = (val, lab) => `<div class="tl"><b class="mono">${val}</b><span>${esc(lab)}</span></div>`;
+  /* 21 nov 2026: cada vista propia muestra cómo se ve sin registro (arriba) y un ejemplo con datos simulados (abajo). */
+  function tarjetaCaso(c, ejemplo) {
+    const v = valDe(c), hz = horasDe(c);
+    const r = c.estado === 'activo' && c.asignacion && relById(c.asignacion.relevoId);
+    const st = r ? { k: 'ok', kick: 'Con relevo', s: `${r.nombre} te acompaña. Revisa tus visitas en Seguimiento.` } : estadoSimple(v.nivel, hz.mes, hz.cola);
+    return `<div class="rx-card${ejemplo ? ' ej' : ''}">
+        <div class="mia-top"><span>${ejemplo ? 'Ejemplo' : 'Tu solicitud'} · ${esc(c.alcaldia)}</span><span class="mono">${esc(c.folio)}</span></div>
+        ${heroRes(st, hz.mes, hz.sem, fantasma(r ? 'relevo' : v.nivel, 'blanco'))}
+        ${pasosRes(c)}
+        ${!ejemplo && enRevision(c) ? '<div class="rx-note rx-rev"><b>En revisión</b><span>Una persona revisará algunas respuestas. Tu lugar no cambia.</span></div>' : ''}
+      </div>`;
+  }
+  const sepEjemplo = (t) => `<div class="ej-sep"><span>Ejemplo</span>${esc(t)}</div>`;
   function renderMia() {
     const c = casoById(leerId('mientras-mi-caso'));
     if (!c) {
-      $('#mia-body').innerHTML = `<div class="hero-rol">${personaje('bienvenida', 'hero-img')}
-        <h2>¿Cuidas a alguien muchas horas a la semana?</h2>
-        <p>Una persona capacitada cuida a tu familiar mientras tú descansas.</p>
+      const ej = store.state.casos.find((x) => x.estado === 'activo' && x.asignacion) || store.state.casos[0];
+      $('#mia-body').innerHTML = `${banner('bienvenida', `<span class="rx-kick">Necesito relevo</span>
+          <h2>¿Cuidas a alguien muchas horas a la semana?</h2>
+          <p>Una persona capacitada cuida a tu familiar mientras tú descansas.</p>`, 'gb-hero')}
         <button type="button" class="btn-primary wide" data-action="new-sol">Solicitar relevo</button>
-        <button type="button" class="link" data-action="ver-aviso">Aviso de privacidad</button>
-        <p class="complementario">${esc(CP.aviso_complementario)}</p></div>`;
+        <p class="complementario">${esc(CP.aviso_complementario)}</p>
+        ${ej ? sepEjemplo('Así se ve una solicitud con relevo') + tarjetaCaso(ej, true) : ''}`;
       return;
     }
-    const v = valDe(c), hz = horasDe(c);
-    const r = c.estado === 'activo' && c.asignacion && relById(c.asignacion.relevoId);
-    const estado = r ? `Con relevo: <b>${esc(r.nombre)}</b>` : c.estado === 'espera' ? (hz.cola ? 'En espera: este mes no alcanzó la bolsa de horas' : hz.mes === 0 ? 'Tu solicitud quedó registrada. Este mes las horas son para quien cuida 40 h o más.' : 'En espera de que el programa te asigne relevo') : ESTADO[c.estado];
-    $('#mia-body').innerHTML = `<div class="card panel mia">
-        <div class="mia-top"><span>Tu solicitud · ${esc(c.alcaldia)}</span><span class="mono">${esc(c.folio)}</span></div>
-        <h2>${NIVEL_TXT[v.nivel]}</h2>
-        <p class="sub">${estado}</p>
-        <div class="tiles dos">${dato(hz.mes + '<small>h</small>', 'de relevo al mes')}${dato('≈ ' + hz.sem + '<small>h</small>', 'a la semana')}</div>
-        ${enRevision(c) ? '<p class="sub">Una persona revisará algunas respuestas. Tu lugar no cambia.</p>' : ''}
+    $('#mia-body').innerHTML = `${tarjetaCaso(c)}
+      <div class="rx-acc">
+        <button type="button" data-action="mia-convenio">Mi convenio</button>
+        <button type="button" data-action="mia-contactos">Contactos</button>
+        <button type="button" data-action="mia-datos">Mis datos</button>
+        <button type="button" data-action="ver-aviso">Aviso de privacidad</button>
       </div>
-      <div class="btn-row">${c.contrato ? `<button type="button" class="btn-ghost sm" data-action="ver-contrato" data-tipo="servicio" data-id="${esc(c.id)}">Mi acuerdo firmado</button>` : ''}<button type="button" class="btn-ghost sm" data-action="ver-aviso">Aviso de privacidad</button><button type="button" class="btn-ghost sm" data-action="mis-datos">Mis datos</button></div>
-      <button type="button" class="btn-ghost wide" data-action="mia-nueva">Hacer otra solicitud (demostración)</button>`;
+      <button type="button" class="link rx-demo" data-action="mia-nueva">Hacer otra solicitud (demostración)</button>`;
   }
-  function renderYo() {
-    const r = relById(leerId('mientras-mi-relevo'));
-    if (!r) {
-      $('#yo-body').innerHTML = `<div class="hero-rol">${personaje('relevo', 'hero-img')}
-        <h2>¿Quieres trabajar dando relevo?</h2>
-        <p>Registra tus días, horario y zona. El programa te asigna casos. Con contrato, IMSS y pago justo.</p>
-        <button type="button" class="btn-primary wide" data-action="new-relevo">Registrarme</button>
-        <button type="button" class="link" data-action="ver-aviso">Aviso de privacidad</button></div>`;
-      return;
-    }
+  function tarjetaRelevo(r, ejemplo) {
     const aprob = store.aprobado(r), carga = RV.cargaDe(r.id, store.state);
     const casos = store.state.casos.filter((c) => c.estado === 'activo' && c.asignacion && c.asignacion.relevoId === r.id);
     const ver = r.verificacion || {};
     const estado = !aprob ? (ver.estado === 'rechazada' ? 'Registro rechazado' : 'En revisión: el programa valida tus documentos') : r.certificacion === 'certificada' ? 'Aprobada y certificada' : 'Aprobada · falta certificación para recibir casos';
-    $('#yo-body').innerHTML = `<div class="card panel mia">
-        <div class="mia-top"><span>Tu registro · ${esc(r.alcaldia)}</span><span class="mono">${esc(diasTxt(r.dias))}</span></div>
-        <h2>${esc(r.nombre)}</h2>
-        <p class="sub">${estado}</p>
-        <div class="tiles dos">${dato(carga + '<small>/' + r.horasMax + ' h</small>', 'por semana')}${dato(casos.length, casos.length === 1 ? 'caso' : 'casos')}</div>
-      </div>
-      <div class="btn-row">${r.contrato ? `<button type="button" class="btn-ghost sm" data-action="ver-contrato" data-tipo="relevo" data-id="${esc(r.id)}">Mi contrato firmado</button>` : ''}<button type="button" class="btn-ghost sm" data-action="ver-aviso">Aviso de privacidad</button><button type="button" class="btn-ghost sm" data-action="mis-datos">Mis datos</button></div>
+    return `<div class="rx-card${ejemplo ? ' ej' : ''}">
+        <div class="mia-top"><span>${ejemplo ? 'Ejemplo' : 'Tu registro'} · ${esc(r.alcaldia)}</span><span class="mono">${esc(diasTxt(r.dias))}</span></div>
+        <div class="rx-pass rx-ok">${fantasma('relevo', 'blanco')}
+          <div class="rx-top"><span class="rx-kick">${esc(estado)}</span></div>
+          <div class="rx-big rx-word"><b>${esc(r.nombre)}</b></div>
+          <div class="rx-weeks dos"><span><i>Esta semana</i><b>${carga} de ${r.horasMax} h</b></span><span><i>Casos</i><b>${casos.length}</b></span></div>
+          <p class="rx-msg">Con contrato, seguro de riesgos de trabajo y pago por visita al piso legal.</p>
+        </div>
+        ${casos.map((c) => `<div class="rx-note"><b>Visita a ${esc(c.persona.alias)}</b><span>${esc(c.domicilio ? c.domicilio.texto + ' (ficticio)' : c.alcaldia)} · ${esc(diasTxt(c.paquete ? c.paquete.dias : []))}</span></div>`).join('')}
+        ${r.pago ? `<div class="rx-note rx-pago"><b>Cuenta para tu pago</b><span>${esc(r.pago.banco)} · terminación ${esc(r.pago.ultimos4)}${r.pago.simulado ? ' (ficticia)' : ''}</span></div>` : ''}
+      </div>`;
+  }
+  function renderYo() {
+    const r = relById(leerId('mientras-mi-relevo'));
+    if (!r) {
+      const ej = store.state.relevos.find((x) => store.aprobado(x) && x.certificacion === 'certificada' && store.state.casos.some((c) => c.estado === 'activo' && c.asignacion && c.asignacion.relevoId === x.id)) || store.state.relevos[0];
+      $('#yo-body').innerHTML = `${banner('relevo', `<span class="rx-kick">Puedo cuidar</span>
+          <h2>¿Quieres trabajar dando relevo?</h2>
+          <p>Registra tus días, horario y zona. El programa te asigna casos. Con contrato, IMSS y pago justo.</p>`, 'gb-hero')}
+        <button type="button" class="btn-primary wide" data-action="new-relevo">Registrarme</button>
+        ${ej ? sepEjemplo('Así se ve un registro aprobado') + tarjetaRelevo(ej, true) : ''}`;
+      return;
+    }
+    $('#yo-body').innerHTML = `${tarjetaRelevo(r)}
       <button type="button" class="btn-ghost wide" data-action="yo-nuevo">Registrar a otra persona (demostración)</button>`;
   }
+
+  /* ================= Contactos de la cuidadora (24 nov 2026) ================= */
+  function abrirContactos() {
+    const c = casoById(leerId('mientras-mi-caso')); if (!c) return;
+    const f = $('#form-contactos'); f.reset(); $('#cto-err').textContent = '';
+    const e = (c.contactos || []).find((k) => k.tipo === 'emergencia'), a = (c.contactos || []).find((k) => k.tipo === 'autorizada');
+    if (e) { f.elements.eNombre.value = e.nombre; f.elements.eParentesco.value = e.parentesco; f.elements.eTel.value = e.telefono; }
+    if (a) { f.elements.aNombre.value = a.nombre; f.elements.aParentesco.value = a.parentesco; f.elements.aTel.value = a.telefono;
+      $$('#form-contactos input[name=aRecibe]').forEach((x) => { x.checked = (a.recibe || []).includes(x.value); }); }
+    $('#dlg-contactos').showModal(); $('#dlg-contactos').scrollTop = 0;
+  }
+  $('#form-contactos').addEventListener('submit', (ev) => {
+    ev.preventDefault();
+    const f = ev.target, c = casoById(leerId('mientras-mi-caso')); if (!c) return;
+    const lista = [], err = [];
+    const uno = (tipo, n, p, t, extra) => {
+      const nombre = f.elements[n].value.trim(), par = f.elements[p].value.trim(), tel = f.elements[t].value.trim();
+      if (!nombre && !par && !tel) return;
+      if (!nombre || !par || !/^\d{10}$/.test(tel)) { err.push(tipo === 'emergencia' ? 'Completa el contacto de emergencia (teléfono de 10 dígitos)' : 'Completa la persona autorizada (teléfono de 10 dígitos)'); return; }
+      lista.push(Object.assign({ id: 'ct' + tipo, tipo, nombre, parentesco: par, telefono: tel, simulado: true }, extra || {}));
+    };
+    uno('emergencia', 'eNombre', 'eParentesco', 'eTel');
+    uno('autorizada', 'aNombre', 'aParentesco', 'aTel', { recibe: $$('#form-contactos input[name=aRecibe]:checked').map((x) => x.value) });
+    if (err.length) { $('#cto-err').textContent = err.join('. ') + '.'; return; }
+    store.setContactos(c.id, lista); $('#dlg-contactos').close(); toast(lista.length ? 'Contactos guardados' : 'Contactos borrados');
+  });
 
   /* ================= Bienvenida (primera vez que se abre la app) =================
    * Pantalla de carga con el logo y, después, «¿Cómo vas a usar RedCare?» para elegir el rol.
    * Se muestra una sola vez (localStorage «mientras-intro»); se puede repetir con ?intro o desde Ajustes. */
   const INTRO_K = 'mientras-intro';
+  /* 24 nov 2026: carga «Pulso». Completa (≈3.4 s) la primera vez de cada sesión; después, corta (≈0.9 s).
+   * La barra marca el tiempo de la animación, no una descarga: la app carga en menos de un segundo. */
+  const PULSO_K = 'redcare-pulso-visto';
+  const PULSO_MSG = [[0, 'Abriendo RedCare…'], [35, 'Preparando los datos simulados…'], [75, 'Armando tu red…'], [100, 'Listo']];
+  let pulsoT = null;
   function abrirIntro() {
     const el = $('#intro');
-    el.hidden = false; el.classList.remove('fuera', 'elegir');
-    const lenta = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setTimeout(() => { el.classList.add('elegir'); const b = $('#intro .intro-opc button'); if (b) b.focus(); }, lenta ? 1700 : 200);
+    el.hidden = false; el.classList.remove('fuera', 'elegir', 'corta');
+    elegirRol(null);
+    const sinMov = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let visto = false; try { visto = sessionStorage.getItem(PULSO_K) === '1'; sessionStorage.setItem(PULSO_K, '1'); } catch (err) { /* sin almacenamiento */ }
+    const corta = sinMov || visto;
+    el.classList.toggle('corta', corta);
+    void el.offsetWidth;   // reinicia las animaciones CSS al reabrir desde Ajustes
+    const dur = corta ? 700 : 3000, espera = corta ? 900 : 3400;
+    clearInterval(pulsoT);
+    const t0 = performance.now() + (corta ? 0 : 400);
+    const paso = () => {
+      const pc = Math.max(0, Math.min(100, Math.round((performance.now() - t0) / dur * 100)));
+      $('#ip-pct').textContent = pc + ' %';
+      $('#ip-msg').textContent = PULSO_MSG.filter((m) => pc >= m[0]).pop()[1];
+      if (pc >= 100) clearInterval(pulsoT);
+    };
+    paso(); pulsoT = setInterval(paso, 60);
+    setTimeout(() => { el.classList.add('elegir'); }, espera);
   }
+  /* 24 nov 2026: bienvenida como red. Tocar un nodo lo enciende, ilumina su línea y muestra la ficha con «Entrar». */
+  const ROLES_INTRO = {
+    cuidadora: { k: 'Cuido a un familiar', t: 'Pide horas de relevo: una persona capacitada cuida a tu familiar mientras tú descansas, trabajas o vas al médico.', c: '#aa95d1', e: 'Entrar para pedir relevo' },
+    relevo: { k: 'Quiero dar relevo', t: 'Registra tus días, horario y zona. Te asignamos visitas con contrato, seguro de riesgos de trabajo y pago por visita.', c: '#7dd1c1', e: 'Entrar para dar relevo' },
+    programa: { k: 'Trabajo en el programa', t: 'Revisa solicitudes, reparte la bolsa de horas, asigna relevos y da seguimiento a cada visita.', c: '#e5677f', e: 'Entrar al programa' },
+  };
+  function elegirRol(rol) {
+    const R = ROLES_INTRO[rol], el = $('#intro');
+    el.dataset.rol = rol || '';
+    $$('#intro .ie-nodo').forEach((n) => { const on = n.dataset.pick === rol; n.classList.toggle('on', on); n.setAttribute('aria-pressed', on); });
+    $$('#intro .ie-l').forEach((l) => { l.classList.toggle('on', l.dataset.l === rol); });
+    $('#ie-kick').textContent = R ? R.k : 'Elige un nodo';
+    $('#ie-txt').textContent = R ? R.t : 'Cada persona tiene su lugar en la red: quien cuida, quien da relevo y quien coordina.';
+    const b = $('#intro-entrar'); b.disabled = !R; if (R) { b.dataset.intro = rol; b.textContent = R.e; } else { delete b.dataset.intro; b.textContent = 'Entrar'; }
+    el.style.setProperty('--rolc', R ? R.c : 'rgba(255,255,255,.35)');
+  }
+  $$('#intro .ie-nodo').forEach((n) => n.addEventListener('click', (e) => { e.stopPropagation(); elegirRol(n.dataset.pick); }));
   $('#intro').addEventListener('click', (e) => {
     const b = e.target.closest('button[data-intro]'); if (!b) return;
     try { localStorage.setItem(INTRO_K, '1'); } catch (err) { /* sin almacenamiento */ }
@@ -1140,5 +1279,5 @@
   show(location.hash.slice(1));
   let introVista = '';
   try { introVista = localStorage.getItem(INTRO_K) || ''; } catch (e) { /* sin almacenamiento */ }
-  if (!introVista || /[?&]intro\b/.test(location.search)) abrirIntro();
+  abrirIntro(); // 21 nov 2026: la bienvenida sale siempre al abrir la app
 })();

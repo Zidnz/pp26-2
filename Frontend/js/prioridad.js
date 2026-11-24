@@ -14,29 +14,28 @@
   /* ================= Bloque 1. Entrevista y regla de entrada ================= */
   // HORAS = P6_7 + P6_26 (horas de cuidado a la semana, bloques de discapacidad y de 60+), topado en 168.
   // PENDIENTE: confirmar la redacción literal de cada reactivo contra el cuestionario de la ENASIC 2022.
-  // ABVD y CLIN ya no puntúan: se conservan solo para los chequeos de consistencia con Barthel (bloque F).
-  const ABVD = [
-    { id: 'P6_2_01', txt: 'Darle de comer' },
-    { id: 'P6_2_02', txt: 'Vestirle' },
-    { id: 'P6_2_03', txt: 'Cambiarle el pañal o llevarle al baño' },
-    { id: 'P6_2_04', txt: 'Bañarle o asearle' },
-    { id: 'P6_2_08', txt: 'Acostarle o levantarle de la cama' },
-  ];
-  const CLIN = [
-    { id: 'P6_2_10', txt: 'Darle medicinas' },
-    { id: 'P6_2_11', txt: 'Hacerle curaciones' },
-    { id: 'P6_2_12', txt: 'Ayudarle con terapias' },
-    { id: 'P6_2_13', txt: 'Ayudarle con tratamientos' },
-  ];
+  //
+  // Cambio 20 nov 2026 (minimización; Analysis/matrices/matriz_tratamiento_datos_redcare.csv, D09 y D10):
+  //  - Se RETIRARON las 5 actividades básicas (P6_2_01…P6_2_08). Ya no puntuaban y el Índice de Barthel mide lo mismo
+  //    con más detalle: preguntarlas era tratar dos veces un dato sensible de la persona cuidada.
+  //  - Las 4 tareas de salud (P6_2_10…P6_2_13) se preguntan juntas y se guarda SOLO «requiere enfermería: sí/no».
+  //    Finalidad: el relevo no hace tareas clínicas, así que el caso se orienta a enfermería. No se guarda cuál tarea.
+  const TAREAS_SALUD = ['darle medicinas', 'hacerle curaciones', 'ayudarle con terapias', 'ayudarle con tratamientos'];
   const PREGUNTAS_MODELO = [
     { id: 'horas', codigo: 'P6_7 + P6_26', txt: '¿Cuántas horas a la semana dedica a cuidar a esta persona?', tipo: 'numero', min: 0, max: 168 },
-    { id: 'abvd', codigo: 'P6_2_01…P6_2_08', txt: '¿En cuáles de estas actividades le ayuda?', tipo: 'multi', opciones: ABVD },
-    { id: 'clin', codigo: 'P6_2_10…P6_2_13', txt: '¿Cuáles de estas tareas de salud hace usted?', tipo: 'multi', opciones: CLIN },
+    { id: 'enfermeria', codigo: 'P6_2_10…P6_2_13', txt: `¿Hace usted alguna tarea de salud: ${TAREAS_SALUD.join(', ')}?`, tipo: 'sino' },
   ];
   // Retiradas el 2 nov 2026 (solo alimentaban la tarjeta): «necesita apoyo» (req), «le falta fuerza física» (fuerza, argumento
   // circular con el objetivo), sexo de quien cuida y los filtros de discapacidad/edad. El sexo se sigue registrando para equidad.
-  const NO_PREGUNTADAS = { fuerza: 'P6_9_1 / P6_28_1', req: 'P6_9_4 / P6_28_4' };
+  const NO_PREGUNTADAS = { fuerza: 'P6_9_1 / P6_28_1', req: 'P6_9_4 / P6_28_4', abvd: 'P6_2_01…P6_2_08 (20 nov 2026: lo cubre Barthel)' };
   const ETIQUETA = { horas: 'Horas de cuidado a la semana' };
+
+  /** Bandera «requiere enfermería». Acepta registros anteriores al 20 nov (lista `clin`) para no romper datos guardados. */
+  const requiereEnfermeria = (m) => (m && typeof m.enfermeria === 'boolean' ? m.enfermeria : !!(m && Array.isArray(m.clin) && m.clin.length));
+  /** Deja la entrevista solo con lo que se guarda: horas y la bandera. Borra `abvd` y `clin` si vienen de una versión anterior. */
+  function minimizarModelo(m) {
+    return { horas: m && m.horas !== '' && m.horas != null ? +m.horas : '', enfermeria: requiereEnfermeria(m) };
+  }
 
   const horasDe = (m) => Math.min(168, Math.max(0, +m.horas || 0));
   const variables = (m) => ({ horas: horasDe(m) });
@@ -196,19 +195,17 @@
   function chequeos(ent, cfg) {
     const c = cfg.chequeos, m = ent.modelo || {};
     const b = totalBarthel(ent.barthel), z = totalZarit(ent.zarit, cfg);
-    const nAbvd = (m.abvd || []).length, nClin = (m.clin || []).length, h = +m.horas || 0;
+    const enf = requiereEnfermeria(m), h = +m.horas || 0;
     const out = [];
-    if (h >= c.horas_altas && b != null && b >= c.barthel_independiente && nClin === 0)
+    if (h >= c.horas_altas && b != null && b >= c.barthel_independiente && !enf)
       out.push({ id: 'horas_vs_barthel', txt: `Declara ${h} h/semana de cuidado, pero la persona cuidada es casi independiente (Barthel ${b}) y no hay tareas de salud.` });
-    if (nAbvd >= c.abvd_muchas && b != null && b >= c.barthel_sin_ayuda)
-      out.push({ id: 'abvd_vs_barthel', txt: `Declara ayuda en ${nAbvd} actividades básicas, pero según Barthel la persona las hace sola (${b}/100).` });
     if (h >= c.horas_inverosimiles)
       out.push({ id: 'horas_inverosimiles', txt: `${h} h/semana es casi todo el día, todos los días: verificar la captura o si hay más de una persona cuidada.` });
     return out;
   }
 
   const API = {
-    ABVD, CLIN, PREGUNTAS_MODELO, NO_PREGUNTADAS, ETIQUETA, BARTHEL, ESCALA_ZARIT, NIVEL,
+    TAREAS_SALUD, PREGUNTAS_MODELO, requiereEnfermeria, minimizarModelo, NO_PREGUNTADAS, ETIQUETA, BARTHEL, ESCALA_ZARIT, NIVEL,
     variables, puntuar, reglaHoras, semanasEnCola, puntajeEfectivo, nivel, asignarHoras, horasSemana,
     reactivosZarit, totalZarit, totalBarthel, nivelBarthel, chequeos,
   };

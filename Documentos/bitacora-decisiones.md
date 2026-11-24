@@ -2608,21 +2608,96 @@ Sin revisión de otra persona. Revisor: _[pendiente]_.
 
 **No se retiran** `.gitattributes` ni `requirements.txt`, aunque estaban en `_borrados.txt`: el primero evita diffs falsos por finales de línea entre Windows y Linux, y el segundo es el único registro de `scikit-learn==1.7.2`, la versión con la que se reprodujo el modelo.
 
+## 2026-11-20 (12:50 a 13:30, hora CDMX) — Matriz de tratamiento de datos de RedCare
 
-## 18 nov 2026 (20:40, hora CDMX) — Aviso de privacidad y firma de contrato en RedCare; sector privado
+**Qué se pidió.** Omar preguntó qué le falta a RedCare (legal, operativo, visual) y pidió que se decidiera el siguiente paso y se hiciera. Se eligió la tabla finalidad–dato–base jurídica–riesgo–medida, evidencia 1 de la UCA Leyes para la Protección de Datos.
 
-**Pedido de Omar.** Que el aviso de privacidad y las cláusulas existan en la app, y que al terminar «Necesito cuidado» o «Puedo cuidar» se firme un contrato.
+**Qué se hizo.** `Analysis/matrices/matriz_tratamiento_datos_redcare.csv`: 33 filas (28 datos y 5 transversales), leída del código vigente (`Frontend/js/app.js`, `legal.js`, `config.js`, `prioridad.js`, `data.js`, `index.html`).
 
-**Decisión previa (18 nov, clase de Leyes).** RedCare se trata como proyecto del **sector privado**: la organización que la opere es la responsable y aplica la LFPDPPP (DOF 20-mar-2025). Sustituye al escenario de institución pública que se usó en la mañana. Queda registrado en `Documentos/Observatorio_Cuidado_Proteccion_de_Datos.docx` (versión 5), que se sube en este commit junto con su PDF.
+**Hallazgos (confirmados en el código):**
+1. El consentimiento lo da solo la cuidadora, pero Barthel y las tareas de salud son datos de la **persona cuidada**, que nunca consiente (D11, D20).
+2. El contrato decidido el 18 nov no existe: hay tres casillas («contrato», «escrito», «imss») sin partes ni firma (D27).
+3. La CURP del relevo se guarda en claro en `localStorage` y sale en «Exportar todo» (D21, T03).
+4. Nombre y teléfono de la referencia se guardan sin plazo; la referencia no recibe aviso (D24).
+5. `legal.js` sigue diciendo «particulares o sujetos obligados», contra la decisión del 18 nov (T05). El aviso sigue siendo marcador (`config.js`).
+6. Un solo consentimiento cubre la entrevista operativa y el cuestionario de evaluación; deberían ir separados (D07, D12).
 
-**Qué se hizo en `Frontend/`.**
-- `js/contratos.js` (nuevo): aviso simplificado e integral, acuerdo de servicio (12 cláusulas), contrato de trabajo en plataforma digital con convenio de confidencialidad y política de gestión algorítmica (10 cláusulas), pad de firma y huella.
-- `js/app.js`: tercera casilla opcional de consentimiento (Observatorio); la solicitud y el registro de relevo solo se guardan con contrato firmado; contrato visible en los detalles y en las vistas propias; botón «Mis datos».
-- `index.html`, `css/app.css`, `js/config.js`, `js/legal.js`: diálogos, estilos y referencias a la LFPDPPP y a la LFT de plataformas.
-- `tests/prueba_contratos.js` (nuevo).
+**Propuestas (no aplicadas en el código):** retirar ABVD (redundante con Barthel), guardar tareas clínicas solo como bandera «requiere enfermería», hash de CURP para duplicados, borrar la referencia tras verificar, no usar la red del hogar con datos reales, umbral de supresión < 5 casos.
 
-**Verificación.** `node tests/prueba_contratos.js` y `node tests/prueba_asignacion.js` pasan. Prueba en Chromium sin interfaz (420 px): solicitud completa con firma de dos personas (persona cuidada con apoyo), registro de relevo con firma, contrato visible después; sin errores de JavaScript.
+**Límites.** Ningún artículo de ley verificado contra el DOF; plazos de conservación propuestos. Sin revisión de otra persona.
 
-**Qué NO resuelve.** Validez legal: los textos son borradores sin revisión jurídica final (Daniel). La organización privada no existe. La firma es simulada (no es firma electrónica avanzada). Quién es patrón de las personas de relevo sigue pendiente (LFT, cap. IX Bis). El Segundo avance todavía dice que los datos quedan en la institución receptora.
+**Pendiente.**
+1. Daniel: artículos aplicables, proporcionalidad de la carta de antecedentes y quién es patrón en el contrato.
+2. Decidir si se aplican las propuestas en `Frontend/`.
+3. Copiar esta entrada al final de `Documentos/bitacora-decisiones.md`.
 
-**Pendiente.** Doble revisión de `js/contratos.js` (Daniel, textos; Alondra Danae, flujo).
+## 2026-11-20 (13:07 a 14:10, hora CDMX) — Minimización aplicada y contratos en RedCare
+
+**Qué pidió Omar.** Aplicar cuatro propuestas de la matriz (retirar actividades básicas, tareas de salud como sí/no, huella de CURP, borrar la referencia al verificar) y redactar el contrato que decidió el 18 nov.
+
+**Qué se hizo (detalle en `Frontend/README.md`, 2026-11-20).**
+- Entrevista: sin las 5 actividades básicas; tareas de salud = una pregunta sí/no (`enfermeria`), con orientación a enfermería. Se quitó el chequeo de actividades contra Barthel.
+- CURP: `{ huella, ultimos4 }` + `mayorDeEdad`. Duplicados por huella. `js/huella.js` (SHA-256 comparado contra Node).
+- Referencia: visible solo en revisión; se borra al aprobar o rechazar.
+- Contratos (`js/contrato.js`): convenio de servicio (hogar ↔ operador, paso 8/8 de la solicitud, firma con alias) y contrato individual de trabajo por horas (relevo ↔ operador, firma escribiendo el nombre del registro). Se guarda la huella del texto firmado, no el texto.
+- Migración automática de datos guardados antes.
+
+**Decisión tomada por Claude a pedido de Omar («hazlo tú»):** el operador de RedCare es el patrón; el hogar no paga ni es patrón. Alternativa descartada: familia como patrona (carga IMSS y prestaciones al grupo de bajos ingresos).
+
+**Verificación.** `node tests/prueba_privacidad_contrato.js` (25 OK) y `node tests/prueba_asignacion.js` (OK). Flujo en Chrome a 420 px: solicitud completa con firma, registro de relevo con firma, invalidación de la firma al cambiar días, duplicado por huella, borrado de la referencia al aprobar, asignación con los dos contratos, migración de datos viejos; 23 verificaciones OK, sin errores de JavaScript ni scroll horizontal. No se probó en teléfono real ni en Safari.
+
+**Pendiente.**
+1. Daniel: dictamen del modelo de partes (subcontratación, capítulo de trabajo del hogar, firma electrónica simple) y artículos.
+2. Razón social del operador y contacto de datos (marcadores en `config.js`).
+3. Consentimiento propio de la persona cuidada (matriz D20): sigue faltando.
+4. Doble revisión de `contrato.js`, `huella.js` y esta entrada.
+
+## 2026-11-20 (13:21 a 14:40, hora CDMX) — Modelo de plataforma (como Uber, DiDi, Rappi) y consentimiento de la persona cuidada
+
+**Qué pidió Omar.** Resolver los dos huecos señalados: el consentimiento de la persona cuidada y el riesgo de subcontratación del modelo «operador como patrón»; basarse en cómo funcionan Uber, DiDi y Rappi.
+
+**Fuente revisada (confirmado en el texto del DOF, vía SIDOF):** LFT, Título Sexto, Cap. IX Bis (arts. 291-A a 291-U), DOF 24-dic-2024. 291-B: los usuarios no son patrones ni responsables solidarios. 291-C: umbral de un salario mínimo mensual neto; abajo, independiente con riesgos de trabajo. 291-E: libre conexión. 291-F: pago por tarea con proporcionales. 291-G/H: contenido del contrato y registro del modelo ante el CFCRL. 291-J: política de gestión algorítmica. Salario mínimo general 2026: $315.04 diarios, $9,582.47 mensuales.
+
+**Qué se hizo.** Contrato de trabajo en plataforma (v `RC-CT-2026-11-20.2`), convenio con el hogar como usuario (`RC-CS-2026-11-20.2`), pago $53.46/h diurna con proporcionales (factor 1.249, aproximación del prototipo), aviso de umbral IMSS por persona, política de asignación como anexo, casilla «aceptó la oferta» en la asignación. Paso nuevo «Persona cuidada» (propio / representante por acreditar / pendiente); sin consentimiento no hay Barthel ni asignación; el programa lo registra desde el detalle.
+
+**Hallazgo que hay que declarar (probable):** con ≤ 12 h por semana el ingreso es ≈ $2,778 al mes y el umbral pide ≈ 180 h; casi todas las personas de relevo quedarían como independientes. Coincide con lo observado en apps: al 31 jul 2026, 247,900 de 1.59 millones superaron el umbral.
+
+**Verificación.** 32 pruebas en Node OK; 34 verificaciones en Chrome a 420 px OK (incluye salto del Barthel, asignación bloqueada sin consentimiento y registro posterior); sin errores de JavaScript ni scroll horizontal.
+
+**Pendiente.**
+1. Daniel: si el cuidado en casas cabe en el Cap. IX Bis; piso salarial (profesional del hogar o general); figuras de representación válidas.
+2. Que la persona de relevo acepte la oferta desde su propia vista (hoy lo marca el programa).
+3. Capturar el Barthel en la primera visita cuando el consentimiento fue posterior.
+4. Doble revisión.
+
+## 2026-11-21 — Documento integral, sede, financiamiento y análisis jurídico
+
+**Qué se pidió.** Omar pidió el documento final de entrega (Word y PDF) y después: quitar lo que no tenemos (cifrado, propuestas sin implementar), elegir sede, resolver quién paga y hacer el dictamen jurídico.
+
+**Decisiones.**
+- **Sede del piloto: Azcapotzalco.** Única alcaldía en el nivel 1 de prioridad en las 9 combinaciones de la regla territorial (script 24), con 43.9 % de sus personas de 60+ en las zonas de mayor brecha; tiene el programa «Mujeres Cuidadoras: Tú cuidas, Azcapo te cuida 2026». Alternativa: Iztapalapa.
+- **Quién paga:** Gobierno de la CDMX como componente de «Ciudad que Cuida a Quien Cuida» (anexo presupuestal de la Ley del Sistema de Cuidados, aprobada el 26 may 2026); la alcaldía aporta canal y espacio; la UNRC, la evaluación. Presupuesto del piloto: $1,096,341 por 6 meses y 100 cuidadoras; coordinación, equipo, seguros y mantenimiento son supuestos del equipo.
+- **Carta de no antecedentes penales: se retira.** La SCJN invalidó exigirla de forma general (AI 38/2022, cuidado infantil; AI 111/2023, conductores de plataformas). Se sustituye por identidad, referencia, entrevista, certificación y primera visita acompañada. Contrato de trabajo v3 (`RC-CT-2026-11-21.3`).
+- **Análisis jurídico (cap. 11 del documento integral):** el modelo de plataforma es viable con 6 condiciones. Lo elaboró el equipo; para valor formal debe firmarlo una persona licenciada en Derecho.
+- **Base de datos:** esquema PostgreSQL 16 en `Backend/sql/` probado con datos simulados.
+
+**Qué NO permite afirmar.** El presupuesto es un orden de magnitud hasta que una institución cotice. La app publicada sigue guardando los datos simulados en el navegador; no está conectada a PostgreSQL.
+
+## 2026-11-24 — RedCare: datos de operación ficticios, aviso de privacidad v3 y nueva bienvenida
+
+**Qué se pidió.** Omar revisó su borrador de aviso de privacidad (v2) y pidió tomar la mejor decisión: aviso alineado con la app, domicilio y datos de pago ficticios, contactos de emergencia y personas autorizadas, la pregunta de empleo, ilustraciones como marca de agua y una bienvenida más interactiva.
+
+**Decisiones.**
+- **Responsable ficticio del prototipo:** «RedCare Cuidados, A.C.», correo `privacidad@redcare.example`. En un piloto sería la asociación civil que opere bajo convenio.
+- **Domicilio:** solo con relevo asignado; se borra al cerrar el caso (en PostgreSQL, un trigger lo impide sin asignación y lo borra al cerrar).
+- **Pago del relevo:** solo banco y últimos 4 dígitos; la cuenta completa la guardaría el proveedor de pagos.
+- **Contactos opcionales:** emergencia (solo se le llama en una emergencia; no recibe información del caso) y persona autorizada (recibe solo lo marcado). Se borran al cerrar el caso.
+- **Seguimiento semanal:** se agrega «¿Pudiste trabajar o estudiar?».
+- **Textos corregidos:** quien queda fuera de la regla no recibe horas (antes la app decía «entra si sobran horas»); el resultado es preliminar y una persona del programa lo confirma antes de asignar.
+- **Aviso de privacidad integral v3** (`Documentos/Aviso_de_Privacidad_RedCare_v3`) y simplificado v3 en `config.js`.
+- **Interfaz:** ilustraciones en versión de un solo color como marca de agua (`Frontend/img/marca_agua/`), bienvenida como red de tres nodos, la bienvenida sale siempre, ejemplo de una solicitud y un relevo con su vista vacía, y se quitó el mapa de Seguimiento.
+- **Matriz de tratamiento:** se agregan D29 a D32 (domicilio, contacto de emergencia, persona autorizada y cuenta de pago); se actualizan D16, D21, D23, T01 y T05.
+
+**Pruebas.** Node (asignación; privacidad y contratos), flujo en Chrome 34/34, prueba de domicilio, contactos, pago y empleo 13/13, sin errores de JavaScript; PostgreSQL: 12 pruebas de restricciones con el resultado esperado.
+
+**Pendiente.** El plazo de 12 meses para suprimir los datos de un caso cerrado está en el aviso como regla del piloto, pero la base todavía no lo ejecuta. La paridad entre `prioridad.js` y `Backend/prioridad.py` sigue desactualizada.

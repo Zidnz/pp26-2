@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
   <link rel="stylesheet" href="css/app.css?v=20261102">
-  <link rel="stylesheet" href="css/redcare.css?v=20261105j">
+  <link rel="stylesheet" href="css/redcare.css?v=20261124g">
   <link rel="stylesheet" href="css/bento.css?v=20261105j">
 </head>
 <body>
@@ -70,10 +70,10 @@
         <div class="sub" id="rel-count"></div>
         <button class="btn-primary sm" data-action="new-relevo">+ Registrar</button>
       </div>
-      <div class="card infocard">
-        <img src="observatorio/ilustraciones/puedo_cuidar.webp" alt="" loading="lazy">
-        <p><b>Registras tu disponibilidad y tu zona.</b> El programa te asigna casos según su prioridad: no eliges familia ni la familia te elige.</p>
-      </div>
+      <div class="gbanner"><img class="ghost" src="img/marca_agua/puedo_cuidar_lavanda.webp" alt="" aria-hidden="true"><div class="gb-in">
+        <span class="rx-kick">Personas de relevo</span>
+        <p><b>Registran su disponibilidad y su zona.</b> El programa les asigna casos según su prioridad: no eligen familia ni la familia las elige.</p>
+      </div></div>
       <div class="list" id="rel-list"></div>
     </div>
   </section>
@@ -83,7 +83,6 @@
     <div class="segwrap">
       <div class="seg" id="seg-sub" role="group" aria-label="Seguimiento">
         <button data-sub="caso" class="on">Red</button>
-        <button data-sub="mapa">Mapa</button>
         <button data-sub="hoy">Visitas</button>
         <button data-sub="prog">Programa</button>
       </div>
@@ -124,19 +123,6 @@
       <div id="sc-body"></div>
     </div>
 
-    <div class="pane tight" data-sub-panel="mapa" hidden>
-      <div class="row-between">
-        <div class="sub" id="terrSub"></div>
-        <div class="bignum"><b class="mono" id="terrPct">0%</b><span class="sub"> un solo sostén</span></div>
-      </div>
-      <div class="mapwrap">
-        <svg id="map" role="img" aria-label="Mapa de la Ciudad de México con los casos por alcaldía"></svg>
-        <div class="maplegend"><span><i class="ld r"></i>un sostén</span><span><i class="ld a"></i>parcial</span><span><i class="ld n"></i>distribuida</span></div>
-        <button type="button" class="mapbtn" id="mapReset">⊙</button>
-        <div class="mapcard" id="mapCard" hidden></div>
-      </div>
-      <div class="mono statline">punto = caso, en el centro de su alcaldía · límites INEGI 2020</div>
-    </div>
   </section>
 
   <!-- ============ 4. AJUSTES ============ -->
@@ -209,9 +195,9 @@
   <dialog id="dlg-relevo">
     <form id="form-relevo" novalidate>
       <div class="handle" aria-hidden="true"></div>
-      <img class="personaje sm" src="observatorio/ilustraciones/puedo_cuidar.webp" alt="" loading="lazy">
-      <h3>Puedo cuidar</h3>
-      <p class="sub">Registra tu disponibilidad y tu zona.</p>
+      <div class="gbanner"><img class="ghost" src="img/marca_agua/puedo_cuidar_lavanda.webp" alt="" aria-hidden="true"><div class="gb-in">
+        <span class="rx-kick">Puedo cuidar</span><h3>Registra tu disponibilidad</h3><p class="sub">Tus días, tu horario y tu zona.</p>
+      </div></div>
       <div class="row-sx">
         <div class="chips radio sxpick" data-sx="sexo"></div>
         <input name="nombre" maxlength="40" autocomplete="off" placeholder="Nombre" aria-label="Nombre">
@@ -237,16 +223,12 @@
 
       <div class="eyebrow sep">Documentos</div>
       <label class="fld">CURP<input name="curp" maxlength="18" autocomplete="off" autocapitalize="characters" spellcheck="false"></label>
-      <div class="row2">
-        <label class="fld">Identificación<select name="docId" id="rel-doc"></select></label>
-        <label class="fld">Carta de antecedentes<input name="antecedentesFecha" type="date"></label>
-      </div>
+      <label class="fld">Identificación<select name="docId" id="rel-doc"></select></label>
       <div class="row2">
         <label class="fld">Referencia<input name="refNombre" maxlength="60" autocomplete="off"></label>
         <label class="fld">Teléfono<input name="refTel" type="tel" inputmode="numeric" maxlength="14" autocomplete="off"></label>
       </div>
-      <label class="check"><input type="checkbox" name="contrato"><span>Firmaré el contrato de trabajo en plataforma: IMSS y pago al piso legal</span></label>
-      <button type="button" class="link" data-action="ver-aviso">Leer el aviso de privacidad</button>
+      <div class="ct-firma"><button type="button" class="btn-ghost sm" id="rel-ct-btn">Leer y firmar contrato</button><small id="rel-ct-estado">Sin firmar</small></div>
       <label class="check"><input type="checkbox" name="privacidad"><span>Aviso de privacidad leído</span></label>
       <label class="check"><input type="checkbox" name="veracidad"><span>Mis datos son ciertos</span></label>
       <ul class="reqs compact" id="rel-reqs" aria-live="polite"></ul>
@@ -254,32 +236,49 @@
       <p class="form-error" role="alert"></p>
       <div class="btn-row end sticky">
         <button type="button" class="btn-ghost" data-close>Cancelar</button>
-        <button type="submit" class="btn-primary" id="rel-ok" disabled>Firmar contrato y enviar</button>
+        <button type="submit" class="btn-primary" id="rel-ok" disabled>Enviar a revisión</button>
       </div>
     </form>
   </dialog>
 
-  <!-- ============ Aviso de privacidad (también muestra contratos firmados) ============ -->
-  <dialog id="dlg-aviso">
-    <form method="dialog">
-      <div class="handle" aria-hidden="true"></div>
-      <h3>Aviso de privacidad</h3>
-      <div id="aviso-body"></div>
-      <div class="btn-row end sticky"><button type="submit" class="btn-primary">Entendido</button></div>
-    </form>
-  </dialog>
-
-  <!-- ============ Contrato: se firma al terminar «Necesito cuidado» o «Puedo cuidar» ============ -->
+  <!-- ============ Contrato de trabajo de la persona de relevo (20 nov 2026) ============ -->
   <dialog id="dlg-contrato">
     <form id="form-contrato" novalidate>
       <div class="handle" aria-hidden="true"></div>
-      <div class="eyebrow">Contrato · <span id="ctr-version"></span></div>
-      <h3 id="ctr-titulo"></h3>
-      <div id="ctr-body"></div>
-      <p class="form-error" role="alert" id="ctr-err"></p>
+      <div id="ct-body"></div>
+      <label class="fld">Para firmar, escribe tu nombre igual que en el registro<input name="firmaNombre" maxlength="40" autocomplete="off"></label>
+      <p class="form-error" role="alert" id="ct-err"></p>
       <div class="btn-row end sticky">
-        <button type="button" class="btn-ghost" id="ctr-cancelar">Cancelar</button>
-        <button type="submit" class="btn-primary" id="ctr-firmar" disabled>Firmar</button>
+        <button type="button" class="btn-ghost" data-close>Cancelar</button>
+        <button type="submit" class="btn-primary">Firmar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ============ Contactos (24 nov 2026): emergencia y personas autorizadas · datos ficticios ============ -->
+  <dialog id="dlg-contactos">
+    <form id="form-contactos" novalidate>
+      <div class="handle" aria-hidden="true"></div>
+      <div class="gbanner"><img class="ghost" src="img/marca_agua/bienvenida_relevo_lavanda.webp" alt="" aria-hidden="true"><div class="gb-in">
+        <span class="rx-kick">Opcional</span><h3>Tus contactos</h3><p class="sub">Avísales que los registras. Puedes cambiarlos o borrarlos cuando quieras.</p>
+      </div></div>
+      <fieldset class="ct-grupo"><legend>Contacto de emergencia</legend>
+        <p class="hint">Solo le llamamos si hay una emergencia durante una visita. No recibe información de tu caso.</p>
+        <label class="fld">Nombre<input name="eNombre" maxlength="40" autocomplete="off"></label>
+        <div class="row2"><label class="fld">Parentesco<input name="eParentesco" maxlength="20" autocomplete="off"></label>
+        <label class="fld">Teléfono<input name="eTel" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="10 dígitos"></label></div>
+      </fieldset>
+      <fieldset class="ct-grupo"><legend>Persona autorizada</legend>
+        <p class="hint">Recibe solo lo que marques aquí.</p>
+        <label class="fld">Nombre<input name="aNombre" maxlength="40" autocomplete="off"></label>
+        <div class="row2"><label class="fld">Parentesco<input name="aParentesco" maxlength="20" autocomplete="off"></label>
+        <label class="fld">Teléfono<input name="aTel" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="10 dígitos"></label></div>
+        <div class="chips"><label class="chip"><input type="checkbox" name="aRecibe" value="horarios"><span>Horarios de visita</span></label><label class="chip"><input type="checkbox" name="aRecibe" value="incidentes"><span>Incidentes</span></label></div>
+      </fieldset>
+      <p class="form-error" role="alert" id="cto-err"></p>
+      <div class="btn-row end sticky">
+        <button type="button" class="btn-ghost" data-close>Cancelar</button>
+        <button type="submit" class="btn-primary">Guardar</button>
       </div>
     </form>
   </dialog>
@@ -292,8 +291,8 @@
       <div id="asig-body"></div>
       <div id="asig-formal">
         <label class="fld" id="asig-motivo-row" hidden>Motivo del cambio<input name="motivo" maxlength="120" autocomplete="off"></label>
-        <label class="check"><input type="checkbox" name="escrito"><span>Contrato por escrito</span></label>
-        <label class="check"><input type="checkbox" name="imss"><span>Alta en el IMSS</span></label>
+        <label class="check"><input type="checkbox" name="acepta"><span>La persona de relevo aceptó la oferta (puede rechazarla sin penalización)</span></label>
+        <label class="check"><input type="checkbox" name="imss"><span>Registrada en el IMSS (completo o riesgos de trabajo, según su ingreso del mes)</span></label>
       </div>
       <div class="btn-row end sticky">
         <button type="button" class="btn-ghost" data-close>Cancelar</button>
@@ -335,17 +334,50 @@
 
   <!-- ============ Bienvenida: solo la primera vez (o con ?intro) ============ -->
   <div class="intro" id="intro" hidden>
+    <!-- 24 nov 2026: pantalla de carga «Pulso». Una línea de latido cruza y su pico se vuelve el logo, que late con ondas. -->
     <div class="intro-marca">
-      <img src="observatorio/ilustraciones/logo_marca.svg" alt="">
+      <div class="ip-escena" aria-hidden="true">
+        <svg class="ip-ecg" viewBox="0 0 300 120"><path d="M0 60 H90 L104 60 L114 34 L126 92 L138 14 L150 104 L160 60 H300"/></svg>
+        <div class="ip-ondas"><span style="--c:#aa95d1;--d:0s"></span><span style="--c:#7dd1c1;--d:.6s"></span><span style="--c:#e5677f;--d:1.2s"></span></div>
+        <img src="observatorio/ilustraciones/logo_marca.svg" alt="">
+      </div>
       <h2>RedCare</h2>
       <p>Una red que cuida a quienes cuidan</p>
-      <div class="intro-carga" aria-hidden="true"><i></i></div>
+      <div class="ip-estado" aria-hidden="true"><small id="ip-msg">Abriendo RedCare…</small><div class="ip-barra"><i></i></div><span class="ip-pct" id="ip-pct">0 %</span></div>
     </div>
-    <div class="intro-opc" role="group" aria-label="¿Cómo vas a usar RedCare?">
-      <h3>¿Cómo vas a usar RedCare?</h3>
-      <button type="button" data-intro="cuidadora"><b>Cuido a un familiar</b><small>Pedir horas de relevo para descansar</small></button>
-      <button type="button" data-intro="relevo"><b>Quiero dar relevo</b><small>Registrarme para cuidar por horas</small></button>
-      <button type="button" data-intro="programa"><b>Trabajo en el programa</b><small>Ver casos, asignar y dar seguimiento</small></button>
+    <!-- 24 nov 2026: la bienvenida es la red. Tres nodos conectados al centro; tocas tu lugar y entras. -->
+    <div class="intro-elige" role="group" aria-labelledby="ie-pregunta">
+      <h3 id="ie-pregunta">Toca tu lugar en la red</h3>
+      <div class="ie-red">
+        <svg class="ie-lineas" viewBox="0 0 300 300" aria-hidden="true">
+          <circle class="ie-anillo" cx="150" cy="150" r="118"/>
+          <circle class="ie-anillo b" cx="150" cy="150" r="78"/>
+          <path id="ie-l-cuidadora" class="ie-l" data-l="cuidadora" d="M150 150 L62 78"/>
+          <path id="ie-l-relevo" class="ie-l" data-l="relevo" d="M150 150 L238 78"/>
+          <path id="ie-l-programa" class="ie-l" data-l="programa" d="M150 150 L150 258"/>
+          <circle class="ie-pulso" r="3.2"><animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#ie-l-cuidadora"/></animateMotion></circle>
+          <circle class="ie-pulso" r="3.2"><animateMotion dur="2.6s" begin=".9s" repeatCount="indefinite"><mpath href="#ie-l-relevo"/></animateMotion></circle>
+          <circle class="ie-pulso" r="3.2"><animateMotion dur="2.6s" begin="1.7s" repeatCount="indefinite"><mpath href="#ie-l-programa"/></animateMotion></circle>
+        </svg>
+        <img class="ie-centro" src="observatorio/ilustraciones/logo_marca.svg" alt="">
+        <button type="button" class="ie-nodo" data-pick="cuidadora" style="--x:20.7%;--y:26%;--c:#aa95d1;--d:.05s" aria-pressed="false">
+          <span class="ie-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg></span>
+          <b>Cuido a un familiar</b>
+        </button>
+        <button type="button" class="ie-nodo" data-pick="relevo" style="--x:79.3%;--y:26%;--c:#7dd1c1;--d:.18s" aria-pressed="false">
+          <span class="ie-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0M14.5 19a4 4 0 0 1 6.5-3.2"/></svg></span>
+          <b>Quiero dar relevo</b>
+        </button>
+        <button type="button" class="ie-nodo" data-pick="programa" style="--x:50%;--y:86%;--c:#e5677f;--d:.31s" aria-pressed="false">
+          <span class="ie-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="3"/><path d="M8 9h8M8 13h8M8 17h5"/></svg></span>
+          <b>Trabajo en el programa</b>
+        </button>
+      </div>
+      <div class="ie-ficha" aria-live="polite">
+        <span class="ie-kick" id="ie-kick">Elige un nodo</span>
+        <p id="ie-txt">Cada persona tiene su lugar en la red: quien cuida, quien da relevo y quien coordina.</p>
+        <button type="button" class="ie-entrar" id="intro-entrar" disabled>Entrar</button>
+      </div>
       <p class="intro-nota">Prototipo · datos simulados</p>
     </div>
   </div>
@@ -371,15 +403,15 @@
 </div>
 
 <script src="vendor/d3.min.js"></script>
-<script src="js/cdmx-alcaldias.js?v=20261102"></script>
-<script src="js/config.js?v=20261118"></script>
-<script src="js/prioridad.js?v=20261102"></script>
-<script src="js/data.js?v=20261102"></script>
-<script src="js/legal.js?v=20261118"></script>
-<script src="js/contratos.js?v=20261118"></script>
-<script src="js/relevo.js?v=20261102"></script>
+<script src="js/config.js?v=20261120"></script>
+<script src="js/prioridad.js?v=20261120"></script>
+<script src="js/huella.js?v=20261120"></script>
+<script src="js/data.js?v=20261124g"></script>
+<script src="js/legal.js?v=20261124g"></script>
+<script src="js/relevo.js?v=20261120"></script>
+<script src="js/contrato.js?v=20261124g"></script>
 <script src="js/red.js?v=20261102"></script>
-<script src="js/app.js?v=20261118"></script>
+<script src="js/app.js?v=20261124g"></script>
 <script src="js/interaccion.js?v=20261105j"></script>
 </body>
 </html>
