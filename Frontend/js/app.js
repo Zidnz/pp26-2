@@ -1029,7 +1029,7 @@
       case 'ver-caso': abrirCaso(id); break;
       case 'ver-relevo': abrirRelevo(id); break;
       case 'new-sol': openSol(); break;
-      case 'ver-aviso': await pedir(CP.aviso_privacidad.replace('{operador}', CP.operador).replace('{contacto}', CP.contacto_datos), { ok: 'Entendido' }); break;
+      case 'ver-aviso': { const dl = $('#dlg-aviso'); $('#aviso-body').innerHTML = Care.aviso.html(CP); dl.showModal(); dl.scrollTop = 0; break; }
       case 'sol-apelar': { const m = await pedir('¿Por qué crees que tu valoración no refleja tu situación?', { input: true, min: 5, ok: 'Registrar' }); if (m) { ui.sol.d.apelacion = m; pintaPaso(); } break; }
       case 'revisado': { cerrarDet(); const m = await pedir('Nota de la revisión (qué se verificó):', { input: true, min: 5, ok: 'Marcar revisado' }); if (m) { store.resolverRevision(id, m); toast('Revisión registrada; el puntaje no cambia'); } break; }
       case 'resolver-ap': { cerrarDet(); const apId = b.dataset.ap; const m = await pedir('Resolución (si cambia una respuesta, se vuelve a entrevistar):', { input: true, min: 5, ok: 'Resolver' }); if (m) { store.resolverApelacion(id, apId, m); toast('Solicitud de revisión resuelta'); } break; }
