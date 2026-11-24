@@ -27,3 +27,11 @@ Matriz de referencias bibliográficas (estudio CESA-CDMX / CEDUA-Colmex 2026, CE
 ## inventario_fuentes_cuidado.csv: filas F20 a F27 (6 oct 2026)
 
 Fuentes que subió Omar el 6 oct: rezago social por AGEB, localidad y entidad (CONEVAL 2020), marginación por municipio y entidad (CONAPO 2020), base de pobreza ENIGH 2022 del CONEVAL, paquete de pobreza municipal 2020 (MunEBPH), programas del PEF 2026 con acciones de cuidado, serie del trabajo no remunerado como % del PIB y horas de trabajo no remunerado 2019. Los archivos están en `Analysis/datos/` (`coneval_irs/`, `conapo_marginacion/`, `enigh2022_coneval/`, `contexto_nacional/`); el paquete MunEBPH (6.5 GB) no se copió. Se usan en los scripts 13 y 14. También se agregó REF-CAMBEROS-2007 a `matriz_referencias_bibliograficas.csv`. **Pendiente de doble revisión** (columna `revisor` vacía).
+
+## matriz_tratamiento_datos_redcare.csv (20 nov 2026)
+
+Tabla finalidad–dato–base jurídica–riesgo–medida (evidencia 1 de la UCA Leyes para la Protección de Datos). Una fila por dato que RedCare recoge hoy en `Frontend/` (D01–D28) y 5 filas transversales (T01–T05: almacenamiento, acceso, exportación, indicadores, responsable). Cada fila dice si el dato **procede**, **procede con cambios**, **no procede** o **falta**, y en qué archivo se comprobó. Se armó leyendo el código del 20 nov; sin script generador.
+
+**Faltantes que bloquean un piloto:** consentimiento de la persona cuidada (D20), contrato con partes definidas (D27), alta en IMSS sin responsable ni dato (D28) y responsable del tratamiento (T05).
+
+**Límites.** La base jurídica cita la LFPDPPP (DOF 20-mar-2025) sin número de artículo: todos quedan **por verificar** (Daniel). Plazos de conservación y umbral de supresión (< 5 casos) son propuestas. **Pendiente de doble revisión** (columna `revisor` vacía).

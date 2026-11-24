@@ -4,7 +4,9 @@
  * niveles, envejecimiento y reparto de la bolsa) y js/config.js (parámetros). `prioridad()` se conserva solo como
  * regla de referencia (≥ 40 h) que la app muestra junto al puntaje. Paquetes, jornada, costo y asignación siguen aquí.
  *
- * 1. Focalización (referencia): regla simple de horas (+ ayuda en actividades básicas para ordenar la prioridad).
+ * 1. Focalización (referencia): regla simple de horas. (Hasta el 20 nov 2026 la ayuda en actividades básicas separaba
+ *    Prioridad 1 y 2; esa pregunta se retiró por minimización y `prioridad()` ya no la usa. DANO_07.P1 se conserva como
+ *    cifra de referencia del notebook 07, no como regla.)
  *    - Notebook 11: el modelo no supera de forma demostrable a la regla "≥ 40 h" para "algún daño"
  *      (+2.2 pp de cobertura, IC 90 % de −4.1 a 8.5). Por eso la app usa la regla, no un modelo.
  *    - Notebook 07 (nacional, "sin necesidad" declarada): % con algún daño (salud o trabajo) por grupo.
@@ -32,11 +34,10 @@
   };
   const UMBRAL_HORAS = 40;
 
-  /** { nivel: 'P1'|'P2'|'NP', etiqueta, ref } */
-  function prioridad(horas, abvd) {
+  /** { nivel: 'P2'|'NP', etiqueta, ref }. Solo horas (20 nov 2026). */
+  function prioridad(horas) {
     const h = +horas || 0;
-    if (h >= UMBRAL_HORAS && abvd) return { nivel: 'P1', etiqueta: 'Prioridad 1', motivo: `${UMBRAL_HORAS} h o más y ayuda en actividades básicas`, ref: DANO_07.P1 };
-    if (h >= UMBRAL_HORAS) return { nivel: 'P2', etiqueta: 'Prioridad 2', motivo: `${UMBRAL_HORAS} h o más por semana`, ref: DANO_07.P2 };
+    if (h >= UMBRAL_HORAS) return { nivel: 'P2', etiqueta: 'Dentro de la regla', motivo: `${UMBRAL_HORAS} h o más por semana`, ref: DANO_07.P2 };
     return { nivel: 'NP', etiqueta: 'Fuera de la regla', motivo: `menos de ${UMBRAL_HORAS} h por semana`, ref: h >= 20 ? DANO_07.m20 : DANO_07.m0 };
   }
 

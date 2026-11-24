@@ -44,8 +44,7 @@
     chequeos: {
       horas_altas: 40,          // cuida ≥ 40 h…
       barthel_independiente: 90, // …a una persona con Barthel ≥ 90 (casi independiente)
-      abvd_muchas: 3,           // declara ayuda en ≥ 3 actividades básicas…
-      barthel_sin_ayuda: 100,   // …pero Barthel = 100 (independiente en todas)
+      // 20 nov 2026: se retiró el chequeo «≥ 3 actividades básicas con Barthel 100» junto con la pregunta de actividades básicas.
       horas_inverosimiles: 140, // ≥ 140 h/semana: verificar captura
     },
 
@@ -57,7 +56,21 @@
     nombre: 'RedCare',
     eslogan: 'Una red que cuida a quienes cuidan',
     aviso_complementario: 'RedCare es un componente complementario del Sistema Público de Cuidados. Las horas dependen del presupuesto del programa.',
-    aviso_privacidad: 'RedCare (organización privada por constituir) es responsable de tus datos conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Borrador sin revisión jurídica final; texto completo en js/contratos.js.',
+    // 21 nov 2026: aviso de privacidad simplificado (LFPDPPP, DOF 20-mar-2025). El aviso integral está en la documentación del proyecto.
+    // 24 nov 2026: aviso simplificado v3, derivado del aviso integral v3 (Documentos/Aviso_de_Privacidad_RedCare_v3).
+    version_aviso: '3.0 · 2026-11-24',
+    aviso_privacidad: 'Aviso de privacidad simplificado (v3). {operador} es responsable de tus datos. Los usamos para: '
+      + '1) saber si el relevo te corresponde y cuántas horas; 2) asignarte una persona de relevo y organizar las visitas; 3) dar seguimiento, atender incidentes y emergencias. '
+      + 'Datos sensibles (con tu consentimiento expreso): horas de cuidado, si haces tareas de salud (sí o no), la dependencia de la persona que cuidas (Barthel) y, cada semana, cansancio, sueño y si pudiste trabajar o estudiar. '
+      + 'Tu domicilio se pide solo al asignarte relevo y se borra al cerrar el caso. Tus contactos de emergencia y personas autorizadas son opcionales. No pedimos tu CURP ni diagnósticos. '
+      + 'La persona de relevo solo ve tu alias, domicilio, horario y tareas. Una persona del programa revisa cada solicitud antes de asignar. No vendemos tus datos. '
+      + 'Estadísticas solo agregadas, si lo autorizas. Derechos ARCO en «Mis datos» o en {contacto}. Aviso integral: en la app y en el módulo del programa.',
+
+    /* ---------- Contratos (20 nov 2026; texto en js/contrato.js) ---------- */
+    // Modelo de plataforma digital (como Uber, DiDi o Rappi): el OPERADOR de RedCare gestiona la plataforma y es el patrón de
+    // las personas de relevo (LFT Cap. IX Bis). El hogar es usuario: no es patrón ni responsable solidario. Análisis jurídico en la documentación del proyecto (21 nov 2026).
+    operador: 'RedCare Cuidados, A.C. (persona moral ficticia del prototipo)',
+    contacto_datos: 'privacidad@redcare.example (correo ficticio del prototipo)',
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = CONFIG_PROGRAMA;

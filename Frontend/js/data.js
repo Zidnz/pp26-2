@@ -33,8 +33,10 @@
     'hermana', 'hermano', 'suegra', 'suegro', 'tía', 'tío', 'nieta', 'nieto', 'otro'];
   const TIPOS_INCIDENTE = ['No llegó', 'Llegó tarde', 'Se fue antes', 'Trato inadecuado', 'Riesgo en el domicilio', 'Cambio en la salud de la persona cuidada', 'Otro'];
 
-  // maxKm: cercanía máxima entre centros de alcaldía. factorPrest: % sobre el costo para prestaciones (0 = sin prestaciones; POR DEFINIR con Daniel).
-  const CONFIG_DEFAULT = { maxKm: 12, factorPrest: 0, bolsaSim: null };
+  // maxKm: cercanía máxima entre centros de alcaldía. factorPrest: % sobre el costo para prestaciones.
+  // 20 nov 2026: 25 % = parte proporcional de descanso semanal, aguinaldo, vacaciones y prima (LFT 291-F; ver legal.js,
+  // FACTOR_291F ≈ 24.9 %). Antes 0. No incluye cuotas patronales del IMSS, que son costo del operador, no pago a la persona.
+  const CONFIG_DEFAULT = { maxKm: 12, factorPrest: 25, bolsaSim: null };
   // bolsaSim: bolsa de horas SIMULADA para el prototipo (null = usa presupuesto_horas_mes de config.js).
   // El ejemplo tiene 11 casos; con la bolsa del archivo (2,000 h) todos llegarían al tope y no se verían los niveles.
   const BOLSA_EJEMPLO = 260;
@@ -93,28 +95,33 @@
       R('r11', 'Karla V.', 'Iztacalco', [0, 2, 4], '09:00', '15:00', 12, [T[0], T[1]], 'en_proceso', 1,
         { estado: 'pendiente', fecha: hace(1) }),
     ];
-    relevos[10].legal = { curp: 'VAKK950312MDFLRR08', docId: 'INE/IFE vigente', antecedentesFecha: hace(20), referencia: { nombre: 'Ref. simulada', tel: '5500000000' } };
+    // 20 nov 2026: de la CURP solo se guarda la huella y los últimos 4 caracteres (js/huella.js). La CURP de ejemplo es inventada.
+    relevos[10].legal = { curp: Care.huella.curp('VAKK950312MDFLRR08'), mayorDeEdad: true, docId: 'INE/IFE vigente', referencia: { nombre: 'Ref. simulada', tel: '5500000000' } };
+    // Contrato de trabajo SIMULADO para las personas precargadas (no se calcula huella: no hay texto firmado real).
+    relevos.forEach((r) => { r.contrato = { tipo: 'trabajo', version: 'simulado', firmante: r.nombre, fecha: hace(60), huellaTexto: null, metodo: 'simulado' }; });
 
     /* Casos SIMULADOS. Cada uno trae su entrevista; el puntaje, el nivel y las horas se CALCULAN en la app con
      * Care.prioridad y config.js (no se guardan). Los canales y puntajes están armados para que el panel muestre
      * una diferencia entre canales: es una ilustración, no un hallazgo. */
     const PR = Care.prioridad;
-    const ab = (n) => PR.ABVD.slice(0, n).map((x) => x.id), cl = (n) => PR.CLIN.slice(0, n).map((x) => x.id);
     const PERFIL_BARTHEL = { // valores por reactivo B01…B10
       total: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], severa: [5, 0, 5, 0, 5, 5, 0, 5, 5, 0], moderada: [10, 0, 5, 5, 10, 5, 5, 10, 10, 5],
       leve: [10, 5, 10, 5, 10, 10, 10, 15, 15, 5], indep: [10, 5, 10, 5, 10, 10, 10, 15, 15, 10],
     };
     const barthel = (k) => Object.fromEntries(PR.BARTHEL.map((it, i) => [it.id, PERFIL_BARTHEL[k][i]]));
     const zarit = (vals) => Object.fromEntries(PR.reactivosZarit(Care.CONFIG_PROGRAMA).map((it, i) => [it.id, vals[i % vals.length]]));
-    const ent = (horas, nAbvd, nClin, req, fuerza, perfil, z) => ({ modelo: { horas, abvd: ab(nAbvd), clin: cl(nClin), req, fuerza }, barthel: barthel(perfil), zarit: z ? zarit(z) : null });
+    // 20 nov 2026: la entrevista guarda solo horas y «requiere enfermería». Los argumentos nAbvd, req y fuerza se ignoran
+    // (se dejan para no reescribir cada caso de ejemplo).
+    const ent = (horas, nAbvd, nClin, req, fuerza, perfil, z) => ({ modelo: { horas, enfermeria: nClin > 0 }, barthel: barthel(perfil), zarit: z ? zarit(z) : null });
     const REF = (tipo) => ({ canal_origen: 'referencia', referencia: { institucion: tipo, quien: 'Trabajadora social (simulada)', fecha: null } });
     const AUTO = { canal_origen: 'autorregistro', referencia: null };
 
     const C = (o) => {
-      const c = Object.assign({ consentimiento: { expreso: true, aviso: 'pendiente revisión legal', fecha: o.fecha }, pagador: 'subsidio', pctSubsidio: 0,
+      const c = Object.assign({ consentimiento: { expreso: true, aviso: '2026-11-21', fecha: o.fecha }, pagador: 'subsidio', pctSubsidio: 0,
+        contrato: { tipo: 'servicio', version: 'simulado', firmante: o.cuidadora.alias, fecha: o.fecha, huellaTexto: null, metodo: 'simulado' },
+        consentimientoPersona: { via: 'propio', tipo: null, estado: 'otorgado', fecha: o.fecha, simulado: true },
         asignacion: null, apelaciones: [], revision: null, preferencias: null }, o);
       c.cuidadora.horas = c.entrevista.modelo.horas;           // compatibilidad con red y KPI
-      c.cuidadora.abvd = c.entrevista.modelo.abvd.length > 0;
       if (c.referencia) c.referencia.fecha = c.fecha;
       return c;
     };
@@ -192,6 +199,9 @@
         hogar: buildHogar({ cuidadora: { nombre: 'Rafael', rol: 'padre', horas: 30 }, cuidada: { nombre: 'Hijo', rol: 'hijo' } }),
         preferencias: { dias: [0, 2], inicio: '09:00', tareas: [T[0], T[3]] } }, REF('Escuela'))),
     ];
+    // Un caso de ejemplo con representación por acreditar, para mostrar que sin ella no se asigna relevo (20 nov 2026).
+    const k6 = casos.find((c) => c.id === 'k6');
+    if (k6) k6.consentimientoPersona = { via: 'representante', tipo: 'Persona de apoyo designada', estado: 'por_acreditar', fecha: k6.fecha, simulado: true };
     // Revisión humana: se marca al guardar la entrevista (aquí, para el ejemplo, igual que lo haría la app).
     casos.forEach((c) => { const ch = PR.chequeos(c.entrevista, Care.CONFIG_PROGRAMA); if (ch.length) c.revision = { estado: 'pendiente', motivos: ch, fecha: c.fecha }; });
 
@@ -233,10 +243,16 @@
       const inicio = (c.asignacion.historial[0] || c.asignacion).desde || c.asignacion.fecha;
       for (let s = lunesDe(inicio); s < hoy; s = sumaDias(s, 7)) {
         if (rand() < 0.15) continue; // semanas sin respuesta
-        checkins.push({ id: 'q' + checkins.length, casoId: c.id, semana: s, cansancio: Math.min(4, Math.max(0, Math.round(2.6 + (rand() - 0.5) * 2.4))), malasNoches: Math.floor(rand() * 6) });
+        checkins.push({ id: 'q' + checkins.length, casoId: c.id, semana: s, cansancio: Math.min(4, Math.max(0, Math.round(2.6 + (rand() - 0.5) * 2.4))), malasNoches: Math.floor(rand() * 6), empleo: ['si', 'parcial', 'no'][Math.floor(rand() * 3)] });
       }
     });
 
+    // Contactos FICTICIOS del caso de ejemplo (24 nov 2026)
+    const k1 = casos.find((c) => c.id === 'k1');
+    if (k1) k1.contactos = [
+      { id: 'ct1', tipo: 'emergencia', nombre: 'Contacto Ficticio Uno', parentesco: 'Hermana', telefono: '5500000001', simulado: true },
+      { id: 'ct2', tipo: 'autorizada', nombre: 'Contacto Ficticio Dos', parentesco: 'Hijo', telefono: '5500000002', recibe: ['horarios', 'incidentes'], simulado: true },
+    ];
     return { casos, relevos, visitas, incidentes, checkins };
   }
 
@@ -247,13 +263,47 @@
   const clone = (o) => JSON.parse(JSON.stringify(o));
   const aprobado = (x) => !!(x && x.verificacion && x.verificacion.estado === 'aprobada');
 
+  /* Migración de datos guardados antes del 20 nov 2026 (minimización). Se aplica al cargar; no deja nada atrás:
+   * - casos: la entrevista queda solo con horas y «requiere enfermería»; se borran `abvd` y `clin`.
+   * - relevos: la CURP en claro se cambia por su huella; la referencia se borra si el registro ya se resolvió. */
+  function minimizarCaso(c) {
+    if (c && c.entrevista && c.entrevista.modelo) c.entrevista.modelo = Care.prioridad.minimizarModelo(c.entrevista.modelo);
+    if (c && c.cuidadora) delete c.cuidadora.abvd;
+    // Casos anteriores al 20 nov 2026 no tienen consentimiento de la persona cuidada: queda pendiente (no se asigna relevo).
+    if (c && !c.consentimientoPersona) c.consentimientoPersona = { via: 'pendiente', tipo: null, estado: 'pendiente', fecha: null };
+    return c;
+  }
+  function minimizarRelevo(r) {
+    const L = r && r.legal;
+    if (L && typeof L.curp === 'string') { L.curp = Care.huella.curp(L.curp); L.mayorDeEdad = true; }
+    if (L && 'antecedentesFecha' in L) delete L.antecedentesFecha; // 21 nov 2026: ya no se pide la carta
+    const v = (r && r.verificacion) || {};
+    if (L && L.referencia && L.referencia.nombre && (v.estado === 'aprobada' || v.estado === 'rechazada')) L.referencia = { estado: v.estado === 'aprobada' ? 'verificada' : 'descartada', fecha: v.fecha || null };
+    return r;
+  }
+
+  /* 24 nov 2026: domicilio, datos de pago y contactos son FICTICIOS en el prototipo. El domicilio solo existe
+   * mientras hay relevo asignado y se borra al cerrar el caso; del pago solo se guarda banco y últimos 4 dígitos
+   * (la cuenta completa la tendría el proveedor de pagos). */
+  const numDe = (t) => { let h = 7; String(t).split('').forEach((ch) => { h = (h * 31 + ch.charCodeAt(0)) % 997; }); return h; };
+  const domicilioFicticio = (c) => ({ texto: `Calle Simulada ${10 + numDe(c.folio || c.id) % 90}, Colonia de Ejemplo, ${c.alcaldia}`, simulado: true, fecha: hoyISO() });
+  const pagoFicticio = (r) => ({ banco: 'Banco Ficticio', ultimos4: String(1000 + numDe(r.id) * 7 % 9000).slice(-4), simulado: true });
+  function completarFicticios(st) {
+    st.casos.forEach((c) => {
+      if (!Array.isArray(c.contactos)) c.contactos = [];
+      if (c.estado === 'activo' && c.asignacion && !c.domicilio) c.domicilio = domicilioFicticio(c);
+      if (c.estado === 'cerrado') { delete c.domicilio; c.contactos = []; }
+    });
+    st.relevos.forEach((r) => { if (r.verificacion && r.verificacion.estado === 'aprobada' && !r.pago) r.pago = pagoFicticio(r); });
+    return st;
+  }
   function normalize(s) {
     const arr = (k) => (Array.isArray(s && s[k]) ? s[k] : []);
-    return {
-      casos: arr('casos'), relevos: arr('relevos'), visitas: arr('visitas'), incidentes: arr('incidentes'), checkins: arr('checkins'),
+    return completarFicticios({
+      casos: arr('casos').map(minimizarCaso), relevos: arr('relevos').map(minimizarRelevo), visitas: arr('visitas'), incidentes: arr('incidentes'), checkins: arr('checkins'),
       config: Object.assign({}, CONFIG_DEFAULT, (s && s.config) || {}),
       ultimoCiclo: (s && s.ultimoCiclo) || null,
-    };
+    });
   }
 
   function load() {
@@ -305,13 +355,21 @@
     resolverRelevo(id, aprobada, motivo) {
       const r = state.relevos.find((x) => x.id === id); if (!r) return;
       r.verificacion = { estado: aprobada ? 'aprobada' : 'rechazada', motivo: aprobada ? '' : motivo, fecha: hoyISO(), origen: 'revision' };
+      // 20 nov 2026: la referencia solo sirve para verificar. Resuelto el registro, se borran nombre y teléfono (matriz D24).
+      if (r.legal && r.legal.referencia) r.legal.referencia = { estado: aprobada ? 'verificada' : 'descartada', fecha: hoyISO() };
+      if (aprobada && !r.pago) r.pago = pagoFicticio(r);
       emit();
     },
-    existeRelevoCURP(curp) { return state.relevos.some((r) => r.legal && r.legal.curp === curp && (r.verificacion || {}).estado !== 'rechazada'); },
+    /** Duplicados por huella: la CURP completa no se guarda (20 nov 2026). */
+    existeRelevoCURP(curp) {
+      const h = Care.huella.curp(curp).huella;
+      return state.relevos.some((r) => r.legal && r.legal.curp && r.legal.curp.huella === h && (r.verificacion || {}).estado !== 'rechazada');
+    },
     asignar(casoId, relevoId, formalizacion) {
       const c = caso(casoId); if (!c) return false;
       c.asignacion = { relevoId, fecha: hoyISO(), formalizacion, historial: (c.asignacion && c.asignacion.historial) || [] };
       c.estado = 'activo';
+      if (!c.domicilio) c.domicilio = domicilioFicticio(c); // se pide al asignar; en el prototipo es ficticio
       emit(); return true;
     },
     reasignar(casoId, relevoId, motivo, formalizacion) {
@@ -321,7 +379,7 @@
       c.asignacion = { relevoId, fecha: hoyISO(), formalizacion, historial: h };
       emit(); return true;
     },
-    cerrarCaso(casoId, motivo) { const c = caso(casoId); if (c) { c.estado = 'cerrado'; c.cierre = { fecha: hoyISO(), motivo }; emit(); } },
+    cerrarCaso(casoId, motivo) { const c = caso(casoId); if (c) { c.estado = 'cerrado'; c.cierre = { fecha: hoyISO(), motivo }; delete c.domicilio; c.contactos = []; emit(); } },
     /** Guarda una solicitud valorada (Registro → Consentimiento → Entrevista). Entra a la cola en estado 'espera'. */
     addSolicitud(c) { state.casos.unshift(c); emit(); },
     /** Apelación ("Solicitar revisión"). No cambia el puntaje: queda abierta para una persona del programa. */
@@ -335,12 +393,14 @@
     marcarVisita(casoId, fecha, estado) { const v = visitaDe(casoId, fecha); if (v) { v.estado = estado; v.llegada = null; v.salida = null; emit(); } },
     addIncidente(i) { state.incidentes.unshift(Object.assign({ id: uid('i'), fecha: hoyISO(), estado: 'abierto' }, i)); emit(); },
     cerrarIncidente(id, resolucion) { const i = state.incidentes.find((x) => x.id === id); if (i) { i.estado = 'cerrado'; i.resolucion = resolucion; emit(); } },
-    addCheckin(casoId, cansancio, malasNoches) {
+    addCheckin(casoId, cansancio, malasNoches, empleo) {
       const semana = lunesDe(hoyISO());
       state.checkins = state.checkins.filter((q) => !(q.casoId === casoId && q.semana === semana));
-      state.checkins.push({ id: uid('q'), casoId, semana, cansancio, malasNoches });
+      state.checkins.push({ id: uid('q'), casoId, semana, cansancio, malasNoches, empleo: empleo || null });
       emit();
     },
+    /** Contacto de emergencia y personas autorizadas (máx. 3). Se borran al cerrar el caso. */
+    setContactos(casoId, lista) { const c = caso(casoId); if (!c) return; c.contactos = (lista || []).slice(0, 3); emit(); },
     removeCaso(id) {
       state.casos = state.casos.filter((c) => c.id !== id);
       ['visitas', 'incidentes', 'checkins'].forEach((k) => { state[k] = state[k].filter((x) => x.casoId !== id); });
