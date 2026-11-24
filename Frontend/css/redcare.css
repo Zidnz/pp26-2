@@ -299,10 +299,9 @@ dialog h3 { font: 800 24px/1.1 var(--display); letter-spacing: -.02em; }
 .rx-tec { margin: 6px 0 0; font: 500 11px var(--mono); color: var(--ink-faint); }
 .personaje.rx-img { width: 112px; height: 112px; object-fit: cover; border-radius: 18px; background: #fff; }
 .rx-sub { margin: 10px 2px 0; font: 400 13.5px/1.45 var(--sans); color: var(--ink-soft); }
-.rx-note { display: grid; gap: 2px; margin-top: 10px; padding: 11px 14px; border-radius: 14px; background: var(--paper); border-left: 4px solid var(--lav); }
+.rx-note { display: grid; gap: 2px; margin-top: 10px; padding: 11px 14px; border-radius: 14px; background: var(--paper); }
 .rx-note b { font: 700 13px var(--sans); color: var(--ink); }
 .rx-note span { font: 400 12.5px/1.4 var(--sans); color: var(--ink-soft); }
-.rx-note.rx-salud { border-left-color: var(--mint); } .rx-note.rx-rev { border-left-color: var(--amber-fill); }
 .rx-apela { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin: 14px 2px 4px; font: 400 12.5px var(--sans); color: var(--ink-soft); }
 .rx-apela .link { min-height: 44px; font-weight: 700; white-space: nowrap; }
 .rx-steps { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 0; }
@@ -367,7 +366,6 @@ dialog h3 { font: 800 24px/1.1 var(--display); letter-spacing: -.02em; }
 .ct-grupo { border: 1.5px solid var(--hair); border-radius: 18px; padding: 12px 14px 6px; margin: 0 0 12px; }
 .ct-grupo legend { padding: 0 6px; font: 800 14px var(--display); color: var(--ink); }
 .ct-grupo .hint { margin: 0 0 8px; }
-.rx-note.rx-pago { border-left-color: var(--mint, #7dd1c1); }
 
 /* ===== Bienvenida como red (24 nov 2026) ===== */
 #intro { --rolc: rgba(255,255,255,.35); background: radial-gradient(90% 60% at 50% 38%, #4b4470 0%, #343a53 55%, #2b3045 100%); justify-content: center; }
@@ -401,7 +399,7 @@ dialog h3 { font: 800 24px/1.1 var(--display); letter-spacing: -.02em; }
 .ie-nodo.on .ie-ico { transform: scale(1.18); box-shadow: 0 0 0 6px color-mix(in srgb, var(--c) 35%, transparent), 0 0 0 14px color-mix(in srgb, var(--c) 14%, transparent), 0 10px 26px rgba(0,0,0,.35); }
 .ie-nodo.on b { color: #fff; }
 #intro[data-rol]:not([data-rol=""]) .ie-nodo:not(.on) { opacity: .55; }
-.ie-ficha { margin-top: 2px; padding: 16px 18px 18px; border-radius: 22px; text-align: left; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); border-top: 4px solid var(--rolc); backdrop-filter: blur(6px); transition: border-color .3s; }
+.ie-ficha { margin-top: 26px; padding: 16px 18px 18px; border-radius: 22px; text-align: left; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(6px); transition: border-color .3s; }
 .ie-kick { display: block; font: 700 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--rolc); }
 #intro[data-rol=""] .ie-kick, #intro:not([data-rol]) .ie-kick { color: rgba(244,242,249,.6); }
 .ie-ficha p { margin: 6px 0 14px; font: 500 13.5px/1.45 var(--sans); color: rgba(244,242,249,.88); min-height: 3.9em; }
