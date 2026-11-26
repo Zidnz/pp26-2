@@ -2768,3 +2768,7 @@ Sin revisión de otra persona. Revisor: _[pendiente]_.
 ## 26 nov 2026 (11:05) — Barra lateral separada de los bordes (pedido de Omar)
 
 `css/layout.css`: en escritorio, la barra lateral queda a 14 px del borde, con esquinas redondeadas (22 px), igual que el pie de página. Se mantienen la altura fija y el desplazamiento propio. En pantallas angostas, la barra superior queda a 8 px de los bordes, con esquinas de 18 px; la altura libre para las barras pegajosas (`--stick`) pasa de 104 a 116 px. Se subió la versión de `layout.css` en `index.html`. Verificado con Playwright a 420, 1500 y 2000 px, sin errores de JavaScript.
+
+## 26 nov 2026 (11:10) — Se revierte la barra lateral separada; el pie va de borde a borde (pedido de Omar)
+
+`css/layout.css`: a Omar no le gustó la barra lateral separada de los bordes (entrada de las 11:05), así que se quitó ese bloque y la barra vuelve a estar pegada a los bordes, como antes. El pie de página deja de ser un bloque redondeado con margen: ahora ocupa todo el ancho de la columna de contenido, con el mismo fondo que la barra lateral (`--shell-2`) y sin esquinas redondeadas. Su contenido no cambia. Verificado con Playwright a 420 y 1500 px, sin errores de JavaScript.
