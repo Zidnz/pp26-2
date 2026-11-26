@@ -389,7 +389,7 @@ dialog h3 { font: 800 24px/1.1 var(--display); letter-spacing: -.02em; }
   box-shadow: 0 0 0 8px rgba(255,255,255,.06), 0 0 0 18px rgba(255,255,255,.03), 0 10px 30px rgba(0,0,0,.35); animation: ie-latido 2.4s ease-in-out infinite; }
 @keyframes ie-latido { 0%, 100% { transform: translate(-50%, -50%) scale(1); } 50% { transform: translate(-50%, -50%) scale(1.05); } }
 .ie-nodo { position: absolute; left: var(--x); top: var(--y); transform: translate(-50%, -50%); display: grid; justify-items: center; gap: 7px; width: 118px; padding: 0; border: 0; background: none; color: #fff; cursor: pointer;
-  animation: aparece .55s cubic-bezier(.34,1.56,.64,1) var(--d) both, flota 4.5s ease-in-out calc(var(--d) + .6s) infinite; -webkit-tap-highlight-color: transparent; }
+  animation: aparece .55s cubic-bezier(.34,1.56,.64,1) var(--d) both, flota 4.5s ease-in-out calc(var(--d) + .6s) infinite; -webkit-tap-highlight-color: transparent; touch-action: manipulation; user-select: none; }
 .ie-ico { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: var(--c); color: #2b3045; box-shadow: 0 8px 22px rgba(0,0,0,.3); transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s; }
 .ie-ico svg { width: 28px; height: 28px; }
 .ie-nodo b { font: 700 13px/1.15 var(--sans); color: rgba(255,255,255,.9); text-align: center; }
@@ -399,20 +399,13 @@ dialog h3 { font: 800 24px/1.1 var(--display); letter-spacing: -.02em; }
 .ie-nodo.on .ie-ico { transform: scale(1.18); box-shadow: 0 0 0 6px color-mix(in srgb, var(--c) 35%, transparent), 0 0 0 14px color-mix(in srgb, var(--c) 14%, transparent), 0 10px 26px rgba(0,0,0,.35); }
 .ie-nodo.on b { color: #fff; }
 #intro[data-rol]:not([data-rol=""]) .ie-nodo:not(.on) { opacity: .55; }
-.ie-ficha { margin-top: 26px; padding: 16px 18px 18px; border-radius: 22px; text-align: left; background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12); backdrop-filter: blur(6px); transition: border-color .3s; }
-.ie-kick { display: block; font: 700 11px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--rolc); }
-#intro[data-rol=""] .ie-kick, #intro:not([data-rol]) .ie-kick { color: rgba(244,242,249,.6); }
-.ie-ficha p { margin: 6px 0 14px; font: 500 13.5px/1.45 var(--sans); color: rgba(244,242,249,.88); min-height: 3.9em; }
-.ie-entrar { width: 100%; min-height: 50px; border: 0; border-radius: 16px; background: var(--rolc); color: #2b3045; font: 800 15px var(--display); cursor: pointer; transition: background .3s, transform .15s, opacity .2s; }
-.ie-entrar:disabled { background: rgba(255,255,255,.12); color: rgba(244,242,249,.5); cursor: default; }
-.ie-entrar:not(:disabled):active { transform: scale(.98); }
-#intro .intro-nota { text-align: center; margin-top: 12px; }
+#intro .intro-nota { text-align: center; margin-top: 26px; }
 @keyframes fluir { to { stroke-dashoffset: -22; } }
 @keyframes girar { to { transform: rotate(360deg); } }
 @keyframes aparece { from { opacity: 0; transform: translate(-50%, -50%) scale(.4); } to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
 @keyframes flota { 0%, 100% { transform: translate(-50%, -50%); } 50% { transform: translate(-50%, calc(-50% - 5px)); } }
 @media (prefers-reduced-motion: reduce) { .ie-l, .ie-anillo.b, .ie-nodo, .ie-centro { animation: none !important; } .ie-pulso { display: none; } }
-@media (max-height: 720px) { .ie-red { width: 64%; margin-bottom: 18px; } .intro-elige h3 { margin-bottom: 6px; } .ie-ico { width: 50px; height: 50px; } .ie-ico svg { width: 22px; height: 22px; } .ie-nodo { width: 104px; } .ie-nodo b { font-size: 12px; } .ie-ficha { padding: 12px 14px 14px; } .ie-ficha p { min-height: 0; margin-bottom: 10px; font-size: 13px; } #intro.elegir .intro-marca h2 { font-size: 28px; } }
+@media (max-height: 720px) { .ie-red { width: 64%; margin-bottom: 18px; } .intro-elige h3 { margin-bottom: 6px; } .ie-ico { width: 50px; height: 50px; } .ie-ico svg { width: 22px; height: 22px; } .ie-nodo { width: 104px; } .ie-nodo b { font-size: 12px; } #intro.elegir .intro-marca h2 { font-size: 28px; } }
 
 /* ===== 24 nov 2026 · Pantalla de carga «Pulso» ===== */
 #intro .intro-marca img { background: #fff; border: 0; box-shadow: 0 8px 24px rgba(0,0,0,.3); }

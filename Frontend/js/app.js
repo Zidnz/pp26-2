@@ -1230,30 +1230,34 @@
     paso(); pulsoT = setInterval(paso, 60);
     setTimeout(() => { el.classList.add('elegir'); }, espera);
   }
-  /* 24 nov 2026: bienvenida como red. Tocar un nodo lo enciende, ilumina su línea y muestra la ficha con «Entrar». */
-  const ROLES_INTRO = {
-    cuidadora: { k: 'Cuido a un familiar', t: 'Pide horas de relevo: una persona capacitada cuida a tu familiar mientras tú descansas, trabajas o vas al médico.', c: '#aa95d1', e: 'Entrar para pedir relevo' },
-    relevo: { k: 'Quiero dar relevo', t: 'Registra tus días, horario y zona. Te asignamos visitas con contrato, seguro de riesgos de trabajo y pago por visita.', c: '#7dd1c1', e: 'Entrar para dar relevo' },
-    programa: { k: 'Trabajo en el programa', t: 'Revisa solicitudes, reparte la bolsa de horas, asigna relevos y da seguimiento a cada visita.', c: '#e5677f', e: 'Entrar al programa' },
-  };
+  /* 24 nov 2026: bienvenida como red. 25 nov 2026: sin ficha ni botón «Entrar»; un clic enciende el nodo
+   * y su línea, y el doble clic (o doble toque) entra con ese rol. */
+  const ROLES_INTRO = { cuidadora: '#aa95d1', relevo: '#7dd1c1', programa: '#e5677f' };
   function elegirRol(rol) {
-    const R = ROLES_INTRO[rol], el = $('#intro');
+    const el = $('#intro');
     el.dataset.rol = rol || '';
     $$('#intro .ie-nodo').forEach((n) => { const on = n.dataset.pick === rol; n.classList.toggle('on', on); n.setAttribute('aria-pressed', on); });
     $$('#intro .ie-l').forEach((l) => { l.classList.toggle('on', l.dataset.l === rol); });
-    $('#ie-kick').textContent = R ? R.k : 'Elige un nodo';
-    $('#ie-txt').textContent = R ? R.t : 'Cada persona tiene su lugar en la red: quien cuida, quien da relevo y quien coordina.';
-    const b = $('#intro-entrar'); b.disabled = !R; if (R) { b.dataset.intro = rol; b.textContent = R.e; } else { delete b.dataset.intro; b.textContent = 'Entrar'; }
-    el.style.setProperty('--rolc', R ? R.c : 'rgba(255,255,255,.35)');
+    el.style.setProperty('--rolc', ROLES_INTRO[rol] || 'rgba(255,255,255,.35)');
   }
-  $$('#intro .ie-nodo').forEach((n) => n.addEventListener('click', (e) => { e.stopPropagation(); elegirRol(n.dataset.pick); }));
-  $('#intro').addEventListener('click', (e) => {
-    const b = e.target.closest('button[data-intro]'); if (!b) return;
+  function entrarRol(rol) {
     try { localStorage.setItem(INTRO_K, '1'); } catch (err) { /* sin almacenamiento */ }
-    cambiarRol(b.dataset.intro);
+    cambiarRol(rol);
     const el = $('#intro'); el.classList.add('fuera');
     setTimeout(() => { el.hidden = true; }, 350);
-  });
+  }
+  let toquePrevio = { rol: null, t: 0 };
+  $$('#intro .ie-nodo').forEach((n) => n.addEventListener('click', (e) => {
+    const rol = n.dataset.pick;
+    // Se mide el tiempo entre clics porque no todos los celulares emiten «dblclick».
+    // Con teclado (detail 0), Enter sobre el nodo ya encendido entra.
+    const doble = e.detail === 0
+      ? $('#intro').dataset.rol === rol
+      : toquePrevio.rol === rol && (e.detail === 2 || e.timeStamp - toquePrevio.t < 500);
+    toquePrevio = { rol, t: e.timeStamp };
+    elegirRol(rol);
+    if (doble) entrarRol(rol);
+  }));
   $('#cfg-intro').addEventListener('click', abrirIntro);
 
   /* ================= Render general ================= */
