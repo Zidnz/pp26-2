@@ -105,9 +105,10 @@
       '<div class="chips gp-chips">'+prec(g.precision)+'<span class="chip ev" title="La definición del grupo es del equipo y no tiene doble revisión">evidencia probable</span><span class="chip geo" title="La encuesta no permite bajar a estado ni alcaldía">solo nacional</span></div></div>';
   }
   (function(){
-    if(!$('#ch-sexo'))return; /* 11 nov 2026: la gráfica se retiró (archivo sin productor ni año) */
+    if(!$('#ch-sexo'))return; /* 11 nov 2026 se retiró (archivo sin productor ni año); 26 nov 2026 se restaura a pedido de Omar, con el chip «origen sin documentar» */
     var rows=D.brecha_sexo.filter(function(r){return r.h!=null&&r.m!=null}),r1829=D.brecha_sexo.filter(function(r){return r.edad==='18-29'})[0];
-    $('#sexoFind').innerHTML='Entre los 18 y 29 años, las mujeres cuidan <b>'+fmt(r1829.razon,2)+' veces</b> las horas de los hombres. La brecha se cierra con la edad.';
+    /* 26 nov 2026: el texto describe la forma, no cita niveles (la advertencia de la ficha lo pide) */
+    $('#sexoFind').innerHTML='La brecha se abre a partir de los 18 años y se va cerrando con la edad. <b>Sirve para ver la forma, no para citar cifras</b>: el archivo no dice quién lo produjo ni de qué año es.';
     var mxs=Math.ceil(Math.max.apply(null,rows.map(function(r){return Math.max(r.h,r.m)}))/10)*10,tk=[];for(var q=0;q<=mxs;q+=10)tk.push(q);
     $('#ch-sexo').innerHTML=lineas({W:560,H:260,pr:90,pb:56,max:mxs,ticks:tk,aria:'Horas de cuidado por sexo y edad',cats:rows.map(function(r){return r.edad}),
       series:[{nombre:'Mujeres',col:'#c0435a',pts:rows.map(function(r){return {y:r.m}})},{nombre:'Hombres',col:'#3f4760',pts:rows.map(function(r){return {y:r.h}})}]});

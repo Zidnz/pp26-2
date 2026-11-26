@@ -8,8 +8,7 @@
   var DM=D.dimension_cdmx;
   var NC=D.relevo_enigh.necesidad_cdmx_det;
   $('#dimTiles').innerHTML=OBS.tile({k:'Hogares de la CDMX con persona de 60+ o con discapacidad',v:'≈ '+ent(NC.total),fs:30,color:'var(--teal)',borde:'var(--teal)',est:true,
-      det:'<div class="lbl"><b>'+fmt(NC.pct)+'%</b> de los hogares de la CDMX (IC 90% '+fmt(NC.li90)+'–'+fmt(NC.ls90)+')</div><div class="chips"><span class="chip ev">confirmado</span><span class="chip">medición directa</span></div>',fuente:'ENIGH 2022'})
-    +'<div class="note" style="margin:0;align-self:stretch"><span>ⓘ</span><span><b>Es la única cifra de escala que se mide en la CDMX.</b> Cuántos de esos hogares contratan cuidado o trabajo doméstico no se sabe para la ciudad: la ENASIC es nacional y aplicar sus tasas aquí sería suponer que la CDMX se comporta como el promedio del país. Las tres tarjetas que lo hacían se retiraron el 11 nov 2026.</span></div>';
+      det:'<div class="lbl"><b>'+fmt(NC.pct)+'%</b> de los hogares de la CDMX (IC 90% '+fmt(NC.li90)+'–'+fmt(NC.ls90)+')</div><div class="chips"><span class="chip ev">confirmado</span><span class="chip">medición directa</span></div>',fuente:'ENIGH 2022'});
   var T=D.territorio.alcaldias,TT=D.territorio.totales,key='idx_asilos',sel='Iztapalapa';
   var IDX=[[0.5,'#c0435a','< 0.5'],[0.9,'#e59aa8','0.5–0.9'],[1.1001,'#d9d3e6','0.9–1.1'],[1.75,'#9fd9cc','1.1–1.75'],[1e9,'#23806f','> 1.75']];
   var SEQ=['#efeaf7','#d3c8e8','#b09fd3','#8a76b8','#5d4d8f'];

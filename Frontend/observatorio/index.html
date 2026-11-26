@@ -11,11 +11,11 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Manrope:wght@500;600;700;800&display=swap">
 <link rel="stylesheet" href="css/base.css?v=20261111b">
-<link rel="stylesheet" href="css/layout.css?v=20261111b">
+<link rel="stylesheet" href="css/layout.css?v=20261126a">
 <link rel="stylesheet" href="css/componentes.css?v=20261111b">
 <link rel="stylesheet" href="css/graficas.css?v=20261111b">
 <link rel="stylesheet" href="css/nodo.css?v=20261111b">
-<link rel="stylesheet" href="css/vistas.css?v=20261111c">
+<link rel="stylesheet" href="css/vistas.css?v=20261126a">
 </head>
 <body>
 
@@ -139,7 +139,7 @@
       <details class="src"><summary>Fuente y precisión</summary><dl id="src-horas"></dl></details>
     </div>
   </div>
-  <div style="margin-top:18px">
+  <div class="grid c12" style="margin-top:18px">
     <div class="card">
       <h3>¿Quiénes forman el grupo del problema?</h3>
       <p class="find" id="perfFind"></p>
@@ -147,6 +147,13 @@
       <div class="chart" id="ch-perfil" data-chart></div>
       <div class="legend"><span><i style="background:#c0435a"></i>Grupo del problema</span><span><i style="background:#b8b3c9;height:6px"></i>Todas las cuidadoras</span><span>★ difiere del resto</span></div>
       <details class="src"><summary>Fuente y precisión</summary><dl id="src-perfil"></dl></details>
+    </div>
+    <div class="card">
+      <h3>Horas semanales de cuidado por sexo y edad</h3>
+      <p class="find" id="sexoFind"></p>
+      <div class="chips"><span class="chip p-noest">origen sin documentar</span></div>
+      <div class="chart" id="ch-sexo" data-chart></div>
+      <details class="src"><summary>Fuente y precisión</summary><dl><dt>Archivo</dt><dd>Analysis/resultados/08_brecha_cuidado_sexo.csv (script 08)</dd><dt>Advertencia</dt><dd>Productor y año del archivo sin documentar: sirve para ver la forma de la brecha, no para citar niveles.</dd></dl></details>
     </div>
   </div>
 </section>
@@ -263,6 +270,22 @@
 
   <!-- Decisión 1 -->
   <div id="prD1">
+  <div class="card sd" id="cSede" style="margin-top:18px">
+    <h3>¿Por qué Azcapotzalco?</h3>
+    <p class="sd-dec" id="sdDec"></p>
+    <p class="sd-lede" id="sdLede"></p>
+    <ol class="sd-pasos" id="sdPasos"></ol>
+    <div class="sd-mx-h"><h4>Nivel de cada alcaldía en las 9 formas de medir</h4><button type="button" class="sd-todas" id="sdTodas" aria-pressed="false">Ver las 16 alcaldías</button></div>
+    <div class="scroll-x"><div id="sdMatriz"></div></div>
+    <p class="sd-ley" id="sdLey"></p>
+    <h4 class="sd-h4">Las variables de la decisión</h4>
+    <div class="scroll-x"><table class="sd-tab" id="sdTab"></table></div>
+    <div class="sd-pie">
+      <div><h4>Criterio institucional</h4><p id="sdInst"></p></div>
+      <div><h4>Qué no permite afirmar</h4><ul id="sdLim"></ul></div>
+    </div>
+    <details class="src"><summary>Fuente</summary><dl id="src-sede"></dl></details>
+  </div>
   <div class="card fz-card" id="cPerfil" style="margin-top:18px">
     <div class="kicker">Decisión 1 · piloto · tipos de zona · CDMX</div>
     <h3>¿Cómo se ven los 4 tipos de zona en las 9 variables y en la distancia a la oferta?</h3>
@@ -338,7 +361,7 @@
 <section class="view" id="v-territorio" role="tabpanel">
   <div class="vhead"><div><div class="kicker">Territorio · CDMX · exploratorio</div><h2>Oferta, dependencia y vulnerabilidad por alcaldía</h2></div>
     <p>Fuentes distintas a la ENASIC. Ninguna capa mide cobertura; rezago y derechohabiencia son contexto, no necesidad.</p></div>
-  <div class="grid c2" id="dimTiles"></div>
+  <div class="grid" id="dimTiles"></div>
   <div class="card" style="margin-top:18px">
     <h3 id="tTitle"></h3>
     <div class="ctrls">
@@ -373,7 +396,7 @@
     <h3>Cuatro tipos de zona para decidir dónde probar el relevo</h3>
     <p class="find" id="tipoFind"></p>
     <div class="ctrls">
-      <div class="seg" id="segTipo"><button data-k="tipo" aria-pressed="true">Tipo de zona</button><button data-k="brecha" aria-pressed="false">Brecha de oferta</button><button data-k="sin_int" aria-pressed="false">Sin internet</button><button data-k="p60" aria-pressed="false">Personas de 60+</button></div>
+      <div class="seg" id="segTipo"><button data-k="tipo" aria-pressed="true">Tipo de zona</button><button data-k="brecha" aria-pressed="false">Brecha de oferta</button><button data-k="sin_int" aria-pressed="false">Sin internet</button><button data-k="p60" aria-pressed="false">Personas de 60+</button><button data-k="frontera" aria-pressed="false">Frontera entre tipos</button></div>
     </div>
     <p class="find" id="tipoDef"></p>
     <div class="grid c21" style="margin-top:12px;align-items:start">
@@ -382,7 +405,6 @@
     </div>
     <details class="src"><summary>Fuente, universo y lectura</summary><dl id="src-tipo"></dl></details>
   </div>
-  <div class="note" style="margin-top:18px;background:var(--card);border-color:var(--hair);color:var(--ink-soft)"><span>→</span><span>Cuántas personas de 60+, viviendas sin internet y distancia a la oferta tiene cada tipo de zona, y las brechas por alcaldía, están en <button type="button" class="fr-go" data-goto="focalizacion" style="margin:0;display:inline">¿A quién primero?</button> (decisiones 1 y 3). Aquí se quitaron para no repetirlas.</span></div>
   <div class="grid c3" style="margin-top:18px;align-items:start" hidden>
     <div class="card"><h3>¿Dónde viven las personas de 60+?</h3><p class="find" id="t60Find"></p><div class="chart" id="ch-t60" data-chart></div></div>
     <div class="card"><h3>¿La app llega a todas las viviendas?</h3><p class="find" id="tIntFind"></p><div class="chart" id="ch-tint" data-chart></div></div>
@@ -394,19 +416,24 @@
     <div class="chart" id="ch-tbrecha" data-chart></div>
     <details class="src"><summary>Definición y límites</summary><dl id="src-tbrecha"></dl></details>
   </div>
-  <div class="card" style="margin-top:18px">
-    <div class="kicker">Antes de usarla</div>
+  <div class="card fm" id="tFirme" style="margin-top:18px">
     <h3>¿Qué tan firme es la clasificación en 4 tipos de zona?</h3>
-    <p class="find" id="tConfFind"></p>
-    <details class="acc" style="margin-top:12px"><summary>Para revisar el método · separación y estabilidad de los grupos</summary><div class="in">
+    <p class="fm-lede" id="fmLede"></p>
+    <p class="fm-sub" id="fmSub"></p>
+    <div class="fm-pruebas" id="fmPruebas" role="group" aria-label="Elegir una prueba para resaltarla en la regla"></div>
+    <div class="fm-regla" id="fmRegla" aria-hidden="true"></div>
+    <ul class="fm-lista" id="fmLista"></ul>
+    <p class="fm-pie" id="fmPie"></p>
+    <div class="fm-usos" id="fmUsos"></div>
+    <details class="acc" style="margin-top:20px"><summary>Para revisar el método: separación, estabilidad y alternativas simples</summary><div class="in">
       <div class="grid c2" style="margin-top:12px;align-items:start">
-      <div class="chart" id="ch-tsil" data-chart></div>
-      <div class="chart" id="ch-tari" data-chart></div>
-    </div>
+        <div class="chart" id="ch-tsil" data-chart></div>
+        <div class="chart" id="ch-tari" data-chart></div>
+      </div>
+      <div class="scroll-x" style="margin-top:14px"><table id="tcomp"><thead><tr><th>Partición</th><th class="n">R² (9 variables)</th><th class="n">Estabilidad (ARI)</th><th class="n">V de Cramér con rezago CONEVAL</th><th class="n">η² limitación</th><th class="n">η² distancia a la oferta</th><th class="n">Vecinos del mismo grupo</th></tr></thead><tbody></tbody></table></div>
+      <p class="muted" style="font-size:12px;margin-top:8px">El R² favorece de origen a k-means, que optimiza esa medida. La coincidencia con el rezago del CONEVAL es en parte circular. La limitación y la distancia no entraron al modelo.</p>
+      <div class="scroll-x" style="margin-top:14px"><table id="trob"><thead><tr><th>Variante (cambia una decisión)</th><th class="n">Coincidencia con el modelo (ARI)</th></tr></thead><tbody></tbody></table></div>
     </div></details>
-    <details class="acc"><summary>Comparación contra alternativas simples (mismo número de grupos)</summary><div class="in scroll-x"><table id="tcomp"><thead><tr><th>Partición</th><th class="n">R² (9 variables)</th><th class="n">Estabilidad (ARI)</th><th class="n">V de Cramér con rezago CONEVAL</th><th class="n">η² limitación</th><th class="n">η² distancia a la oferta</th><th class="n">Vecinos del mismo grupo</th></tr></thead><tbody></tbody></table>
-      <p class="muted" style="font-size:12px;margin-top:8px">El R² favorece de origen a k-means, que optimiza esa medida. La coincidencia con el rezago del CONEVAL es en parte circular. La limitación y la distancia no entraron al modelo.</p></div></details>
-    <details class="acc" open><summary>Cuándo no debe usarse esta clasificación</summary><div class="in"><div class="scroll-x"><table id="trob"><thead><tr><th>Variante (cambia una decisión)</th><th class="n">Coincidencia con el modelo (ARI)</th></tr></thead><tbody></tbody></table></div><ul class="list" style="margin-top:12px" id="limTipo"></ul></div></details>
   </div>
 </section>
 
@@ -458,7 +485,25 @@
 </section>
 </main>
 
-<footer><div class="wrap"><span>Observatorio del Cuidado · Proyecto integrador 7.º semestre LCDN · UNRC · 2026-2</span></div></footer>
+<!-- 26 nov 2026: pie con secciones, datos y enlaces del proyecto. Sin contacto ni redes: el proyecto no los tiene (decisión de Omar). -->
+<footer class="pie"><div class="wrap"><div class="pie-in">
+  <div class="pie-marca">
+    <img src="ilustraciones/logo_marca_plano.png" width="44" height="44" alt="" decoding="async">
+    <b>Observatorio del Cuidado</b>
+    <p>Datos públicos para decidir a quién ofrecer primero el relevo y dónde empezar.</p>
+    <p class="pie-eq">Equipo 3, Licenciatura en Ciencia de Datos para el Negocio, Universidad Nacional Rosario Castellanos. Proyecto integrador, 2026-2.</p>
+  </div>
+  <nav class="pie-col" aria-label="Secciones del Observatorio"><h2>Secciones</h2><ul id="pieSecc"></ul></nav>
+  <div class="pie-col"><h2>Datos</h2><ul>
+    <li>ENASIC 2022 (INEGI)</li><li>Censo de Población y Vivienda 2020</li><li>DENUE, mayo de 2026</li><li>ENIGH 2022</li>
+    <li><button type="button" data-goto="metodo">Cómo se calcula cada cifra</button></li></ul></div>
+  <div class="pie-col"><h2>Proyecto</h2><ul>
+    <li><a href="../index.html" target="_blank" rel="noopener">RedCare, la app del programa</a></li>
+    <li><a href="https://github.com/Zidnz/pp26-2" target="_blank" rel="noopener">Código y datos en GitHub</a></li>
+    <li><a href="https://zidnz.github.io/pp26-2/Frontend/observatorio/#inicio" target="_blank" rel="noopener">Versión publicada</a></li>
+    <li><a href="https://github.com/Zidnz/pp26-2/blob/main/Documentos/Aviso_de_Privacidad_RedCare_v3.pdf" target="_blank" rel="noopener">Aviso de privacidad de RedCare</a></li></ul></div>
+  <div class="pie-base"><p>Cifras calculadas por el equipo con microdatos públicos; no son estadística oficial. El sitio no publica datos personales.</p><p id="pieFecha"></p></div>
+</div></div></footer>
 </div><!-- .content -->
 </div><!-- .shell -->
 
@@ -476,15 +521,15 @@
 <script src="js/graficas/ilustraciones.js?v=20261111b"></script>
 <script src="js/vistas/inicio.js?v=20261111b"></script>
 <script src="js/vistas/inicio-seleccion.js?v=20261111c"></script>
-<script src="js/vistas/necesidad.js?v=20261111b"></script>
+<script src="js/vistas/necesidad.js?v=20261126a"></script>
 <script src="js/vistas/barreras.js?v=20261111b"></script>
 <script src="js/vistas/segmentacion.js?v=20261111b"></script>
 <script src="js/vistas/relevo.js?v=20261111b"></script>
 <script src="js/vistas/focalizacion-v2.js?v=20261111b"></script>
-<script src="js/vistas/focalizacion-prioridad.js?v=20261111b"></script>
-<script src="js/vistas/territorio.js?v=20261111b"></script>
+<script src="js/vistas/focalizacion-prioridad.js?v=20261126a"></script>
+<script src="js/vistas/territorio.js?v=20261126a"></script>
 <script src="js/vistas/territorio-estados.js?v=20261111b"></script>
-<script src="js/vistas/territorio-tipologia.js?v=20261111b"></script>
+<script src="js/vistas/territorio-tipologia.js?v=20261126a"></script>
 <script src="js/vistas/indicadores-formulas.js?v=20261111b"></script>
 <script src="js/vistas/indicadores.js?v=20261111b"></script>
 <script src="js/vistas/metodo.js?v=20261111b"></script>
@@ -492,6 +537,6 @@
 <script src="js/vistas/inicio-contadores.js?v=20261111b"></script>
 <script src="js/app/coachmark.js?v=20261111b"></script>
 <script src="js/app/plegables.js?v=20261111b"></script>
-<script src="js/app/pestanas.js?v=20261111b"></script>
+<script src="js/app/pestanas.js?v=20261126a"></script>
 </body>
 </html>

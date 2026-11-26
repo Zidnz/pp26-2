@@ -1,6 +1,6 @@
 /* Observatorio del Cuidado · js/vistas/territorio-tipologia.js
    Pestaña «¿Dónde?», tercera parte: tipología de AGEB urbanas (segundo modelo, notebook D, sección 18).
-   Mapa de AGEB con cuatro capas (tipo, brecha de oferta, sin internet, personas de 60+), perfil del tipo elegido,
+   Mapa de AGEB con cinco capas (tipo, brecha de oferta, sin internet, personas de 60+, frontera entre tipos), perfil del tipo elegido,
    tres gráficas para la decisión del piloto, brechas por alcaldía y validación del modelo. Todo sale de D.tipologia
    y GEO_AGEB (build_datos.py); ninguna cifra está escrita a mano.
    Importa de OBS: $, $$, FAINT, MONO, dl, ent, esc, fmt, seg, svg
@@ -29,6 +29,8 @@
       col:function(a){return a.brecha?TC[a.tipo]:GRIS}},
     sin_int:{t:'Viviendas sin internet',d:'% de las viviendas de la AGEB sin internet. La app de dos perfiles supone conexión en casa.',
       col:function(a){return SEQ[claseQ(a.pct_sin_int,Q_INT)]},q:Q_INT,u:'%'},
+    frontera:{t:'Frontera entre tipos',d:'AGEB que quedan casi a la misma distancia de dos tipos (en color): ahí la clasificación es dudosa y una sede se revisa contra los dos tipos. En gris, las AGEB con un tipo claro.',
+      col:function(a){return a.frontera?TC[a.tipo]:GRIS}},
     p60:{t:'Personas de 60 años y más',d:'Número de personas de 60+ en la AGEB (conteo, no porcentaje): el piloto atiende personas.',
       col:function(a){return SEQ[claseQ(a.n_60,Q_60)]},q:Q_60,u:''}
   };
@@ -52,7 +54,9 @@
     $('#mapTipo g.of').style.display=capa==='brecha'?'':'none';
     $('#tipoDef').textContent=c.d;
     var lg='';
-    if(capa==='tipo'||capa==='brecha'){lg=TP.tipos.map(function(t){return '<span><i style="background:'+TC[t.tipo]+'"></i>'+esc(nom(t.tipo))+(capa==='brecha'?': '+DEC[t.tipo].ageb_brecha+' AGEB':'')+'</span>'}).join('');
+    if(capa==='frontera'){var nF={};AG.forEach(function(a){if(a.frontera)nF[a.tipo]=(nF[a.tipo]||0)+1});
+      lg=TP.tipos.map(function(t){return '<span><i style="background:'+TC[t.tipo]+'"></i>'+esc(nom(t.tipo))+': '+ent(nF[t.tipo]||0)+' AGEB</span>'}).join('')+'<span><i style="background:'+GRIS+'"></i>Tipo claro</span>'}
+    else if(capa==='tipo'||capa==='brecha'){lg=TP.tipos.map(function(t){return '<span><i style="background:'+TC[t.tipo]+'"></i>'+esc(nom(t.tipo))+(capa==='brecha'?': '+DEC[t.tipo].ageb_brecha+' AGEB':'')+'</span>'}).join('');
       if(capa==='brecha')lg+='<span><i style="background:'+INK+';border-radius:50%;width:8px;height:8px"></i>Residencia o centro de día (DENUE, '+GEO_AGEB.oferta.length+')</span><span><i style="background:'+GRIS+'"></i>Sin brecha</span>'}
     else{var vs=AG.map(function(x){return capa==='sin_int'?x.pct_sin_int:x.n_60}).sort(function(a,b){return a-b}),lim=[vs[0]].concat(c.q).concat([vs[vs.length-1]]);
       for(var i=0;i<5;i++)lg+='<span><i style="background:'+SEQ[i]+(i?'':';box-shadow:inset 0 0 0 1px #b09fd3')+'"></i>'+(capa==='sin_int'?fmt(lim[i])+'–'+fmt(lim[i+1])+'%':ent(lim[i])+'–'+ent(lim[i+1]))+'</span>';
@@ -169,16 +173,71 @@
     {min:.1,max:.35,ticks:[.1,.15,.2,.25,.3,.35],aria:'Silueta por número de tipos frente a una referencia sin grupos'});
   $('#ch-tari').innerHTML='<h4 class="mini">Estabilidad en 50 submuestras (ARI)</h4>'+lineaK([{c:'ari_promedio',n:'Promedio',col:'#5d4d8f'},{c:'ari_min',n:'Mínimo',col:'#c0435a'}],
     {min:.4,max:1,banda:.9,ticks:[.4,.5,.6,.7,.8,.9,1],aria:'Estabilidad por número de tipos'});
-  var rW=TP.robustez.filter(function(r){return /Ward/.test(r.variante)})[0],rG=TP.robustez.filter(function(r){return /gaussiana/.test(r.variante)})[0];
-  $('#tConfFind').innerHTML=(k4.ari_promedio>=0.9?'Con el mismo método, la clasificación se repite al usar otras submuestras de zonas. ':'La clasificación cambia con las submuestras de zonas. ')+(rW&&rG?'<b>Pero depende del método:</b> con otro algoritmo la coincidencia baja a '+fmt(rW.ari,2)+' y '+fmt(rG.ari,2)+' (1 sería idéntica). ':'')+'La ciudad cambia de forma gradual, no a saltos: <b>los tipos son tramos útiles para decidir dónde probar, no grupos con fronteras claras</b>. Al quitar una alcaldía y volver a clasificar sus zonas, '+fmt(DF.coincidencia_ponderada,0)+' de cada 100 quedan en el mismo tipo.';
+  /* 26 nov 2026 · «¿Qué tan firme es…?» (pedido de Omar): tres pruebas que, al elegirse, se resaltan sobre una sola regla de 0 a 1
+     con las diez coincidencias (ARI) anotadas; debajo, los límites como usos. Umbral de «clasifica igual»: ARI ≥ 0.8, convención del
+     equipo (no es un estándar). Todas las cifras salen de D.tipologia; ninguna está escrita a mano. */
+  var UMB=0.8,ALG=/otro algoritmo/i,OK='#23806f',MAL='#c0435a';
+  var rDat=TP.robustez.filter(function(r){return !ALG.test(r.variante)}),rAlg=TP.robustez.filter(function(r){return ALG.test(r.variante)});
+  var ext=function(a,f){return f.apply(null,a.map(function(r){return r.ari}))};
+  var firmeMuestra=k4.ari_promedio>=UMB,firmeAlc=DF.coincidencia_ponderada/100>=UMB,firmeAlg=rAlg.length>0&&ext(rAlg,Math.min)>=UMB;
+  function corto(v){var m=v.match(/^(.*?)\s*\((.*)\)\s*$/);return m?m[1]:v}
+  function nomAlg(v){return /Ward/.test(v)?'Ward':/gaussiana/i.test(v)?'Mezcla gaussiana':corto(v)}
+  $('#fmLede').textContent=firmeMuestra&&firmeAlc&&!firmeAlg?'Firme ante los datos, frágil ante el método.':firmeMuestra&&firmeAlc?'Firme en las tres pruebas.':'La clasificación cambia con los datos.';
+  $('#fmSub').textContent=(firmeAlg?'':'Cambiar la muestra o la preparación de las variables casi no mueve la clasificación; cambiar el algoritmo sí. La ciudad cambia de forma gradual: los tipos son tramos útiles para decidir dónde probar, no grupos con fronteras claras.');
+
+  /* Marcas de la regla: g = prueba a la que pertenecen (0, 1, 2) o 'd' (otra preparación de las variables) */
+  var MK=[{g:0,v:k4.ari_promedio,t:'Otras submuestras',s:'promedio de 50'},{g:0,v:k4.ari_min,t:'La peor submuestra',s:''},
+    {g:1,v:DF.coincidencia_ponderada/100,t:'Sin una alcaldía',s:fmt(DF.coincidencia_ponderada,0)+' de cada 100 zonas'}]
+    .concat(rAlg.map(function(r){return {g:2,v:r.ari,t:nomAlg(r.variante),s:'otro algoritmo'}}))
+    .concat(rDat.map(function(r){return {g:'d',v:r.ari,t:corto(r.variante),s:''}}));
+  var PR=[
+    {t:'Otra muestra de zonas',q:'¿Se repite al clasificar 50 submuestras del 80% de las AGEB?',big:fmt(k4.ari_promedio,2),u:'coincidencia promedio',ok:firmeMuestra,v:[k4.ari_promedio],det:'La peor de las 50 coincide '+fmt(k4.ari_min,2)+'.'},
+    {t:'Sin una alcaldía',q:'Si se quita una alcaldía y se reclasifican sus zonas, ¿quedan en el mismo tipo?',big:fmt(DF.coincidencia_ponderada,0),u:'de cada 100 zonas, en el mismo tipo',ok:firmeAlc,v:[DF.coincidencia_ponderada/100],det:'La que más cambia es '+esc(DF.alcaldia_minima)+': '+fmt(DF.minima,0)+' de cada 100.'},
+    {t:'Otro algoritmo',q:'¿Ward o una mezcla gaussiana cortan la ciudad igual que k-means?',big:rAlg.map(function(r){return fmt(r.ari,2)}).join(' y '),u:'coincidencia con k-means',ok:firmeAlg,v:rAlg.map(function(r){return r.ari}),det:'Con 1 sería idéntica. Es lo esperable cuando no hay grupos naturales, sino un gradiente.'}
+  ];
+  $('#fmPruebas').innerHTML=PR.map(function(p,k){
+    return '<button type="button" class="fm-p'+(p.ok?'':' mal')+'" data-g="'+k+'" aria-pressed="false"><span class="fm-n">'+(k+1)+'</span>'+
+      '<b class="fm-ti">'+p.t+'</b><span class="fm-pq">'+p.q+'</span><span class="fm-pb">'+p.big+'</span><span class="fm-pu">'+p.u+'</span>'+
+      '<span class="fm-m"><span class="fm-mu" style="left:'+(UMB*100)+'%"></span>'+p.v.map(function(v,j){return '<span class="fm-mf'+(j?' b':'')+'" style="width:'+(v*100)+'%"></span><span class="fm-md" style="left:'+(v*100)+'%"></span>'}).join('')+'</span>'+
+      '<span class="fm-pv">'+(p.ok?'Se sostiene.':'No se sostiene: depende del método.')+'</span><span class="fm-pd">'+p.det+'</span></button>'}).join('');
+
+  /* Regla: marcas de las pruebas arriba (dos alturas si están cerca), variantes de preparación abajo, apiladas de menor a mayor */
+  (function(){
+    var X=function(v){return (100*v).toFixed(2)+'%'},h='<div class="fm-zona" style="left:'+X(UMB)+'"><span>'+fmt(UMB,1)+' o más: clasifica igual</span></div><div class="fm-eje"></div>';
+    [0,.2,.4,.6,1].forEach(function(t){h+='<span class="fm-tk" style="left:'+X(t)+'">'+fmt(t,1)+'</span>'});
+    var AX=150,arr=MK.filter(function(m){return m.g!=='d'}).sort(function(a,b){return a.v-b.v}),ult=[-9,-9,-9];
+    arr.forEach(function(m){var lv=0;while(lv<2&&m.v-ult[lv]<0.17)lv++;ult[lv]=m.v;
+      var y=lv*44,der=m.v>0.82;
+      h+='<div class="fm-mk g'+m.g+(m.v>=UMB?' ok':' mal')+'" data-g="'+m.g+'" style="left:'+X(m.v)+'"><i class="fm-st" style="top:'+(y+34)+'px;height:'+(AX-y-34)+'px"></i>'+
+        '<span class="fm-lb'+(der?' der':'')+'" style="top:'+y+'px"><b>'+esc(m.t)+'</b>'+(m.s?esc(m.s)+', ':'')+fmt(m.v,2)+'</span><i class="fm-pt"></i></div>'});
+    MK.filter(function(m){return m.g==='d'}).sort(function(a,b){return a.v-b.v}).forEach(function(m,i){var y=AX+48+i*21;
+      h+='<div class="fm-mk gd'+(m.v>=UMB?' ok':' mal')+'" data-g="d" style="left:'+X(m.v)+'"><i class="fm-st" style="top:'+(AX+8)+'px;height:'+(y-AX)+'px"></i>'+
+        '<span class="fm-lb ab der" style="top:'+(y-2)+'px">'+esc(m.t)+' <em>'+fmt(m.v,2)+'</em></span><i class="fm-pt"></i></div>'});
+    $('#fmRegla').innerHTML=h;
+    $('#fmRegla').style.height=(AX+60+21*rDat.length)+'px';
+    /* En pantallas angostas la regla se lee como lista */
+    $('#fmLista').innerHTML=MK.slice().sort(function(a,b){return b.v-a.v}).map(function(m){return '<li class="g'+m.g+(m.v>=UMB?' ok':' mal')+'" data-g="'+m.g+'"><span>'+esc(m.t)+'</span><span class="fm-lt"><i style="left:'+X(UMB)+'" class="u"></i><i style="left:'+X(m.v)+'" class="d"></i></span><b>'+fmt(m.v,2)+'</b></li>'}).join('');
+    $('#fmPie').textContent='Coincidencia con el modelo (índice de Rand ajustado): 1 = las mismas zonas en los mismos tipos; 0 = como al azar. Abajo de la línea, '+rDat.length+' formas de preparar las variables con la misma técnica.';
+  })();
+  function resalta(g){$('#tFirme').classList.toggle('fm-sel',g!=null);
+    $$('#tFirme [data-g]').forEach(function(e){if(e.classList.contains('fm-p'))e.setAttribute('aria-pressed',String(e.dataset.g===String(g)));else e.classList.toggle('on',e.dataset.g===String(g))})}
+  var gSel=null;
+  $$('#fmPruebas .fm-p').forEach(function(b){b.addEventListener('click',function(){gSel=gSel===b.dataset.g?null:b.dataset.g;resalta(gSel)})});
+
+  /* Usos: cada límite como decisión */
+  var U={si:['<b>Elegir el tipo de zona</b> donde probar el piloto. Los tipos se repiten con otras muestras y sin cada alcaldía.'],
+    re:['<b>Escoger la AGEB exacta</b> de una sede. '+ent(FR.n)+' AGEB ('+fmt(FR.pct)+'%, '+ent(FR.poblacion)+' habitantes) quedan casi a la misma distancia de dos tipos. <button type="button" class="fm-ir" data-capa="frontera">Ver la frontera en el mapa</button>',
+        '<b>Decir que la ciudad tiene 4 tipos.</b> El 4 es un corte útil, no una propiedad de la ciudad.'],
+    no:['<b>Hablar de una cuidadora concreta.</b> Es de zonas, no de personas (falacia ecológica), y no se cruza con el modelo de focalización: la ENASIC no tiene AGEB.',
+        '<b>Afirmar que un tipo necesita más cuidado.</b> No hay dato de cuidado por AGEB para probarlo; la coincidencia con el rezago del CONEVAL es en parte circular.',
+        '<b>Analizar discapacidad.</b> Casi no estructura los tipos (η² = '+fmt(mod.eta2_pct_limitacion,3)+').',
+        '<b>Reutilizarla con el conteo 2025 o el censo 2030.</b> Es del Censo de marzo de 2020: con datos nuevos se vuelve a ajustar.']};
+  var TU={si:'Sirve para',re:'Con reservas',no:'No sirve para'};
+  $('#fmUsos').innerHTML=['si','re','no'].map(function(k){return '<div class="fm-u '+k+'"><h4>'+TU[k]+'</h4><ul>'+U[k].map(function(t){return '<li>'+t+'</li>'}).join('')+'</ul></div>'}).join('');
+  $$('#fmUsos .fm-ir').forEach(function(b){b.addEventListener('click',function(){
+    var bt=$('#segTipo button[data-k="'+b.dataset.capa+'"]');if(bt)bt.click();
+    var m=$('#mapTipo');if(m)m.scrollIntoView({behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'center'})})});
+
   $('#tcomp tbody').innerHTML=CO.map(function(r,i){return '<tr'+(i===CO.length-1?' style="font-weight:650"':'')+'><td>'+esc(r.particion)+'</td><td class="n">'+fmt(r.r2_9_variables,2)+'</td><td class="n">'+fmt(r.ari_promedio,2)+'</td><td class="n">'+fmt(r.cramer_v_rezago_coneval,2)+'</td><td class="n">'+fmt(r.eta2_pct_limitacion,3)+'</td><td class="n">'+fmt(r.eta2_log_distancia_oferta,3)+'</td><td class="n">'+fmt(100*r.vecinos_mismo_grupo,1)+'%</td></tr>'}).join('');
   $('#trob tbody').innerHTML=TP.robustez.map(function(r){return '<tr><td>'+esc(r.variante)+'</td><td class="n">'+fmt(r.ari,2)+'</td></tr>'}).join('');
-  $('#limTipo').innerHTML=[
-    '<b>Es de zonas, no de personas.</b> No dice nada de una cuidadora concreta (falacia ecológica) ni se cruza con el modelo de focalización: la ENASIC no tiene AGEB.',
-    '<b>Censo de marzo de 2020.</b> Con el conteo de 2025 o el censo de 2030 se vuelve a ajustar; no se reutilizan los centros.',
-    '<b>Frontera.</b> '+ent(FR.n)+' AGEB ('+fmt(FR.pct)+'%, '+ent(FR.poblacion)+' habitantes) quedan casi a la misma distancia de dos tipos. Una sede ahí se revisa contra los dos.',
-    '<b>Otro algoritmo corta distinto.</b> Ward y la mezcla gaussiana coinciden poco con k-means (tabla de robustez): es lo esperable en un gradiente.',
-    '<b>Sin validación de resultado.</b> No hay un dato de cuidado por AGEB contra el cual probarla; la coincidencia con el rezago del CONEVAL es en parte circular (comparten indicadores del Censo).',
-    '<b>La discapacidad casi no la estructura.</b> No sustituye un análisis de discapacidad.'
-  ].map(function(t){return '<li>'+t+'</li>'}).join('');
 })();

@@ -2701,3 +2701,66 @@ Sin revisión de otra persona. Revisor: _[pendiente]_.
 **Pruebas.** Node (asignación; privacidad y contratos), flujo en Chrome 34/34, prueba de domicilio, contactos, pago y empleo 13/13, sin errores de JavaScript; PostgreSQL: 12 pruebas de restricciones con el resultado esperado.
 
 **Pendiente.** El plazo de 12 meses para suprimir los datos de un caso cerrado está en el aviso como regla del piloto, pero la base todavía no lo ejecuta. La paridad entre `prioridad.js` y `Backend/prioridad.py` sigue desactualizada.
+
+## 26 nov 2026 — Observatorio: notas de «¿Dónde?», gráfica de horas por sexo y firmeza de la tipología (pedido de Omar)
+
+**Qué se hizo** (`Frontend/observatorio/`, en los archivos vigentes, sin versiones nuevas).
+1. **Notas quitadas en «¿Dónde?».** Se quitó la nota «Es la única cifra de escala que se mide en la CDMX…» (`js/vistas/territorio.js`). La tarjeta de hogares (ENIGH) queda sola y `#dimTiles` deja de ser `.c2`. También se quitó la nota con el enlace «Cuántas personas de 60+… están en ¿A quién primero?» (`index.html`).
+2. **Se restaura «Horas semanales de cuidado por sexo y edad»** en «¿Quién lo carga?» (`index.html`, fila `.c12` junto al perfil). Lleva el chip «origen sin documentar» y la advertencia en la ficha. Así se revierte el punto 3 de la entrada del 11 nov. El texto del hallazgo ya no cita «2.08 veces»: ahora describe la forma de la brecha. La ficha pide no citar niveles de un archivo sin productor ni año (`js/vistas/necesidad.js`).
+3. **«¿Qué tan firme es la clasificación en 4 tipos de zona?» rediseñada** (`index.html`, `js/vistas/territorio-tipologia.js`, `css/vistas.css`, bloque `.tf`):
+   - **Veredicto generado por el código** a partir de los datos («Firme ante los datos, frágil ante el método»).
+   - **Tres pruebas con medidor:** submuestras (0.97), sin una alcaldía (98 de 100) y otro algoritmo (0.53 y 0.34).
+   - **Las ocho variantes en dos carriles:** «cambia los datos» (0.70–0.96) y «cambia el algoritmo» (0.34–0.53).
+   - **Siete límites escritos como decisiones** (sí, con cuidado, no).
+   - **Entrada animada,** que se desactiva si el sistema pide reducir el movimiento.
+
+   La silueta, la estabilidad por k y las tablas de comparación y de variantes pasan a «Para revisar el método».
+4. **Nueva capa del mapa de tipos: «Frontera entre tipos».** Usa el campo `frontera` que ya existía por AGEB y muestra 300 AGEB: tipo 1, 72; tipo 2, 124; tipo 3, 55; tipo 4, 49. El uso «Escoger la AGEB exacta de una sede» tiene un botón que activa esa capa.
+
+**Decisión nueva sin respaldo externo.** El umbral de 0.8 de ARI para decir «clasifica igual» es una convención del equipo, no un estándar, y el código lo declara así. Con 0.7 cambiaría el color de una sola variante («sin el bloque de cuidadoras»).
+
+**Contradicción que se acepta.** La gráfica de horas vuelve con evidencia desconocida. Sirve para ver la forma, no como hallazgo del proyecto.
+
+**Verificación.** Chrome sin interfaz (Playwright) a 1500 y 420 px, sin errores de JS. Se probó el botón que lleva a la capa de frontera. El JSON no cambió, así que `verificar_trazabilidad.py` no aplica. Sin doble revisión. No se hizo commit.
+
+## 26 nov 2026 (mediodía) — Firmeza de la tipología rehecha, tarjeta «¿Por qué Azcapotzalco?» y pie de página (pedido de Omar)
+
+**Por qué.** A Omar no le gustó el bloque `.tf` de la mañana: barras de color a la izquierda y etiquetas con punto le parecieron diseño genérico. Se le mostraron tres propuestas (editorial, cuaderno técnico y narrativa por pasos) y eligió combinar la editorial, la de pasos y las tres cajas originales. También pidió mostrar con qué variables se eligió la sede del piloto, y un pie de página como el de su referencia, pero sin contacto.
+
+**Qué se hizo** (`Frontend/observatorio/`, en los archivos vigentes, sin versiones nuevas).
+1. **«¿Qué tan firme es la clasificación?»** (`index.html`, `territorio-tipologia.js`, `css/vistas.css` bloque `.fm`; se borró el bloque `.tf`):
+   - Una frase de veredicto calculada.
+   - Tres cajas de prueba sin barra lateral ni etiqueta con punto. Al elegir una, sus marcas se resaltan en la regla y las demás se atenúan.
+   - Una sola regla de 0 a 1 con las diez coincidencias anotadas. En pantallas angostas pasa a ser una lista.
+   - Tres columnas: «Sirve para», «Con reservas» y «No sirve para».
+   - Sin animación de entrada: solo responde al clic.
+2. **Tarjeta «¿Por qué Azcapotzalco?»**, primera de la decisión 1 en «¿A quién primero?» (`focalizacion-prioridad.js`, `css/vistas.css` bloque `.sd`):
+   - Los tres pasos de la regla del script 24.
+   - Una matriz de alcaldías por las 9 combinaciones (tres cortes por K = 4, 5 y 6), coloreada por nivel.
+   - La tabla de variables: Azcapotzalco, Iztapalapa (la alternativa) y la CDMX.
+   - El criterio institucional (programa «Mujeres Cuidadoras: Tú cuidas, Azcapo te cuida 2026», con enlace a una nota de prensa).
+   - Lo que no permite afirmar.
+
+   La regla se recalcula en la página. Se comprobó que da los mismos niveles que `24_prioridad_alcaldia.csv` en las 16 alcaldías; si dejara de coincidir, la tarjeta lo avisa y no dibuja la matriz.
+3. **Textos que contradecían la decisión del 21 nov.** La tarjeta del piloto decía «Tipo 2 · Propuesta del notebook, sin decidir». Ahora dice «Azcapotzalco · Decidida el 21 nov 2026; alternativa: Iztapalapa». La pastilla «Ninguna decisión está tomada por el equipo» pasa a «Decidida: la sede del piloto».
+4. **Pie de página** (`index.html`, `css/layout.css`, `js/app/pestanas.js`):
+   - Bloque oscuro con la marca, el propósito y el equipo.
+   - Secciones, generadas desde la barra de pestañas.
+   - Fuentes de datos.
+   - Enlaces a RedCare, al repositorio, a GitHub Pages y al aviso de privacidad.
+   - Una franja con la advertencia de que no es estadística oficial y la fecha de la corrida del ETL, leída de `datos.js`.
+
+   Sin contacto ni redes, por decisión de Omar.
+5. Se subió la versión en `?v=` de los archivos tocados, para que GitHub Pages no sirva la copia vieja.
+
+**Hallazgos al construir la tarjeta.**
+- El documento integral dice «43.9 % de sus personas de 60+ en las zonas de mayor brecha». Ese valor sale con el **tercil**; con el cuartil, que es el corte de referencia, es **32.2 %**. La tarjeta muestra los dos. Hay que corregir el documento.
+- Iztapalapa no queda en nivel doble en ninguna de las 9 combinaciones: es «solo volumen» en todas.
+- La mediana de distancia a la oferta en las AGEB de Azcapotzalco (1.53 km) es mayor que la de la CDMX (0.88 km).
+- Que el 60 % de la población de Azcapotzalco viva en zonas tipo 2 coincide con la decisión 1, pero no es evidencia independiente: sale del mismo Censo y de las mismas AGEB.
+
+**Decisiones sin respaldo externo.** El umbral de 0.8 de ARI para «clasifica igual» es una convención del equipo. La existencia del programa de la alcaldía se verificó solo con una nota de prensa, no con las reglas de operación.
+
+**Verificación.** Chrome sin interfaz (Playwright) a 1500 y 420 px, sin errores de JavaScript. Se probaron los botones de prueba, «Ver las 16 alcaldías», «Ver la frontera en el mapa» y los enlaces del pie. El JSON no cambió. Sin doble revisión.
+
+**Nota sobre la entrada anterior.** El bloque `.tf` que describe el punto 3 de la entrada de la mañana ya no existe: lo sustituye el bloque `.fm` descrito aquí. La capa «Frontera entre tipos» y la gráfica de horas por sexo y edad siguen igual.

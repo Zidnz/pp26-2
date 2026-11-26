@@ -35,18 +35,23 @@
   var n1=PA.filter(function(a){return a.nivel_modal===1}), n2v=PA.filter(function(a){return a.nivel_modal===2&&a.etiqueta_modal.indexOf('volumen')>0}), n2c=PA.filter(function(a){return a.nivel_modal===2&&a.etiqueta_modal.indexOf('concentración')>0});
   var n1est=n1.filter(function(a){return a.estable});
   var FZ_CHIPS=fz.chips(TIPOS);
+  /* Decisión del equipo (bitácora, 21 nov 2026). No es una cifra: es lo que se eligió. La tarjeta #cSede comprueba contra los datos que la
+     regla la sostiene y lo dice si deja de hacerlo. */
+  var SEDE={alcaldia:'Azcapotzalco',alternativa:'Iztapalapa',fecha:'21 nov 2026',
+    programa:'«Mujeres Cuidadoras: Tú cuidas, Azcapo te cuida 2026»',programa_url:'https://www.posta.com.mx/cdmx/como-recibir-hasta-3-mil-200-pesos-mensuales-con-este-programa/vl2215711'};
 
   /* ---------- Respuesta: tres tarjetas ---------- */
   var tiles=[
-    {k:'Piloto · tipo de zona con más personas de 60+',v:'Tipo '+top.tipo+' · '+esc(top.nombre),v2:'Propuesta del notebook, sin decidir',fs:18,
-      det:'<div class="lbl">Vive aquí el '+fmt(top.pct_de_las_60)+' % de las personas de 60+ de la CDMX; el '+fmt(DEC[top.tipo].pct_viv_sin_int)+' % de sus viviendas no tiene internet. El equipo no ha decidido el piloto.</div><div class="lbl" style="margin-top:6px"><b>Ojo:</b> ahí vive también el '+fmt(top.pct_pob_cdmx)+' % de la población total, así que es el tipo más grande, no el más envejecido. Por sí solo casi no distingue dónde hacer el piloto.</div>',fuente:'Censo 2020 por AGEB · CDMX · k-means, 4 tipos'},
+    /* 26 nov 2026: la sede se decidió el 21 nov (bitácora). Antes decía «Propuesta del notebook, sin decidir». */
+    {k:'Piloto · sede elegida',v:esc(SEDE.alcaldia),v2:'Decidida el '+SEDE.fecha+'; alternativa: '+esc(SEDE.alternativa),fs:20,
+      det:'<div class="lbl">Única alcaldía con nivel doble en las '+PRC+' formas de medir la brecha de oferta. El '+fmt(POR[SEDE.alcaldia].pct_tipo[top.tipo-1],0)+' % de su población vive en zonas tipo '+top.tipo+', el tipo con más personas de 60+.</div>',fuente:'Censo 2020 + DENUE 05/2026 · decisión del equipo'},
     {k:'Relevo · a quién se ofrece primero',v:'40 h o más por semana',v2:'Solo la regla, sin modelo',fs:20,est:true,
       det:'<div class="lbl">La regla elige al '+fmt(CUPO)+' % de las cuidadoras y encuentra al '+fmt(R.cobertura)+' % de quienes declaran daño en salud física, cansancio o sueño (IC 90 %: '+fmt(R.cob_li90,0)+' a '+fmt(R.cob_ls90,0)+').</div>',fuente:'ENASIC 2022 · nacional'},
     {k:'Zonas · alcaldías con nivel doble',v:esc(lista(n1.map(function(a){return a.alcaldia}))),v2:'Brecha alta en volumen y en concentración',fs:17,
       det:'<div class="lbl">'+n1est.length+' de '+n1.length+' conservan el nivel en las '+PRC+' combinaciones de corte. El nivel no es una prioridad ordenada.</div>',fuente:'Censo 2020 + DENUE 05/2026 · por AGEB, agregado a alcaldía'}
   ];
   $('#prTiles').innerHTML=tiles.map(function(t){return OBS.tile(t)}).join('');
-  $('#prFind').innerHTML=fz.pills([['Quién · ENASIC · nacional, personas'],['Dónde · Censo y DENUE · por AGEB'],['Las fuentes no se cruzan','amb'],['Ninguna decisión está tomada por el equipo']]);
+  $('#prFind').innerHTML=fz.pills([['Quién · ENASIC · nacional, personas'],['Dónde · Censo y DENUE · por AGEB'],['Las fuentes no se cruzan','amb'],['Decidida: la sede del piloto ('+esc(SEDE.alcaldia)+', '+SEDE.fecha+')']]);
 
   /* ================= DECISIÓN 1 · ¿Dónde hacer el piloto? ================= */
   /* 1a · Perfil de los 4 tipos en las 9 variables del k-means (mediana entre AGEB) frente a la mediana de la CDMX */
@@ -206,6 +211,82 @@
     $('#pr6Find').innerHTML='En las alcaldías de nivel doble, el tipo '+top.tipo+' reúne a '+esc(lista(dob))+' de su población.';
     $('#pr6Mas').innerHTML='<p>El tipo '+top.tipo+' reúne '+DEC[top.tipo].ageb_brecha+' de las '+TP.brecha_total.ageb+' AGEB con brecha. Las dos lecturas apuntan en la misma dirección, pero usan las mismas AGEB y el mismo Censo: <b>no son evidencia independiente</b>.</p>';
     $('#src-pr6').innerHTML=dl({Universo:'AGEB urbanas de la CDMX, agregadas a alcaldía · Censo 2020 y DENUE 05/2026',Método:'Nivel por regla de dos medidas (volumen y concentración) con '+PRC+' combinaciones de corte; composición: población total de la alcaldía por tipo de zona',Archivo:'Analysis/resultados/24_prioridad_*.csv'});
+  })();
+
+  /* ================= Decisión 1 · ¿Por qué Azcapotzalco? (26 nov 2026) =================
+     Reproduce en la página la regla del script 24 (nivel doble = entre las K primeras alcaldías en volumen y en concentración) para las
+     9 combinaciones de corte y K. Se comprobó que da los mismos niveles que 24_prioridad_alcaldia.csv para las 16 alcaldías; si dejara de
+     coincidir, la tarjeta lo avisa en lugar de mostrar la matriz. */
+  (function(){
+    if(!$('#cSede'))return;
+    var CORTES=TP.prioridad.cortes,KS=TP.prioridad.tamanos_cabeza,COL={tercil:'n_60_brecha_tercil',cuartil:'n_60_brecha',quintil:'n_60_brecha_quintil'};
+    var NOMC={tercil:'Tercil',cuartil:'Cuartil',quintil:'Quintil'};
+    var COMB=[];CORTES.forEach(function(c){KS.forEach(function(k){COMB.push({c:c,k:k})})});
+    function rango(lista,campo){return lista.slice().sort(function(a,b){return b[campo]-a[campo]})}
+    var NIV={};PA.forEach(function(a){NIV[a.alcaldia]=[]});
+    COMB.forEach(function(cb){
+      var X=PA.map(function(a){return {a:a.alcaldia,n:a[COL[cb.c]],p:a[COL[cb.c]]/a.pob_60}});
+      var rn=rango(X,'n'),rp=rango(X,'p'),topN=rn.slice(0,cb.k).map(function(x){return x.a}),topP=rp.slice(0,cb.k).map(function(x){return x.a});
+      X.forEach(function(x){var inN=topN.indexOf(x.a)>=0,inP=topP.indexOf(x.a)>=0;
+        NIV[x.a].push({l:inN&&inP?1:(inN?'v':inP?'c':(x.n>0?3:4)),n:x.n,p:x.p,rn:rn.map(function(r){return r.a}).indexOf(x.a)+1,rp:rp.map(function(r){return r.a}).indexOf(x.a)+1})})});
+    var cuadra=PA.every(function(a){return NIV[a.alcaldia].filter(function(z){return (z.l==='v'||z.l==='c'?2:z.l)===a.nivel_modal}).length===a.combinaciones_en_modal});
+    var S=PA.filter(function(a){return a.alcaldia===SEDE.alcaldia})[0],A=PA.filter(function(a){return a.alcaldia===SEDE.alternativa})[0];
+    var dobles9=PA.filter(function(a){return NIV[a.alcaldia].every(function(z){return z.l===1})});
+    var unica=dobles9.length===1&&dobles9[0].alcaldia===SEDE.alcaldia;
+
+    $('#sdDec').innerHTML='El equipo eligió <b>'+esc(SEDE.alcaldia)+'</b> como sede del piloto el '+SEDE.fecha+'. La alternativa es '+esc(SEDE.alternativa)+'.';
+    $('#sdLede').textContent=unica?'Es la única alcaldía que queda arriba en las dos medidas en las '+COMB.length+' formas de medir.'
+      :'Con los datos actuales, la regla no la deja como única alcaldía arriba en las '+COMB.length+' formas de medir: hay que revisar la decisión.';
+    var ag=TP.prioridad.ageb;
+    $('#sdPasos').innerHTML=[
+      '<b>Zonas con brecha de oferta.</b> AGEB que están a la vez en el cuartil alto de personas de 60+ y en el cuartil alto de distancia a la residencia o centro de día más cercano: '+ent(ag.n_cuartil)+' AGEB.',
+      '<b>Dos medidas por alcaldía.</b> Volumen: cuántas personas de 60+ viven en esas AGEB. Concentración: qué parte de las 60+ de la alcaldía son.',
+      '<b>Nivel doble.</b> La alcaldía está entre las K primeras en las dos medidas. Se repite con tres cortes (tercil, cuartil y quintil) y K = '+KS.join(', ').replace(/, (\d+)$/,' y $1')+': '+COMB.length+' combinaciones.'
+    ].map(function(t){return '<li>'+t+'</li>'}).join('');
+
+    var LB={1:'Doble',v:'Solo volumen',c:'Solo concentración',3:'Brecha menor',4:'Sin brecha'};
+    function matriz(todas){
+      if(!cuadra){$('#sdMatriz').innerHTML='<p class="muted">La regla calculada en la página no coincide con 24_prioridad_alcaldia.csv: no se muestra la matriz hasta revisarlo.</p>';return}
+      var filas=PA.slice().sort(function(a,b){return a.orden_presentacion-b.orden_presentacion}).filter(function(a){return todas||a.nivel_modal<=2});
+      var h='<table class="sd-mx"><thead><tr><th></th>'+CORTES.map(function(c){return '<th colspan="'+KS.length+'" class="g">'+NOMC[c]+'</th>'}).join('')+'<th></th></tr><tr><th></th>'+
+        COMB.map(function(cb,i){return '<th class="k'+(i%KS.length===0?' ini':'')+'">K = '+cb.k+'</th>'}).join('')+'<th class="n">Nivel doble</th></tr></thead><tbody>';
+      filas.forEach(function(a){var Z=NIV[a.alcaldia],d=Z.filter(function(z){return z.l===1}).length;
+        h+='<tr'+(a.alcaldia===SEDE.alcaldia?' class="sede"':a.alcaldia===SEDE.alternativa?' class="alt"':'')+'><th scope="row">'+esc(a.alcaldia)+(a.alcaldia===SEDE.alcaldia?'<small>sede</small>':a.alcaldia===SEDE.alternativa?'<small>alternativa</small>':'')+'</th>'+
+          Z.map(function(z,i){var cb=COMB[i];return '<td class="c l'+z.l+(i%KS.length===0?' ini':'')+'" title="'+esc(a.alcaldia)+', '+NOMC[cb.c].toLowerCase()+' y K = '+cb.k+': '+LB[z.l]+'. Volumen '+ent(z.n)+' (lugar '+z.rn+'), concentración '+fmt(100*z.p,1)+' % (lugar '+z.rp+').'+'"><span></span></td>'}).join('')+
+          '<td class="n">'+d+' de '+COMB.length+'</td></tr>'});
+      $('#sdMatriz').innerHTML=h+'</tbody></table>';
+    }
+    matriz(false);
+    $('#sdTodas').addEventListener('click',function(){var on=this.getAttribute('aria-pressed')!=='true';this.setAttribute('aria-pressed',String(on));this.textContent=on?'Ver solo las de nivel alto':'Ver las 16 alcaldías';matriz(on)});
+    $('#sdLey').innerHTML='<span class="sw l1"></span>Doble: entre las K primeras en volumen y en concentración <span class="sw lv"></span>Solo una de las dos <span class="sw l3"></span>Brecha menor <span class="sw l4"></span>Sin brecha. Pasa el cursor por una celda para ver los valores.';
+
+    /* Variables de la decisión: sede, alternativa y CDMX */
+    var AGS=TP.ageb.map(function(r){var o={};TP.campos_ageb.forEach(function(c,i){o[c]=r[i]});return o});
+    function med(v){v=v.slice().sort(function(a,b){return a-b});var m=v.length>>1;return v.length%2?v[m]:(v[m-1]+v[m])/2}
+    function deA(n){return AGS.filter(function(x){return !n||x.alcaldia===n})}
+    var sum=function(f){return PA.reduce(function(t,a){return t+a[f]},0)};
+    var C={pob_60:sum('pob_60'),n:sum('n_60_brecha'),nt:sum('n_60_brecha_tercil')};
+    function col(a){var Z=a?NIV[a.alcaldia]:null,ags=deA(a&&a.alcaldia);return {
+      pob:ent(a?a.pob_60:C.pob_60),n:ent(a?a.n_60_brecha:C.n),
+      p:fmt(a?a.pct_60_brecha:100*C.n/C.pob_60,1)+' %',pt:fmt(100*(a?a.n_60_brecha_tercil/a.pob_60:C.nt/C.pob_60),1)+' %',
+      d:a?Z.filter(function(z){return z.l===1}).length+' de '+COMB.length:'',
+      t2:fmt(a?POR[a.alcaldia].pct_tipo[top.tipo-1]:TM[top.tipo].pct_pob_cdmx,0)+' %',
+      si:fmt(med(ags.map(function(x){return x.pct_sin_int})),1)+' %',km:fmt(med(ags.map(function(x){return x.dist_oferta_km})),2)+' km'}}
+    var cs=col(S),ca=col(A),cc=col(null);
+    var R=[['Personas de 60+','pob'],['Personas de 60+ en zonas con brecha (cuartil)','n'],['Parte de sus 60+ en esas zonas, con cuartil','p'],['La misma parte, con tercil','pt'],
+      ['Combinaciones con nivel doble','d'],['Población en zonas tipo '+top.tipo+' ('+esc(TM[top.tipo].nombre.toLowerCase())+')','t2'],['Viviendas sin internet (mediana de sus AGEB)','si'],['Distancia a la residencia o centro de día más cercano (mediana)','km']];
+    $('#sdTab').innerHTML='<thead><tr><th></th><th class="n sede">'+esc(SEDE.alcaldia)+'</th><th class="n">'+esc(SEDE.alternativa)+'</th><th class="n">CDMX</th></tr></thead><tbody>'+
+      R.map(function(r){return '<tr><th scope="row">'+r[0]+'</th><td class="n sede">'+cs[r[1]]+'</td><td class="n">'+ca[r[1]]+'</td><td class="n">'+(cc[r[1]]||'')+'</td></tr>'}).join('')+'</tbody>';
+
+    $('#sdInst').innerHTML='Además de la regla, Azcapotzalco tiene un programa propio para cuidadoras, '+SEDE.programa+', con apoyo mensual entre julio y diciembre de 2026. Da un canal para llegar a las cuidadoras. No es un dato estadístico y no se revisó si Iztapalapa tiene uno parecido. <a href="'+SEDE.programa_url+'" target="_blank" rel="noopener">Nota sobre el programa</a>.';
+    $('#sdLim').innerHTML=[
+      '<b>No mide cuidadoras.</b> La regla cuenta personas de 60+ y su distancia a la oferta; la ENASIC no baja a alcaldía.',
+      '<b>Distancia en línea recta.</b> No mide cupos, precio ni transporte.',
+      '<b>Los cortes y K son convenciones.</b> Con tercil, la parte de sus 60+ en brecha sube a '+cs.pt+'; con cuartil (el de referencia) es '+cs.p+'.',
+      '<b>No es evidencia independiente de la decisión 1.</b> Que el '+cs.t2+' de su población viva en zonas tipo '+top.tipo+' sale del mismo Censo y de las mismas AGEB.'
+    ].map(function(t){return '<li>'+t+'</li>'}).join('');
+    $('#src-sede').innerHTML=dl({Decisión:'Equipo, '+SEDE.fecha+' (Documentos/bitacora-decisiones.md)',Regla:'Script 24 (Analysis/24_prioridad_zonas.py), recalculada en la página: '+(cuadra?'coincide con 24_prioridad_alcaldia.csv en las 16 alcaldías':'NO coincide; revisar'),
+      Datos:'INEGI, Censo 2020 por AGEB urbana; DENUE 05/2026 (residencias y centros de día)',Archivo:esc(TP.prioridad.fuente)});
   })();
 
   OBS.seg('#segPr','d',function(d){[1,2,3].forEach(function(i){$('#prD'+i).hidden=String(i)!==d})});

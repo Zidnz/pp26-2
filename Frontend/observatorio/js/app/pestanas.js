@@ -17,6 +17,11 @@
   function ir(id){var el=document.getElementById(id);if(!el)return;var c=el.closest('.card')||el;
     c.scrollIntoView({block:'center',behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});
     c.classList.remove('ancla-on');void c.offsetWidth;c.classList.add('ancla-on')}
+  // 26 nov 2026: el pie lista las mismas pestañas de la barra (sin duplicar nombres a mano) y la fecha de la última corrida del ETL.
+  var ps=$('#pieSecc');
+  if(ps)ps.innerHTML=$$('.tabs button').map(function(b){return '<li><button type="button" data-goto="'+b.dataset.t+'">'+b.textContent.trim()+'</button></li>'}).join('');
+  var pf=$('#pieFecha'),mf=window.D&&String(D.generado_desde||'').match(/corrida (\d+) del ETL \((\d{4})-(\d{2})-(\d{2})/);
+  if(pf&&mf){var MES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];pf.textContent='Datos de la corrida '+mf[1]+' del ETL, '+(+mf[4])+' '+MES[+mf[3]-1]+' '+mf[2]+'.'}
   $$('[data-goto]').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.goto);if(b.dataset.ancla)ir(b.dataset.ancla)})});
   $('.brand').addEventListener('click',function(e){e.preventDefault();show('inicio')});
   window.addEventListener('hashchange',function(){show(location.hash.slice(1))});

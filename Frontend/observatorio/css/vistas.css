@@ -997,3 +997,115 @@ details.mas[open] summary::before{content:"−"}
   #sel-embudo .f-prec{font-size:13px}
   #sel-embudo .tile{height:clamp(104px,13vh,146px)}
 }
+
+/* ---------- 26 nov 2026 · «¿Qué tan firme es la clasificación?» (#tFirme, territorio-tipologia.js) ----------
+   Tres pruebas que resaltan sus marcas sobre una sola regla de 0 a 1. Sin animación de entrada: solo responde al clic. */
+.fm{--ok:#23806f;--mal:#c0435a;--res:#a9711a}
+.fm .fm-lede{margin-top:14px;font:650 clamp(20px,2vw,25px)/1.25 var(--sans);letter-spacing:-.01em;max-width:32ch;color:var(--ink)}
+.fm .fm-sub{margin-top:8px;font-size:14px;line-height:1.5;color:var(--ink-soft);max-width:70ch}
+.fm-pruebas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:22px}
+.fm-p{position:relative;display:flex;flex-direction:column;align-items:stretch;text-align:left;border:1px solid var(--hair);border-radius:12px;background:var(--card);padding:14px 16px 14px;font:inherit;color:inherit;transition:border-color .2s,background-color .2s}
+.fm-p:hover{border-color:rgba(63,71,96,.4)}
+.fm-p[aria-pressed="true"]{border-color:var(--ink);background:var(--paper-2);box-shadow:inset 0 0 0 1px var(--ink)}
+.fm-n{position:absolute;top:14px;right:16px;font:600 12px var(--sans);color:var(--ink-faint)}
+.fm-ti{font:700 15px/1.25 var(--sans);padding-right:24px}
+.fm-pq{margin-top:3px;font-size:12.5px;line-height:1.4;color:var(--ink-faint);min-height:2.8em}
+.fm-pb{margin-top:10px;font:750 34px/1 var(--sans);font-stretch:88%;letter-spacing:-.02em;color:var(--ok);font-variant-numeric:tabular-nums}
+.fm-p.mal .fm-pb{color:var(--mal)}
+.fm-pu{margin-top:3px;font-size:12px;color:var(--ink-soft)}
+.fm-m{position:relative;display:block;height:8px;margin-top:12px;border-radius:99px;background:var(--hair-2)}
+.fm-mu{position:absolute;top:-4px;bottom:-4px;border-left:1.5px dashed var(--ink-faint)}
+.fm-mf{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--ok)}
+.fm-p.mal .fm-mf{background:var(--mal)} .fm-mf.b{opacity:.45}
+.fm-md{position:absolute;top:50%;width:13px;height:13px;margin:-6.5px 0 0 -6.5px;border-radius:50%;background:var(--card);border:3px solid var(--ok)}
+.fm-p.mal .fm-md{border-color:var(--mal)}
+.fm-pv{margin-top:12px;font:600 13px var(--sans);color:var(--ok)} .fm-p.mal .fm-pv{color:var(--mal)}
+.fm-pd{margin-top:2px;font-size:12.5px;line-height:1.4;color:var(--ink-soft)}
+/* regla */
+.fm-regla{position:relative;margin:34px 6px 0}
+.fm-eje{position:absolute;left:0;right:0;top:150px;height:2px;background:var(--ink)}
+.fm-zona{position:absolute;right:0;top:128px;height:44px;background:repeating-linear-gradient(135deg,rgba(35,128,111,.15) 0 6px,rgba(35,128,111,.05) 6px 12px)}
+.fm-zona span{position:absolute;left:4px;top:50px;font:600 12px var(--sans);color:var(--ok);white-space:nowrap}
+.fm-tk{position:absolute;top:158px;transform:translateX(-50%);font-size:12px;color:var(--ink-faint)}
+.fm-mk{position:absolute;top:0;transition:opacity .25s}
+.fm-st{position:absolute;left:0;border-left:1px solid rgba(43,48,69,.35)}
+.fm-pt{position:absolute;top:144px;left:-7px;width:14px;height:14px;border-radius:50%;border:2.5px solid var(--card);background:var(--ok)}
+.fm-mk.mal .fm-pt{background:var(--mal)}
+.fm-lb{position:absolute;left:-4px;white-space:nowrap;font-size:12.5px;line-height:1.35;color:var(--ink-faint)}
+.fm-lb b{display:block;font-weight:650;color:var(--ink)}
+.fm-lb.der{left:auto;right:-4px;text-align:right}
+.fm-lb.ab{color:var(--ink);font-weight:500}
+.fm-lb.ab em{font-style:normal;color:var(--ink-faint)}
+.fm-sel .fm-mk{opacity:.22} .fm-sel .fm-mk.on{opacity:1}
+.fm-sel .fm-mk.on .fm-pt{box-shadow:0 0 0 4px rgba(43,48,69,.12)}
+.fm-pie{margin-top:6px;font-size:12px;color:var(--ink-faint);max-width:80ch}
+/* lista para pantallas angostas */
+.fm-lista{display:none;list-style:none;margin:18px 0 0;padding:0}
+.fm-lista li{display:grid;grid-template-columns:minmax(0,1fr) 90px 40px;gap:10px;align-items:center;padding:7px 0;border-top:1px solid var(--hair-2);font-size:13px;transition:opacity .25s}
+.fm-lt{position:relative;height:10px;background:var(--hair-2);border-radius:99px}
+.fm-lt i{position:absolute;top:50%}
+.fm-lt i.u{top:-3px;bottom:-3px;border-left:1.5px dashed var(--ink-faint)}
+.fm-lt i.d{width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:var(--ok)}
+.fm-lista li.mal i.d{background:var(--mal)}
+.fm-lista li b{text-align:right;font-variant-numeric:tabular-nums}
+.fm-sel .fm-lista li{opacity:.3} .fm-sel .fm-lista li.on{opacity:1}
+/* usos */
+.fm-usos{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:30px}
+.fm-u h4{font:700 15px var(--sans);padding-bottom:8px;border-bottom:2px solid var(--ink)}
+.fm-u.re h4{border-color:var(--res)} .fm-u.no h4{border-color:var(--mal)}
+.fm-u ul{list-style:none;margin:6px 0 0;padding:0}
+.fm-u li{padding:8px 0;font-size:13.5px;line-height:1.45;color:var(--ink-soft)}
+.fm-u li b{color:var(--ink);font-weight:650}
+.fm-ir{display:inline;border:none;background:none;padding:0;margin-left:2px;font:600 13.5px var(--sans);color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+@media (max-width:900px){.fm-pruebas,.fm-usos{grid-template-columns:1fr}.fm-pq{min-height:0}.fm-usos{gap:16px}}
+@media (max-width:760px){.fm-regla,.fm-pie{display:none}.fm-lista{display:block}}
+@media (prefers-reduced-motion:reduce){.fm *{transition:none!important}}
+
+/* ---------- 26 nov 2026 · «¿Por qué Azcapotzalco?» (#cSede, focalizacion-prioridad.js) ---------- */
+.sd{--l1:#c0435a;--lv:#d9a35a;--l3:#cfcadb;--l4:#f0eef5}
+.sd .sd-dec{margin-top:6px;font-size:14px;color:var(--ink-soft)}
+.sd .sd-dec b{color:var(--ink)}
+.sd .sd-lede{margin-top:10px;font:650 clamp(19px,1.9vw,24px)/1.25 var(--sans);letter-spacing:-.01em;max-width:34ch}
+.sd-pasos{margin:18px 0 0;padding:0;list-style:none;counter-reset:p;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.sd-pasos li{counter-increment:p;position:relative;padding-top:30px;font-size:13.5px;line-height:1.45;color:var(--ink-soft)}
+.sd-pasos li::before{content:counter(p);position:absolute;top:0;left:0;font:700 20px/1 var(--sans);color:var(--accent)}
+.sd-pasos li::after{content:"";position:absolute;top:10px;left:22px;right:-12px;border-top:1px solid var(--hair)}
+.sd-pasos li:last-child::after{display:none}
+.sd-pasos b{color:var(--ink);font-weight:650}
+.sd-mx-h{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:28px}
+.sd h4{font:700 15px var(--sans)}
+.sd-todas{border:none;background:none;padding:0;font:600 13px var(--sans);color:var(--accent);text-decoration:underline;text-underline-offset:3px}
+.sd-mx{border-collapse:separate;border-spacing:0;margin-top:10px;min-width:640px;width:100%}
+.sd-mx th{font:600 12.5px var(--sans);color:var(--ink-faint);text-align:center;padding:0 0 6px}
+.sd-mx thead th.g{color:var(--ink);font-size:13px;border-bottom:1px solid var(--hair);padding-bottom:4px}
+.sd-mx thead th.k{padding-top:6px;font-weight:500}
+.sd-mx tbody th{text-align:left;font:500 13.5px var(--sans);color:var(--ink);padding:3px 14px 3px 0;white-space:nowrap}
+.sd-mx tbody th small{margin-left:8px;font-size:12px;font-weight:600;color:var(--accent)}
+.sd-mx tr.sede th{font-weight:700}
+.sd-mx td.c{padding:3px 2px;width:7.5%}
+.sd-mx td.c.ini{padding-left:10px}
+.sd-mx td.c span{display:block;height:24px;border-radius:5px;background:var(--l4)}
+.sd-mx td.l1 span{background:var(--l1)} .sd-mx td.lv span,.sd-mx td.lc span{background:var(--lv)} .sd-mx td.l3 span{background:var(--l3)}
+.sd-mx tr.sede td.c span{box-shadow:inset 0 0 0 2px rgba(43,48,69,.55)}
+.sd-mx td.n,.sd-mx th.n{text-align:right;padding-left:14px;white-space:nowrap;font-size:13px;font-variant-numeric:tabular-nums}
+.sd-mx tr.sede td.n{font-weight:700}
+.sd-ley{margin-top:8px;font-size:12.5px;color:var(--ink-soft);line-height:1.8}
+.sd-ley .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin:0 5px 0 10px}
+.sd-ley .sw:first-child{margin-left:0}
+.sd-ley .l1{background:var(--l1)} .sd-ley .lv{background:var(--lv)} .sd-ley .l3{background:var(--l3)} .sd-ley .l4{background:var(--l4);box-shadow:inset 0 0 0 1px var(--l3)}
+.sd .sd-h4{margin-top:28px}
+.sd-tab{width:100%;border-collapse:collapse;margin-top:10px;font-variant-numeric:tabular-nums;min-width:560px}
+.sd-tab th,.sd-tab td{padding:8px 0;border-bottom:1px solid var(--hair);font-size:13.5px}
+.sd-tab thead th{font:700 13.5px var(--sans);border-bottom:1.5px solid var(--ink);padding-bottom:6px}
+.sd-tab tbody th{text-align:left;font-weight:400;color:var(--ink-soft);padding-right:16px}
+.sd-tab .n{text-align:right;padding-left:16px;width:15%}
+.sd-tab .sede{font-weight:700;color:var(--ink)}
+.sd-pie{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:32px;margin-top:28px}
+.sd-pie p,.sd-pie li{font-size:13.5px;line-height:1.5;color:var(--ink-soft)}
+.sd-pie p{margin-top:8px}
+.sd-pie a{color:var(--accent);font-weight:600}
+.sd-pie ul{list-style:none;margin:2px 0 0;padding:0}
+.sd-pie li{padding:6px 0}
+.sd-pie li b{color:var(--ink);font-weight:650}
+@media (max-width:820px){.sd-pasos,.sd-pie{grid-template-columns:1fr;gap:14px}.sd-pasos li::after{display:none}}
+.sd-mx th,.sd-tab th,.sd-tab td{text-transform:none;letter-spacing:0}
