@@ -2764,3 +2764,7 @@ Sin revisión de otra persona. Revisor: _[pendiente]_.
 **Verificación.** Chrome sin interfaz (Playwright) a 1500 y 420 px, sin errores de JavaScript. Se probaron los botones de prueba, «Ver las 16 alcaldías», «Ver la frontera en el mapa» y los enlaces del pie. El JSON no cambió. Sin doble revisión.
 
 **Nota sobre la entrada anterior.** El bloque `.tf` que describe el punto 3 de la entrada de la mañana ya no existe: lo sustituye el bloque `.fm` descrito aquí. La capa «Frontera entre tipos» y la gráfica de horas por sexo y edad siguen igual.
+
+## 26 nov 2026 (11:05) — Barra lateral separada de los bordes (pedido de Omar)
+
+`css/layout.css`: en escritorio, la barra lateral queda a 14 px del borde, con esquinas redondeadas (22 px), igual que el pie de página. Se mantienen la altura fija y el desplazamiento propio. En pantallas angostas, la barra superior queda a 8 px de los bordes, con esquinas de 18 px; la altura libre para las barras pegajosas (`--stick`) pasa de 104 a 116 px. Se subió la versión de `layout.css` en `index.html`. Verificado con Playwright a 420, 1500 y 2000 px, sin errores de JavaScript.
