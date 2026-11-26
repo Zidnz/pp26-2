@@ -130,9 +130,8 @@
   /* ================= Navegación ================= */
   /* Cada rol ve solo lo suyo (24 oct 2026). La cuidadora no ve casos de otras familias; la persona de relevo
    * no ve a las demás personas de relevo; el programa ve todo. En el piloto, cada rol entraría con su cuenta. */
-  const VISTAS_ROL = { cuidadora: ['mia'], relevo: ['yo'], programa: ['seguimiento', 'casos', 'relevos', 'ajustes'] };
-  const VIEWS = VISTAS_ROL.programa;
-  const TITULOS = { mia: 'Necesito relevo', yo: 'Puedo cuidar', casos: 'Casos', relevos: 'Personas de relevo', seguimiento: 'Red de cuidado', ajustes: 'Ajustes' };
+  const VISTAS_ROL = { cuidadora: ['mia', 'toca', 'incluye', 'pasos'], relevo: ['yo', 'pago', 'req', 'asig'], programa: ['seguimiento', 'casos', 'relevos', 'ajustes'] };
+  const TITULOS = { mia: 'Necesito relevo', toca: '¿Me toca?', incluye: 'Qué incluye', pasos: 'Pasos', yo: 'Puedo cuidar', pago: 'Tu pago', req: 'Requisitos', asig: 'Asignación', casos: 'Casos', relevos: 'Personas de relevo', seguimiento: 'Red de cuidado', ajustes: 'Ajustes' };
   const leerId = (k) => { try { return localStorage.getItem(k) || ''; } catch (e) { return ''; } };
   const guardarId = (k, v) => { try { if (v) localStorage.setItem(k, v); else localStorage.removeItem(k); } catch (e) { /* sin almacenamiento */ } };
   function cambiarRol(rol) {
@@ -156,6 +155,7 @@
   $('.tabbar').addEventListener('keydown', (e) => {
     const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
     if (!d) return;
+    const VIEWS = VISTAS_ROL[ui.rol] || VISTAS_ROL.cuidadora;
     show(VIEWS[(VIEWS.indexOf(ui.view) + d + VIEWS.length) % VIEWS.length]);
     $('.tabbtn.on').focus();
   });
@@ -628,39 +628,139 @@
     } catch (e) { toast('Usa Copiar'); }
   });
 
-  /* ================= 4. Ajustes ================= */
+  /* ================= 4. Ajustes =================
+   * 26 nov 2026: Ajustes como simulador. Cada palanca muestra su efecto sobre los datos simulados y cada supuesto
+   * dice qué tan firme es (por verificar, provisional, ilustrativo, supuesto). Nada de esto cambia config.js. */
+  const PRESETS = {
+    bolsaSim: [[130, '130 h'], [260, '260 h · ejemplo'], [520, '520 h'], [CP.presupuesto_horas_mes, CP.presupuesto_horas_mes.toLocaleString('es-MX') + ' h · archivo']],
+    maxKm: [[6, '6 km'], [12, '12 km · base'], [20, '20 km']],
+    factorPrest: [[0, 'Sin prestaciones'], [Math.round(legal.FACTOR_291F * 100), `${Math.round(legal.FACTOR_291F * 100)} % · proporcionales 291-F`]],
+  };
+  /* 26 nov 2026: en lugar de los supuestos, Ajustes reúne lo legal: aviso, convenio, contrato, protección de datos y marco. */
+  const PROTECCION = [
+    ['Sin CURP ni diagnósticos de la familia', 'La cuidadora da un alias; la identidad se valida fuera de la app.'],
+    ['Datos sensibles con consentimiento expreso', 'Horas de cuidado, Barthel, tareas de salud (sí o no) y cómo se siente quien cuida.'],
+    ['La persona cuidada también consiente', 'Ella o su representante; sin su consentimiento no se pregunta el Barthel.'],
+    ['CURP de la persona de relevo: solo una huella', 'Se valida al registrarse y se guardan la huella y los últimos 4 caracteres, para evitar duplicados.'],
+    ['Domicilio solo mientras hay relevo', 'Se pide al asignar y se borra al cerrar el caso.'],
+    ['Lo mínimo para pagar', 'De la cuenta de pago solo se guardan el banco y los últimos 4 dígitos.'],
+    ['La persona de relevo ve lo indispensable', 'Alias, domicilio, horario y tareas. Nada de la entrevista.'],
+    ['Firmas con huella, no con copia', 'Se guarda la huella del texto firmado: si el texto cambia, deja de coincidir.'],
+    ['Estadísticas solo agregadas', 'El JSON para el Observatorio no trae folios, alias, alcaldías ni fechas por caso.'],
+    ['Una persona revisa antes de asignar', 'El puntaje no decide solo; hay revisión humana y se puede pedir otra revisión.'],
+  ];
+  function docEjemplo(tipo) {
+    const st = store.state;
+    if (tipo === 'trabajo') {
+      const r = st.relevos.find((x) => store.aprobado(x)) || st.relevos[0];
+      return r ? CT.contratoTrabajo({ nombre: r.nombre, alcaldia: r.alcaldia, dias: (r.dias || []).map((i) => RV.DIAS[i]), desde: r.desde, hasta: r.hasta, horasMax: r.horasMax, tareas: r.tareas }) : null;
+    }
+    const c = ejemploCaso(); if (!c) return null;
+    const hz = horasDe(c), pq = c.paquete || paqueteProbable(c);
+    return CT.convenioServicio({ folio: c.folio, alias: c.cuidadora.alias, palias: c.persona.alias, alcaldia: c.alcaldia, horasMes: hz.mes, horasSemana: hz.sem,
+      dentro: valDe(c).nivel === 'dentro', enfermeria: !!c.entrevista.modelo.enfermeria, consentimientoPersona: (c.consentimientoPersona || {}).via || 'propio',
+      tareas: pq.tareas, dias: pq.dias.map((i) => RV.DIAS[i]), inicio: pq.inicio });
+  }
+  function verDoc(tipo) {
+    const doc = docEjemplo(tipo);
+    if (!doc) { toast('Sin datos de ejemplo'); return; }
+    $('#det-body').innerHTML = `<p class="aj-docnote">Plantilla con datos simulados de ejemplo.</p>${contratoHTML(doc)}`;
+    $('#det-acciones').innerHTML = '<button type="button" class="btn-ghost" data-close>Cerrar</button>';
+    $('#det-acciones [data-close]').addEventListener('click', () => $('#dlg-det').close());
+    $('#dlg-det').showModal(); $('#dlg-det').scrollTop = 0;
+  }
+  /** Paquete con el que se evaluaría un caso en espera (igual que abrirAsignacion, sin modificar el caso). */
+  function paqueteProbable(c) {
+    if (c.paquete) return c.paquete;
+    const pf = c.preferencias || { dias: [0], inicio: '09:00', tareas: [RV.TAREAS[0]] };
+    return { horas: Math.max(RV.PAQUETES[0], horasDe(c).sem || 0), dias: pf.dias.slice(), inicio: pf.inicio, tareas: pf.tareas.slice() };
+  }
+  function cobertura(maxKm) {
+    const conf = Object.assign({}, cfg(), { maxKm });
+    const espera = store.state.casos.filter((c) => c.estado === 'espera' && valDe(c).nivel === 'dentro');
+    const desc = {};
+    let con = 0;
+    espera.forEach((c) => {
+      const p = RV.proponer(Object.assign({}, c, { paquete: paqueteProbable(c) }), store.state, conf);
+      if (p.nElegibles) con++;
+      else Object.keys(p.descartes).forEach((k) => { desc[k] = (desc[k] || 0) + p.descartes[k]; });
+    });
+    const top = Object.keys(desc).sort((a, b) => desc[b] - desc[a])[0];
+    return { n: espera.length, con, top: top ? RV.ETIQUETA_DESCARTE[top] : null };
+  }
+  const barra = (v, max, marcas) => `<div class="aj-bar"><i style="width:${Math.min(100, (100 * v) / (max || 1)).toFixed(1)}%"></i>${(marcas || []).map(([x, t]) => `<s style="left:${Math.min(100, (100 * x) / (max || 1)).toFixed(1)}%" title="${esc(t)}"></s>`).join('')}</div>`;
+  const pintaRango = (el) => { const p = ((el.value - el.min) / (el.max - el.min)) * 100; el.style.setProperty('--p', p + '%'); };
+
   function renderAjustes() {
-    const c = cfg();
-    if (document.activeElement !== $('#cfg-km')) $('#cfg-km').value = c.maxKm;
-    if (document.activeElement !== $('#cfg-fp')) $('#cfg-fp').value = c.factorPrest;
+    if (ui.view !== 'ajustes') return;
+    const c = cfg(), s = store.state;
+    [['#cfg-km', c.maxKm], ['#cfg-fp', c.factorPrest], ['#cfg-bolsa', bolsa()]].forEach(([sel, v]) => {
+      const el = $(sel); if (document.activeElement !== el) el.value = v; pintaRango(el);
+    });
+    $$('#view-ajustes .aj-presets').forEach((box) => {
+      const k = box.dataset.cfg, actual = k === 'bolsaSim' ? bolsa() : c[k];
+      box.innerHTML = PRESETS[k].map(([v, t]) => `<button type="button" data-cfg-v="${v}" class="${+v === +actual ? 'on' : ''}">${esc(t)}</button>`).join('');
+    });
+
+    // Bolsa: cuántos hogares reciben horas con lo que hay
+    const n = Object.keys(plan.horas).length, cola = plan.en_cola.length, reciben = n - cola;
+    const minTodos = n * CP.horas_minimas, topeTodos = n * CP.horas_maximas, B = bolsa();
+    $('#cfg-bolsa-val').textContent = B.toLocaleString('es-MX') + ' h';
+    $('#cfg-bolsa-imp').innerHTML = `${barra(plan.usado, Math.max(B, topeTodos), [[minTodos, 'Mínimo para todos'], [topeTodos, 'Tope para todos']])}
+      <p><b>${reciben} de ${n}</b> hogares dentro de la regla reciben horas${cola ? ` · <b class="neg">${cola} en cola</b>` : ''}${reciben ? ` · promedio ${pts(plan.usado / reciben)} h/mes` : ''}.</p>
+      <p class="aj-mute">Para dar el mínimo a todos hacen falta ${minTodos.toLocaleString('es-MX')} h; para llegar al tope, ${topeTodos.toLocaleString('es-MX')} h.</p>`;
+
+    // Distancia: cuántos casos en espera tienen al menos una persona elegible
+    const cob = cobertura(c.maxKm);
     $('#cfg-km-val').textContent = c.maxKm + ' km';
+    $('#cfg-km-imp').innerHTML = cob.n ? `${barra(cob.con, cob.n)}
+      <p><b>${cob.con} de ${cob.n}</b> casos en espera tienen al menos una persona elegible.</p>
+      ${cob.top ? `<p class="aj-mute">Lo que más descarta a quienes faltan: <b>${esc(cob.top)}</b>.${cob.top === 'lejos' ? '' : ' Subir la distancia no lo resuelve.'}</p>` : ''}`
+      : '<p class="aj-mute">No hay casos en espera dentro de la regla.</p>';
+
+    // Prestaciones: costo por hora y de los casos con relevo
+    const activos = s.casos.filter((x) => x.estado === 'activo' && x.paquete);
+    const costo = activos.reduce((t, x) => t + costoMes(evalDe(x)), 0);
+    const hBase = legal.HORA.diurna, hCon = hBase * (1 + c.factorPrest / 100);
     $('#cfg-fp-val').textContent = c.factorPrest ? c.factorPrest + ' %' : 'sin prestaciones';
-    $('#cfg-params').innerHTML = [
-      ['Salario diario', '$' + legal.SALARIO_DIARIO.toFixed(2), 'CONASAMI, DOF 09-dic-2025 · por verificar'],
-      ['Hora diurna (÷ 8)', '$' + legal.HORA.diurna.toFixed(2), '06:00-20:00'],
-      ['Hora mixta (÷ 7.5)', '$' + legal.HORA.mixta.toFixed(2), '< 3.5 h nocturnas'],
-      ['Hora nocturna (÷ 7)', '$' + legal.HORA.nocturna.toFixed(2), '20:00-06:00 o ≥ 3.5 h nocturnas'],
-      ['Semanas por mes', RV.SEMANAS_MES, 'como el script 10'],
-      ['Regla de referencia', `≥ ${RV.UMBRAL_HORAS} h/sem`, ''],
-    ].map(([a, b, n]) => `<li><span>${esc(a)}<small>${esc(n)}</small></span><b class="mono">${esc(b)}</b></li>`).join('');
-    if (document.activeElement !== $('#cfg-bolsa')) $('#cfg-bolsa').value = bolsa();
-    $('#cfg-bolsa-val').textContent = bolsa().toLocaleString('es-MX') + ' h';
-    $('#cfg-bolsa-nota').textContent = 'Solo simula; no cambia la bolsa real.';
-    $('#cfg-prio').innerHTML = [
-      ['Bolsa (presupuesto_horas_mes)', CP.presupuesto_horas_mes + ' h', 'ilustrativo'],
-      ['Mínimo garantizado', CP.horas_minimas + ' h/mes', '≈ 3 h/sem'],
-      ['Tope por hogar', CP.horas_maximas + ' h/mes', '≈ 12 h/sem'],
-      ['Regla de entrada', `${CP.regla_horas} h o más a la semana`, ''],
-      ['Envejecimiento', `+${CP.envejecimiento.horas_por_semana} h/sem · tope ${CP.envejecimiento.tope_envejecimiento} h`, 'provisional, solo ordena el reparto'],
-    ].map(([a, b, n]) => `<li><span>${esc(a)}<small>${esc(n)}</small></span><b class="mono">${esc(b)}</b></li>`).join('');
+    $('#cfg-fp-imp').innerHTML = `<div class="aj-duo"><span><i>Hora diurna</i><b class="mono">$${f2(hCon)}</b><small>base $${f2(hBase)}</small></span>
+      <span><i>${activos.length} casos con relevo</i><b class="mono">${pesos(costo)}</b><small>al mes</small></span></div>
+      <p class="aj-mute">Quién paga sigue sin definirse: esto es costo, no presupuesto.</p>`;
+
+    // Héroe: el mes simulado de un vistazo
+    const certCupo = s.relevos.filter((r) => store.aprobado(r) && r.certificacion === 'certificada' && RV.cargaDe(r.id, s) < r.horasMax).length;
+    $('#aj-hero').innerHTML = `<div class="rx-pass aj-hero">
+      <div class="rx-top"><span class="rx-kick">Este mes · simulado</span><span class="aj-tag">${esc(CP.nombre)}</span></div>
+      <div class="rx-big"><b>${reciben}</b><span>de ${n} hogares<br>reciben relevo</span></div>
+      <div class="rx-bar"><i style="width:${Math.min(100, (100 * plan.usado) / (B || 1)).toFixed(1)}%"></i></div>
+      <p class="aj-hero-sub">${plan.usado.toLocaleString('es-MX')} de ${B.toLocaleString('es-MX')} h de la bolsa asignadas</p>
+      <div class="rx-weeks"><span><i>En cola</i><b>${cola}</b></span><span><i>Sin propuesta</i><b>${cob.n - cob.con}</b></span><span><i>Relevos con cupo</i><b>${certCupo}</b></span><span><i>Costo/mes</i><b>${costo >= 1000 ? '$' + Math.round(costo / 1000) + 'k' : pesos(costo)}</b></span></div>
+    </div>`;
+
+    // Legal y datos
+    const DOC = (act, ico, t, sub, v) => `<button type="button" class="aj-doc" data-aj-doc="${act}"><svg viewBox="0 0 24 24" aria-hidden="true">${ico}</svg><span><b>${esc(t)}</b><small>${esc(sub)}</small></span><em class="mono">${esc(v)}</em></button>`;
+    $('#aj-docs').innerHTML = DOC('aviso', '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 12h7M9 16h7"/>', 'Aviso de privacidad', 'Simplificado · LFPDPPP', 'v' + String(CP.version_aviso).split(' ')[0])
+      + DOC('servicio', '<path d="M4 12h4l2-3 4 6 2-3h4"/><rect x="3" y="4" width="18" height="16" rx="3"/>', CT.TITULO.servicio, 'Lo firma el hogar al terminar la solicitud', CT.VERSION.servicio)
+      + DOC('trabajo', '<rect x="4" y="7" width="16" height="13" rx="2.5"/><path d="M9 7V5h6v2M4 12h16"/>', CT.TITULO.trabajo, 'Lo firma la persona de relevo · LFT Cap. IX Bis', CT.VERSION.trabajo);
+    const pr = $('#aj-prot');
+    if (!pr.childElementCount) pr.innerHTML = PROTECCION.map(([t, d]) => `<li><b>${esc(t)}</b><span>${esc(d)}</span></li>`).join('')
+      + '<li class="aj-warn"><b>«Exportar todo» incluye alias y respuestas de salud</b><span>Con datos reales, ese archivo no sale de la institución.</span></li>';
+    $('#aj-marco-n').textContent = `${Object.keys(legal.MARCO).length} normas · artículos por verificar`;
     const el = $('#cfg-marco');
     if (!el.childElementCount) el.innerHTML = Object.values(legal.MARCO).map((m) => `<li><b>${esc(m.norma)}</b>${esc(m.tema)}</li>`).join('');
-    const s = store.state;
-    $('#cfg-stats').textContent = `${s.casos.length} casos · ${s.relevos.length} relevos · ${s.visitas.length} visitas`;
+    const abiertos = s.incidentes.filter((i) => i.estado === 'abierto').length;
+    $('#cfg-stats').innerHTML = [[s.casos.length, 'casos'], [s.relevos.length, 'relevos'], [s.visitas.length, 'visitas'], [abiertos, 'incidentes abiertos']]
+      .map(([v, t]) => `<span><b class="mono">${v}</b><i>${t}</i></span>`).join('');
   }
-  $('#cfg-km').addEventListener('input', (e) => store.update((s) => { s.config.maxKm = +e.target.value; }));
-  $('#cfg-fp').addEventListener('input', (e) => store.update((s) => { s.config.factorPrest = +e.target.value; }));
-  $('#cfg-bolsa').addEventListener('input', (e) => store.update((s) => { s.config.bolsaSim = +e.target.value; }));
+  $('#cfg-km').addEventListener('input', (e) => { pintaRango(e.target); store.update((s) => { s.config.maxKm = +e.target.value; }); });
+  $('#cfg-fp').addEventListener('input', (e) => { pintaRango(e.target); store.update((s) => { s.config.factorPrest = +e.target.value; }); });
+  $('#cfg-bolsa').addEventListener('input', (e) => { pintaRango(e.target); store.update((s) => { s.config.bolsaSim = +e.target.value; }); });
+  $('#view-ajustes').addEventListener('click', (e) => {
+    const p = e.target.closest('[data-cfg-v]');
+    if (p) { const k = p.closest('[data-cfg]').dataset.cfg; store.update((s) => { s.config[k] = +p.dataset.cfgV; }); return; }
+    const d = e.target.closest('[data-aj-doc]');
+    if (d) { if (d.dataset.ajDoc === 'aviso') { const dl = $('#dlg-aviso'); $('#aviso-body').innerHTML = Care.aviso.html(CP); dl.showModal(); dl.scrollTop = 0; } else verDoc(d.dataset.ajDoc); }
+  });
   $('#cfg-export').addEventListener('click', () => descargar(store.state, 'mientras-completo.json'));
   $('#cfg-import').addEventListener('click', () => $('#cfg-file').click());
   $('#cfg-file').addEventListener('change', async (e) => {
@@ -1112,7 +1212,8 @@
   function tarjetaCaso(c, ejemplo) {
     const v = valDe(c), hz = horasDe(c);
     const r = c.estado === 'activo' && c.asignacion && relById(c.asignacion.relevoId);
-    const st = r ? { k: 'ok', kick: 'Con relevo', s: `${r.nombre} te acompaña. Revisa tus visitas en Seguimiento.` } : estadoSimple(v.nivel, hz.mes, hz.cola);
+    const cuando = c.paquete ? ` ${diasTxt(c.paquete.dias)}, ${evalDe(c).horario}` : '';
+    const st = r ? { k: 'ok', kick: 'Con relevo', s: `${r.nombre} te acompaña${cuando}.` } : estadoSimple(v.nivel, hz.mes, hz.cola);
     return `<div class="rx-card${ejemplo ? ' ej' : ''}">
         <div class="mia-top"><span>${ejemplo ? 'Ejemplo' : 'Tu solicitud'} · ${esc(c.alcaldia)}</span><span class="mono">${esc(c.folio)}</span></div>
         ${heroRes(st, hz.mes, hz.sem, fantasma(r ? 'relevo' : v.nivel, 'blanco'))}
@@ -1121,14 +1222,38 @@
       </div>`;
   }
   const sepEjemplo = (t) => `<div class="ej-sep"><span>Ejemplo</span>${esc(t)}</div>`;
+  /* 26 nov 2026: antes de solicitar, la cuidadora ve si le corresponde (sin guardar nada), qué incluye y cómo sigue.
+   * No se muestran tiempos de espera ni costos: con datos simulados serían promesas sin respaldo. */
+  const ejemploCaso = () => {
+    const cs = store.state.casos.filter((x) => x.estado === 'activo' && x.asignacion && x.paquete);
+    const completo = cs.find((x) => x.contrato && cpOk(x) && store.state.visitas.some((v) => v.casoId === x.id && v.estado === 'realizada'));
+    return completo || cs[0] || null;
+  };
+  function chequeoHTML(h) {
+    const dentro = h >= CP.regla_horas;
+    const hMin = RV.PAQUETES[0], hMax = RV.PAQUETES[RV.PAQUETES.length - 1];
+    return dentro
+      ? `<b class="pre-ok">Te corresponde pedir relevo</b><span>Con ${h} h a la semana entras a la regla. Podrías recibir de ${hMin} a ${hMax} h de relevo a la semana: cuántas depende de la bolsa del programa y de tu lugar en la lista.</span>`
+      : `<b class="pre-no">Aún no entras a las horas de relevo</b><span>Son para quien cuida ${CP.regla_horas} h o más a la semana. Igual puedes registrarte: quedas en la red y te conectamos con apoyo cerca de ti.</span>`;
+  }
+  /* 26 nov 2026: la cuidadora y la persona de relevo tienen su propia barra de pestañas, como el Programa.
+   * Cuidadora: Inicio · ¿Me toca? · Incluye · Pasos. Relevo: Inicio · Pago · Requisitos · Asignación. */
+  const pasoPre = (n, t, d) => `<li><i>${n}</i><span><b>${esc(t)}</b><small>${esc(d)}</small></span></li>`;
+  const ctaMia = () => (casoById(leerId('mientras-mi-caso')) ? '' : '<button type="button" class="btn-primary wide pre-cta" data-action="new-sol">Solicitar relevo</button>');
+  const ctaYo = () => (relById(leerId('mientras-mi-relevo')) ? '' : '<button type="button" class="btn-primary wide pre-cta" data-action="new-relevo">Registrarme</button>');
   function renderMia() {
     const c = casoById(leerId('mientras-mi-caso'));
     if (!c) {
-      const ej = store.state.casos.find((x) => x.estado === 'activo' && x.asignacion) || store.state.casos[0];
+      const ej = ejemploCaso();
       $('#mia-body').innerHTML = `${banner('bienvenida', `<span class="rx-kick">Necesito relevo</span>
           <h2>¿Cuidas a alguien muchas horas a la semana?</h2>
           <p>Una persona capacitada cuida a tu familiar mientras tú descansas.</p>`, 'gb-hero')}
         <button type="button" class="btn-primary wide" data-action="new-sol">Solicitar relevo</button>
+        <div class="pre-links">
+          <button type="button" data-go="toca"><b>¿Me toca?</b><small>Revisa tus horas</small></button>
+          <button type="button" data-go="incluye"><b>Qué incluye</b><small>Horas, horario, tareas</small></button>
+          <button type="button" data-go="pasos"><b>Pasos</b><small>Cómo sigue</small></button>
+        </div>
         <p class="complementario">${esc(CP.aviso_complementario)}</p>
         ${ej ? sepEjemplo('Así se ve una solicitud con relevo') + tarjetaCaso(ej, true) : ''}`;
       return;
@@ -1159,20 +1284,249 @@
         ${r.pago ? `<div class="rx-note rx-pago"><b>Cuenta para tu pago</b><span>${esc(r.pago.banco)} · terminación ${esc(r.pago.ultimos4)}${r.pago.simulado ? ' (ficticia)' : ''}</span></div>` : ''}
       </div>`;
   }
+  /* 26 nov 2026: antes de registrarse, la persona de relevo estima su pago y ve si llegaría al IMSS completo (LFT 291-C).
+   * Estimación con pago diurno y proporcionales del prototipo: por verificar. */
+  function pagoHTML(h) {
+    const u = legal.umbral291C(h, RV.SEMANAS_MES);
+    const hImss = Math.ceil(u.horasMesNecesarias / RV.SEMANAS_MES);
+    return `<div class="pre-money"><b>${pesos(u.ingreso)}</b><span>al mes, aprox.</span></div>
+      <p class="pre-line">${h} h × ${RV.SEMANAS_MES} semanas × $${f2(legal.HORA_PLATAFORMA.diurna)} por hora diurna (piso legal más proporcionales).</p>
+      <div class="pre-res">${u.alcanza
+        ? `<b class="pre-ok">Con estas horas tendrías IMSS completo</b><span>Ganarías al menos un salario mínimo mensual (${pesos(u.umbral)}).</span>`
+        : `<b class="pre-no">Seguro de riesgos de trabajo, no IMSS completo</b><span>El IMSS completo empieza alrededor de ${hImss} h a la semana. Cada caso es de ${RV.PAQUETES[0]} a ${RV.PAQUETES[RV.PAQUETES.length - 1]} h.</span>`}</div>`;
+  }
   function renderYo() {
     const r = relById(leerId('mientras-mi-relevo'));
     if (!r) {
       const ej = store.state.relevos.find((x) => store.aprobado(x) && x.certificacion === 'certificada' && store.state.casos.some((c) => c.estado === 'activo' && c.asignacion && c.asignacion.relevoId === x.id)) || store.state.relevos[0];
       $('#yo-body').innerHTML = `${banner('relevo', `<span class="rx-kick">Puedo cuidar</span>
           <h2>¿Quieres trabajar dando relevo?</h2>
-          <p>Registra tus días, horario y zona. El programa te asigna casos. Con contrato, IMSS y pago justo.</p>`, 'gb-hero')}
+          <p>Registra tus días, horario y zona. El programa te asigna casos. Con contrato y pago al piso legal.</p>`, 'gb-hero')}
         <button type="button" class="btn-primary wide" data-action="new-relevo">Registrarme</button>
+        <div class="pre-links">
+          <button type="button" data-go="pago"><b>Pago</b><small>Estima tu ingreso</small></button>
+          <button type="button" data-go="req"><b>Requisitos</b><small>Qué te pedimos</small></button>
+          <button type="button" data-go="asig"><b>Asignación</b><small>Cómo te toca</small></button>
+        </div>
         ${ej ? sepEjemplo('Así se ve un registro aprobado') + tarjetaRelevo(ej, true) : ''}`;
       return;
     }
     $('#yo-body').innerHTML = `${tarjetaRelevo(r)}
       <button type="button" class="btn-ghost wide" data-action="yo-nuevo">Registrar a otra persona (demostración)</button>`;
   }
+  /* 26 nov 2026 (2): pestañas con más contenido. Todo sale del código del proyecto (reglas, convenio, contrato,
+   * entrevista) o de resultados del repo (ENASIC, script 07). Nada de tiempos de espera ni cifras inventadas. */
+  const fila = (t, d, cls) => `<li class="${cls || ''}"><b>${esc(t)}</b>${d ? `<span>${esc(d)}</span>` : ''}</li>`;
+  const tarjeta = (kick, tit, cuerpo, cls) => `<section class="pre-card ${cls || ''}"><div class="pre-h"><span class="rx-kick">${esc(kick)}</span><h3>${esc(tit)}</h3></div>${cuerpo}</section>`;
+  const pctBar = (p, on) => `<div class="pre-hbar${on ? ' on' : ''}"><i style="width:${p}%"></i></div>`;
+
+  /* ---------- Cuidadora · ¿Me toca? ---------- */
+  function tocaDinamico() {
+    const hd = ui.chkDia == null ? 6 : ui.chkDia, dd = ui.chkDias == null ? 5 : ui.chkDias, h = hd * dd;
+    const D = RV.DANO_07, grupo = h >= CP.regla_horas ? 'P2' : h >= 20 ? 'm20' : 'm0';
+    return `<div class="pre-total"><b class="mono">${h}</b><span>horas a la semana<br><small>${hd} h × ${dd} día${dd > 1 ? 's' : ''}</small></span></div>
+      <div class="pre-meter"><i style="width:${Math.min(100, (h / 80) * 100)}%"></i><s style="left:${(CP.regla_horas / 80) * 100}%"><em>${CP.regla_horas} h</em></s></div>
+      <div class="pre-res">${chequeoHTML(h)}</div>
+      <div class="pre-sub">Quienes cuidan como tú</div>
+      <ul class="pre-dano">${[['m0', 'Menos de 20 h'], ['m20', 'De 20 a 39 h'], ['P2', '40 h o más']].map(([k, t]) =>
+        `<li class="${k === grupo ? 'on' : ''}"><span>${t}${k === grupo ? ' <em>tú</em>' : ''}</span>${pctBar(D[k].pct, k === grupo)}<b class="mono">${pts(D[k].pct)} %</b></li>`).join('')}</ul>
+      <p class="pre-fine">Porcentaje con algún daño a su salud o a su trabajo por cuidar, entre quienes dijeron no necesitar servicios. Nacional, ENASIC 2022 (INEGI), estimación del equipo (script 07). No es un diagnóstico.</p>`;
+  }
+  function renderToca() {
+    const hd = ui.chkDia == null ? 6 : ui.chkDia, dd = ui.chkDias == null ? 5 : ui.chkDias;
+    $('#toca-body').innerHTML = tarjeta('Antes de empezar', '¿Te corresponde?', `
+        <label class="pre-q" for="chk-dia">Horas al día que cuidas <b class="mono" id="chk-dia-v">${hd} h</b></label>
+        <input type="range" id="chk-dia" min="0" max="24" step="1" value="${hd}" style="--p:${(hd / 24) * 100}%">
+        <label class="pre-q" for="chk-dias">Días a la semana <b class="mono" id="chk-dias-v">${dd}</b></label>
+        <input type="range" id="chk-dias" min="1" max="7" step="1" value="${dd}" style="--p:${((dd - 1) / 6) * 100}%">
+        <div id="toca-din" aria-live="polite">${tocaDinamico()}</div>
+        <p class="pre-fine">No se guarda. La valoración real es la entrevista de la solicitud.</p>`)
+      + tarjeta('Para sumar bien', 'Qué cuenta como cuidar', `
+        <div class="pre-tags solo">${['Bañar o vestir', 'Dar de comer', 'Acompañar al baño', 'Mover de la cama a la silla', 'Vigilar de día o de noche', 'Dar medicinas', 'Acompañar a citas', 'Hacer curaciones o terapias'].map((t) => `<span>${t}</span>`).join('')}</div>
+        <p class="pre-fine">Cuenta también el tiempo en que estás pendiente aunque hagas otra cosa. Si otra persona te ayuda, cuenta solo tus horas.</p>`)
+      + ctaMia();
+  }
+
+  /* ---------- Cuidadora · Incluye ---------- */
+  const DIAS_EJ = { 3: [2], 6: [1, 3], 9: [0, 2, 4], 12: [0, 1, 3, 4] };
+  function semanaHTML(h) {
+    const ev = RV.evaluarPaquete({ horas: h, dias: DIAS_EJ[h], inicio: '10:00' }, 0);
+    return `<div class="pre-week">${RV.DIAS.map((d, i) => `<span class="${DIAS_EJ[h].includes(i) ? 'on' : ''}"><i>${d}</i>${DIAS_EJ[h].includes(i) ? `<b>${ev.horario.replace('-', '<br>')}</b>` : '<b>·</b>'}</span>`).join('')}</div>
+      <p class="pre-line2">${DIAS_EJ[h].length} visita${DIAS_EJ[h].length > 1 ? 's' : ''} de ${pts(ev.durMin / 60)} h · ejemplo: tú eliges los días y la hora de inicio.</p>`;
+  }
+  function renderIncluye() {
+    const pk = ui.chkPaq || 6;
+    $('#incluye-body').innerHTML = tarjeta('Qué incluye', 'Horas para ti, con alguien de confianza', `
+        <div class="pre-bento">
+          <span class="b1"><b>${RV.PAQUETES[0]}-${RV.PAQUETES[RV.PAQUETES.length - 1]} h</b><i>por semana</i></span>
+          <span class="b2"><b>$0</b><i>para tu hogar · lo paga el programa</i></span>
+          <span class="b3"><b>1 persona</b><i>certificada y con contrato</i></span>
+        </div>`)
+      + tarjeta('Así se ve una semana', 'Mismos días, mismo horario', `
+        <div class="pre-seg" role="group" aria-label="Horas por semana">${RV.PAQUETES.map((p) => `<button type="button" data-paq="${p}" class="${p === pk ? 'on' : ''}">${p} h</button>`).join('')}</div>
+        <div id="paq-din">${semanaHTML(pk)}</div>
+        <p class="pre-fine">Cuántas horas te tocan depende de la bolsa del programa y se confirma cada mes.</p>`)
+      + tarjeta('La persona de relevo', 'Qué hace y qué no', `
+        <div class="pre-sub">Sí hace</div>
+        <ul class="pre-list ok">${RV.TAREAS.map((t) => fila(t)).join('')}</ul>
+        <div class="pre-sub">No hace</div>
+        <ul class="pre-list no">${CT.NO_PERMITIDAS.map((t) => fila(t)).join('')}</ul>
+        <p class="pre-fine">Si haces tareas de salud, el programa te orienta a un servicio de enfermería.</p>`)
+      + tarjeta('Tu convenio', 'Tus derechos y compromisos', `
+        <div class="pre-two">
+          <div><div class="pre-sub">Tienes derecho a</div><ul class="pre-list ok">${fila('Terminar cuando quieras, sin costo')}${fila('Pedir otra revisión de tu valoración')}${fila('Reportar un incidente y cambiar de persona')}${fila('Usar solo un alias en la app')}</ul></div>
+          <div><div class="pre-sub">Te comprometes a</div><ul class="pre-list">${fila('Tratar con respeto a la persona de relevo')}${fila('No pedir tareas ni horas fuera de lo acordado')}${fila('Avisar cancelaciones con 24 h')}${fila('Mantener la casa segura para la visita')}</ul></div>
+        </div>`)
+      + ctaMia();
+  }
+
+  /* ---------- Cuidadora · Pasos ---------- */
+  function renderPasos() {
+    const c = casoById(leerId('mientras-mi-caso'));
+    const paso = (n, t, d, extra) => `<li><i>${n}</i><span><b>${esc(t)}</b><small>${esc(d)}</small>${extra || ''}</span></li>`;
+    $('#pasos-body').innerHTML = (c ? tarjeta('Tu avance', c.folio, pasosRes(c)) : '')
+      + tarjeta('Cómo funciona', 'De la solicitud a la primera visita', `<ol class="pre-steps big">
+          ${paso(1, 'Solicitud y entrevista', 'Llegas por tu cuenta o te refiere una institución (DIF, centro de salud, escuela, clínica o módulo).', '<em class="pre-pill">Solo un alias</em>')}
+          ${paso(2, 'Revisión del programa', 'Una persona revisa tu solicitud antes de asignar. Si no estás de acuerdo con tu resultado, pides otra revisión.', '<em class="pre-pill">Revisión humana</em>')}
+          ${paso(3, 'Convenio y consentimiento', 'Firmas el convenio. La persona que cuidas da su consentimiento, o su representante; si no se puede en ese momento, se pide en la primera visita.', '<em class="pre-pill">Costo $0</em>')}
+          ${paso(4, 'Relevo y primera visita', 'Te asignamos una persona cerca de ti en el horario que elegiste. Ahí se confirma tu identidad.', '<em class="pre-pill">Domicilio solo aquí</em>')}
+        </ol>`)
+      + tarjeta('La entrevista', 'Qué te vamos a preguntar', `
+        <div class="pre-blocks">
+          <div><em>1/3</em><b>Tu cuidado</b><span>Cuántas horas a la semana cuidas y si haces tareas de salud (sí o no).</span></div>
+          <div><em>2/3</em><b>Cómo te sientes</b><span>${CP.zarit.n_reactivos} preguntas, de "nunca" a "casi siempre".</span></div>
+          <div><em>3/3</em><b>La persona que cuidas</b><span>Qué tanta ayuda necesita en ${PR.BARTHEL.length} actividades. Solo con su consentimiento.</span></div>
+        </div>
+        <details class="pre-det"><summary>Ver las ${PR.BARTHEL.length} actividades</summary><div class="pre-tags">${PR.BARTHEL.map((b) => `<span>${esc(b.txt)}</span>`).join('')}</div></details>
+        <div class="pre-sub">Nunca te pedimos</div>
+        <div class="pre-tags solo neg">${['CURP', 'Nombre completo', 'Diagnósticos', 'Edad'].map((t) => `<span>${t}</span>`).join('')}</div>`)
+      + tarjeta('Después', 'Cuando ya tienes relevo', `<ul class="pre-list">
+          ${fila('Llegada y salida de cada visita', 'Quedan registradas en la app.')}
+          ${fila('Dos preguntas a la semana', 'Opcionales: cansancio, sueño y si pudiste trabajar o estudiar.')}
+          ${fila('Incidentes en ambos sentidos', 'Tú o la persona de relevo pueden reportar; responde el programa.')}
+          ${fila('En una emergencia', 'Llama al 911.')}
+        </ul>`)
+      + ctaMia();
+  }
+
+  /* ---------- Relevo · Pago ---------- */
+  function pagoDin(h) {
+    const u = legal.umbral291C(h, RV.SEMANAS_MES), hImss = Math.ceil(u.horasMesNecesarias / RV.SEMANAS_MES);
+    return `${pagoHTML(h)}
+      <div class="pre-imss"><div class="pre-meter dark"><i style="width:${Math.min(100, (h / 48) * 100)}%"></i><s style="left:${(hImss / 48) * 100}%"><em>IMSS ${hImss} h</em></s></div></div>`;
+  }
+  function renderPago() {
+    const r = relById(leerId('mientras-mi-relevo'));
+    const h = ui.chkPago == null ? (r ? Math.max(3, r.horasMax) : 12) : ui.chkPago;
+    const base = legal.HORA.diurna, P = legal.PROPORCIONALES;
+    const partes = [['Salario', base, 'b0'], ['Descanso semanal', base * P.descanso_semanal, 'b1'], ['Aguinaldo', base * P.aguinaldo, 'b2'], ['Vacaciones', base * P.vacaciones, 'b3'], ['Prima vacacional', base * P.prima_vacacional, 'b4']];
+    const tot = partes.reduce((t, p) => t + p[1], 0);
+    $('#pago-body').innerHTML = tarjeta('Estimación · por verificar', '¿Cuánto ganarías?', `
+        <label class="pre-q" for="chk-pago">Horas a la semana que puedes dar <b class="mono" id="pago-val">${h} h</b></label>
+        <input type="range" id="chk-pago" min="3" max="48" step="1" value="${h}" style="--p:${((h - 3) / 45) * 100}%">
+        <div id="pago-res" aria-live="polite">${pagoDin(h)}</div>`, 'pre-dark')
+      + tarjeta('Tu hora diurna', `$${f2(tot)} por hora`, `
+        <div class="pre-stack">${partes.map(([, v, c]) => `<i class="${c}" style="width:${(v / tot) * 100}%"></i>`).join('')}</div>
+        <ul class="pre-legend">${partes.map(([t, v, c]) => `<li><i class="${c}"></i><span>${t}</span><b class="mono">$${f2(v)}</b></li>`).join('')}</ul>
+        <p class="pre-fine">Pago por tarea con las prestaciones ya incluidas (LFT art. 291-F). Salario mínimo de trabajo del hogar, CONASAMI 2026: por verificar.</p>`)
+      + tarjeta('Según el horario', 'La hora cambia con la jornada', `<div class="pre-rates">
+          <span><i>Diurna</i><b class="mono">$${f2(legal.HORA_PLATAFORMA.diurna)}</b><small>06:00-20:00 · máx. ${legal.MAX_H.diurna} h</small></span>
+          <span><i>Mixta</i><b class="mono">$${f2(legal.HORA_PLATAFORMA.mixta)}</b><small>menos de 3.5 h de noche · máx. ${legal.MAX_H.mixta} h</small></span>
+          <span><i>Nocturna</i><b class="mono">$${f2(legal.HORA_PLATAFORMA.nocturna)}</b><small>20:00-06:00 · máx. ${legal.MAX_H.nocturna} h</small></span>
+        </div>`)
+      + tarjeta('Cuándo y cómo', 'Así te pagamos', `<ul class="pre-list ok">
+          ${fila('Cada semana, con recibo', 'Por visita, según sus horas.')}
+          ${fila('Si el hogar cancela con menos de 24 h', 'La visita se paga.')}
+          ${fila('Si te retiras por un riesgo', 'No pierdes el pago de esa visita.')}
+          ${fila('Horas extra solo con tu acuerdo', 'Y se pagan conforme a la ley.')}
+          ${fila('Propinas', 'No son obligatorias y no forman parte del salario.')}
+        </ul>`)
+      + `<p class="pre-fine">Lo que ganas de verdad depende de los casos que te asignen, no de las horas que ofreces.</p>${ctaYo()}`;
+  }
+
+  /* ---------- Relevo · Requisitos ---------- */
+  const REQS = [
+    ['curp', `CURP de persona mayor de ${legal.EDAD_MIN} años`, 'Se valida al registrarte y solo se guarda una huella.'],
+    ['id', 'Identificación vigente', legal.DOCS_ID.join(', ') + '. La presentas en la revisión.'],
+    ['ref', 'Una referencia', 'Nombre y teléfono de 10 dígitos. Se borran al resolver tu registro.'],
+    ['disp', 'Al menos un día y 3 h a la semana', 'Tú eliges días, horario y zona.'],
+    ['cert', 'Certificación vigente', 'Sin ella te registras, pero no recibes casos.'],
+    ['ct', 'Firmar el contrato de trabajo', 'Lo firmas en la app al final del registro.'],
+  ];
+  function reqDin() {
+    const t = ui.reqTengo || {}, n = REQS.filter(([k]) => t[k]).length;
+    return `<div class="pre-prog"><div class="pre-ring" style="--p:${(n / REQS.length) * 100}%"><b class="mono">${n}/${REQS.length}</b></div>
+      <span><b>${n === REQS.length ? 'Tienes todo para registrarte' : `Te falta${REQS.length - n > 1 ? 'n' : ''} ${REQS.length - n}`}</b><small>Marca lo que ya tienes. No se guarda.</small></span></div>`;
+  }
+  function renderReq() {
+    const t = ui.reqTengo || {};
+    $('#req-body').innerHTML = tarjeta('Lo que te pedimos', 'Requisitos', `<div id="req-din">${reqDin()}</div>
+        <ul class="pre-chk">${REQS.map(([k, tit, d]) => `<li><label><input type="checkbox" data-req="${k}"${t[k] ? ' checked' : ''}><i aria-hidden="true"></i><span><b>${esc(tit)}</b><small>${esc(d)}</small></span></label></li>`).join('')}</ul>`)
+      + tarjeta('Sin carta de antecedentes', 'Por qué no la pedimos', `
+        <p class="pre-p">La Suprema Corte invalidó exigirla de forma general (AI 38/2022 para cuidado infantil y AI 111/2023 para conductores de plataformas).</p>
+        <div class="pre-sub">En su lugar</div>
+        <div class="pre-tags solo">${['Entrevista de verificación', 'Referencia', 'Certificación', 'Primera visita acompañada'].map((x) => `<span>${x}</span>`).join('')}</div>`)
+      + tarjeta('El trabajo', 'Qué harías y qué no', `
+        <div class="pre-sub">Tareas que puedes cubrir</div>
+        <ul class="pre-list ok">${RV.TAREAS.map((x) => fila(x)).join('')}</ul>
+        <div class="pre-sub">No te toca, y puedes negarte</div>
+        <ul class="pre-list no">${CT.NO_PERMITIDAS.map((x) => fila(x)).join('')}</ul>`)
+      + ctaYo();
+  }
+
+  /* ---------- Relevo · Asignación ---------- */
+  function renderAsig() {
+    const filtros = [['Registro aprobado', 'Documentos, referencia y entrevista revisados'], ['Certificación vigente', ''], [`A ${cfg().maxKm} km o menos`, 'Entre centros de alcaldía'], ['Disponible esos días', ''], ['Dentro de tu horario', ''], ['Con horas libres esa semana', 'Tu cupo no se rebasa'], ['Cubres las tareas del hogar', '']];
+    $('#asig-body').innerHTML = tarjeta('Cómo te asignan', 'Sin catálogo ni calificaciones', `<ol class="pre-steps">
+          ${pasoPre(1, 'Te registras', 'Días, horario, zona y tareas que puedes cubrir.')}
+          ${pasoPre(2, 'El programa revisa', 'Documentos, referencia y entrevista de verificación.')}
+          ${pasoPre(3, 'Te ofrecen una visita', 'Puedes aceptarla o rechazarla. Tu primera visita es acompañada.')}
+        </ol>`)
+      + tarjeta('La regla', 'Para ofrecerte un caso, revisamos', `
+        <ol class="pre-funnel">${filtros.map(([t, d], i) => `<li style="--w:${100 - i * 7}%"><b>${esc(t)}</b>${d ? `<small>${esc(d)}</small>` : ''}</li>`).join('')}</ol>
+        <div class="pre-win"><b>Si varias cumplen</b><span>Va a quien está más cerca. Si hay empate, a quien tiene menos horas esa semana.</span></div>`)
+      + tarjeta('Lo que no hacemos', 'Reglas que te protegen', `<ul class="pre-list ok">
+          ${fila('Sin estrellas ni ranking', 'No hay calificaciones de las familias.')}
+          ${fila('Rechazar no te castiga', 'No te baja de lugar ni te quita ofertas.')}
+          ${fila('Un incidente no te quita casos solo', 'Lo revisa una persona, que te escucha antes.')}
+          ${fila('No usamos tu sexo ni tu edad', 'Ninguna característica personal decide.')}
+          ${fila('Si las reglas cambian, te avisamos', 'Y tienes que aceptarlas de nuevo.')}
+        </ul>`)
+      + tarjeta('Tus compromisos', 'Cuando aceptas un caso', `<ul class="pre-list">
+          ${fila('Visitas semanales fijas', 'Si dejas un caso, avisa con una semana para que el hogar no se quede sin relevo.')}
+          ${fila('Registrar llegada y salida', 'Con eso se calculan tu tiempo y tu pago.')}
+          ${fila('Confidencialidad', 'Sin fotos, grabaciones ni compartir datos de los hogares.')}
+          ${fila('30 días sin actividad', 'La relación termina; si vuelves, empieza una nueva.')}
+        </ul>`)
+      + ctaYo();
+  }
+
+  $('#toca-body').addEventListener('input', (e) => {
+    const id = e.target.id;
+    if (id !== 'chk-dia' && id !== 'chk-dias') return;
+    const v = +e.target.value;
+    if (id === 'chk-dia') { ui.chkDia = v; e.target.style.setProperty('--p', (v / 24) * 100 + '%'); $('#chk-dia-v').textContent = v + ' h'; }
+    else { ui.chkDias = v; e.target.style.setProperty('--p', ((v - 1) / 6) * 100 + '%'); $('#chk-dias-v').textContent = v; }
+    $('#toca-din').innerHTML = tocaDinamico();
+  });
+  $('#incluye-body').addEventListener('click', (e) => {
+    const b = e.target.closest('[data-paq]'); if (!b) return;
+    ui.chkPaq = +b.dataset.paq;
+    $$('#incluye-body [data-paq]').forEach((x) => x.classList.toggle('on', x === b));
+    $('#paq-din').innerHTML = semanaHTML(ui.chkPaq);
+  });
+  $('#pago-body').addEventListener('input', (e) => {
+    if (e.target.id !== 'chk-pago') return;
+    const h = +e.target.value; ui.chkPago = h;
+    e.target.style.setProperty('--p', ((h - 3) / 45) * 100 + '%');
+    $('#pago-val').textContent = h + ' h'; $('#pago-res').innerHTML = pagoDin(h);
+  });
+  $('#req-body').addEventListener('change', (e) => {
+    const k = e.target.dataset.req; if (!k) return;
+    ui.reqTengo = Object.assign({}, ui.reqTengo, { [k]: e.target.checked });
+    $('#req-din').innerHTML = reqDin();
+  });
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-go]'); if (b) show(b.dataset.go); });
 
   /* ================= Contactos de la cuidadora (24 nov 2026) ================= */
   function abrirContactos() {
@@ -1266,13 +1620,19 @@
     $('#brandline').textContent = `${CP.nombre} · ${CP.eslogan}`;
     $$('.screen').forEach((s) => { s.hidden = s.id !== 'view-' + ui.view; });
     $$('#rolbar button').forEach((b) => { const on = b.dataset.rol === ui.rol; b.classList.toggle('on', on); b.setAttribute('aria-pressed', on); });
-    $('.tabbar').hidden = ui.rol !== 'programa';
+    $$('.tabbtn').forEach((t) => { t.hidden = t.dataset.rol !== ui.rol; });
     $$('.tabbtn').forEach((t) => { const on = t.dataset.view === ui.view; t.classList.toggle('on', on); t.setAttribute('aria-selected', on); t.tabIndex = on ? 0 : -1; });
     $('#topTitle').textContent = TITULOS[ui.view];
     $('#topTag').textContent = ui.view === 'seguimiento' ? { prog: 'programa · simulado', hoy: 'visitas · simulado', caso: 'datos simulados', mapa: 'territorio · simulado' }[ui.segSub] : 'datos simulados';   // 11 nov 2026: la etiqueta se ve en todos los roles
     renderAjustes();
     if (ui.view === 'mia') renderMia();
     else if (ui.view === 'yo') renderYo();
+    else if (ui.view === 'toca') renderToca();
+    else if (ui.view === 'incluye') renderIncluye();
+    else if (ui.view === 'pasos') renderPasos();
+    else if (ui.view === 'pago') renderPago();
+    else if (ui.view === 'req') renderReq();
+    else if (ui.view === 'asig') renderAsig();
     else if (ui.view === 'casos') renderCasos();
     else if (ui.view === 'relevos') renderRelevos();
     else if (ui.view === 'seguimiento') renderSeguimiento();

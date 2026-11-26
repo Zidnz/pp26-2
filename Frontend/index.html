@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap">
   <link rel="stylesheet" href="css/app.css?v=20261102">
   <link rel="stylesheet" href="css/redcare.css?v=20261125">
-  <link rel="stylesheet" href="css/bento.css?v=20261124m">
+  <link rel="stylesheet" href="css/bento.css?v=20261126f">
 </head>
 <body>
 <div class="app" id="app">
@@ -38,6 +38,14 @@
 
   <!-- ============ 0b. PERSONA DE RELEVO: solo su registro ============ -->
   <section class="screen" id="view-yo" hidden><div class="pane" id="yo-body"></div></section>
+
+  <!-- 26 nov 2026: pestañas propias de la cuidadora y de la persona de relevo -->
+  <section class="screen" id="view-toca" hidden><div class="pane" id="toca-body"></div></section>
+  <section class="screen" id="view-incluye" hidden><div class="pane" id="incluye-body"></div></section>
+  <section class="screen" id="view-pasos" hidden><div class="pane" id="pasos-body"></div></section>
+  <section class="screen" id="view-pago" hidden><div class="pane" id="pago-body"></div></section>
+  <section class="screen" id="view-req" hidden><div class="pane" id="req-body"></div></section>
+  <section class="screen" id="view-asig" hidden><div class="pane" id="asig-body"></div></section>
 
   <!-- ============ 1. CASOS ============ -->
   <section class="screen" id="view-casos" hidden>
@@ -126,42 +134,59 @@
   </section>
 
   <!-- ============ 4. AJUSTES ============ -->
+  <!-- 26 nov 2026: Ajustes como simulador. Cada palanca muestra su efecto en vivo y cada supuesto dice qué tan firme es. -->
   <section class="screen" id="view-ajustes" hidden>
-    <div class="pane">
-      <div class="card panel">
-        <label class="fld">Distancia máxima: <b id="cfg-km-val"></b>
-          <input type="range" id="cfg-km" min="3" max="30" step="1">
-        </label>
-        <label class="fld">Prestaciones sobre el costo: <b id="cfg-fp-val"></b>
-          <input type="range" id="cfg-fp" min="0" max="60" step="1">
-        </label>
-        <label class="fld">Bolsa de horas al mes (simulación): <b id="cfg-bolsa-val"></b>
-          <input type="range" id="cfg-bolsa" min="50" max="3000" step="10">
-        </label>
-        <p class="sub" id="cfg-bolsa-nota"></p>
+    <div class="pane aj">
+      <div id="aj-hero"></div>
+
+      <div class="aj-h"><h2>Palancas</h2><span>Mueve y mira el efecto</span></div>
+
+      <div class="aj-lever">
+        <div class="aj-lv-top"><span class="aj-lv-tit">Bolsa de horas al mes</span><b class="aj-lv-val" id="cfg-bolsa-val"></b></div>
+        <input type="range" id="cfg-bolsa" min="50" max="3000" step="10" aria-label="Bolsa de horas al mes">
+        <div class="aj-presets" data-cfg="bolsaSim"></div>
+        <div class="aj-imp" id="cfg-bolsa-imp"></div>
       </div>
-      <details class="card panel">
-        <summary>Reglas del programa</summary>
-        <ul class="params" id="cfg-prio"></ul>
+
+      <div class="aj-lever">
+        <div class="aj-lv-top"><span class="aj-lv-tit">Distancia máxima para asignar</span><b class="aj-lv-val" id="cfg-km-val"></b></div>
+        <input type="range" id="cfg-km" min="3" max="30" step="1" aria-label="Distancia máxima en kilómetros">
+        <div class="aj-presets" data-cfg="maxKm"></div>
+        <div class="aj-imp" id="cfg-km-imp"></div>
+      </div>
+
+      <div class="aj-lever">
+        <div class="aj-lv-top"><span class="aj-lv-tit">Prestaciones sobre el costo</span><b class="aj-lv-val" id="cfg-fp-val"></b></div>
+        <input type="range" id="cfg-fp" min="0" max="60" step="1" aria-label="Prestaciones sobre el costo en por ciento">
+        <div class="aj-presets" data-cfg="factorPrest"></div>
+        <div class="aj-imp" id="cfg-fp-imp"></div>
+      </div>
+
+      <div class="aj-h"><h2>Legal y protección de datos</h2><span>borradores sin dictamen jurídico</span></div>
+      <div class="aj-docs" id="aj-docs"></div>
+
+      <details class="aj-acc">
+        <summary><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 5 6v5c0 4.5 3 8.3 7 10 4-1.7 7-5.5 7-10V6z"/><path d="m9 12 2 2 4-4"/></svg><span><b>Cómo protegemos los datos</b><small>Qué se pide, qué se guarda y quién lo ve</small></span></summary>
+        <ul class="aj-prot" id="aj-prot"></ul>
       </details>
-      <details class="card panel">
-        <summary>Sueldos y horas</summary>
-        <ul class="params" id="cfg-params"></ul>
-      </details>
-      <details class="card panel">
-        <summary>Marco legal</summary>
+
+      <details class="aj-acc">
+        <summary><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M5 8h14M7 8l-3 7h6zM17 8l-3 7h6zM8 20h8"/></svg><span><b>Marco legal</b><small id="aj-marco-n"></small></span></summary>
         <ul class="marco" id="cfg-marco"></ul>
       </details>
-      <div class="card panel">
-        <p class="sub" id="cfg-stats"></p>
-        <div class="btn-col">
-          <button class="btn-ghost" id="cfg-export">Exportar todo (JSON)</button>
-          <button class="btn-ghost" id="cfg-import">Importar JSON</button>
-          <input type="file" id="cfg-file" accept="application/json" hidden>
-          <button class="btn-ghost" id="cfg-seed">Restaurar ejemplo</button>
-          <button class="btn-ghost danger" id="cfg-clear">Borrar todo</button>
-          <button class="btn-ghost" id="cfg-intro">Ver la bienvenida otra vez</button>
-        </div>
+
+      <div class="aj-h"><h2>Datos de la demostración</h2><span>se guardan en este navegador</span></div>
+      <div class="aj-stats" id="cfg-stats"></div>
+      <div class="aj-grid">
+        <button type="button" class="aj-btn" id="cfg-export"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0-4-4m4 4 4-4M5 19h14"/></svg><span>Exportar todo</span><small>JSON con alias y salud</small></button>
+        <button type="button" class="aj-btn" id="cfg-import"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 15V3m0 0L8 7m4-4 4 4M5 19h14"/></svg><span>Importar</span><small>reemplaza lo actual</small></button>
+        <input type="file" id="cfg-file" accept="application/json" hidden>
+        <button type="button" class="aj-btn" id="cfg-seed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.3-5.7M4 4v4h4"/></svg><span>Restaurar ejemplo</span><small>datos simulados</small></button>
+        <button type="button" class="aj-btn" id="cfg-intro"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M10 9l5 3-5 3z"/></svg><span>Ver bienvenida</span><small>elegir rol otra vez</small></button>
+      </div>
+      <div class="aj-danger">
+        <div><b>Borrar todo</b><span>Casos, relevos, visitas e incidentes. No se puede deshacer.</span></div>
+        <button type="button" class="btn-alert sm" id="cfg-clear">Borrar</button>
       </div>
     </div>
   </section>
@@ -389,19 +414,51 @@
   </div>
 
   <nav class="tabbar" role="tablist" aria-label="Secciones">
-    <button class="tabbtn" role="tab" id="tab-seguimiento" data-view="seguimiento">
+    <button class="tabbtn" role="tab" id="tab-mia" data-view="mia" data-rol="cuidadora" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
+      <span>Inicio</span>
+    </button>
+    <button class="tabbtn" role="tab" id="tab-toca" data-view="toca" data-rol="cuidadora" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3 2"/></svg>
+      <span>¿Me toca?</span>
+    </button>
+    <button class="tabbtn" role="tab" id="tab-incluye" data-view="incluye" data-rol="cuidadora" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="4" width="7" height="7" rx="2"/><rect x="13" y="4" width="7" height="7" rx="2"/><rect x="4" y="13" width="7" height="7" rx="2"/><rect x="13" y="13" width="7" height="7" rx="2"/></svg>
+      <span>Incluye</span>
+    </button>
+    <button class="tabbtn" role="tab" id="tab-pasos" data-view="pasos" data-rol="cuidadora" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="6" cy="18" r="2"/><path d="M6 8v8M11 6h9M11 18h9M11 12h9"/></svg>
+      <span>Pasos</span>
+    </button>
+    <button class="tabbtn" role="tab" id="tab-yo" data-view="yo" data-rol="relevo" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
+      <span>Inicio</span>
+    </button>
+    <button class="tabbtn" role="tab" id="tab-pago" data-view="pago" data-rol="relevo" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2.5"/><circle cx="12" cy="12" r="2.5"/><path d="M6.5 9.5v0M17.5 14.5v0"/></svg>
+      <span>Pago</span>
+    </button>
+    <button class="tabbtn" role="tab" id="tab-req" data-view="req" data-rol="relevo" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="m8.5 9 1.5 1.5 3-3M8.5 15h7"/></svg>
+      <span>Requisitos</span>
+    </button>
+    <button class="tabbtn" role="tab" id="tab-asig" data-view="asig" data-rol="relevo" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="10" r="3"/><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/></svg>
+      <span>Asignación</span>
+    </button>
+    <button class="tabbtn" role="tab" id="tab-seguimiento" data-view="seguimiento" data-rol="programa">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/><path d="M12 7.5v4m0 0-5.5 5M12 11.5l5.5 5"/></svg>
       <span>Red</span>
     </button>
-    <button class="tabbtn" role="tab" id="tab-casos" data-view="casos">
+    <button class="tabbtn" role="tab" id="tab-casos" data-view="casos" data-rol="programa">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 10.5 12 4l9 6.5"/><path d="M5 9.5V20h14V9.5"/><path d="M10 20v-5h4v5"/></svg>
       <span>Casos</span>
     </button>
-    <button class="tabbtn" role="tab" id="tab-relevos" data-view="relevos">
+    <button class="tabbtn" role="tab" id="tab-relevos" data-view="relevos" data-rol="programa">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c0-3 2.4-5 5.5-5s5.5 2 5.5 5"/><path d="m16 11 2 2 4-4"/></svg>
       <span>Relevos</span>
     </button>
-    <button class="tabbtn" role="tab" id="tab-ajustes" data-view="ajustes">
+    <button class="tabbtn" role="tab" id="tab-ajustes" data-view="ajustes" data-rol="programa">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>
       <span>Ajustes</span>
     </button>
@@ -418,7 +475,7 @@
 <script src="js/contrato.js?v=20261124g"></script>
 <script src="js/aviso.js?v=20261124m"></script>
 <script src="js/red.js?v=20261102"></script>
-<script src="js/app.js?v=20261125"></script>
+<script src="js/app.js?v=20261126f"></script>
 <script src="js/interaccion.js?v=20261105j"></script>
 </body>
 </html>
