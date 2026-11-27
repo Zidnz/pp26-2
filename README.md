@@ -43,6 +43,7 @@
 - [Qué es](#qué-es)
 - [Componentes](#componentes)
 - [Qué responde el Observatorio](#qué-responde-el-observatorio)
+- [Qué hace RedCare](#qué-hace-redcare)
 - [Arquitectura](#arquitectura)
 - [Estructura del repositorio](#estructura-del-repositorio)
 - [Cómo correrlo](#cómo-correrlo)
@@ -88,6 +89,34 @@ El programa que se evalúa es la **opción C: relevo por horas** para cuidadoras
 | **Método** | ¿Cómo se hizo, y qué sigue sin revisar? |
 
 Cada cifra del tablero lleva su fuente, su precisión (intervalo de confianza) y su estado de revisión.
+
+## Qué hace RedCare
+
+**RedCare · Una red que cuida a quienes cuidan** es el prototipo móvil del programa de relevo por horas. Está hecho en HTML/CSS/JS puro, sin build ni backend; en escritorio se ve dentro de un marco de teléfono. Todo lo que muestra son **datos simulados**, que se guardan en el `localStorage` del navegador. Sirven para mostrar que el flujo funciona. **No validan la hipótesis ni miden impacto.**
+
+Al abrir la app aparece una bienvenida en forma de red. Ahí se elige el rol, y cada rol tiene sus propias pestañas:
+
+| Rol | Pestañas | Qué hace |
+|---|---|---|
+| **Cuidadora** | Inicio · ¿Me toca? · Incluye · Pasos | Pide relevo y después ve **solo su caso**: prioridad, horas, estado, *Mi convenio*, *Contactos*, *Mis datos* y el aviso de privacidad. Registra visitas y contesta tres preguntas semanales. |
+| **Persona de relevo** | Inicio · Pago · Requisitos · Asignación | Se registra, ve solo su registro, su pago por visita y su asignación, y acepta o rechaza cada oferta sin penalización. |
+| **Programa** | Seguimiento · Casos · Relevos · Ajustes | Ve todos los casos y registros, valida documentos y consentimientos, asigna el relevo y revisa apelaciones. Ajustes funciona como simulador, con secciones legal y de datos. |
+
+**Flujo de la solicitud:** entrada (autorregistro o referencia institucional) → registro → consentimiento de quien cuida y de la persona cuidada → entrevista (horas, Barthel, Zarit) → nivel de prioridad → horas de la bolsa mensual → firma del convenio de servicio → asignación de relevo.
+
+**Reglas principales** (en `js/config.js`, `js/prioridad.js` y `js/relevo.js`):
+
+- **Entrada:** 40 h o más de cuidado a la semana. Las horas y el tiempo de espera solo ordenan el reparto de la bolsa. No está probado que un modelo lo haga mejor que la regla.
+- **Bolsa de horas:** todas reciben un mínimo garantizado y el resto se reparte en proporción, con tope por hogar. Los paquetes son de 3 a 12 h por semana.
+- **Asignación por restricciones**, sin estrellas ni ranking: la persona aprobada y certificada más cercana, que tenga esos días y horas libres, cupo y las tareas que pide el caso. Si hay empate, gana la de menor carga.
+- **Revisión humana:** los chequeos de consistencia (por ejemplo, horas contra Barthel) mandan el caso a revisión y no bajan el puntaje. La familia puede pedir revisión del resultado.
+- **Modelo laboral de plataforma digital** (LFT, Cap. IX Bis). El hogar es usuario y no paga. A la persona de relevo se le paga por visita con proporcionales de prestaciones (≈ $53/h diurna). El contrato y el convenio son **borradores sin dictaminar**.
+
+**Datos que guarda:** solo lo que usa el puntaje o la asignación. De la CURP de la persona de relevo queda solo su huella (SHA-256) y los últimos 4 dígitos. La referencia se borra cuando se resuelve el registro. De cada firma se guardan la versión y la huella del texto, no el texto. Sin consentimiento otorgado o acreditado no se asigna relevo.
+
+**Lo que no resuelve:** quién paga el subsidio, la escasez de personas certificadas ni si el relevo tiene efecto: las preguntas semanales no son un instrumento validado y no hay grupo de comparación.
+
+El detalle completo, con el historial de cambios, está en [`Frontend/README.md`](Frontend/README.md).
 
 ## Arquitectura
 
@@ -158,6 +187,13 @@ python Frontend/observatorio/build_datos.py
 
 ```bash
 cd Frontend && python -m http.server 8000
+```
+
+También abre con doble clic en [`Frontend/index.html`](Frontend/index.html), o en la [versión publicada](https://zidnz.github.io/pp26-2/Frontend/). Pruebas, desde `Frontend/`:
+
+```bash
+node tests/prueba_asignacion.js
+node tests/prueba_privacidad_contrato.js
 ```
 
 **API:**
