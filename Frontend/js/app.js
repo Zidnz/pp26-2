@@ -1686,9 +1686,7 @@
     const operador = CP.operador || 'Operador de RedCare';
     const tareas = doc.datos.tareas && doc.datos.tareas.length ? doc.datos.tareas : RV.TAREAS;
     const quienFirma = f ? f.firmante : c.cuidadora.alias;
-    const estado = f ? (f.metodo === 'simulado' ? 'Firma simulada' : 'Firmado') : 'Sin firma todavía';
-    return `<div class="cv-estado${f ? ' ok' : ''}"><i aria-hidden="true">${f ? '✓' : '!'}</i><div><b>${estado}</b><small>${f ? `${esc(fechaLarga(f.fecha))} · el texto muestra tus datos de hoy` : 'Así se ve el convenio con tus datos de hoy'}</small></div></div>
-      <article class="cv-hoja">
+    return `<article class="cv-hoja">
         <div class="cv-marca"><img src="observatorio/ilustraciones/logo_marca.svg" alt=""><b>RedCare</b><span>${esc(c.folio)}</span></div>
         <h4>${esc(doc.titulo)}</h4>
         <p class="cv-ver">Versión ${esc(doc.version)}</p>
@@ -1710,7 +1708,7 @@
         <div class="cv-firma">
           <div class="cv-trazo${f ? '' : ' vacio'}">${f ? esc(quienFirma) : 'Aquí va tu firma'}</div>
           <b>«${esc(quienFirma)}» · quien cuida</b>
-          ${!f ? '' : f.metodo === 'simulado' ? '<small>Firma de ejemplo</small>' : `<small>Versión firmada: ${esc(f.version)}${f.huellaTexto ? `<br>Huella ${esc(f.huellaTexto.slice(0, 8))}` : ''}</small>`}
+          ${!f ? '' : f.metodo === 'simulado' ? `<small>Firma de ejemplo · ${esc(fechaLarga(f.fecha))}</small>` : `<small>${esc(fechaLarga(f.fecha))}<br>Versión firmada: ${esc(f.version)}${f.huellaTexto ? `<br>Huella ${esc(f.huellaTexto.slice(0, 8))}` : ''}</small>`}
         </div>
         <p class="cv-pie">Borrador para el prototipo. No está dictaminado jurídicamente.</p>
       </article>`;

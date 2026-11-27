@@ -588,12 +588,7 @@ input:focus,textarea:focus{box-shadow:inset 0 0 0 2px var(--accent);transform:no
 .md-como{margin-top:8px;padding:12px 14px;border-radius:16px;background:#ece6f7;font:500 12.5px/1.5 var(--sans);color:var(--ink);overflow-wrap:anywhere}
 
 /* ===== 26 nov 2026 (5): el convenio se ve como documento ===== */
-.cv-estado{display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:18px;background:#f6ecd0}
-.cv-estado.ok{background:#d9f0ea}
-.cv-estado i{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#fff;font:800 15px var(--display);font-style:normal;color:var(--ink)}
-.cv-estado b{display:block;font:800 13.5px var(--display);color:var(--ink)}
-.cv-estado small{display:block;font:500 11.5px/1.4 var(--sans);color:var(--ink-soft)}
-.cv-hoja{margin-top:12px;padding:20px 16px;border-radius:8px;background:#fff;border-top:6px solid var(--accent);box-shadow:0 8px 24px rgba(43,48,69,.14);color:var(--ink)}
+.cv-hoja{padding:20px 16px;border-radius:8px;background:#fff;box-shadow:0 8px 24px rgba(43,48,69,.14);color:var(--ink)}
 .cv-marca{display:flex;align-items:center;gap:8px;padding-bottom:12px;border-bottom:1px solid var(--hair)}
 .cv-marca img{width:28px;height:28px}
 .cv-marca b{font:800 14px var(--display)}
