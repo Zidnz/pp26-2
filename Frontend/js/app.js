@@ -1251,8 +1251,8 @@
     const dentro = h >= CP.regla_horas;
     const hMin = RV.PAQUETES[0], hMax = RV.PAQUETES[RV.PAQUETES.length - 1];
     return dentro
-      ? `<b class="pre-ok">Te corresponde pedir relevo</b><span>Con ${h} h a la semana entras a la regla. Podrías recibir de ${hMin} a ${hMax} h de relevo a la semana: cuántas depende de la bolsa del programa y de tu lugar en la lista.</span>`
-      : `<b class="pre-no">Aún no entras a las horas de relevo</b><span>Son para quien cuida ${CP.regla_horas} h o más a la semana. Igual puedes registrarte: quedas en la red y te conectamos con apoyo cerca de ti.</span>`;
+      ? `<b class="pre-ok">Sí te corresponde</b><span>Podrías recibir de ${hMin} a ${hMax} h de relevo a la semana.</span>`
+      : `<b class="pre-no">Aún no te corresponde</b><span>Es para quien cuida ${CP.regla_horas} h o más. Igual puedes registrarte.</span>`;
   }
   /* 26 nov 2026: la cuidadora y la persona de relevo tienen su propia barra de pestañas, como el Programa.
    * Cuidadora: Inicio · ¿Me toca? · Incluye · Pasos. Relevo: Inicio · Pago · Requisitos · Asignación. */
@@ -1272,7 +1272,6 @@
           <button type="button" data-go="incluye"><b>Qué incluye</b><small>Horas, horario, tareas</small></button>
           <button type="button" data-go="pasos"><b>Pasos</b><small>Cómo sigue</small></button>
         </div>
-        <p class="complementario">${esc(CP.aviso_complementario)}</p>
         ${ej ? sepEjemplo('Así se ve una solicitud con relevo') + tarjetaCaso(ej, true) + `<button type="button" class="btn-ghost wide" data-action="mia-demo" data-id="${esc(ej.id)}">Probar con esta solicitud (demostración)</button>` : ''}`;
       return;
     }
@@ -1297,7 +1296,7 @@
           <div class="rx-top"><span class="rx-kick">${esc(estado)}</span></div>
           <div class="rx-big rx-word"><b>${esc(r.nombre)}</b></div>
           <div class="rx-weeks dos"><span><i>Esta semana</i><b>${carga} de ${r.horasMax} h</b></span><span><i>Casos</i><b>${casos.length}</b></span></div>
-          <p class="rx-msg">Con contrato, seguro de riesgos de trabajo y pago por visita al piso legal.</p>
+          <p class="rx-msg">Con contrato, seguro y pago por visita.</p>
         </div>
         ${casos.map((c) => `<div class="rx-note"><b>Visita a ${esc(c.persona.alias)}</b><span>${esc(c.domicilio ? c.domicilio.texto + ' (ficticio)' : c.alcaldia)} · ${esc(diasTxt(c.paquete ? c.paquete.dias : []))}</span></div>`).join('')}
         ${r.pago ? `<div class="rx-note rx-pago"><b>Cuenta para tu pago</b><span>${esc(r.pago.banco)} · terminación ${esc(r.pago.ultimos4)}${r.pago.simulado ? ' (ficticia)' : ''}</span></div>` : ''}
@@ -1309,10 +1308,9 @@
     const u = legal.umbral291C(h, RV.SEMANAS_MES);
     const hImss = Math.ceil(u.horasMesNecesarias / RV.SEMANAS_MES);
     return `<div class="pre-money"><b>${pesos(u.ingreso)}</b><span>al mes, aprox.</span></div>
-      <p class="pre-line">${h} h × ${RV.SEMANAS_MES} semanas × $${f2(legal.HORA_PLATAFORMA.diurna)} por hora diurna (piso legal más proporcionales).</p>
       <div class="pre-res">${u.alcanza
-        ? `<b class="pre-ok">Con estas horas tendrías IMSS completo</b><span>Ganarías al menos un salario mínimo mensual (${pesos(u.umbral)}).</span>`
-        : `<b class="pre-no">Seguro de riesgos de trabajo, no IMSS completo</b><span>El IMSS completo empieza alrededor de ${hImss} h a la semana. Cada caso es de ${RV.PAQUETES[0]} a ${RV.PAQUETES[RV.PAQUETES.length - 1]} h.</span>`}</div>`;
+        ? `<b class="pre-ok">Con IMSS completo</b><span>Con estas horas tienes todo el seguro social.</span>`
+        : `<b class="pre-no">Con seguro de accidentes de trabajo</b><span>El IMSS completo empieza cerca de ${hImss} h a la semana.</span>`}</div>`;
   }
   function renderYo() {
     const r = relById(leerId('mientras-mi-relevo'));
@@ -1322,7 +1320,7 @@
       const ej = store.state.relevos.find((x) => conCaso(x) && hoyRel.includes(x.id)) || store.state.relevos.find(conCaso) || store.state.relevos[0];
       $('#yo-body').innerHTML = `${banner('relevo', `<span class="rx-kick">Puedo cuidar</span>
           <h2>¿Quieres trabajar dando relevo?</h2>
-          <p>Registra tus días, horario y zona. El programa te asigna casos. Con contrato y pago al piso legal.</p>`, 'gb-hero')}
+          <p>Elige tus días y tu zona. Con contrato y pago según la ley.</p>`, 'gb-hero')}
         <button type="button" class="btn-primary wide" data-action="new-relevo">Registrarme</button>
         <div class="pre-links">
           <button type="button" data-go="pago"><b>Pago</b><small>Estima tu ingreso</small></button>
@@ -1336,36 +1334,28 @@
       ${panelRelevo(r)}
       <button type="button" class="btn-ghost wide" data-action="yo-nuevo">Registrar a otra persona (demostración)</button>`;
   }
-  /* 26 nov 2026 (2): pestañas con más contenido. Todo sale del código del proyecto (reglas, convenio, contrato,
-   * entrevista) o de resultados del repo (ENASIC, script 07). Nada de tiempos de espera ni cifras inventadas. */
+  /* 26 nov 2026 (4): textos cortos para cuidadoras y personas de relevo. Sin notas técnicas: las fuentes viven
+   * en Programa, el README y los documentos. */
   const fila = (t, d, cls) => `<li class="${cls || ''}"><b>${esc(t)}</b>${d ? `<span>${esc(d)}</span>` : ''}</li>`;
   const tarjeta = (kick, tit, cuerpo, cls) => `<section class="pre-card ${cls || ''}"><div class="pre-h"><span class="rx-kick">${esc(kick)}</span><h3>${esc(tit)}</h3></div>${cuerpo}</section>`;
-  const pctBar = (p, on) => `<div class="pre-hbar${on ? ' on' : ''}"><i style="width:${p}%"></i></div>`;
+  const NO_HACE = ['Enfermería ni medicamentos', 'Limpieza de la casa', 'Cuidar a otra persona', 'Llevarla en auto', 'Manejar dinero'];
 
   /* ---------- Cuidadora · ¿Me toca? ---------- */
   function tocaDinamico() {
     const hd = ui.chkDia == null ? 6 : ui.chkDia, dd = ui.chkDias == null ? 5 : ui.chkDias, h = hd * dd;
-    const D = RV.DANO_07, grupo = h >= CP.regla_horas ? 'P2' : h >= 20 ? 'm20' : 'm0';
-    return `<div class="pre-total"><b class="mono">${h}</b><span>horas a la semana<br><small>${hd} h × ${dd} día${dd > 1 ? 's' : ''}</small></span></div>
+    return `<div class="pre-total"><b class="mono">${h}</b><span>horas a la semana</span></div>
       <div class="pre-meter"><i style="width:${Math.min(100, (h / 80) * 100)}%"></i><s style="left:${(CP.regla_horas / 80) * 100}%"><em>${CP.regla_horas} h</em></s></div>
-      <div class="pre-res">${chequeoHTML(h)}</div>
-      <div class="pre-sub">Quienes cuidan como tú</div>
-      <ul class="pre-dano">${[['m0', 'Menos de 20 h'], ['m20', 'De 20 a 39 h'], ['P2', '40 h o más']].map(([k, t]) =>
-        `<li class="${k === grupo ? 'on' : ''}"><span>${t}${k === grupo ? ' <em>tú</em>' : ''}</span>${pctBar(D[k].pct, k === grupo)}<b class="mono">${pts(D[k].pct)} %</b></li>`).join('')}</ul>
-      <p class="pre-fine">Porcentaje con algún daño a su salud o a su trabajo por cuidar, entre quienes dijeron no necesitar servicios. Nacional, ENASIC 2022 (INEGI), estimación del equipo (script 07). No es un diagnóstico.</p>`;
+      <div class="pre-res">${chequeoHTML(h)}</div>`;
   }
   function renderToca() {
     const hd = ui.chkDia == null ? 6 : ui.chkDia, dd = ui.chkDias == null ? 5 : ui.chkDias;
-    $('#toca-body').innerHTML = tarjeta('Antes de empezar', '¿Te corresponde?', `
+    $('#toca-body').innerHTML = tarjeta('Revisa en un minuto', '¿Te corresponde?', `
         <label class="pre-q" for="chk-dia">Horas al día que cuidas <b class="mono" id="chk-dia-v">${hd} h</b></label>
         <input type="range" id="chk-dia" min="0" max="24" step="1" value="${hd}" style="--p:${(hd / 24) * 100}%">
         <label class="pre-q" for="chk-dias">Días a la semana <b class="mono" id="chk-dias-v">${dd}</b></label>
         <input type="range" id="chk-dias" min="1" max="7" step="1" value="${dd}" style="--p:${((dd - 1) / 6) * 100}%">
-        <div id="toca-din" aria-live="polite">${tocaDinamico()}</div>
-        <p class="pre-fine">No se guarda. La valoración real es la entrevista de la solicitud.</p>`)
-      + tarjeta('Para sumar bien', 'Qué cuenta como cuidar', `
-        <div class="pre-tags solo">${['Bañar o vestir', 'Dar de comer', 'Acompañar al baño', 'Mover de la cama a la silla', 'Vigilar de día o de noche', 'Dar medicinas', 'Acompañar a citas', 'Hacer curaciones o terapias'].map((t) => `<span>${t}</span>`).join('')}</div>
-        <p class="pre-fine">Cuenta también el tiempo en que estás pendiente aunque hagas otra cosa. Si otra persona te ayuda, cuenta solo tus horas.</p>`)
+        <div id="toca-din" aria-live="polite">${tocaDinamico()}</div>`)
+      + tarjeta('Para sumar bien', 'Cuenta como cuidar', `<div class="pre-tags solo">${['Bañar o vestir', 'Dar de comer', 'Acompañar al baño', 'Mover de la cama a la silla', 'Vigilar de día o de noche', 'Dar medicinas', 'Acompañar a citas'].map((t) => `<span>${t}</span>`).join('')}</div>`)
       + ctaMia();
   }
 
@@ -1374,30 +1364,23 @@
   function semanaHTML(h) {
     const ev = RV.evaluarPaquete({ horas: h, dias: DIAS_EJ[h], inicio: '10:00' }, 0);
     return `<div class="pre-week">${RV.DIAS.map((d, i) => `<span class="${DIAS_EJ[h].includes(i) ? 'on' : ''}"><i>${d}</i>${DIAS_EJ[h].includes(i) ? `<b>${ev.horario.replace('-', '<br>')}</b>` : '<b>·</b>'}</span>`).join('')}</div>
-      <p class="pre-line2">${DIAS_EJ[h].length} visita${DIAS_EJ[h].length > 1 ? 's' : ''} de ${pts(ev.durMin / 60)} h · ejemplo: tú eliges los días y la hora de inicio.</p>`;
+      <p class="pre-line2">Tú eliges los días y la hora.</p>`;
   }
   function renderIncluye() {
     const pk = ui.chkPaq || 6;
-    $('#incluye-body').innerHTML = tarjeta('Qué incluye', 'Horas para ti, con alguien de confianza', `
+    $('#incluye-body').innerHTML = tarjeta('Qué incluye', 'Horas para ti', `
         <div class="pre-bento">
           <span class="b1"><b>${RV.PAQUETES[0]}-${RV.PAQUETES[RV.PAQUETES.length - 1]} h</b><i>por semana</i></span>
-          <span class="b2"><b>$0</b><i>para tu hogar · lo paga el programa</i></span>
-          <span class="b3"><b>1 persona</b><i>certificada y con contrato</i></span>
+          <span class="b2"><b>$0</b><i>para tu hogar</i></span>
+          <span class="b3"><b>1 persona</b><i>de confianza</i></span>
         </div>`)
-      + tarjeta('Así se ve una semana', 'Mismos días, mismo horario', `
+      + tarjeta('Tu semana', 'Mismos días, mismo horario', `
         <div class="pre-seg" role="group" aria-label="Horas por semana">${RV.PAQUETES.map((p) => `<button type="button" data-paq="${p}" class="${p === pk ? 'on' : ''}">${p} h</button>`).join('')}</div>
-        <div id="paq-din">${semanaHTML(pk)}</div>
-        <p class="pre-fine">Cuántas horas te tocan depende de la bolsa del programa y se confirma cada mes.</p>`)
+        <div id="paq-din">${semanaHTML(pk)}</div>`)
       + tarjeta('La persona de relevo', 'Qué hace y qué no', `
-        <div class="pre-sub">Sí hace</div>
-        <ul class="pre-list ok">${RV.TAREAS.map((t) => fila(t)).join('')}</ul>
-        <div class="pre-sub">No hace</div>
-        <ul class="pre-list no">${CT.NO_PERMITIDAS.map((t) => fila(t)).join('')}</ul>
-        <p class="pre-fine">Si haces tareas de salud, el programa te orienta a un servicio de enfermería.</p>`)
-      + tarjeta('Tu convenio', 'Tus derechos y compromisos', `
-        <div class="pre-two">
-          <div><div class="pre-sub">Tienes derecho a</div><ul class="pre-list ok">${fila('Terminar cuando quieras, sin costo')}${fila('Pedir otra revisión de tu valoración')}${fila('Reportar un incidente y cambiar de persona')}${fila('Usar solo un alias en la app')}</ul></div>
-          <div><div class="pre-sub">Te comprometes a</div><ul class="pre-list">${fila('Tratar con respeto a la persona de relevo')}${fila('No pedir tareas ni horas fuera de lo acordado')}${fila('Avisar cancelaciones con 24 h')}${fila('Mantener la casa segura para la visita')}</ul></div>
+        <div class="pre-two cols">
+          <div><div class="pre-sub">Sí</div><ul class="pre-list ok compact">${RV.TAREAS.map((t) => fila(t.replace(' (sin administrarlos)', ''))).join('')}</ul></div>
+          <div><div class="pre-sub">No</div><ul class="pre-list no compact">${NO_HACE.map((t) => fila(t)).join('')}</ul></div>
         </div>`)
       + ctaMia();
   }
@@ -1405,29 +1388,17 @@
   /* ---------- Cuidadora · Pasos ---------- */
   function renderPasos() {
     const c = casoById(leerId('mientras-mi-caso'));
-    const paso = (n, t, d, extra) => `<li><i>${n}</i><span><b>${esc(t)}</b><small>${esc(d)}</small>${extra || ''}</span></li>`;
     $('#pasos-body').innerHTML = (c ? tarjeta('Tu avance', c.folio, pasosRes(c)) : '')
-      + tarjeta('Cómo funciona', 'De la solicitud a la primera visita', `<ol class="pre-steps big">
-          ${paso(1, 'Solicitud y entrevista', 'Llegas por tu cuenta o te refiere una institución (DIF, centro de salud, escuela, clínica o módulo).', '<em class="pre-pill">Solo un alias</em>')}
-          ${paso(2, 'Revisión del programa', 'Una persona revisa tu solicitud antes de asignar. Si no estás de acuerdo con tu resultado, pides otra revisión.', '<em class="pre-pill">Revisión humana</em>')}
-          ${paso(3, 'Convenio y consentimiento', 'Firmas el convenio. La persona que cuidas da su consentimiento, o su representante; si no se puede en ese momento, se pide en la primera visita.', '<em class="pre-pill">Costo $0</em>')}
-          ${paso(4, 'Relevo y primera visita', 'Te asignamos una persona cerca de ti en el horario que elegiste. Ahí se confirma tu identidad.', '<em class="pre-pill">Domicilio solo aquí</em>')}
+      + tarjeta('Cómo funciona', 'Cuatro pasos', `<ol class="pre-steps">
+          ${pasoPre(1, 'Solicitud', 'Unas preguntas sobre tu cuidado.')}
+          ${pasoPre(2, 'Revisión', 'Una persona revisa tu solicitud.')}
+          ${pasoPre(3, 'Convenio', 'Firmas y la persona que cuidas acepta.')}
+          ${pasoPre(4, 'Primera visita', 'Conoces a tu persona de relevo.')}
         </ol>`)
-      + tarjeta('La entrevista', 'Qué te vamos a preguntar', `
-        <div class="pre-blocks">
-          <div><em>1/3</em><b>Tu cuidado</b><span>Cuántas horas a la semana cuidas y si haces tareas de salud (sí o no).</span></div>
-          <div><em>2/3</em><b>Cómo te sientes</b><span>${CP.zarit.n_reactivos} preguntas, de "nunca" a "casi siempre".</span></div>
-          <div><em>3/3</em><b>La persona que cuidas</b><span>Qué tanta ayuda necesita en ${PR.BARTHEL.length} actividades. Solo con su consentimiento.</span></div>
-        </div>
-        <details class="pre-det"><summary>Ver las ${PR.BARTHEL.length} actividades</summary><div class="pre-tags">${PR.BARTHEL.map((b) => `<span>${esc(b.txt)}</span>`).join('')}</div></details>
-        <div class="pre-sub">Nunca te pedimos</div>
-        <div class="pre-tags solo neg">${['CURP', 'Nombre completo', 'Diagnósticos', 'Edad'].map((t) => `<span>${t}</span>`).join('')}</div>`)
-      + tarjeta('Después', 'Cuando ya tienes relevo', `<ul class="pre-list">
-          ${fila('Llegada y salida de cada visita', 'La persona de relevo las registra y tú confirmas desde Inicio.')}
-          ${fila('Tres preguntas a la semana', 'Opcionales, en Inicio: cansancio, noches de mal sueño y si pudiste trabajar o estudiar.')}
-          ${fila('Incidentes en ambos sentidos', 'Tú o la persona de relevo pueden reportar; responde el programa.')}
-          ${fila('En una emergencia', 'Llama al 911.')}
-        </ul>`)
+      + tarjeta('Tu privacidad', 'No te pedimos', `<div class="pre-tags solo neg">${['CURP', 'Nombre completo', 'Diagnósticos', 'Tu edad'].map((t) => `<span>${t}</span>`).join('')}</div>`)
+      + tarjeta('Con relevo', 'Desde Inicio puedes', `<ul class="pre-list ok compact">
+          ${fila('Confirmar cada visita')}${fila('Contar cómo vas cada semana')}${fila('Avisar si algo pasa')}
+        </ul><p class="pre-fine">En una emergencia, llama al 911.</p>`)
       + ctaMia();
   }
 
@@ -1441,84 +1412,66 @@
     const r = relById(leerId('mientras-mi-relevo'));
     const h = ui.chkPago == null ? (r ? Math.max(3, r.horasMax) : 12) : ui.chkPago;
     const base = legal.HORA.diurna, P = legal.PROPORCIONALES;
-    const partes = [['Salario', base, 'b0'], ['Descanso semanal', base * P.descanso_semanal, 'b1'], ['Aguinaldo', base * P.aguinaldo, 'b2'], ['Vacaciones', base * P.vacaciones, 'b3'], ['Prima vacacional', base * P.prima_vacacional, 'b4']];
+    const partes = [['Salario', base, 'b0'], ['Descanso', base * P.descanso_semanal, 'b1'], ['Aguinaldo', base * P.aguinaldo, 'b2'], ['Vacaciones', base * P.vacaciones, 'b3'], ['Prima', base * P.prima_vacacional, 'b4']];
     const tot = partes.reduce((t, p) => t + p[1], 0);
-    $('#pago-body').innerHTML = tarjeta('Estimación · por verificar', '¿Cuánto ganarías?', `
-        <label class="pre-q" for="chk-pago">Horas a la semana que puedes dar <b class="mono" id="pago-val">${h} h</b></label>
+    $('#pago-body').innerHTML = tarjeta('Calcula', '¿Cuánto ganarías?', `
+        <label class="pre-q" for="chk-pago">Horas a la semana <b class="mono" id="pago-val">${h} h</b></label>
         <input type="range" id="chk-pago" min="3" max="48" step="1" value="${h}" style="--p:${((h - 3) / 45) * 100}%">
         <div id="pago-res" aria-live="polite">${pagoDin(h)}</div>`, 'pre-dark')
-      + tarjeta('Tu hora diurna', `$${f2(tot)} por hora`, `
-        <div class="pre-stack">${partes.map(([, v, c]) => `<i class="${c}" style="width:${(v / tot) * 100}%"></i>`).join('')}</div>
-        <ul class="pre-legend">${partes.map(([t, v, c]) => `<li><i class="${c}"></i><span>${t}</span><b class="mono">$${f2(v)}</b></li>`).join('')}</ul>
-        <p class="pre-fine">Pago por tarea con las prestaciones ya incluidas (LFT art. 291-F). Salario mínimo de trabajo del hogar, CONASAMI 2026: por verificar.</p>`)
-      + tarjeta('Según el horario', 'La hora cambia con la jornada', `<div class="pre-rates">
-          <span><i>Diurna</i><b class="mono">$${f2(legal.HORA_PLATAFORMA.diurna)}</b><small>06:00-20:00 · máx. ${legal.MAX_H.diurna} h</small></span>
-          <span><i>Mixta</i><b class="mono">$${f2(legal.HORA_PLATAFORMA.mixta)}</b><small>menos de 3.5 h de noche · máx. ${legal.MAX_H.mixta} h</small></span>
-          <span><i>Nocturna</i><b class="mono">$${f2(legal.HORA_PLATAFORMA.nocturna)}</b><small>20:00-06:00 · máx. ${legal.MAX_H.nocturna} h</small></span>
-        </div>`)
-      + tarjeta('Cuándo y cómo', 'Así te pagamos', `<ul class="pre-list ok">
-          ${fila('Cada semana, con recibo', 'Por visita, según sus horas.')}
-          ${fila('Si el hogar cancela con menos de 24 h', 'La visita se paga.')}
-          ${fila('Si te retiras por un riesgo', 'No pierdes el pago de esa visita.')}
-          ${fila('Horas extra solo con tu acuerdo', 'Y se pagan conforme a la ley.')}
-          ${fila('Propinas', 'No son obligatorias y no forman parte del salario.')}
+      + tarjeta('Por hora', `$${f2(tot)} de día`, `<div class="pre-rates">
+          <span><i>De día</i><b class="mono">$${f2(legal.HORA_PLATAFORMA.diurna)}</b></span>
+          <span><i>Mixta</i><b class="mono">$${f2(legal.HORA_PLATAFORMA.mixta)}</b></span>
+          <span><i>De noche</i><b class="mono">$${f2(legal.HORA_PLATAFORMA.nocturna)}</b></span>
+        </div>
+        <details class="pre-det"><summary>Ya incluye aguinaldo y vacaciones</summary>
+          <div class="pre-stack">${partes.map(([, v, c]) => `<i class="${c}" style="width:${(v / tot) * 100}%"></i>`).join('')}</div>
+          <ul class="pre-legend">${partes.map(([t, v, c]) => `<li><i class="${c}"></i><span>${t}</span><b class="mono">$${f2(v)}</b></li>`).join('')}</ul>
+        </details>`)
+      + tarjeta('Así te pagamos', 'Cada semana', `<ul class="pre-list ok compact">
+          ${fila('Con recibo, por visita')}${fila('Si cancelan tarde, se paga')}${fila('Horas extra, solo si aceptas')}
         </ul>`)
-      + `<p class="pre-fine">Lo que ganas de verdad depende de los casos que te asignen, no de las horas que ofreces.</p>${ctaYo()}`;
+      + ctaYo();
   }
 
   /* ---------- Relevo · Requisitos ---------- */
   const REQS = [
-    ['curp', `CURP de persona mayor de ${legal.EDAD_MIN} años`, 'Se valida al registrarte y solo se guarda una huella.'],
-    ['id', 'Identificación vigente', legal.DOCS_ID.join(', ') + '. La presentas en la revisión.'],
-    ['ref', 'Una referencia', 'Nombre y teléfono de 10 dígitos. Se borran al resolver tu registro.'],
-    ['disp', 'Al menos un día y 3 h a la semana', 'Tú eliges días, horario y zona.'],
-    ['cert', 'Certificación vigente', 'Sin ella te registras, pero no recibes casos.'],
-    ['ct', 'Firmar el contrato de trabajo', 'Lo firmas en la app al final del registro.'],
+    ['curp', `CURP, mayor de ${legal.EDAD_MIN} años`],
+    ['id', 'Identificación vigente'],
+    ['ref', 'Una referencia'],
+    ['disp', 'Un día y 3 h libres a la semana'],
+    ['cert', 'Certificación vigente'],
+    ['ct', 'Firmar tu contrato'],
   ];
   function reqDin() {
     const t = ui.reqTengo || {}, n = REQS.filter(([k]) => t[k]).length;
     return `<div class="pre-prog"><div class="pre-ring" style="--p:${(n / REQS.length) * 100}%"><b class="mono">${n}/${REQS.length}</b></div>
-      <span><b>${n === REQS.length ? 'Tienes todo para registrarte' : `Te falta${REQS.length - n > 1 ? 'n' : ''} ${REQS.length - n}`}</b><small>Marca lo que ya tienes. No se guarda.</small></span></div>`;
+      <span><b>${n === REQS.length ? 'Tienes todo' : `Te falta${REQS.length - n > 1 ? 'n' : ''} ${REQS.length - n}`}</b><small>Marca lo que ya tienes</small></span></div>`;
   }
   function renderReq() {
     const t = ui.reqTengo || {};
-    $('#req-body').innerHTML = tarjeta('Lo que te pedimos', 'Requisitos', `<div id="req-din">${reqDin()}</div>
-        <ul class="pre-chk">${REQS.map(([k, tit, d]) => `<li><label><input type="checkbox" data-req="${k}"${t[k] ? ' checked' : ''}><i aria-hidden="true"></i><span><b>${esc(tit)}</b><small>${esc(d)}</small></span></label></li>`).join('')}</ul>`)
-      + tarjeta('Sin carta de antecedentes', 'Por qué no la pedimos', `
-        <p class="pre-p">La Suprema Corte invalidó exigirla de forma general (AI 38/2022 para cuidado infantil y AI 111/2023 para conductores de plataformas).</p>
-        <div class="pre-sub">En su lugar</div>
-        <div class="pre-tags solo">${['Entrevista de verificación', 'Referencia', 'Certificación', 'Primera visita acompañada'].map((x) => `<span>${x}</span>`).join('')}</div>`)
+    $('#req-body').innerHTML = tarjeta('Lo que necesitas', 'Requisitos', `<div id="req-din">${reqDin()}</div>
+        <ul class="pre-chk">${REQS.map(([k, tit]) => `<li><label><input type="checkbox" data-req="${k}"${t[k] ? ' checked' : ''}><i aria-hidden="true"></i><span><b>${esc(tit)}</b></span></label></li>`).join('')}</ul>
+        <p class="pre-fine">No pedimos carta de antecedentes penales.</p>`)
       + tarjeta('El trabajo', 'Qué harías y qué no', `
-        <div class="pre-sub">Tareas que puedes cubrir</div>
-        <ul class="pre-list ok">${RV.TAREAS.map((x) => fila(x)).join('')}</ul>
-        <div class="pre-sub">No te toca, y puedes negarte</div>
-        <ul class="pre-list no">${CT.NO_PERMITIDAS.map((x) => fila(x)).join('')}</ul>`)
+        <div class="pre-two cols">
+          <div><div class="pre-sub">Sí</div><ul class="pre-list ok compact">${RV.TAREAS.map((x) => fila(x.replace(' (sin administrarlos)', ''))).join('')}</ul></div>
+          <div><div class="pre-sub">No</div><ul class="pre-list no compact">${NO_HACE.map((x) => fila(x)).join('')}</ul></div>
+        </div>`)
       + ctaYo();
   }
 
   /* ---------- Relevo · Asignación ---------- */
   function renderAsig() {
-    const filtros = [['Registro aprobado', 'Documentos, referencia y entrevista revisados'], ['Certificación vigente', ''], [`A ${cfg().maxKm} km o menos`, 'Entre centros de alcaldía'], ['Disponible esos días', ''], ['Dentro de tu horario', ''], ['Con horas libres esa semana', 'Tu cupo no se rebasa'], ['Cubres las tareas del hogar', '']];
-    $('#asig-body').innerHTML = tarjeta('Cómo te asignan', 'Sin catálogo ni calificaciones', `<ol class="pre-steps">
-          ${pasoPre(1, 'Te registras', 'Días, horario, zona y tareas que puedes cubrir.')}
-          ${pasoPre(2, 'El programa revisa', 'Documentos, referencia y entrevista de verificación.')}
-          ${pasoPre(3, 'Te ofrecen una visita', 'Puedes aceptarla o rechazarla. Tu primera visita es acompañada.')}
+    $('#asig-body').innerHTML = tarjeta('Cómo funciona', 'Así te llegan los casos', `<ol class="pre-steps">
+          ${pasoPre(1, 'Te registras', 'Días, horario y zona.')}
+          ${pasoPre(2, 'Te revisamos', 'Documentos y una entrevista.')}
+          ${pasoPre(3, 'Te ofrecemos una visita', 'La más cercana que quepa en tu horario.')}
         </ol>`)
-      + tarjeta('La regla', 'Para ofrecerte un caso, revisamos', `
-        <ol class="pre-funnel">${filtros.map(([t, d], i) => `<li style="--w:${100 - i * 7}%"><b>${esc(t)}</b>${d ? `<small>${esc(d)}</small>` : ''}</li>`).join('')}</ol>
-        <div class="pre-win"><b>Si varias cumplen</b><span>Va a quien está más cerca. Si hay empate, a quien tiene menos horas esa semana.</span></div>`)
-      + tarjeta('Lo que no hacemos', 'Reglas que te protegen', `<ul class="pre-list ok">
-          ${fila('Sin estrellas ni ranking', 'No hay calificaciones de las familias.')}
-          ${fila('Rechazar no te castiga', 'No te baja de lugar ni te quita ofertas.')}
-          ${fila('Un incidente no te quita casos solo', 'Lo revisa una persona, que te escucha antes.')}
-          ${fila('No usamos tu sexo ni tu edad', 'Ninguna característica personal decide.')}
-          ${fila('Si las reglas cambian, te avisamos', 'Y tienes que aceptarlas de nuevo.')}
+      + tarjeta('Reglas claras', 'Te protegen', `<ul class="pre-list ok compact">
+          ${fila('Sin estrellas ni ranking')}${fila('Puedes rechazar sin castigo')}${fila('Te avisamos si algo cambia')}
         </ul>`)
-      + tarjeta('Tus compromisos', 'Cuando aceptas un caso', `<ul class="pre-list">
-          ${fila('Visitas semanales fijas', 'Si dejas un caso, avisa con una semana para que el hogar no se quede sin relevo.')}
-          ${fila('Registrar llegada y salida', 'Con eso se calculan tu tiempo y tu pago.')}
-          ${fila('Confidencialidad', 'Sin fotos, grabaciones ni compartir datos de los hogares.')}
-          ${fila('30 días sin actividad', 'La relación termina; si vuelves, empieza una nueva.')}
+      + tarjeta('Tu parte', 'Cuando aceptas', `<ul class="pre-list compact">
+          ${fila('Registra llegada y salida')}${fila('Si dejas un caso, avisa con una semana')}
         </ul>`)
       + ctaYo();
   }
@@ -1573,7 +1526,7 @@
         <select name="tipo" aria-label="Tipo de incidente"><option value="">Elige el tipo</option>${options(opcionesInc(rol))}</select>
         <input name="nota" maxlength="140" autocomplete="off" placeholder="Qué pasó (sin nombres)" aria-label="Qué pasó">
         <button class="btn-primary sm" type="submit">Enviar al programa</button>
-        <p class="pre-fine">Lo revisa una persona del programa. En una emergencia, llama al 911.</p>
+        <p class="pre-fine">En una emergencia, llama al 911.</p>
       </form></details>`;
   }
 
@@ -1595,7 +1548,6 @@
     return `<section class="pre-card">
         <div class="pre-h"><span class="rx-kick">Hoy</span><h3>${hoy.length ? `${hoy.length} visita${hoy.length > 1 ? 's' : ''}` : 'Sin visitas hoy'}</h3></div>
         ${hoy.map(tarjetaHoy).join('') || `<p class="pre-p">${casos.length ? 'Tu próxima visita aparece abajo.' : 'Las visitas aparecen aquí cuando el programa te asigne un caso.'}</p>`}
-        <p class="pre-fine">Registra la llegada al entrar y la salida al irte: con eso se calculan tu tiempo y tu pago. Si te equivocas, avisa al programa.</p>
       </section>
       ${prox.length ? `<section class="pre-card"><div class="pre-h"><span class="rx-kick">Próximos 7 días</span><h3>Tu semana</h3></div>
         <ul class="mi-prox">${prox.map((p) => `<li><b>${fechaCorta(p.fecha)}</b><span class="mono">${esc(p.ini)}-${esc(p.fin)}</span><span>${esc(p.caso.persona.alias)}</span></li>`).join('')}</ul></section>` : ''}
@@ -1633,7 +1585,6 @@
         ${hoyHTML}
         ${prox ? `<div class="mi-next"><span><i>${hoyV ? 'Después' : 'Siguiente'}</i><b>${fechaCorta(prox.fecha)} · <span class="mono">${esc(prox.ini)}-${esc(prox.fin)}</span></b></span><span>${r ? esc(r.nombre) : ''}</span></div>` : ''}
         ${!hoyV && !prox ? '<p class="pre-p">No hay visitas en los próximos días.</p>' : ''}
-        <p class="pre-fine">La persona de relevo registra su llegada y su salida; tú confirmas. Si no coinciden, el programa lo revisa.</p>
       </section>
       <section class="pre-card">
         <div class="pre-h"><span class="rx-kick">Esta semana · opcional</span><h3>¿Cómo vas?</h3></div>
@@ -1644,7 +1595,7 @@
           <button class="btn-primary wide" type="submit">${ya ? 'Actualizar respuestas' : 'Enviar'}</button>
         </form>
         ${qs.length ? `<div class="mi-hist"><span>Tu cansancio, últimas semanas</span><div class="spark">${qs.slice(-8).map((q) => `<span title="${esc(q.semana)}"><i style="height:${6 + q.cansancio * 8}px"></i><small>${q.cansancio}</small></span>`).join('')}</div></div>` : ''}
-        <p class="pre-fine">Solo lo ve el programa, para saber si el relevo te está sirviendo. No cambia tus horas.</p>
+        <p class="pre-fine">Solo lo ve el programa.</p>
       </section>
       <section class="pre-card"><div class="pre-h"><span class="rx-kick">Algo pasó</span><h3>Avisa al programa</h3></div>${formIncidente('form-inc-cu', [c], 'cuidadora')}</section>`;
   }
