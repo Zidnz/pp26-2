@@ -120,28 +120,65 @@ El detalle completo, con el historial de cambios, está en [`Frontend/README.md`
 
 ## Arquitectura
 
+### Observatorio
+
+Datos reales y agregados. Van de las fuentes al tablero pasando por el análisis y el almacén. La API solo lee el DW.
+
 ```mermaid
 flowchart LR
     F["<b>Fuentes</b><br/>ENASIC · ENUT · DENUE<br/>Censo 2020 · CONEVAL<br/>Marco Geoestadístico"]
     A["<b>Analysis/</b><br/>notebooks A–D<br/>scripts 19–34<br/>resultados/*.csv"]
     D[("<b>DW/</b><br/>ETL + SQLite<br/>esquema estrella<br/>marts · pruebas de calidad")]
-    B["<b>build_datos.py</b>"]
+    B["<b>build_datos.py</b><br/>datos_observatorio.json"]
     O["<b>Observatorio</b><br/>página estática<br/>abre con doble clic"]
-    API["<b>Backend/</b><br/>FastAPI<br/>solo lectura"]
-    R["<b>RedCare</b><br/>prioridad.js<br/>puntaje y bolsa de horas"]
-    P["<b>prioridad.py</b><br/>servicio /puntaje"]
+    API["<b>Backend/</b><br/>FastAPI /dw/*<br/>solo lectura"]
 
     F --> A --> D --> B --> O
     D --> API
-    R <-. "prueba de paridad" .-> P
-    API --- P
 
     classDef fuente fill:#fff4e0,stroke:#e0a030,color:#222
     classDef proceso fill:#e8f1fb,stroke:#3b78c4,color:#222
     classDef salida fill:#e6f5ea,stroke:#3a9a5b,color:#222
     class F fuente
     class A,D,B proceso
-    class O,API,R,P salida
+    class O,API salida
+```
+
+### RedCare
+
+Datos simulados. La app corre completa en el navegador y no llama a ningún servidor: lo que se captura queda en `localStorage`. Lo que vive en `Backend/` está listo para un piloto, pero hoy no está conectado. Son dos cosas: el servicio `/puntaje/*`, una copia en Python de `prioridad.js` que la prueba de paridad mantiene idéntica, y el esquema PostgreSQL de 21 tablas, que por ahora solo es un diseño.
+
+```mermaid
+flowchart LR
+    subgraph NAV["Navegador · Frontend/"]
+        direction TB
+        UI["<b>app.js</b> · interfaz<br/>bienvenida · vistas por rol<br/>cuidadora · relevo · programa"]
+        CFG["<b>config.js</b> · <b>legal.js</b><br/>parámetros y requisitos"]
+        PRI["<b>prioridad.js</b><br/>entrevista · regla 40 h<br/>Barthel · Zarit · bolsa de horas"]
+        REL["<b>relevo.js</b><br/>jornada · costo · asignación"]
+        CON["<b>contrato.js</b> · <b>aviso.js</b> · <b>huella.js</b><br/>convenio · contrato · firmas<br/>aviso de privacidad · SHA-256"]
+        DAT[("<b>data.js</b><br/>datos simulados<br/>localStorage")]
+        UI --> PRI & REL & CON
+        CFG --> PRI & REL
+        UI <--> DAT
+    end
+
+    subgraph BK["Backend/ · para un piloto, sin conexión hoy"]
+        direction TB
+        P["<b>prioridad.py</b><br/>FastAPI /puntaje/*<br/>sin estado"]
+        SQL[("<b>redcare_postgres.sql</b><br/>21 tablas + pruebas")]
+    end
+
+    PRI <-. "prueba de paridad<br/>600 entrevistas" .-> P
+    CFG -. "exportar_config.js" .-> P
+    DAT -. "modelo de datos" .-> SQL
+
+    classDef app fill:#efe9fb,stroke:#7b5cc4,color:#222
+    classDef datos fill:#fff4e0,stroke:#e0a030,color:#222
+    classDef futuro fill:#f2f2f2,stroke:#999,color:#444,stroke-dasharray:4 3
+    class UI,CFG,PRI,REL,CON app
+    class DAT datos
+    class P,SQL futuro
 ```
 
 ## Estructura del repositorio
