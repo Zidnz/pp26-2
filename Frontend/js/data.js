@@ -388,15 +388,24 @@
     resolverRevision(casoId, nota) { const c = caso(casoId); if (c && c.revision) { c.revision.estado = 'revisada'; c.revision.nota = nota; c.revision.fechaResolucion = hoyISO(); emit(); } },
     /** Aplica las horas del ciclo: cada caso activo pasa a su paquete semanal (horas/mes ÷ 4.33, hacia abajo). */
     aplicarCiclo(horasSemPorCaso) { state.casos.forEach((c) => { const h = horasSemPorCaso[c.id]; if (h != null && c.paquete) c.paquete.horas = h; }); state.ultimoCiclo = hoyISO(); emit(); },
-    registrarLlegada(casoId, fecha) { const v = visitaDe(casoId, fecha); if (v) { v.llegada = ahora(); v.estado = 'en_curso'; emit(); } },
-    registrarSalida(casoId, fecha) { const v = visitaDe(casoId, fecha); if (v) { v.salida = ahora(); v.estado = 'realizada'; emit(); } },
-    marcarVisita(casoId, fecha, estado) { const v = visitaDe(casoId, fecha); if (v) { v.estado = estado; v.llegada = null; v.salida = null; emit(); } },
+    // 26 nov 2026: «por» dice quién registró (relevo, cuidadora o programa). La cuidadora confirma la visita aparte.
+    registrarLlegada(casoId, fecha, por) { const v = visitaDe(casoId, fecha); if (v) { v.llegada = ahora(); v.llegadaPor = por || 'programa'; v.estado = 'en_curso'; emit(); } },
+    registrarSalida(casoId, fecha, por) { const v = visitaDe(casoId, fecha); if (v) { v.salida = ahora(); v.salidaPor = por || 'programa'; v.estado = 'realizada'; emit(); } },
+    marcarVisita(casoId, fecha, estado, por) {
+      const v = visitaDe(casoId, fecha); if (!v) return;
+      Object.assign(v, { estado, llegada: null, salida: null, marcadoPor: por || 'programa' });
+      delete v.llegadaPor; delete v.salidaPor; delete v.confirmadaFamilia; delete v.disputaFamilia;
+      emit();
+    },
+    confirmarVisita(casoId, fecha) { const v = visitaDe(casoId, fecha); if (v) { v.confirmadaFamilia = ahora(); emit(); } },
+    /** La familia no reconoce una visita ya registrada: no se borran las horas, las revisa el programa. */
+    disputarVisita(casoId, fecha) { const v = visitaDe(casoId, fecha); if (v) { v.disputaFamilia = ahora(); delete v.confirmadaFamilia; emit(); } },
     addIncidente(i) { state.incidentes.unshift(Object.assign({ id: uid('i'), fecha: hoyISO(), estado: 'abierto' }, i)); emit(); },
     cerrarIncidente(id, resolucion) { const i = state.incidentes.find((x) => x.id === id); if (i) { i.estado = 'cerrado'; i.resolucion = resolucion; emit(); } },
-    addCheckin(casoId, cansancio, malasNoches, empleo) {
+    addCheckin(casoId, cansancio, malasNoches, empleo, por) {
       const semana = lunesDe(hoyISO());
       state.checkins = state.checkins.filter((q) => !(q.casoId === casoId && q.semana === semana));
-      state.checkins.push({ id: uid('q'), casoId, semana, cansancio, malasNoches, empleo: empleo || null });
+      state.checkins.push({ id: uid('q'), casoId, semana, cansancio, malasNoches, empleo: empleo || null, por: por || 'programa' });
       emit();
     },
     /** Contacto de emergencia y personas autorizadas (máx. 3). Se borran al cerrar el caso. */

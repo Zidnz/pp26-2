@@ -31,8 +31,8 @@
 .list .ccard,#caso-list .ccard{border:0;border-radius:24px;box-shadow:none;padding:16px;gap:6px;overflow:hidden;background:#fff}
 .list .ccard>:not(.chead){margin-inline:0}
 #caso-list .ccard:nth-child(1){grid-column:1/-1;background:var(--shell);color:#fff}
-.list .ccard:nth-child(1) .who,.list .ccard:nth-child(1) .cbig b,.list .ccard:nth-child(1) .cbig span,.list .ccard:nth-child(1) .chead{color:#fff}
-.list .ccard:nth-child(1) .facts span{background:rgba(255,255,255,.14);color:#fff}
+#caso-list .ccard:nth-child(1) .who,#caso-list .ccard:nth-child(1) .cbig b,#caso-list .ccard:nth-child(1) .cbig span,#caso-list .ccard:nth-child(1) .chead{color:#fff}
+#caso-list .ccard:nth-child(1) .facts span{background:rgba(255,255,255,.14);color:#fff}
 #caso-list .ccard:nth-child(3n+2){background:#e3f4f0}
 #caso-list .ccard:nth-child(3n+3){background:#ece6f7}
 .list .ccard .chead{background:none;border:0;padding:0;display:block;font:800 10px var(--display);letter-spacing:.08em;color:rgba(43,48,69,.7)}
@@ -491,3 +491,49 @@ input:focus,textarea:focus{box-shadow:inset 0 0 0 2px var(--accent);transform:no
 .pre-funnel small{font:500 10.5px var(--sans);color:var(--ink-faint)}
 .pre-win{display:grid;gap:2px;margin-top:10px;padding:12px 14px;border-radius:16px;background:var(--ink);color:#fff}
 .pre-win b{font:800 13px var(--display)}.pre-win span{font:500 12px/1.4 var(--sans);color:rgba(255,255,255,.8)}
+/* 26 nov 2026 (3): visitas y semana desde la cuidadora y la persona de relevo */
+.mi-vis{display:grid;gap:4px;margin-bottom:10px;padding:14px;border-radius:18px;background:#f4f2f9;border-left:4px solid var(--lav)}
+.mi-vis.en_curso{background:#e9f6f2;border-left-color:var(--teal)}
+.mi-vis.realizada{border-left-color:var(--teal)}
+.mi-vis.no_llego,.mi-vis.cancelada{background:var(--alert-soft);border-left-color:var(--alert)}
+.mi-vis-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.mi-hora{font:700 13px var(--mono);color:var(--ink)}
+.mi-vis-quien{font:800 17px var(--display);color:var(--ink)}
+.mi-vis small{font:500 11.5px var(--sans);color:var(--ink-faint)}
+.mi-vis .btn-primary.wide{margin-top:10px}
+.mi-vis .btn-row{margin-top:8px;display:flex;flex-wrap:wrap;gap:6px}
+.mi-times{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:8px}
+.mi-times span{display:grid;gap:1px;padding:8px 10px;border-radius:12px;background:#fff}
+.mi-times i{font:600 10.5px var(--sans);font-style:normal;color:var(--ink-faint)}
+.mi-times b{font-size:13.5px;color:var(--ink)}
+.mi-ok{font:700 12px var(--sans);color:var(--teal)}
+.mi-next{display:flex;justify-content:space-between;align-items:flex-end;gap:10px;padding:12px 14px;border-radius:16px;background:linear-gradient(150deg,#2b3045,#4b4470);color:#fff}
+.mi-next span{display:grid;gap:2px}
+.mi-next i{font:700 10px var(--display);letter-spacing:.08em;text-transform:uppercase;font-style:normal;color:#bfeee5}
+.mi-next b{font:800 15px var(--display)}
+.mi-next>span:last-child{font:600 12px var(--sans);color:rgba(255,255,255,.8)}
+.mi-prox{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.mi-prox li{display:grid;grid-template-columns:70px 92px 1fr;align-items:center;gap:8px;padding:10px 12px;border-radius:14px;background:#f4f2f9;font:500 12.5px var(--sans);color:var(--ink-soft)}
+.mi-prox b{font:800 12.5px var(--display);color:var(--ink)}
+.mi-q{display:grid;gap:14px}
+.mi-q fieldset{margin:0;padding:0;border:0;display:grid;gap:8px}
+.mi-q legend{padding:0;margin-bottom:8px;font:700 13px var(--sans);color:var(--ink)}
+.mi-chips{display:flex;flex-wrap:wrap;gap:6px}
+.mi-chips.n{display:grid;grid-template-columns:repeat(8,1fr)}
+.mi-chip{position:relative;cursor:pointer}
+.mi-chip input{position:absolute;opacity:0;width:1px;height:1px}
+.mi-chip span{display:grid;place-items:center;min-height:38px;padding:0 12px;border-radius:12px;background:#f1eef8;font:700 12.5px var(--display);color:var(--ink);transition:background .15s,color .15s}
+.mi-chips.n .mi-chip span{padding:0}
+.mi-chip input:checked+span{background:var(--ink);color:#fff}
+.mi-chip input:focus-visible+span{outline:2px solid var(--lav);outline-offset:2px}
+.mi-hist{margin-top:14px;padding-top:12px;border-top:1px solid var(--hair)}
+.mi-hist>span{font:700 11px var(--sans);color:var(--ink-faint)}
+.mi-inc{margin-top:0}
+.mi-incf{display:grid;gap:8px;padding:0 12px 12px}
+.mi-incf select,.mi-incf input{min-height:42px;padding:0 12px;border:1px solid var(--hair);border-radius:12px;background:#fff;font:500 13px var(--sans);color:var(--ink)}
+.reg-por{font:600 11px var(--sans)}
+.reg-por .ok{color:var(--teal)}.reg-por .pend{color:var(--amber);margin:0}
+.mi-q legend{text-transform:none;letter-spacing:0;font:700 13px var(--sans)}
+.mi-next b{white-space:nowrap}.mi-next b span{display:inline}
+/* En Visitas, todas las tarjetas muestran horas y quién registró (no solo la primera). */
+#dia-list .ccard .facts{display:flex;flex-wrap:wrap}

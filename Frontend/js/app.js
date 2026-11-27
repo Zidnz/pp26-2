@@ -469,6 +469,7 @@
       else if (est === 'en_curso') btns = `<button class="btn-primary sm" data-action="salio" data-id="${id}">Salió</button>`;
       return `<article class="card ccard"><div class="crow"><b class="mono hora">${esc(p.ini)}</b>${quien(r && r.sexo, r ? r.nombre : '—')}<span class="arrow">→</span>${quien(p.caso.persona.sexo, p.caso.persona.alias)}<span class="badge v-${est}">${EST_VISITA[est]}</span></div>
         ${v && v.llegada ? `<div class="facts mono"><span>llegó ${esc(v.llegada)}</span>${v.salida ? `<span>salió ${esc(v.salida)}</span>` : ''}</div>` : ''}
+        ${v && (v.llegadaPor || v.marcadoPor || v.confirmadaFamilia || v.disputaFamilia) ? `<div class="facts reg-por">${v.llegadaPor ? `<span>llegada: ${QUIEN_REG[v.llegadaPor]}</span>` : ''}${v.salidaPor ? `<span>salida: ${QUIEN_REG[v.salidaPor]}</span>` : ''}${v.marcadoPor && !v.llegada ? `<span>marcó ${QUIEN_REG[v.marcadoPor]}</span>` : ''}${v.llegada ? `<span class="${v.confirmadaFamilia ? 'ok' : 'pend'}">${v.disputaFamilia ? 'la familia dice que no vino: revisar' : v.confirmadaFamilia ? 'familia confirmó' : 'sin confirmar por la familia'}</span>` : ''}</div>` : ''}
         ${btns ? `<div class="btn-row">${btns}</div>` : ''}</article>`;
     }).join('') : '<div class="empty">Sin visitas este día.</div>';
   }
@@ -490,7 +491,7 @@
       <div class="minis"><div><b class="mono">${hechas}</b><span>visitas</span></div><div><b class="mono${aus ? ' warn' : ''}">${aus}</b><span>ausencias</span></div><div><b class="mono${abiertos ? ' warn' : ''}">${abiertos}</b><span>incidentes</span></div></div>
 
       <form id="form-q" class="card panel" novalidate>
-        <div class="eyebrow">Semana · ${esc(c.cuidadora.alias)}</div>
+        <div class="eyebrow">Semana · ${esc(c.cuidadora.alias)}${ya ? ` · respondió ${QUIEN_REG[ya.por || 'programa']}` : ' · sin respuesta'}</div>
         <div class="qrow"><span>Cansancio</span><div class="chips radio">${[0, 1, 2, 3, 4].map((n) => `<label class="chip"><input type="radio" name="cansancio" value="${n}"${ya && ya.cansancio === n ? ' checked' : ''}><span>${n}</span></label>`).join('')}</div></div>
         <div class="qrow"><span>Trabajo o estudio</span><div class="chips radio">${[['si', 'Sí pude'], ['parcial', 'En parte'], ['no', 'No pude']].map(([k, t]) => `<label class="chip"><input type="radio" name="empleo" value="${k}"${ya && ya.empleo === k ? ' checked' : ''}><span>${t}</span></label>`).join('')}</div></div>
         <div class="qrow"><span>Noches mal</span><input name="noches" type="number" min="0" max="7" inputmode="numeric" value="${ya ? ya.malasNoches : ''}" aria-label="Noches que durmió mal"><button class="btn-primary sm" type="submit">${ya ? 'Actualizar' : 'Guardar'}</button></div>
@@ -523,7 +524,7 @@
     if (f.id === 'form-q') {
       const c = f.elements.cansancio.value, n = f.elements.noches.value, emp = f.elements.empleo.value;
       if (c === '' || n === '' || !emp || +n < 0 || +n > 7) { toast('Responde las tres'); return; }
-      store.addCheckin(ui.scCaso, +c, +n, emp); toast('Guardado');
+      store.addCheckin(ui.scCaso, +c, +n, emp, 'programa'); toast('Guardado');
     } else if (f.id === 'form-inc') {
       const nota = f.elements.nota.value.trim();
       if (nota.length < 4) { toast('Describe qué pasó'); return; }
@@ -1144,6 +1145,21 @@
       case 'mia-datos': { const c = casoById(leerId('mientras-mi-caso')); if (c) await pedir(`Lo que guardamos de ti: alias «${c.cuidadora.alias}», sexo, alcaldía ${c.alcaldia}, ${c.cuidadora.horas} h de cuidado a la semana, si haces tareas de salud (sí/no), tus respuestas de la entrevista y, cada semana, cansancio, noches de mal sueño y si pudiste trabajar o estudiar. De la persona cuidada: alias, sexo, su Barthel y su consentimiento.${c.domicilio ? ' Domicilio para las visitas (ficticio en este prototipo); se borra al cerrar el caso.' : ' Tu domicilio se pide solo cuando se te asigna relevo.'} Contactos registrados: ${(c.contactos || []).length}. Sin CURP ni nombre completo. Para acceder, corregir, cancelar u oponerte: ${CP.contacto_datos}.`, { ok: 'Entendido' }); break; }
       case 'mia-contactos': abrirContactos(); break;
       case 'yo-nuevo': guardarId('mientras-mi-relevo', ''); render(); break;
+      case 'mia-demo': guardarId('mientras-mi-caso', id); render(); toast('Viendo la solicitud de ejemplo'); break;
+      case 'yo-demo': guardarId('mientras-mi-relevo', id); render(); toast('Viendo el registro de ejemplo'); break;
+      case 'rv-llegue': store.registrarLlegada(id, F.hoyISO(), 'relevo'); toast('Llegada registrada'); break;
+      case 'rv-sali': store.registrarSalida(id, F.hoyISO(), 'relevo'); toast('Salida registrada'); break;
+      case 'cu-confirmo': store.confirmarVisita(id, F.hoyISO()); toast('Visita confirmada'); break;
+      case 'cu-nollego': {
+        const p = store.programadasEn(F.hoyISO()).find((x) => x.caso.id === id); if (!p) break;
+        const llegada = p.reg && p.reg.llegada;
+        const aviso = llegada ? `Hay una llegada registrada a las ${llegada}. Avisaremos al programa que, según tú, no vino. El registro no se borra: una persona lo revisa.`
+          : 'Avisaremos al programa que la persona de relevo no llegó. Se registra como ausencia e incidente.';
+        if (!(await pedir(aviso, { ok: 'Avisar' }))) break;
+        if (llegada) store.disputarVisita(id, F.hoyISO()); else store.marcarVisita(id, F.hoyISO(), 'no_llego', 'cuidadora');
+        store.addIncidente({ casoId: id, reporta: 'familia', tipo: 'No llegó', nota: llegada ? `La cuidadora indica que no vino; hay llegada registrada a las ${llegada}` : 'Reportado por la cuidadora desde la app' });
+        toast('Aviso enviado'); break;
+      }
       case 'proponer': abrirAsignacion(id, false); break;
       case 'reasignar': abrirAsignacion(id, true); break;
       case 'seguir': case 'see-red': cerrarDet(); ui.scCaso = id; ui.segSub = 'caso'; ui.objetivo = null; ui.apagado = false; show('seguimiento'); break;
@@ -1226,6 +1242,8 @@
    * No se muestran tiempos de espera ni costos: con datos simulados serían promesas sin respaldo. */
   const ejemploCaso = () => {
     const cs = store.state.casos.filter((x) => x.estado === 'activo' && x.asignacion && x.paquete);
+    const hoyIds = store.programadasEn(F.hoyISO()).map((p) => p.caso.id);
+    cs.sort((a, b) => hoyIds.includes(b.id) - hoyIds.includes(a.id));
     const completo = cs.find((x) => x.contrato && cpOk(x) && store.state.visitas.some((v) => v.casoId === x.id && v.estado === 'realizada'));
     return completo || cs[0] || null;
   };
@@ -1255,10 +1273,11 @@
           <button type="button" data-go="pasos"><b>Pasos</b><small>Cómo sigue</small></button>
         </div>
         <p class="complementario">${esc(CP.aviso_complementario)}</p>
-        ${ej ? sepEjemplo('Así se ve una solicitud con relevo') + tarjetaCaso(ej, true) : ''}`;
+        ${ej ? sepEjemplo('Así se ve una solicitud con relevo') + tarjetaCaso(ej, true) + `<button type="button" class="btn-ghost wide" data-action="mia-demo" data-id="${esc(ej.id)}">Probar con esta solicitud (demostración)</button>` : ''}`;
       return;
     }
     $('#mia-body').innerHTML = `${tarjetaCaso(c)}
+      ${panelCuidadora(c)}
       <div class="rx-acc">
         <button type="button" data-action="mia-convenio">Mi convenio</button>
         <button type="button" data-action="mia-contactos">Contactos</button>
@@ -1298,7 +1317,9 @@
   function renderYo() {
     const r = relById(leerId('mientras-mi-relevo'));
     if (!r) {
-      const ej = store.state.relevos.find((x) => store.aprobado(x) && x.certificacion === 'certificada' && store.state.casos.some((c) => c.estado === 'activo' && c.asignacion && c.asignacion.relevoId === x.id)) || store.state.relevos[0];
+      const conCaso = (x) => store.aprobado(x) && x.certificacion === 'certificada' && store.state.casos.some((c) => c.estado === 'activo' && c.asignacion && c.asignacion.relevoId === x.id);
+      const hoyRel = store.programadasEn(F.hoyISO()).map((p) => p.relevoId);
+      const ej = store.state.relevos.find((x) => conCaso(x) && hoyRel.includes(x.id)) || store.state.relevos.find(conCaso) || store.state.relevos[0];
       $('#yo-body').innerHTML = `${banner('relevo', `<span class="rx-kick">Puedo cuidar</span>
           <h2>¿Quieres trabajar dando relevo?</h2>
           <p>Registra tus días, horario y zona. El programa te asigna casos. Con contrato y pago al piso legal.</p>`, 'gb-hero')}
@@ -1308,10 +1329,11 @@
           <button type="button" data-go="req"><b>Requisitos</b><small>Qué te pedimos</small></button>
           <button type="button" data-go="asig"><b>Asignación</b><small>Cómo te toca</small></button>
         </div>
-        ${ej ? sepEjemplo('Así se ve un registro aprobado') + tarjetaRelevo(ej, true) : ''}`;
+        ${ej ? sepEjemplo('Así se ve un registro aprobado') + tarjetaRelevo(ej, true) + `<button type="button" class="btn-ghost wide" data-action="yo-demo" data-id="${esc(ej.id)}">Probar como ${esc(ej.nombre)} (demostración)</button>` : ''}`;
       return;
     }
     $('#yo-body').innerHTML = `${tarjetaRelevo(r)}
+      ${panelRelevo(r)}
       <button type="button" class="btn-ghost wide" data-action="yo-nuevo">Registrar a otra persona (demostración)</button>`;
   }
   /* 26 nov 2026 (2): pestañas con más contenido. Todo sale del código del proyecto (reglas, convenio, contrato,
@@ -1401,8 +1423,8 @@
         <div class="pre-sub">Nunca te pedimos</div>
         <div class="pre-tags solo neg">${['CURP', 'Nombre completo', 'Diagnósticos', 'Edad'].map((t) => `<span>${t}</span>`).join('')}</div>`)
       + tarjeta('Después', 'Cuando ya tienes relevo', `<ul class="pre-list">
-          ${fila('Llegada y salida de cada visita', 'Quedan registradas en la app.')}
-          ${fila('Dos preguntas a la semana', 'Opcionales: cansancio, sueño y si pudiste trabajar o estudiar.')}
+          ${fila('Llegada y salida de cada visita', 'La persona de relevo las registra y tú confirmas desde Inicio.')}
+          ${fila('Tres preguntas a la semana', 'Opcionales, en Inicio: cansancio, noches de mal sueño y si pudiste trabajar o estudiar.')}
           ${fila('Incidentes en ambos sentidos', 'Tú o la persona de relevo pueden reportar; responde el programa.')}
           ${fila('En una emergencia', 'Llama al 911.')}
         </ul>`)
@@ -1527,6 +1549,121 @@
     $('#req-din').innerHTML = reqDin();
   });
   document.addEventListener('click', (e) => { const b = e.target.closest('[data-go]'); if (b) show(b.dataset.go); });
+
+  /* ================= Visitas y semana desde la cuidadora y la persona de relevo (26 nov 2026) =================
+   * La persona de relevo registra llegada y salida; la cuidadora confirma la visita, avisa si no llegó
+   * y responde las tres preguntas semanales. El Programa supervisa y corrige desde Red › Visitas. */
+  const QUIEN_REG = { relevo: 'la persona de relevo', cuidadora: 'la cuidadora', programa: 'el programa' };
+  function proximasVisitas(filtro, dias) {
+    const hoy = F.hoyISO(), out = [];
+    for (let i = 0; i < (dias || 7); i++) {
+      const f = F.sumaDias(hoy, i);
+      store.programadasEn(f).filter(filtro).forEach((p) => out.push(Object.assign({ fecha: f, hoy: i === 0 }, p)));
+    }
+    return out;
+  }
+  const fechaCorta = (iso) => { const d = F.desdeISO(iso); return cap(d.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric' })).replace('.', ''); };
+  const estVis = (p) => (p.reg ? p.reg.estado : 'pendiente');
+  const opcionesInc = (rol) => TIPOS_INCIDENTE.filter((t) => rol === 'relevo' ? !['No llegó', 'Llegó tarde', 'Se fue antes'].includes(t) : true);
+  function formIncidente(id, casos, rol) {
+    if (!casos.length) return '';
+    return `<details class="pre-det mi-inc"><summary>Reportar un incidente</summary>
+      <form id="${id}" class="mi-incf" novalidate>
+        ${casos.length > 1 ? `<select name="caso" aria-label="Caso">${casos.map((c) => `<option value="${esc(c.id)}">${esc(c.folio)} · ${esc(c.persona.alias)}</option>`).join('')}</select>` : `<input type="hidden" name="caso" value="${esc(casos[0].id)}">`}
+        <select name="tipo" aria-label="Tipo de incidente"><option value="">Elige el tipo</option>${options(opcionesInc(rol))}</select>
+        <input name="nota" maxlength="140" autocomplete="off" placeholder="Qué pasó (sin nombres)" aria-label="Qué pasó">
+        <button class="btn-primary sm" type="submit">Enviar al programa</button>
+        <p class="pre-fine">Lo revisa una persona del programa. En una emergencia, llama al 911.</p>
+      </form></details>`;
+  }
+
+  /* ---------- Persona de relevo ---------- */
+  function panelRelevo(r) {
+    const vis = proximasVisitas((p) => p.relevoId === r.id, 7);
+    const casos = store.state.casos.filter((c) => c.estado === 'activo' && c.asignacion && c.asignacion.relevoId === r.id);
+    const hoy = vis.filter((p) => p.hoy), prox = vis.filter((p) => !p.hoy);
+    const tarjetaHoy = (p) => {
+      const est = estVis(p), v = p.reg, id = esc(p.caso.id);
+      let acc = '';
+      if (est === 'pendiente') acc = `<button type="button" class="btn-primary wide" data-action="rv-llegue" data-id="${id}">Llegué</button>`;
+      else if (est === 'en_curso') acc = `<button type="button" class="btn-primary wide" data-action="rv-sali" data-id="${id}">Salí</button>`;
+      const lin = v && v.llegada ? `<div class="mi-times"><span><i>Llegada</i><b class="mono">${esc(v.llegada)}</b></span><span><i>Salida</i><b class="mono">${esc(v.salida || '—')}</b></span><span><i>Familia</i><b>${v.disputaFamilia ? 'En revisión' : v.confirmadaFamilia ? 'Confirmó' : 'Sin confirmar'}</b></span></div>` : '';
+      return `<article class="mi-vis ${est}"><div class="mi-vis-top"><span class="mi-hora mono">${esc(p.ini)}-${esc(p.fin)}</span><span class="badge v-${est}">${EST_VISITA[est]}</span></div>
+        <b class="mi-vis-quien">${esc(p.caso.persona.alias)}</b><small>${esc(p.caso.alcaldia)} · ${esc(p.caso.folio)}${p.caso.domicilio ? ' · ' + esc(p.caso.domicilio.texto) + ' (ficticio)' : ''}</small>
+        ${lin}${acc}</article>`;
+    };
+    return `<section class="pre-card">
+        <div class="pre-h"><span class="rx-kick">Hoy</span><h3>${hoy.length ? `${hoy.length} visita${hoy.length > 1 ? 's' : ''}` : 'Sin visitas hoy'}</h3></div>
+        ${hoy.map(tarjetaHoy).join('') || `<p class="pre-p">${casos.length ? 'Tu próxima visita aparece abajo.' : 'Las visitas aparecen aquí cuando el programa te asigne un caso.'}</p>`}
+        <p class="pre-fine">Registra la llegada al entrar y la salida al irte: con eso se calculan tu tiempo y tu pago. Si te equivocas, avisa al programa.</p>
+      </section>
+      ${prox.length ? `<section class="pre-card"><div class="pre-h"><span class="rx-kick">Próximos 7 días</span><h3>Tu semana</h3></div>
+        <ul class="mi-prox">${prox.map((p) => `<li><b>${fechaCorta(p.fecha)}</b><span class="mono">${esc(p.ini)}-${esc(p.fin)}</span><span>${esc(p.caso.persona.alias)}</span></li>`).join('')}</ul></section>` : ''}
+      ${casos.length ? `<section class="pre-card"><div class="pre-h"><span class="rx-kick">Algo pasó</span><h3>Avisa al programa</h3></div>${formIncidente('form-inc-rv', casos, 'relevo')}</section>` : ''}`;
+  }
+
+  /* ---------- Cuidadora ---------- */
+  const CANSANCIO = ['Nada', 'Poco', 'Algo', 'Bastante', 'Mucho'];
+  function panelCuidadora(c) {
+    if (c.estado !== 'activo' || !c.asignacion) return '';
+    const vis = proximasVisitas((p) => p.caso.id === c.id, 8), r = relById(c.asignacion.relevoId);
+    const hoyV = vis.find((p) => p.hoy), prox = vis.find((p) => !p.hoy);
+    let hoyHTML = '';
+    if (hoyV) {
+      const est = estVis(hoyV), v = hoyV.reg, id = esc(c.id);
+      const quien2 = (k) => (k ? ` · registró ${QUIEN_REG[k] || k}` : '');
+      const txt = est === 'pendiente' ? `${r ? esc(r.nombre) : 'Tu relevo'} llega a las ${esc(hoyV.ini)}. Aún no registra su llegada.`
+        : est === 'en_curso' ? `Llegó a las ${esc(v.llegada)}${quien2(v.llegadaPor)}.`
+          : est === 'realizada' ? `Llegó a las ${esc(v.llegada)} y salió a las ${esc(v.salida)}.`
+            : `${EST_VISITA[est]}${quien2(v && v.marcadoPor)}.`;
+      let acc = '';
+      const yaEsHora = new Date().toTimeString().slice(0, 5) >= hoyV.ini; // antes de su hora no se puede reportar ausencia
+      if (est === 'pendiente' && yaEsHora) acc = `<button type="button" class="btn-ghost sm danger" data-action="cu-nollego" data-id="${id}">No ha llegado</button>`;
+      if ((est === 'en_curso' || est === 'realizada') && !(v && v.confirmadaFamilia)) acc = `<button type="button" class="btn-primary sm" data-action="cu-confirmo" data-id="${id}">Sí vino, confirmo</button><button type="button" class="btn-ghost sm danger" data-action="cu-nollego" data-id="${id}">No vino</button>`;
+      if (v && v.confirmadaFamilia) acc = `<span class="mi-ok">Confirmaste la visita a las ${esc(v.confirmadaFamilia)}</span>`;
+      if (v && v.disputaFamilia) acc = `<span class="mi-ok">Avisaste que no vino. El programa lo revisa.</span>`;
+      hoyHTML = `<article class="mi-vis ${est}"><div class="mi-vis-top"><span class="mi-hora mono">Hoy · ${esc(hoyV.ini)}-${esc(hoyV.fin)}</span><span class="badge v-${est}">${EST_VISITA[est]}</span></div>
+        <p class="pre-p">${txt}</p>${acc ? `<div class="btn-row">${acc}</div>` : ''}</article>`;
+    }
+    const qs = store.state.checkins.filter((q) => q.casoId === c.id).sort((a, b) => a.semana.localeCompare(b.semana));
+    const ya = qs.find((q) => q.semana === F.lunesDe(F.hoyISO()));
+    const chip = (name, val, txt, on) => `<label class="mi-chip"><input type="radio" name="${name}" value="${val}"${on ? ' checked' : ''}><span>${txt}</span></label>`;
+    return `<section class="pre-card">
+        <div class="pre-h"><span class="rx-kick">Tu relevo</span><h3>${hoyV ? 'Visita de hoy' : 'Próxima visita'}</h3></div>
+        ${hoyHTML}
+        ${prox ? `<div class="mi-next"><span><i>${hoyV ? 'Después' : 'Siguiente'}</i><b>${fechaCorta(prox.fecha)} · <span class="mono">${esc(prox.ini)}-${esc(prox.fin)}</span></b></span><span>${r ? esc(r.nombre) : ''}</span></div>` : ''}
+        ${!hoyV && !prox ? '<p class="pre-p">No hay visitas en los próximos días.</p>' : ''}
+        <p class="pre-fine">La persona de relevo registra su llegada y su salida; tú confirmas. Si no coinciden, el programa lo revisa.</p>
+      </section>
+      <section class="pre-card">
+        <div class="pre-h"><span class="rx-kick">Esta semana · opcional</span><h3>¿Cómo vas?</h3></div>
+        <form id="form-q-cu" class="mi-q" novalidate>
+          <fieldset><legend>¿Qué tan cansada o cansado te sientes?</legend><div class="mi-chips">${CANSANCIO.map((t, i) => chip('cansancio', i, t, ya && ya.cansancio === i)).join('')}</div></fieldset>
+          <fieldset><legend>¿Cuántas noches dormiste mal?</legend><div class="mi-chips n">${[0, 1, 2, 3, 4, 5, 6, 7].map((n) => chip('noches', n, n, ya && ya.malasNoches === n)).join('')}</div></fieldset>
+          <fieldset><legend>¿Pudiste trabajar o estudiar?</legend><div class="mi-chips">${[['si', 'Sí'], ['parcial', 'En parte'], ['no', 'No'], ['na', 'No aplica']].map(([k, t]) => chip('empleo', k, t, ya && (ya.empleo || 'na') === k)).join('')}</div></fieldset>
+          <button class="btn-primary wide" type="submit">${ya ? 'Actualizar respuestas' : 'Enviar'}</button>
+        </form>
+        ${qs.length ? `<div class="mi-hist"><span>Tu cansancio, últimas semanas</span><div class="spark">${qs.slice(-8).map((q) => `<span title="${esc(q.semana)}"><i style="height:${6 + q.cansancio * 8}px"></i><small>${q.cansancio}</small></span>`).join('')}</div></div>` : ''}
+        <p class="pre-fine">Solo lo ve el programa, para saber si el relevo te está sirviendo. No cambia tus horas.</p>
+      </section>
+      <section class="pre-card"><div class="pre-h"><span class="rx-kick">Algo pasó</span><h3>Avisa al programa</h3></div>${formIncidente('form-inc-cu', [c], 'cuidadora')}</section>`;
+  }
+
+  document.addEventListener('submit', (e) => {
+    const f = e.target;
+    if (f.id === 'form-q-cu') {
+      e.preventDefault();
+      const c = f.elements.cansancio.value, n = f.elements.noches.value, emp = f.elements.empleo.value;
+      if (c === '' || n === '' || !emp) { toast('Responde las tres'); return; }
+      store.addCheckin(leerId('mientras-mi-caso'), +c, +n, emp === 'na' ? null : emp, 'cuidadora'); toast('Gracias, quedó guardado');
+    } else if (f.id === 'form-inc-rv' || f.id === 'form-inc-cu') {
+      e.preventDefault();
+      const nota = f.elements.nota.value.trim();
+      if (!f.elements.tipo.value) { toast('Elige el tipo de incidente'); return; }
+      if (nota.length < 4) { toast('Describe qué pasó'); return; }
+      store.addIncidente({ casoId: f.elements.caso.value, reporta: f.id === 'form-inc-rv' ? 'relevo' : 'familia', tipo: f.elements.tipo.value, nota }); toast('Enviado al programa');
+    }
+  });
 
   /* ================= Contactos de la cuidadora (24 nov 2026) ================= */
   function abrirContactos() {
