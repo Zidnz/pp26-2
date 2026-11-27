@@ -656,7 +656,11 @@
       const r = st.relevos.find((x) => store.aprobado(x)) || st.relevos[0];
       return r ? CT.contratoTrabajo({ nombre: r.nombre, alcaldia: r.alcaldia, dias: (r.dias || []).map((i) => RV.DIAS[i]), desde: r.desde, hasta: r.hasta, horasMax: r.horasMax, tareas: r.tareas }) : null;
     }
-    const c = ejemploCaso(); if (!c) return null;
+    const c = ejemploCaso();
+    return c ? convenioDeCaso(c) : null;
+  }
+  /** Convenio con los datos actuales de un caso ya registrado. */
+  function convenioDeCaso(c) {
     const hz = horasDe(c), pq = c.paquete || paqueteProbable(c);
     return CT.convenioServicio({ folio: c.folio, alias: c.cuidadora.alias, palias: c.persona.alias, alcaldia: c.alcaldia, horasMes: hz.mes, horasSemana: hz.sem,
       dentro: valDe(c).nivel === 'dentro', enfermeria: !!c.entrevista.modelo.enfermeria, consentimientoPersona: (c.consentimientoPersona || {}).via || 'propio',
@@ -1141,9 +1145,9 @@
       }
       case 'new-relevo': openRelevo(); break;
       case 'mia-nueva': guardarId('mientras-mi-caso', ''); render(); break;
-      case 'mia-convenio': { const c = casoById(leerId('mientras-mi-caso')); if (c) await pedir(`${firmaTxt(c.contrato)}. Guardamos la huella del texto que firmaste, no una copia: si el texto cambia, la huella deja de coincidir.`, { ok: 'Entendido' }); break; }
-      case 'mia-datos': { const c = casoById(leerId('mientras-mi-caso')); if (c) await pedir(`Lo que guardamos de ti: alias «${c.cuidadora.alias}», sexo, alcaldía ${c.alcaldia}, ${c.cuidadora.horas} h de cuidado a la semana, si haces tareas de salud (sí/no), tus respuestas de la entrevista y, cada semana, cansancio, noches de mal sueño y si pudiste trabajar o estudiar. De la persona cuidada: alias, sexo, su Barthel y su consentimiento.${c.domicilio ? ' Domicilio para las visitas (ficticio en este prototipo); se borra al cerrar el caso.' : ' Tu domicilio se pide solo cuando se te asigna relevo.'} Contactos registrados: ${(c.contactos || []).length}. Sin CURP ni nombre completo. Para acceder, corregir, cancelar u oponerte: ${CP.contacto_datos}.`, { ok: 'Entendido' }); break; }
-      case 'mia-contactos': abrirContactos(); break;
+      case 'mia-convenio': { const c = casoById(leerId('mientras-mi-caso')); if (c) abrirHoja('Mi convenio', convenioHoja(c)); break; }
+      case 'mia-datos': { const c = casoById(leerId('mientras-mi-caso')); if (c) abrirHoja('Mis datos', misDatosHTML(c)); break; }
+      case 'mia-contactos': if ($('#dlg-hoja').open) $('#dlg-hoja').close(); abrirContactos(); break;
       case 'yo-nuevo': guardarId('mientras-mi-relevo', ''); render(); break;
       case 'mia-demo': guardarId('mientras-mi-caso', id); render(); toast('Viendo la solicitud de ejemplo'); break;
       case 'yo-demo': guardarId('mientras-mi-relevo', id); render(); toast('Viendo el registro de ejemplo'); break;
@@ -1613,6 +1617,112 @@
       if (!f.elements.tipo.value) { toast('Elige el tipo de incidente'); return; }
       if (nota.length < 4) { toast('Describe qué pasó'); return; }
       store.addIncidente({ casoId: f.elements.caso.value, reporta: f.id === 'form-inc-rv' ? 'relevo' : 'familia', tipo: f.elements.tipo.value, nota }); toast('Enviado al programa');
+    }
+  });
+
+  /* ================= Mis datos y Mi convenio (26 nov 2026) ================= */
+  function abrirHoja(titulo, html) {
+    $('#hoja-titulo').textContent = titulo;
+    $('#hoja-body').innerHTML = html;
+    $('#dlg-hoja').showModal(); $('#dlg-hoja').scrollTop = 0;
+  }
+  const DERECHOS = [
+    ['Ver', 'Pide una copia de todo lo que guardamos de ti.'],
+    ['Corregir', 'Dinos qué dato está mal y cuál es el correcto.'],
+    ['Cancelar', 'Pide que borremos tus datos.'],
+    ['Oponerme', 'Pide que dejemos de usar un dato para algo en particular.'],
+  ];
+  const derechoHTML = (i) => `<b>${esc(DERECHOS[i][1])}</b><br>Escribe a ${esc(CP.contacto_datos)}.`;
+  const dTile = (lab, val, nota, cls) => `<div class="md-t ${cls || ''}"><i>${esc(lab)}</i><b>${esc(val)}</b>${nota ? `<small>${esc(nota)}</small>` : ''}</div>`;
+  /** Lo que se guarda de la cuidadora, de la persona cuidada y para las visitas, con los valores reales del caso. */
+  function misDatosHTML(c) {
+    const cu = c.cuidadora, p = c.persona, ent = c.entrevista, pq = c.paquete || c.preferencias;
+    const qs = store.state.checkins.filter((q) => q.casoId === c.id).sort((a, b) => a.semana.localeCompare(b.semana));
+    const nVis = store.state.visitas.filter((v) => v.casoId === c.id).length, nInc = store.state.incidentes.filter((i) => i.casoId === c.id).length;
+    const cts = c.contactos || [], cp = c.consentimientoPersona || {};
+    const barthel = PR.totalBarthel(ent.barthel || {}) != null;
+    const tu = `<div class="md-grid">
+        <div class="md-t grande lila"><i>Cuidas</i><b>${esc(cu.horas)} h</b><small>a la semana</small></div>
+        <div class="md-t grande menta"><i>Respuestas semanales</i><b>${qs.length}</b><small>cansancio, sueño y trabajo o estudio</small></div>
+        ${dTile('Sexo', SEXO_TXT[cu.sexo] || 'Sin dato')}
+        ${dTile('Alcaldía', c.alcaldia)}
+        ${dTile('Tareas de salud', ent.modelo.enfermeria ? 'Sí' : 'No')}
+        ${dTile('Tu entrevista', 'Guardada', 'Cómo te sientes al cuidar')}
+        ${pq && pq.dias && pq.dias.length ? dTile('Días y hora de relevo', `${diasTxt(pq.dias)} · ${pq.inicio}`, '', 'ancha') : ''}
+        ${qs.length ? `<div class="md-t ancha"><i>Tu cansancio, últimas semanas</i><div class="spark">${qs.slice(-8).map((q) => `<span title="${esc(q.semana)}"><i style="height:${6 + q.cansancio * 8}px"></i><small>${q.cansancio}</small></span>`).join('')}</div></div>` : ''}
+      </div>`;
+    const persona = `<div class="md-grid">
+        ${dTile('Alias', p.alias, '', 'lila')}
+        ${dTile('Sexo', SEXO_TXT[p.sexo] || 'Sin dato', '', 'lila')}
+        ${dTile('Su consentimiento', CP_ESTADO[cp.estado] || 'Sin registro', '', 'ancha menta')}
+        ${dTile('Ayuda que necesita cada día', barthel ? 'Registrada' : 'Aún no se pregunta', barthel ? 'Se usa para asignar el relevo' : '', 'ancha')}
+      </div>`;
+    const casa = `<div class="md-grid">
+        ${c.domicilio ? dTile('Domicilio para las visitas', c.domicilio.texto, 'Ficticio en este prototipo · se borra al cerrar el caso', 'ancha lila')
+    : dTile('Domicilio', 'No lo tenemos', c.estado === 'cerrado' ? 'Se borró al cerrar el caso' : 'Se pide solo cuando se te asigna relevo', 'ancha lila')}
+        ${cts.map((k) => dTile(k.tipo === 'emergencia' ? 'Contacto de emergencia' : 'Persona autorizada', `${k.nombre} · ${k.parentesco}`, k.telefono, 'ancha')).join('')}
+        <div class="md-t ancha menta"><i>Tus contactos</i><b>${cts.length ? `${cts.length} guardado${cts.length > 1 ? 's' : ''}` : 'Ninguno'}</b>
+          <button type="button" class="btn-ghost" data-action="mia-contactos">${cts.length ? 'Editar' : 'Agregar'}</button></div>
+        ${dTile('Visitas registradas', String(nVis))}
+        ${dTile('Incidentes', String(nInc))}
+      </div>`;
+    return `<div class="md">
+        <div class="md-yo"><span class="md-av" aria-hidden="true">${esc(cu.alias.charAt(0).toUpperCase())}</span>
+          <div><b>${esc(cu.alias)}</b><small>Solo usamos tu alias · ${esc(c.folio)}</small></div></div>
+        <div class="md-tabs" role="tablist" aria-label="Tus datos">${[['tu', 'Tú'], ['persona', 'Quien cuidas'], ['casa', 'Casa y visitas']].map(([k, t], i) =>
+    `<button type="button" role="tab" data-md="${k}" aria-selected="${!i}" class="${i ? '' : 'on'}">${t}</button>`).join('')}</div>
+        ${[['tu', tu], ['persona', persona], ['casa', casa]].map(([k, h], i) => `<div class="md-panel" role="tabpanel" data-md-panel="${k}"${i ? ' hidden' : ''}>${h}</div>`).join('')}
+        <h4 class="md-h">Nunca te pedimos</h4>
+        <div class="md-no">${['CURP', 'Nombre completo', 'Diagnósticos', 'Tu edad'].map((t) => `<span>${t}</span>`).join('')}</div>
+        <h4 class="md-h">Tú decides</h4>
+        <div class="md-arco" role="group" aria-label="Tus derechos">${DERECHOS.map(([t], i) => `<button type="button" data-arco="${i}" class="${i ? '' : 'on'}">${t}</button>`).join('')}</div>
+        <p class="md-como" id="md-como" aria-live="polite">${derechoHTML(0)}</p>
+      </div>`;
+  }
+  const fechaLarga = (iso) => F.desdeISO(String(iso).slice(0, 10)).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
+  /** El convenio como documento: encabezado, partes, cifras, tareas, cláusulas y firma. Usa los datos de hoy. */
+  function convenioHoja(c) {
+    const doc = convenioDeCaso(c), f = c.contrato, hz = horasDe(c), dentro = valDe(c).nivel === 'dentro';
+    const operador = CP.operador || 'Operador de RedCare';
+    const tareas = doc.datos.tareas && doc.datos.tareas.length ? doc.datos.tareas : RV.TAREAS;
+    const quienFirma = f ? f.firmante : c.cuidadora.alias;
+    const estado = f ? (f.metodo === 'simulado' ? 'Firma simulada' : 'Firmado') : 'Sin firma todavía';
+    return `<div class="cv-estado${f ? ' ok' : ''}"><i aria-hidden="true">${f ? '✓' : '!'}</i><div><b>${estado}</b><small>${f ? `${esc(fechaLarga(f.fecha))} · el texto muestra tus datos de hoy` : 'Así se ve el convenio con tus datos de hoy'}</small></div></div>
+      <article class="cv-hoja">
+        <div class="cv-marca"><img src="observatorio/ilustraciones/logo_marca.svg" alt=""><b>RedCare</b><span>${esc(c.folio)}</span></div>
+        <h4>${esc(doc.titulo)}</h4>
+        <p class="cv-ver">Versión ${esc(doc.version)}</p>
+        <div class="cv-partes">
+          <div><i>De una parte</i><b>${esc(operador)}</b><small>Opera el programa</small></div>
+          <div><i>De la otra</i><b>«${esc(c.cuidadora.alias)}»</b><small>Cuida a «${esc(c.persona.alias)}»</small></div>
+        </div>
+        <div class="cv-cifras">
+          <div><i>Horas al mes</i><b>${dentro && hz.mes ? `${hz.mes} h` : dentro ? 'En cola' : '0 h'}</b></div>
+          <div><i>Costo para ti</i><b>$0</b></div>
+          <div><i>Alcaldía</i><b style="font-size:12px">${esc(c.alcaldia)}</b></div>
+        </div>
+        <div class="cv-tareas">
+          <div><h5>Sí hace</h5><ul>${tareas.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>
+          <div class="no"><h5>No hace</h5><ul>${NO_HACE.map((t) => `<li>${esc(t)}</li>`).join('')}</ul></div>
+        </div>
+        <p class="cv-sec">Cláusulas</p>
+        <div class="cv-cls">${doc.clausulas.map((k) => `<h5>${esc(k.t)}</h5><p>${esc(k.txt)}</p>`).join('')}</div>
+        <div class="cv-firma">
+          <div class="cv-trazo${f ? '' : ' vacio'}">${f ? esc(quienFirma) : 'Aquí va tu firma'}</div>
+          <b>«${esc(quienFirma)}» · quien cuida</b>
+          ${!f ? '' : f.metodo === 'simulado' ? '<small>Firma de ejemplo</small>' : `<small>Versión firmada: ${esc(f.version)}${f.huellaTexto ? `<br>Huella ${esc(f.huellaTexto.slice(0, 8))}` : ''}</small>`}
+        </div>
+        <p class="cv-pie">Borrador para el prototipo. No está dictaminado jurídicamente.</p>
+      </article>`;
+  }
+  $('#hoja-body').addEventListener('click', (e) => {
+    const t = e.target.closest('[data-md]'), d = e.target.closest('[data-arco]');
+    if (t) {
+      $$('#hoja-body [data-md]').forEach((x) => { x.classList.toggle('on', x === t); x.setAttribute('aria-selected', x === t); });
+      $$('#hoja-body [data-md-panel]').forEach((x) => { x.hidden = x.dataset.mdPanel !== t.dataset.md; });
+    } else if (d) {
+      $$('#hoja-body [data-arco]').forEach((x) => x.classList.toggle('on', x === d));
+      $('#md-como').innerHTML = derechoHTML(+d.dataset.arco);
     }
   });
 
