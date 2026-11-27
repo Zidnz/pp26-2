@@ -41,7 +41,7 @@ Esto reemplaza la primera versión del mismo día (operador como patrón por el 
 - *No está ahora*: no se pregunta el Barthel y el consentimiento se pide en la primera visita → `pendiente`.
 - **Sin `otorgado` o `acreditado` no se puede asignar relevo.** El programa lo registra desde el detalle del caso («Registrar consentimiento» o «Acreditar representación»). La cláusula 7 del convenio cambia según la opción. Los casos guardados antes quedan `pendiente`; en el ejemplo, C-0006 tiene representación por acreditar.
 
-**Qué se guarda de cada firma:** tipo, versión (`RC-CS-2026-11-20` / `RC-CT-2026-11-20`), firmante, fecha y hora, método y la huella SHA-256 del texto. No se guarda el texto. Los casos y relevos del ejemplo traen una firma marcada `simulado`. Versiones vigentes: `RC-CS-2026-11-20.2` y `RC-CT-2026-11-20.2`.
+**Qué se guarda de cada firma:** tipo, versión (`RC-CS-2026-11-20` / `RC-CT-2026-11-20`), firmante, fecha y hora, método y la huella SHA-256 del texto. No se guarda el texto. Los casos y relevos del ejemplo traen una firma marcada `simulado`. Versiones vigentes: `RC-CS-2026-11-26` (26 nov: la cláusula 8 pasa a tres preguntas semanales) y `RC-CT-2026-11-21.3`.
 
 **Límites.** La clave de la huella está en el código: en el prototipo cualquiera la ve; en un piloto se calcula en el servidor (HMAC). Los contratos son borradores para la UCA, no están dictaminados. La aceptación de la oferta la marca el programa: falta que la persona de relevo la acepte desde su propia vista. Tras registrar el consentimiento en persona falta capturar el Barthel en la visita (hoy queda vacío).
 

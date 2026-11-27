@@ -25,7 +25,7 @@
 (function (raiz) {
   'use strict';
 
-  const VERSION = { servicio: 'RC-CS-2026-11-20.2', trabajo: 'RC-CT-2026-11-21.3' };
+  const VERSION = { servicio: 'RC-CS-2026-11-26', trabajo: 'RC-CT-2026-11-21.3' };
   const TITULO = {
     servicio: 'Convenio de servicio de relevo',
     trabajo: 'Contrato de trabajo en plataforma digital',
@@ -85,7 +85,7 @@
       { t: '5. Tareas', txt: `Permitidas: ${tareas}. No permitidas: ${NO_PERMITIDAS.join('; ')}.${s.enfermeria ? ' Como declaraste tareas de salud, el programa te orientará a un servicio de enfermería: la persona de relevo no las hace.' : ''}` },
       { t: '6. Compromisos del hogar', txt: 'Tratar con respeto a la persona de relevo; no pedirle tareas ni horas fuera de lo acordado; avisar cancelaciones con 24 horas; mantener condiciones seguras en la casa (sin armas a la vista ni animales sueltos que pongan en riesgo).' },
       { t: '7. Persona cuidada', txt: (CP_TXT[s.consentimientoPersona] || CP_TXT.pendiente).replace('{p}', s.palias) + ` No se asigna relevo sin ese consentimiento. Si «${s.palias}» no quiere el relevo o retira su consentimiento, el servicio no se presta.` },
-      { t: '8. Seguimiento e incidentes', txt: 'Se registran llegada y salida de cada visita. Quien cuida puede responder dos preguntas semanales (opcionales). Cualquiera de las partes puede reportar un incidente; el programa responde y puede cambiar de persona de relevo. En una emergencia, llamar al 911.' },
+      { t: '8. Seguimiento e incidentes', txt: 'Se registran llegada y salida de cada visita. Quien cuida puede responder tres preguntas semanales (opcionales): cansancio, noches de mal sueño y si pudo trabajar o estudiar. Cualquiera de las partes puede reportar un incidente; el programa responde y puede cambiar de persona de relevo. En una emergencia, llamar al 911.' },
       { t: '9. Identidad', txt: 'En la app solo se usa un alias. La identidad de quien cuida y su relación con la persona cuidada se verifican en la primera visita o por la institución que refiere; ahí se ratifica este convenio con nombre completo.' },
       { t: '10. Terminación', txt: 'Quien cuida puede terminar el convenio en cualquier momento, sin costo. El operador puede suspenderlo por un incidente grave, con aviso por escrito y derecho a pedir revisión.' },
       { t: '11. Datos personales', txt: `Los datos se tratan según el aviso de privacidad de RedCare y la Ley Federal de Protección de Datos Personales en Posesión de los Particulares. Los datos de salud se usan solo para la prioridad y la asignación. Para acceder, corregir, cancelar u oponerte: ${CP.contacto_datos || 'contacto por definir'}.` },
